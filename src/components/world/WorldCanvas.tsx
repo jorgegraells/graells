@@ -13,7 +13,27 @@ const WORLD_BOUND = 45;
 const EYE_HEIGHT = 1.8;
 const JUMP_VELOCITY = 5.2;
 const GRAVITY = 13.5;
+const PLAYER_RADIUS = 0.45;
 const UP = new THREE.Vector3(0, 1, 0);
+
+/** Disposición del pueblo: una casa + aldeano por proyecto, en círculo. */
+export type VillageLayout = {
+  angle: number;
+  housePos: THREE.Vector3;
+  npcPos: THREE.Vector3;
+}[];
+
+function buildLayout(count: number): VillageLayout {
+  return Array.from({ length: count }, (_, i) => {
+    const angle = (i / count) * Math.PI * 2 + Math.PI / 4;
+    const dir = new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle));
+    return {
+      angle,
+      housePos: dir.clone().multiplyScalar(HOUSE_RADIUS),
+      npcPos: dir.clone().multiplyScalar(HOUSE_RADIUS - 4.5),
+    };
+  });
+}
 const SKIN = "#d8a171";
 
 /** Color de tejado y camiseta del aldeano de cada proyecto. */
@@ -36,11 +56,13 @@ function PlayerRig({
   touch,
   drag,
   externalMove,
+  layout,
 }: {
   paused: boolean;
   touch: boolean;
   drag: DragState;
   externalMove: MoveInput;
+  layout: VillageLayout;
 }) {
   const { camera, gl } = useThree();
   const keys = useRef(new Set<string>());
@@ -51,6 +73,28 @@ function PlayerRig({
   const intro = useRef(0);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
+
+  // Colliders del pueblo: cajas rotadas (casas) y círculos (árbol, aldeanos)
+  const colliders = useMemo(
+    () => ({
+      boxes: layout.map((l) => ({
+        x: l.housePos.x,
+        z: l.housePos.z,
+        rotY: l.angle + Math.PI,
+        halfW: 3 + PLAYER_RADIUS,
+        halfD: 2.5 + PLAYER_RADIUS,
+      })),
+      circles: [
+        { x: 0, z: 0, r: 1 + PLAYER_RADIUS }, // tronco del árbol
+        ...layout.map((l) => ({
+          x: l.npcPos.x,
+          z: l.npcPos.z,
+          r: 0.45 + PLAYER_RADIUS,
+        })),
+      ],
+    }),
+    [layout],
+  );
 
   useEffect(() => {
     camera.rotation.order = "YXZ";
@@ -183,6 +227,35 @@ function PlayerRig({
       WORLD_BOUND,
     );
 
+    // Colisiones: el jugador no atraviesa casas, árbol ni aldeanos
+    for (const c of colliders.circles) {
+      const dx = camera.position.x - c.x;
+      const dz = camera.position.z - c.z;
+      const dist = Math.hypot(dx, dz);
+      if (dist < c.r && dist > 1e-6) {
+        const scale = c.r / dist;
+        camera.position.x = c.x + dx * scale;
+        camera.position.z = c.z + dz * scale;
+      }
+    }
+    for (const b of colliders.boxes) {
+      const local = new THREE.Vector3(
+        camera.position.x - b.x,
+        0,
+        camera.position.z - b.z,
+      ).applyAxisAngle(UP, -b.rotY);
+      if (Math.abs(local.x) < b.halfW && Math.abs(local.z) < b.halfD) {
+        const penX = b.halfW - Math.abs(local.x);
+        const penZ = b.halfD - Math.abs(local.z);
+        // Empujar por el eje de menor penetración
+        if (penX < penZ) local.x += Math.sign(local.x || 1) * penX;
+        else local.z += Math.sign(local.z || 1) * penZ;
+        local.applyAxisAngle(UP, b.rotY);
+        camera.position.x = b.x + local.x;
+        camera.position.z = b.z + local.z;
+      }
+    }
+
     // Salto con espacio o botón táctil + gravedad
     const grounded = camera.position.y <= EYE_HEIGHT + 0.001;
     if (grounded && (k.has("Space") || externalMove.jump)) {
@@ -199,8 +272,14 @@ function PlayerRig({
   return null;
 }
 
-/** Brazos cúbicos en primera persona, estilo Minecraft, con balanceo al andar. */
-function FirstPersonArms() {
+/** Brazos cúbicos en primera persona, estilo Minecraft, con balanceo al andar.
+ *  Con `casting`, el brazo derecho se extiende hacia delante para "invocar"
+ *  la ventana de habilidades. */
+const CAST_ARM_POSITION = new THREE.Vector3(0.16, -0.34, -0.62);
+const CAST_ARM_ROTATION = new THREE.Euler(-1.25, 0, 0);
+const IDLE_ARM_ROTATION_RIGHT = new THREE.Euler(-0.45, -0.2, 0.1);
+
+function FirstPersonArms({ casting }: { casting: boolean }) {
   const { camera } = useThree();
   const root = useRef<THREE.Group>(null);
   const armLeft = useRef<THREE.Group>(null);
@@ -225,9 +304,24 @@ function FirstPersonArms() {
     const amp = moving ? 0.05 : 0.012;
     const sway = Math.sin(bob.current) * amp;
     const lift = Math.abs(Math.cos(bob.current)) * amp;
+    const blend = 1 - Math.exp(-delta * 9);
 
     if (armRight.current) {
-      armRight.current.position.set(0.48 + sway, -0.52 + lift, -0.9);
+      const arm = armRight.current;
+      if (casting) {
+        arm.position.lerp(CAST_ARM_POSITION, blend);
+        arm.rotation.x = THREE.MathUtils.lerp(arm.rotation.x, CAST_ARM_ROTATION.x, blend);
+        arm.rotation.y = THREE.MathUtils.lerp(arm.rotation.y, CAST_ARM_ROTATION.y, blend);
+        arm.rotation.z = THREE.MathUtils.lerp(arm.rotation.z, CAST_ARM_ROTATION.z, blend);
+      } else {
+        arm.position.lerp(
+          new THREE.Vector3(0.48 + sway, -0.52 + lift, -0.9),
+          blend,
+        );
+        arm.rotation.x = THREE.MathUtils.lerp(arm.rotation.x, IDLE_ARM_ROTATION_RIGHT.x, blend);
+        arm.rotation.y = THREE.MathUtils.lerp(arm.rotation.y, IDLE_ARM_ROTATION_RIGHT.y, blend);
+        arm.rotation.z = THREE.MathUtils.lerp(arm.rotation.z, IDLE_ARM_ROTATION_RIGHT.z, blend);
+      }
     }
     if (armLeft.current) {
       armLeft.current.position.set(-0.48 - sway, -0.52 + lift, -0.9);
@@ -578,6 +672,7 @@ function Village({
   paused,
   drag,
   onEnter,
+  layout,
 }: {
   projects: Project[];
   dict: Dictionary;
@@ -585,20 +680,8 @@ function Village({
   paused: boolean;
   drag: DragState;
   onEnter: (project: Project) => void;
+  layout: VillageLayout;
 }) {
-  const layout = useMemo(
-    () =>
-      projects.map((_, i) => {
-        const angle = (i / projects.length) * Math.PI * 2 + Math.PI / 4;
-        const dir = new THREE.Vector3(Math.sin(angle), 0, Math.cos(angle));
-        return {
-          angle,
-          housePos: dir.clone().multiplyScalar(HOUSE_RADIUS),
-          npcPos: dir.clone().multiplyScalar(HOUSE_RADIUS - 4.5),
-        };
-      }),
-    [projects],
-  );
   const [nearIndex, setNearIndex] = useState(-1);
   const nearRef = useRef(-1);
   const pausedRef = useRef(paused);
@@ -685,16 +768,22 @@ export default function WorldCanvas({
   dict,
   touch,
   paused,
+  casting,
   onEnter,
   externalMove,
 }: {
   dict: Dictionary;
   touch: boolean;
   paused: boolean;
+  casting: boolean;
   onEnter: (project: Project) => void;
   externalMove: MoveInput;
 }) {
   const drag = useRef<DragState>({ dist: 0 }).current;
+  const layout = useMemo(
+    () => buildLayout(dict.projects.items.length),
+    [dict.projects.items.length],
+  );
 
   return (
     <Canvas
@@ -735,14 +824,16 @@ export default function WorldCanvas({
         paused={paused}
         drag={drag}
         onEnter={onEnter}
+        layout={layout}
       />
       <PlayerRig
         paused={paused}
         touch={touch}
         drag={drag}
         externalMove={externalMove}
+        layout={layout}
       />
-      <FirstPersonArms />
+      <FirstPersonArms casting={casting} />
       {process.env.NODE_ENV !== "production" && <DebugProbe />}
     </Canvas>
   );

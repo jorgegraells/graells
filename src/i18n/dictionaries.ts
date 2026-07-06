@@ -55,6 +55,13 @@ export type Dictionary = {
     exit: string;
     greet: string;
     next: string;
+    status: {
+      open: string;
+      title: string;
+      playerClass: string;
+      level: string;
+      attributes: { name: string; value: number }[];
+    };
   };
   about: { title: string; paragraphs: string[] };
   projects: { title: string; subtitle: string; highlightLabel: string; items: Project[] };
@@ -101,6 +108,20 @@ const es: Dictionary = {
     exit: "Salir del mundo",
     greet: "¡Hola, viajero! Bienvenido a {name}. Deja que te lo cuente…",
     next: "Siguiente",
+    status: {
+      open: "Habilidades",
+      title: "STATUS",
+      playerClass: "AI Engineer & Full-Stack Developer",
+      level: "Nivel 8 · 8 años de experiencia",
+      attributes: [
+        { name: "Inteligencia · IA & LLMs", value: 92 },
+        { name: "Forja · Full-Stack", value: 90 },
+        { name: "Vigor · C++ industrial", value: 88 },
+        { name: "Voluntad · Ciberseguridad", value: 85 },
+        { name: "Visión · Producto & MVP", value: 84 },
+        { name: "Templanza · Compliance EU", value: 82 },
+      ],
+    },
   },
   about: {
     title: "Sobre mí",
@@ -288,6 +309,20 @@ const en: Dictionary = {
     exit: "Leave the world",
     greet: "Hi, traveler! Welcome to {name}. Let me tell you about it…",
     next: "Next",
+    status: {
+      open: "Skills",
+      title: "STATUS",
+      playerClass: "AI Engineer & Full-Stack Developer",
+      level: "Level 8 · 8 years of experience",
+      attributes: [
+        { name: "Intelligence · AI & LLMs", value: 92 },
+        { name: "Forge · Full-Stack", value: 90 },
+        { name: "Vigor · Industrial C++", value: 88 },
+        { name: "Willpower · Cybersecurity", value: 85 },
+        { name: "Vision · Product & MVP", value: 84 },
+        { name: "Temperance · EU Compliance", value: 82 },
+      ],
+    },
   },
   about: {
     title: "About me",

@@ -85,6 +85,92 @@ function JumpButton({ move }: { move: MoveInput }) {
   );
 }
 
+/** Ventana STATUS estilo Solo Leveling: emerge sobre la mano extendida del jugador. */
+function StatusPanel({
+  dict,
+  onClose,
+}: {
+  dict: Dictionary;
+  onClose: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 90, scale: 0.55 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 70, scale: 0.6 }}
+      transition={{ type: "spring", stiffness: 230, damping: 22, delay: 0.15 }}
+      className="absolute inset-x-0 bottom-24 z-20 flex origin-bottom justify-center px-4"
+    >
+      <div
+        className="max-h-[70vh] w-full max-w-md overflow-y-auto rounded-2xl border-2 border-cyan-400/60 bg-[#081226]/92 p-6 shadow-[0_0_70px_-12px_rgba(34,211,238,0.8)] backdrop-blur-md"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between">
+          <p className="font-mono text-sm font-bold uppercase tracking-[0.4em] text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.9)]">
+            ⬡ {dict.world.status.title}
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full px-2 font-mono text-sm text-cyan-200/60 transition-colors hover:text-cyan-100"
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="mt-4 border-l-2 border-cyan-400/40 pl-3">
+          <p className="text-lg font-bold text-white">Jorge Graells</p>
+          <p className="text-sm text-cyan-200/80">
+            {dict.world.status.playerClass}
+          </p>
+          <p className="mt-0.5 font-mono text-xs text-cyan-400">
+            {dict.world.status.level}
+          </p>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          {dict.world.status.attributes.map((attr, i) => (
+            <div key={attr.name}>
+              <div className="flex items-baseline justify-between">
+                <p className="text-xs font-semibold text-cyan-100/90">
+                  {attr.name}
+                </p>
+                <p className="font-mono text-xs text-cyan-300">{attr.value}</p>
+              </div>
+              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-cyan-950">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${attr.value}%` }}
+                  transition={{ duration: 0.7, delay: 0.35 + i * 0.08 }}
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 shadow-[0_0_8px_rgba(34,211,238,0.9)]"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-4">
+          {dict.skills.groups.map((group) => (
+            <div key={group.name}>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-violet-300">
+                {group.name}
+              </p>
+              <ul className="mt-1 space-y-0.5">
+                {group.items.map((item) => (
+                  <li key={item} className="text-[11px] leading-snug text-cyan-100/70">
+                    ▹ {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 /** Diálogo del aldeano: cuenta el proyecto línea a línea con efecto máquina de escribir. */
 function Dialogue({
   project,
@@ -217,15 +303,28 @@ export default function World({
   dict: Dictionary;
 }) {
   const [active, setActive] = useState<Project | null>(null);
+  const [skillsOpen, setSkillsOpen] = useState(false);
   const [touchDevice, setTouchDevice] = useState(false);
   const move = useRef<MoveInput>({ x: 0, y: 0, jump: false }).current;
+  const activeRef = useRef(active);
+  activeRef.current = active;
 
   const close = useCallback(() => setActive(null), []);
-  const onEnter = useCallback((project: Project) => setActive(project), []);
+  const onEnter = useCallback((project: Project) => {
+    setSkillsOpen(false);
+    setActive(project);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "Escape") setActive(null);
+      if (e.code === "Escape") {
+        setActive(null);
+        setSkillsOpen(false);
+      }
+      // C abre/cierra la ventana de habilidades (si no hay diálogo)
+      if (e.code === "KeyC" && activeRef.current === null) {
+        setSkillsOpen((open) => !open);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -248,12 +347,13 @@ export default function World({
       <WorldCanvas
         dict={dict}
         touch={touchDevice}
-        paused={active !== null}
+        paused={active !== null || skillsOpen}
+        casting={skillsOpen}
         onEnter={onEnter}
         externalMove={move}
       />
 
-      {touchDevice && !active && (
+      {touchDevice && !active && !skillsOpen && (
         <>
           <Joystick move={move} />
           <JumpButton move={move} />
@@ -271,11 +371,21 @@ export default function World({
         <p className="glass rounded-full px-5 py-2 font-mono text-xs uppercase tracking-[0.3em] text-white">
           {dict.world.title}
         </p>
-        <div className="w-32" aria-hidden />
+        <button
+          type="button"
+          onClick={() => {
+            setActive(null);
+            setSkillsOpen((open) => !open);
+          }}
+          className="glass pointer-events-auto rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-cyan-300 transition-colors hover:text-cyan-100"
+        >
+          ⬡ {dict.world.status.open}
+          {!touchDevice && " · C"}
+        </button>
       </div>
 
-      {/* Pista de controles (oculta durante el diálogo) */}
-      {!active && (
+      {/* Pista de controles (oculta durante el diálogo o el STATUS) */}
+      {!active && !skillsOpen && (
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-4">
           <p className="glass rounded-full px-5 py-2.5 text-center font-mono text-xs text-white/85">
             {touchDevice ? dict.world.hintTouch : dict.world.hint}
@@ -292,6 +402,13 @@ export default function World({
             dict={dict}
             touch={touchDevice}
             onClose={close}
+          />
+        )}
+        {skillsOpen && (
+          <StatusPanel
+            key="status"
+            dict={dict}
+            onClose={() => setSkillsOpen(false)}
           />
         )}
       </AnimatePresence>
