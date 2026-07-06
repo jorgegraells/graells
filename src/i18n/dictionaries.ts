@@ -154,13 +154,13 @@ const es: Dictionary = {
       {
         slug: "antidop",
         name: "ANTIDOP",
-        tagline: "Bienestar digital y control de la dopamina",
+        tagline: "Rompe el bucle de la dopamina",
         description:
-          "App móvil personal para el bienestar digital: te ayuda a controlar los estímulos de dopamina y recuperar el foco. Arquitectura privacy-first y offline-first: tus datos nunca salen del dispositivo.",
+          "App Android que bloquea en tiempo real las apps y webs adictivas en el instante exacto en que intentas abrirlas: un aviso a pantalla completa te muestra un mensaje que tú mismo te escribiste y eliges resistir o rendirte. Con score de dopamina (0–100), rutina diaria y diario de progreso.",
         role: "Fundador y desarrollador",
         highlight:
-          "Lógica de comportamiento propia, gestión de datos 100% local y optimización de rendimiento. Al 90% de desarrollo.",
-        tech: ["React Native", "Android", "TypeScript"],
+          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical: cero telemetría, cero tracking, y diseñada para usarse poco — la app que combate la adicción no puede crear la suya.",
+        tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
         status: "En desarrollo",
       },
       {
@@ -350,13 +350,13 @@ const en: Dictionary = {
       {
         slug: "antidop",
         name: "ANTIDOP",
-        tagline: "Digital well-being & dopamine control",
+        tagline: "Break the dopamine loop",
         description:
-          "Personal mobile app for digital well-being: it helps you control dopamine triggers and regain focus. Privacy-first, offline-first architecture: your data never leaves the device.",
+          "Android app that blocks addictive apps and websites in real time, at the exact instant you try to open them: a full-screen prompt shows a message you wrote to yourself, and you choose to resist or give in. With a dopamine score (0–100), daily routine and progress journal.",
         role: "Founder & developer",
         highlight:
-          "Custom behavioral logic, 100% local data management and performance optimization. 90% complete.",
-        tech: ["React Native", "Android", "TypeScript"],
+          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy: zero telemetry, zero tracking, and designed to be used sparingly — an app that fights addiction can't create its own.",
+        tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
         status: "In development",
       },
       {
