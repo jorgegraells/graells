@@ -34,6 +34,70 @@ function buildLayout(count: number): VillageLayout {
     };
   });
 }
+
+/** RNG con semilla: decoración idéntica en cada visita. */
+function mulberry32(seed: number) {
+  return () => {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Bosque alrededor del pueblo (fuera del anillo de casas). */
+const TREE_SPOTS = (() => {
+  const rand = mulberry32(1337);
+  return Array.from({ length: 18 }, () => {
+    const angle = rand() * Math.PI * 2;
+    const radius = 29 + rand() * 13;
+    return {
+      x: Math.sin(angle) * radius,
+      z: Math.cos(angle) * radius,
+      scale: 0.7 + rand() * 0.7,
+      variant: Math.floor(rand() * 3),
+    };
+  });
+})();
+
+/** Rocas medio enterradas. */
+const ROCK_SPOTS = (() => {
+  const rand = mulberry32(2024);
+  return Array.from({ length: 14 }, () => {
+    const angle = rand() * Math.PI * 2;
+    const radius = 9 + rand() * 32;
+    return {
+      x: Math.sin(angle) * radius,
+      z: Math.cos(angle) * radius,
+      s: 0.35 + rand() * 0.6,
+      rot: rand() * Math.PI,
+    };
+  });
+})();
+
+const LAMP_SPOTS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((a) => ({
+  x: Math.sin(a) * 7.6,
+  z: Math.cos(a) * 7.6,
+}));
+
+const BENCH_SPOTS = [1.5, 3.7, 5.3].map((a) => ({
+  x: Math.sin(a) * 5,
+  z: Math.cos(a) * 5,
+  rotY: a + Math.PI,
+}));
+
+const WELL_POS = { x: 5, z: -4 };
+const WINDMILL_POS = { x: -30, z: -22 };
+
+/** Colliders de la decoración sólida (radio sin jugador). */
+const DECOR_COLLIDERS = [
+  { x: WELL_POS.x, z: WELL_POS.z, r: 1.3 },
+  { x: WINDMILL_POS.x, z: WINDMILL_POS.z, r: 2.6 },
+  ...TREE_SPOTS.map((t) => ({ x: t.x, z: t.z, r: 0.7 * t.scale })),
+  ...LAMP_SPOTS.map((l) => ({ x: l.x, z: l.z, r: 0.3 })),
+  ...BENCH_SPOTS.map((b) => ({ x: b.x, z: b.z, r: 0.9 })),
+];
 const SKIN = "#d8a171";
 
 /** Color de tejado y camiseta del aldeano de cada proyecto. */
@@ -85,11 +149,16 @@ function PlayerRig({
         halfD: 2.5 + PLAYER_RADIUS,
       })),
       circles: [
-        { x: 0, z: 0, r: 1 + PLAYER_RADIUS }, // tronco del árbol
+        { x: 0, z: 0, r: 1 + PLAYER_RADIUS }, // tronco del árbol central
         ...layout.map((l) => ({
           x: l.npcPos.x,
           z: l.npcPos.z,
           r: 0.45 + PLAYER_RADIUS,
+        })),
+        ...DECOR_COLLIDERS.map((c) => ({
+          x: c.x,
+          z: c.z,
+          r: c.r + PLAYER_RADIUS,
         })),
       ],
     }),
@@ -476,6 +545,250 @@ function Flowers() {
   );
 }
 
+/** Bosque de árboles cúbicos con variantes de color y tamaño. */
+function DecorTrees() {
+  const leafColors = ["#3f9e33", "#57b23f", "#2f8f4a"];
+  const trunkColors = ["#6b4a2b", "#7d5a35", "#d9cbb2"];
+  return (
+    <>
+      {TREE_SPOTS.map((t, i) => (
+        <group key={i} position={[t.x, 0, t.z]} scale={t.scale}>
+          <mesh castShadow position={[0, 1.6, 0]}>
+            <boxGeometry args={[0.8, 3.2, 0.8]} />
+            <meshStandardMaterial color={trunkColors[t.variant]} />
+          </mesh>
+          <mesh castShadow position={[0, 3.7, 0]}>
+            <boxGeometry args={[3.4, 1.8, 3.4]} />
+            <meshStandardMaterial color={leafColors[t.variant]} />
+          </mesh>
+          <mesh castShadow position={[0, 5, 0]}>
+            <boxGeometry args={[2.2, 1.2, 2.2]} />
+            <meshStandardMaterial color={leafColors[(t.variant + 1) % 3]} />
+          </mesh>
+        </group>
+      ))}
+    </>
+  );
+}
+
+/** Rocas grises medio enterradas. */
+function Rocks() {
+  return (
+    <>
+      {ROCK_SPOTS.map((r, i) => (
+        <mesh
+          key={i}
+          castShadow
+          position={[r.x, r.s * 0.35, r.z]}
+          rotation={[0, r.rot, 0]}
+          scale={[r.s * 1.4, r.s, r.s]}
+        >
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="#8f8f8f" flatShading />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
+/** Plaza de piedra central, caminos a cada casa y bancos. */
+function Plaza({ layout }: { layout: VillageLayout }) {
+  return (
+    <group>
+      <mesh rotation-x={-Math.PI / 2} position={[0, 0.004, 0]}>
+        <circleGeometry args={[7, 32]} />
+        <meshStandardMaterial color="#b3ac9f" />
+      </mesh>
+      {/* Caminos radiales hasta cada casa */}
+      {layout.map((l, i) => (
+        <group key={i} rotation={[0, l.angle, 0]}>
+          <mesh rotation-x={-Math.PI / 2} position={[0, 0.006, 12.5]}>
+            <planeGeometry args={[1.7, 13]} />
+            <meshStandardMaterial color="#a8a094" />
+          </mesh>
+        </group>
+      ))}
+      {/* Bancos mirando al árbol */}
+      {BENCH_SPOTS.map((b, i) => (
+        <group key={i} position={[b.x, 0, b.z]} rotation={[0, b.rotY, 0]}>
+          <mesh castShadow position={[0, 0.45, 0]}>
+            <boxGeometry args={[1.6, 0.12, 0.5]} />
+            <meshStandardMaterial color="#9a794f" />
+          </mesh>
+          <mesh castShadow position={[0, 0.72, -0.22]}>
+            <boxGeometry args={[1.6, 0.5, 0.1]} />
+            <meshStandardMaterial color="#9a794f" />
+          </mesh>
+          <mesh position={[-0.65, 0.22, 0]}>
+            <boxGeometry args={[0.12, 0.45, 0.45]} />
+            <meshStandardMaterial color="#6b4a2b" />
+          </mesh>
+          <mesh position={[0.65, 0.22, 0]}>
+            <boxGeometry args={[0.12, 0.45, 0.45]} />
+            <meshStandardMaterial color="#6b4a2b" />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+/** Farolillos de la plaza con linterna cálida. */
+function LampPosts() {
+  return (
+    <>
+      {LAMP_SPOTS.map((l, i) => (
+        <group key={i} position={[l.x, 0, l.z]}>
+          <mesh castShadow position={[0, 1.3, 0]}>
+            <boxGeometry args={[0.14, 2.6, 0.14]} />
+            <meshStandardMaterial color="#3d3d3d" />
+          </mesh>
+          <mesh position={[0, 2.75, 0]}>
+            <boxGeometry args={[0.38, 0.42, 0.38]} />
+            <meshStandardMaterial
+              color="#ffd27a"
+              emissive="#ffb84d"
+              emissiveIntensity={1.6}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh castShadow position={[0, 3.02, 0]}>
+            <boxGeometry args={[0.48, 0.12, 0.48]} />
+            <meshStandardMaterial color="#3d3d3d" />
+          </mesh>
+        </group>
+      ))}
+    </>
+  );
+}
+
+/** Pozo de piedra junto a la plaza. */
+function Well() {
+  return (
+    <group position={[WELL_POS.x, 0, WELL_POS.z]}>
+      {[0, 1, 2, 3].map((i) => (
+        <mesh
+          key={i}
+          castShadow
+          position={[i < 2 ? 0 : i === 2 ? 0.68 : -0.68, 0.3, i === 0 ? 0.68 : i === 1 ? -0.68 : 0]}
+          rotation={[0, i < 2 ? 0 : Math.PI / 2, 0]}
+        >
+          <boxGeometry args={[1.7, 0.6, 0.35]} />
+          <meshStandardMaterial color="#8f8f8f" />
+        </mesh>
+      ))}
+      <mesh position={[0, 0.45, 0]} rotation-x={-Math.PI / 2}>
+        <circleGeometry args={[0.55, 16]} />
+        <meshStandardMaterial color="#3aa0d8" />
+      </mesh>
+      <mesh castShadow position={[-0.75, 1.15, 0]}>
+        <boxGeometry args={[0.14, 1.7, 0.14]} />
+        <meshStandardMaterial color="#6b4a2b" />
+      </mesh>
+      <mesh castShadow position={[0.75, 1.15, 0]}>
+        <boxGeometry args={[0.14, 1.7, 0.14]} />
+        <meshStandardMaterial color="#6b4a2b" />
+      </mesh>
+      <mesh castShadow position={[0, 2.25, 0]} rotation={[0, Math.PI / 4, 0]}>
+        <coneGeometry args={[1.4, 0.9, 4]} />
+        <meshStandardMaterial color="#a33f2f" flatShading />
+      </mesh>
+    </group>
+  );
+}
+
+/** Molino de viento con aspas girando, en las afueras. */
+function Windmill() {
+  const blades = useRef<THREE.Group>(null);
+  useFrame((_, delta) => {
+    if (blades.current) blades.current.rotation.z += delta * 0.7;
+  });
+  return (
+    <group position={[WINDMILL_POS.x, 0, WINDMILL_POS.z]} rotation={[0, Math.PI / 3, 0]}>
+      <mesh castShadow position={[0, 3, 0]}>
+        <boxGeometry args={[3.2, 6, 3.2]} />
+        <meshStandardMaterial color="#cbb489" />
+      </mesh>
+      <mesh castShadow position={[0, 6.9, 0]} rotation={[0, Math.PI / 4, 0]}>
+        <coneGeometry args={[2.7, 1.9, 4]} />
+        <meshStandardMaterial color="#8a4a3a" flatShading />
+      </mesh>
+      <group ref={blades} position={[0, 5.6, 1.9]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.5, 0.5, 0.5]} />
+          <meshStandardMaterial color="#6b4a2b" />
+        </mesh>
+        {[0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((a) => (
+          <group key={a} rotation={[0, 0, a]}>
+            <mesh castShadow position={[0, 2, 0]}>
+              <boxGeometry args={[0.4, 3.6, 0.1]} />
+              <meshStandardMaterial color="#ece1c8" />
+            </mesh>
+          </group>
+        ))}
+      </group>
+    </group>
+  );
+}
+
+/** Mariposas revoloteando por el pueblo. */
+function Butterflies() {
+  const refs = useRef<(THREE.Group | null)[]>([]);
+  const data = useMemo(() => {
+    const rand = mulberry32(77);
+    const colors = ["#fef3c7", "#f9a8d4", "#bae6fd", "#fde68a"];
+    return Array.from({ length: 9 }, (_, i) => ({
+      cx: (rand() - 0.5) * 32,
+      cz: (rand() - 0.5) * 32,
+      r: 2 + rand() * 4,
+      h: 1 + rand() * 1.6,
+      speed: 0.3 + rand() * 0.4,
+      phase: rand() * Math.PI * 2,
+      color: colors[i % colors.length],
+    }));
+  }, []);
+
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime;
+    data.forEach((b, i) => {
+      const g = refs.current[i];
+      if (!g) return;
+      const a = t * b.speed + b.phase;
+      g.position.set(
+        b.cx + Math.sin(a) * b.r,
+        b.h + Math.sin(t * 2 + b.phase) * 0.35,
+        b.cz + Math.cos(a) * b.r,
+      );
+      g.rotation.y = -a;
+      const flap = Math.sin(t * 14 + b.phase) * 0.7;
+      (g.children[0] as THREE.Mesh).rotation.z = flap;
+      (g.children[1] as THREE.Mesh).rotation.z = -flap;
+    });
+  });
+
+  return (
+    <>
+      {data.map((b, i) => (
+        <group
+          key={i}
+          ref={(el) => {
+            refs.current[i] = el;
+          }}
+        >
+          <mesh position={[0.09, 0, 0]}>
+            <boxGeometry args={[0.18, 0.02, 0.14]} />
+            <meshStandardMaterial color={b.color} />
+          </mesh>
+          <mesh position={[-0.09, 0, 0]}>
+            <boxGeometry args={[0.18, 0.02, 0.14]} />
+            <meshStandardMaterial color={b.color} />
+          </mesh>
+        </group>
+      ))}
+    </>
+  );
+}
+
 /** Casa cúbica con tejado del color del proyecto. La puerta mira a +Z local. */
 function House({ color }: { color: string }) {
   return (
@@ -518,6 +831,21 @@ function House({ color }: { color: string }) {
         <planeGeometry args={[1.6, 3]} />
         <meshStandardMaterial color="#9b7653" />
       </mesh>
+      {/* Vallas del jardincito delantero */}
+      {[-2.2, 2.2].map((x) => (
+        <group key={x} position={[x, 0, 3.6]}>
+          {[-0.9, 0, 0.9].map((z) => (
+            <mesh key={z} castShadow position={[0, 0.45, z]}>
+              <boxGeometry args={[0.14, 0.9, 0.14]} />
+              <meshStandardMaterial color="#8a6a42" />
+            </mesh>
+          ))}
+          <mesh castShadow position={[0, 0.68, 0]}>
+            <boxGeometry args={[0.09, 0.09, 2.1]} />
+            <meshStandardMaterial color="#9a794f" />
+          </mesh>
+        </group>
+      ))}
     </group>
   );
 }
@@ -817,6 +1145,13 @@ export default function WorldCanvas({
       <Clouds />
       <BlockTree />
       <Flowers />
+      <DecorTrees />
+      <Rocks />
+      <Plaza layout={layout} />
+      <LampPosts />
+      <Well />
+      <Windmill />
+      <Butterflies />
       <Village
         projects={dict.projects.items}
         dict={dict}
