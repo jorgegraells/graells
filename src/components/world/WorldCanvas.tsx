@@ -655,17 +655,68 @@ function GrassFloor() {
   );
 }
 
-/** Hierba alta: matojos instanciados repartidos por el campo (fuera de plaza/caminos). */
+/** Geometría de un matojo: varias briznas curvadas y estrechadas, con degradado
+ *  de color de la base (oscura) a la punta (clara). Una sola geometría instanciada. */
+function makeBladeTuft() {
+  const positions: number[] = [];
+  const colors: number[] = [];
+  const indices: number[] = [];
+  const base = new THREE.Color("#3c7a2c");
+  const tip = new THREE.Color("#9bd662");
+  const bladeCount = 4;
+  let vOffset = 0;
+
+  for (let b = 0; b < bladeCount; b++) {
+    const ang = (b / bladeCount) * Math.PI * 2 + 0.4;
+    const dirx = Math.cos(ang);
+    const dirz = Math.sin(ang);
+    const perpx = -dirz;
+    const perpz = dirx;
+    const lean = 0.1 + (b % 2) * 0.04;
+    // Filas de la brizna: altura, semiancho, avance hacia fuera (curvatura)
+    const rows = [
+      { y: 0, hw: 0.032, f: 0 },
+      { y: 0.28, hw: 0.02, f: lean * 0.5 },
+      { y: 0.52, hw: 0.005, f: lean },
+    ];
+    rows.forEach((r, ri) => {
+      const cx = dirx * r.f;
+      const cz = dirz * r.f;
+      const t = ri / (rows.length - 1);
+      const col = base.clone().lerp(tip, t);
+      positions.push(cx - perpx * r.hw, r.y, cz - perpz * r.hw);
+      positions.push(cx + perpx * r.hw, r.y, cz + perpz * r.hw);
+      colors.push(col.r, col.g, col.b, col.r, col.g, col.b);
+    });
+    for (let ri = 0; ri < rows.length - 1; ri++) {
+      const a = vOffset + ri * 2;
+      const bb = vOffset + ri * 2 + 1;
+      const c = vOffset + (ri + 1) * 2;
+      const d = vOffset + (ri + 1) * 2 + 1;
+      indices.push(a, bb, c, bb, d, c);
+    }
+    vOffset += rows.length * 2;
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
+  return geo;
+}
+
+/** Hierba alta: matojos de briznas instanciados, con viento suave por shader. */
 function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
   const ref = useRef<THREE.InstancedMesh>(null);
-  const style = useWorldStyle();
+  const uTime = useRef({ value: 0 }).current;
 
-  const blades = useMemo(() => {
+  const tufts = useMemo(() => {
     const rand = mulberry32(4242);
     const list: { x: number; z: number; s: number; rot: number; c: number }[] =
       [];
     let attempts = 0;
-    while (list.length < 1800 && attempts < 14000) {
+    while (list.length < 1500 && attempts < 12000) {
       attempts++;
       const angle = rand() * Math.PI * 2;
       const radius = 8 + rand() * 40;
@@ -675,41 +726,62 @@ function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
       list.push({
         x,
         z,
-        s: 0.7 + rand() * 1.1,
-        rot: rand() * Math.PI,
+        s: 0.75 + rand() * 0.9,
+        rot: rand() * Math.PI * 2,
         c: rand(),
       });
     }
     return list;
   }, [clear]);
 
-  const geometry = useMemo(() => new THREE.ConeGeometry(0.07, 0.5, 4), []);
-  const material = useMemo(
-    () => new THREE.MeshStandardMaterial({ roughness: 1 }),
-    [],
-  );
+  const geometry = useMemo(makeBladeTuft, []);
+  const material = useMemo(() => {
+    const mat = new THREE.MeshStandardMaterial({
+      vertexColors: true,
+      side: THREE.DoubleSide,
+      roughness: 1,
+    });
+    // Viento: las briznas ondulan según su altura y su posición en el mundo
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = uTime;
+      shader.vertexShader =
+        "uniform float uTime;\n" +
+        shader.vertexShader.replace(
+          "#include <begin_vertex>",
+          `#include <begin_vertex>
+           float wPhase = instanceMatrix[3].x * 0.6 + instanceMatrix[3].z * 0.6;
+           float bend = position.y * position.y;
+           transformed.x += sin(uTime * 1.6 + wPhase) * bend * 0.55;
+           transformed.z += cos(uTime * 1.3 + wPhase) * bend * 0.3;`,
+        );
+    };
+    return mat;
+  }, [uTime]);
 
   useLayoutEffect(() => {
     const mesh = ref.current;
     if (!mesh) return;
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
-    blades.forEach((b, i) => {
-      dummy.position.set(b.x, 0.25 * b.s, b.z);
+    tufts.forEach((b, i) => {
+      dummy.position.set(b.x, 0, b.z);
       dummy.rotation.set(0, b.rot, 0);
-      dummy.scale.set(1, b.s, 1);
+      dummy.scale.set(0.9 + b.c * 0.3, b.s, 0.9 + b.c * 0.3);
       dummy.updateMatrix();
       mesh.setMatrixAt(i, dummy.matrix);
-      color.setRGB(0.28 + b.c * 0.14, 0.6 + b.c * 0.22, 0.26 + b.c * 0.12);
+      // Tinte sutil por matojo alrededor del blanco (no oscurece el degradado)
+      color.setRGB(0.88 + b.c * 0.14, 0.94 + b.c * 0.08, 0.82 + b.c * 0.12);
       mesh.setColorAt(i, color);
     });
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [blades, style]);
+  }, [tufts]);
 
-  return (
-    <instancedMesh ref={ref} args={[geometry, material, blades.length]} />
-  );
+  useFrame(({ clock }) => {
+    uTime.value = clock.elapsedTime;
+  });
+
+  return <instancedMesh ref={ref} args={[geometry, material, tufts.length]} />;
 }
 
 /** Nubes que derivan lentamente (esponjosas en modo redondo). */
