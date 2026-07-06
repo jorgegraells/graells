@@ -22,7 +22,7 @@ export type Project = {
   highlight: string;
   tech: string[];
   status: string;
-  url?: string;
+  links?: { label: string; href: string }[];
 };
 
 export type Dictionary = {
@@ -126,6 +126,10 @@ const es: Dictionary = {
           "Piloto real en producción con un equipo de software: producto validado en uso diario, no una demo.",
         tech: ["Next.js 15", "React 19", "Prisma", "Supabase", "Clerk"],
         status: "En piloto",
+        links: [
+          { label: "workleveling.com", href: "https://workleveling.com" },
+          { label: "workleveling.app", href: "https://workleveling.app" },
+        ],
       },
       {
         slug: "enterprise-ai",
@@ -309,6 +313,10 @@ const en: Dictionary = {
           "Real pilot in production with a software team: a product validated in daily use, not a demo.",
         tech: ["Next.js 15", "React 19", "Prisma", "Supabase", "Clerk"],
         status: "In pilot",
+        links: [
+          { label: "workleveling.com", href: "https://workleveling.com" },
+          { label: "workleveling.app", href: "https://workleveling.app" },
+        ],
       },
       {
         slug: "enterprise-ai",

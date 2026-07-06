@@ -183,10 +183,26 @@ function Dialogue({
               />
             ))}
           </div>
-          <p className="font-mono text-xs text-muted">
-            {done && isLast ? dict.world.close : dict.world.next}
-            {!touch && " · E"}
-          </p>
+          <div className="flex items-center gap-4">
+            {done && isLast &&
+              project.links?.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs font-semibold hover:underline"
+                  style={{ color }}
+                >
+                  {link.label} ↗
+                </a>
+              ))}
+            <p className="font-mono text-xs text-muted">
+              {done && isLast ? dict.world.close : dict.world.next}
+              {!touch && " · E"}
+            </p>
+          </div>
         </div>
       </div>
     </motion.div>

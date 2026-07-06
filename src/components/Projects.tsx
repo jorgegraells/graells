@@ -64,15 +64,20 @@ export default function Projects({ dict }: { dict: Dictionary }) {
               {project.role}
             </p>
 
-            {project.url && (
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 text-sm font-semibold text-accent hover:underline"
-              >
-                {project.url.replace(/^https?:\/\//, "")} ↗
-              </a>
+            {project.links && (
+              <div className="mt-2 flex flex-wrap gap-4">
+                {project.links.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-accent hover:underline"
+                  >
+                    {link.label} ↗
+                  </a>
+                ))}
+              </div>
             )}
           </motion.article>
         ))}
