@@ -26,7 +26,13 @@ export type Project = {
 };
 
 export type Dictionary = {
-  nav: { about: string; projects: string; skills: string; contact: string };
+  nav: {
+    about: string;
+    projects: string;
+    skills: string;
+    journey: string;
+    contact: string;
+  };
   hero: {
     greeting: string;
     name: string;
@@ -56,6 +62,10 @@ export type Dictionary = {
     title: string;
     groups: { name: string; items: string[] }[];
   };
+  journey: {
+    title: string;
+    items: { period: string; title: string; description: string }[];
+  };
   contact: { title: string; text: string; cta: string };
   footer: { rights: string };
 };
@@ -65,6 +75,7 @@ const es: Dictionary = {
     about: "Sobre mí",
     projects: "Proyectos",
     skills: "Stack",
+    journey: "Trayectoria",
     contact: "Contacto",
   },
   hero: {
@@ -94,7 +105,7 @@ const es: Dictionary = {
   about: {
     title: "Sobre mí",
     paragraphs: [
-      "Desarrollador full-stack e ingeniero de IA con más de 7 años de experiencia, a caballo entre el software industrial —C++ Builder/VCL para equipos de inspección de vehículos—, la ciberseguridad y el stack web moderno.",
+      "Desarrollador full-stack e ingeniero de IA con 8 años de experiencia. Líder técnico de un software de inspección de vehículos en C++ desplegado en talleres y centros de inspección de varios países, a caballo entre el software industrial, la ciberseguridad y el stack web moderno.",
       "Construyo productos de principio a fin, de la idea al MVP en producción, con foco en IA aplicada de verdad: RAG, agentes y LLMs resolviendo problemas reales de empresa.",
       "Lo que me diferencia es el cruce raro de perfiles: entiendo la fábrica y el reglamento europeo, y sé enviar el código.",
     ],
@@ -143,13 +154,27 @@ const es: Dictionary = {
       {
         slug: "antidop",
         name: "ANTIDOP",
-        tagline: "Próximamente",
+        tagline: "Bienestar digital y control de la dopamina",
         description:
-          "Proyecto en desarrollo. Descripción provisional pendiente del contenido real.",
+          "App móvil personal para el bienestar digital: te ayuda a controlar los estímulos de dopamina y recuperar el foco. Arquitectura privacy-first y offline-first: tus datos nunca salen del dispositivo.",
         role: "Fundador y desarrollador",
-        highlight: "Muy pronto más detalles.",
-        tech: ["Por definir"],
-        status: "En construcción",
+        highlight:
+          "Lógica de comportamiento propia, gestión de datos 100% local y optimización de rendimiento. Al 90% de desarrollo.",
+        tech: ["React Native", "Android", "TypeScript"],
+        status: "En desarrollo",
+      },
+      {
+        slug: "quizdly",
+        name: "Quizdly",
+        tagline: "Trivia diaria online",
+        description:
+          "Plataforma web de trivia diaria desarrollada full-stack, con sistema de progresión de usuarios. En mantenimiento activo y mejoras para escalar.",
+        role: "Fundador y desarrollador",
+        highlight:
+          "Producto online de principio a fin: frontend, backend, base de datos y operación, todo en solitario.",
+        tech: ["PHP", "JavaScript", "SQL", "HTML/CSS"],
+        status: "Online",
+        url: "https://www.quizdly.com",
       },
       {
         slug: "industrial-ai",
@@ -174,26 +199,27 @@ const es: Dictionary = {
           "LLMs: Gemini, Claude, OpenAI",
           "RAG y context caching",
           "Agentes",
-          "Optimización de coste de tokens",
+          "Embeddings y fine-tuning",
           "IA integrada en producto real",
         ],
       },
       {
-        name: "Web",
+        name: "Web y móvil",
         items: [
           "Next.js 15 · React 19",
           "TypeScript · Node",
+          "React Native (Android)",
           "Prisma · Supabase · PostgreSQL",
-          "Stripe · Stripe Connect · Clerk",
-          "Mapbox · Vercel",
+          "Stripe · Clerk · Mapbox · Vercel",
         ],
       },
       {
         name: "Industrial / Sistemas",
         items: [
-          "C++ Builder / VCL",
+          "C++ Builder / VCL · C#",
           "Protocolos serie RS-232",
           "Equipos de inspección de vehículos",
+          "PostgreSQL · SQLite",
           "PHP",
         ],
       },
@@ -206,6 +232,29 @@ const es: Dictionary = {
           "VLAN / networking",
           "EU Cyber Resilience Act",
         ],
+      },
+    ],
+  },
+  journey: {
+    title: "Trayectoria",
+    items: [
+      {
+        period: "2018 — hoy",
+        title: "Full-Stack Developer & IT/Cyber Lead",
+        description:
+          "Desarrollador principal de un software de inspección de vehículos en C++ usado en varios países. Apps Android en React Native, plataforma web de gestión de stock, seguridad de servidores y migración completa de infraestructura. Representación en eventos internacionales como CloudFest y MSP Global.",
+      },
+      {
+        period: "2017 — 2018",
+        title: "Developer en BOSCH",
+        description:
+          "Implantación de Industria 4.0 en planta: automatización, formación interna y scripts de eficiencia. Prácticas finalizadas con carta de recomendación personalizada.",
+      },
+      {
+        period: "Formación",
+        title: "Ingeniería Informática (UOC)",
+        description:
+          "Grado en curso en la Universitat Oberta de Catalunya. CFGS de Desarrollo de Aplicaciones Multiplataforma (EDUCEM, 2016 — 2018).",
       },
     ],
   },
@@ -222,6 +271,7 @@ const en: Dictionary = {
     about: "About",
     projects: "Projects",
     skills: "Stack",
+    journey: "Journey",
     contact: "Contact",
   },
   hero: {
@@ -251,7 +301,7 @@ const en: Dictionary = {
   about: {
     title: "About me",
     paragraphs: [
-      "Full-stack developer and AI engineer with 7+ years of experience, straddling industrial software —C++ Builder/VCL for vehicle inspection equipment—, cybersecurity and the modern web stack.",
+      "Full-stack developer and AI engineer with 8 years of experience. Tech lead of a C++ vehicle inspection software deployed in workshops and inspection centers across several countries, straddling industrial software, cybersecurity and the modern web stack.",
       "I build products end to end, from idea to MVP in production, focused on AI that actually ships: RAG, agents and LLMs solving real business problems.",
       "What sets me apart is a rare mix of profiles: I understand the factory floor and European regulation, and I know how to ship the code.",
     ],
@@ -300,13 +350,27 @@ const en: Dictionary = {
       {
         slug: "antidop",
         name: "ANTIDOP",
-        tagline: "Coming soon",
+        tagline: "Digital well-being & dopamine control",
         description:
-          "Project in development. Placeholder description pending real content.",
+          "Personal mobile app for digital well-being: it helps you control dopamine triggers and regain focus. Privacy-first, offline-first architecture: your data never leaves the device.",
         role: "Founder & developer",
-        highlight: "More details very soon.",
-        tech: ["TBD"],
-        status: "In the works",
+        highlight:
+          "Custom behavioral logic, 100% local data management and performance optimization. 90% complete.",
+        tech: ["React Native", "Android", "TypeScript"],
+        status: "In development",
+      },
+      {
+        slug: "quizdly",
+        name: "Quizdly",
+        tagline: "Daily online trivia",
+        description:
+          "Daily trivia web platform built full-stack, with a user progression system. Under active maintenance and improvements to scale.",
+        role: "Founder & developer",
+        highlight:
+          "An online product end to end: frontend, backend, database and operations, all built solo.",
+        tech: ["PHP", "JavaScript", "SQL", "HTML/CSS"],
+        status: "Online",
+        url: "https://www.quizdly.com",
       },
       {
         slug: "industrial-ai",
@@ -331,26 +395,27 @@ const en: Dictionary = {
           "LLMs: Gemini, Claude, OpenAI",
           "RAG & context caching",
           "Agents",
-          "Token cost optimization",
+          "Embeddings & fine-tuning",
           "AI shipped in real products",
         ],
       },
       {
-        name: "Web",
+        name: "Web & Mobile",
         items: [
           "Next.js 15 · React 19",
           "TypeScript · Node",
+          "React Native (Android)",
           "Prisma · Supabase · PostgreSQL",
-          "Stripe · Stripe Connect · Clerk",
-          "Mapbox · Vercel",
+          "Stripe · Clerk · Mapbox · Vercel",
         ],
       },
       {
         name: "Industrial / Systems",
         items: [
-          "C++ Builder / VCL",
+          "C++ Builder / VCL · C#",
           "RS-232 serial protocols",
           "Vehicle inspection equipment",
+          "PostgreSQL · SQLite",
           "PHP",
         ],
       },
@@ -363,6 +428,29 @@ const en: Dictionary = {
           "VLAN / networking",
           "EU Cyber Resilience Act",
         ],
+      },
+    ],
+  },
+  journey: {
+    title: "Journey",
+    items: [
+      {
+        period: "2018 — today",
+        title: "Full-Stack Developer & IT/Cyber Lead",
+        description:
+          "Lead developer of a C++ vehicle inspection software used across several countries. Android apps in React Native, stock management web platform, server security and a full infrastructure migration. Represented the company at international events like CloudFest and MSP Global.",
+      },
+      {
+        period: "2017 — 2018",
+        title: "Developer at BOSCH",
+        description:
+          "Industry 4.0 rollout on the factory floor: automation, internal training and efficiency scripts. Internship closed with a personalized recommendation letter.",
+      },
+      {
+        period: "Education",
+        title: "Computer Engineering (UOC)",
+        description:
+          "Degree in progress at Universitat Oberta de Catalunya. Higher Degree in Multiplatform Application Development (EDUCEM, 2016 — 2018).",
       },
     ],
   },

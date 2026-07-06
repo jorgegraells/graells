@@ -16,6 +16,7 @@ export default function Nav({
     { href: "#about", label: dict.nav.about },
     { href: "#projects", label: dict.nav.projects },
     { href: "#skills", label: dict.nav.skills },
+    { href: "#journey", label: dict.nav.journey },
     { href: "#contact", label: dict.nav.contact },
   ];
 

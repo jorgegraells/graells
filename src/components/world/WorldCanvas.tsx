@@ -23,6 +23,7 @@ export const VILLAGE_COLORS = [
   "#d6558e",
   "#e0912f",
   "#2f9e57",
+  "#c94f4f",
 ];
 
 export type MoveInput = { x: number; y: number; jump: boolean };
