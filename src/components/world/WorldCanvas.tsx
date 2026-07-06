@@ -1,8 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Html } from "@react-three/drei";
+import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import type { Dictionary, Project } from "@/i18n/dictionaries";
 
@@ -14,7 +23,54 @@ const EYE_HEIGHT = 1.8;
 const JUMP_VELOCITY = 5.2;
 const GRAVITY = 13.5;
 const PLAYER_RADIUS = 0.45;
+const PLAZA_RADIUS = 7;
+const PATH_INNER = 6.8;
+const PATH_OUTER = 19;
+const PATH_HALF_WIDTH = 1.2;
 const UP = new THREE.Vector3(0, 1, 0);
+const SKIN = "#e0ad82";
+
+// ---------------------------------------------------------------------------
+// Sistema de estilo: "blocky" (Minecraft) o "rounded" (redondeado)
+// ---------------------------------------------------------------------------
+
+export type WorldStyle = "blocky" | "rounded";
+const StyleContext = createContext<WorldStyle>("blocky");
+const useWorldStyle = () => useContext(StyleContext);
+
+type BlockProps = {
+  args: [number, number, number];
+  radius?: number;
+  children?: ReactNode;
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+  scale?: number | [number, number, number];
+  castShadow?: boolean;
+  receiveShadow?: boolean;
+};
+
+/** Caja que se redondea automáticamente en modo "rounded". El material va como hijo. */
+function Block({ args, radius = 0.14, children, ...props }: BlockProps) {
+  const style = useWorldStyle();
+  if (style === "rounded") {
+    const r = Math.min(radius, Math.min(...args) * 0.45);
+    return (
+      <RoundedBox args={args} radius={r} smoothness={3} {...props}>
+        {children}
+      </RoundedBox>
+    );
+  }
+  return (
+    <mesh {...props}>
+      <boxGeometry args={args} />
+      {children}
+    </mesh>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Disposición del pueblo y RNG determinista
+// ---------------------------------------------------------------------------
 
 /** Disposición del pueblo: una casa + aldeano por proyecto, en círculo. */
 export type VillageLayout = {
@@ -132,7 +188,6 @@ const DECOR_COLLIDERS = [
   ...LAMP_SPOTS.map((l) => ({ x: l.x, z: l.z, r: 0.3 })),
   ...BENCH_SPOTS.map((b) => ({ x: b.x, z: b.z, r: 0.9 })),
 ];
-const SKIN = "#d8a171";
 
 /** Color de tejado y camiseta del aldeano de cada proyecto. */
 export const VILLAGE_COLORS = [
@@ -144,10 +199,45 @@ export const VILLAGE_COLORS = [
   "#c94f4f",
 ];
 
+/**
+ * Predicado: ¿está libre este punto del suelo para plantar flores/hierba?
+ * Excluye plaza, caminos, casas, aldeanos y decoración sólida — así no salen
+ * flores sobre el cemento ni matojos dentro de una casa.
+ */
+function makeGroundClear(layout: VillageLayout) {
+  const scratch = new THREE.Vector3();
+  return (x: number, z: number) => {
+    const r = Math.hypot(x, z);
+    if (r < PLAZA_RADIUS + 0.7) return false; // plaza + bordillo
+    if (r < 2.6) return false; // árbol central
+    for (const l of layout) {
+      // Caminos radiales (en el marco local del camino)
+      scratch.set(x, 0, z).applyAxisAngle(UP, -l.angle);
+      if (
+        Math.abs(scratch.x) < PATH_HALF_WIDTH + 0.5 &&
+        scratch.z > PATH_INNER - 0.5 &&
+        scratch.z < PATH_OUTER + 0.5
+      ) {
+        return false;
+      }
+      if (Math.hypot(x - l.housePos.x, z - l.housePos.z) < 4.6) return false;
+      if (Math.hypot(x - l.npcPos.x, z - l.npcPos.z) < 1.3) return false;
+    }
+    for (const c of DECOR_COLLIDERS) {
+      if (Math.hypot(x - c.x, z - c.z) < c.r + 0.8) return false;
+    }
+    return true;
+  };
+}
+
 export type MoveInput = { x: number; y: number; jump: boolean };
 
 /** Estado mutable compartido para distinguir arrastre (mirar) de clic (hablar). */
 type DragState = { dist: number };
+
+// ---------------------------------------------------------------------------
+// Jugador
+// ---------------------------------------------------------------------------
 
 function PlayerRig({
   paused,
@@ -375,12 +465,42 @@ function PlayerRig({
   return null;
 }
 
-/** Brazos cúbicos en primera persona, estilo Minecraft, con balanceo al andar.
+/** Brazos en primera persona, con balanceo al andar.
  *  Con `casting`, el brazo derecho se extiende hacia delante para "invocar"
  *  la ventana de habilidades. */
 const CAST_ARM_POSITION = new THREE.Vector3(0.16, -0.34, -0.62);
 const CAST_ARM_ROTATION = new THREE.Euler(-1.25, 0, 0);
 const IDLE_ARM_ROTATION_RIGHT = new THREE.Euler(-0.45, -0.2, 0.1);
+
+function Arm({ sign }: { sign: number }) {
+  return (
+    <>
+      <Block args={[0.16, 0.16, 0.42]} radius={0.07}>
+        <meshStandardMaterial
+          color="#2f8f83"
+          emissive="#2f8f83"
+          emissiveIntensity={0.12}
+        />
+      </Block>
+      <Block args={[0.17, 0.17, 0.16]} radius={0.07} position={[0, 0, 0.26]}>
+        <meshStandardMaterial
+          color={SKIN}
+          emissive={SKIN}
+          emissiveIntensity={0.15}
+        />
+      </Block>
+      {/* Muñequera para dar un toque */}
+      <Block
+        args={[0.18, 0.18, 0.05]}
+        radius={0.02}
+        position={[0, 0, 0.14]}
+      >
+        <meshStandardMaterial color="#1f6b62" />
+      </Block>
+      <mesh position={[sign * 0.02, 0, 0]} />
+    </>
+  );
+}
 
 function FirstPersonArms({ casting }: { casting: boolean }) {
   const { camera } = useThree();
@@ -434,54 +554,98 @@ function FirstPersonArms({ casting }: { casting: boolean }) {
   return (
     <group ref={root}>
       <group ref={armRight} position={[0.48, -0.52, -0.9]} rotation={[-0.45, -0.2, 0.1]}>
-        <mesh frustumCulled={false}>
-          <boxGeometry args={[0.13, 0.13, 0.38]} />
-          <meshStandardMaterial color={SKIN} emissive={SKIN} emissiveIntensity={0.18} />
-        </mesh>
-        <mesh frustumCulled={false} position={[0, 0, 0.17]}>
-          <boxGeometry args={[0.15, 0.15, 0.12]} />
-          <meshStandardMaterial color="#3aa79a" emissive="#3aa79a" emissiveIntensity={0.18} />
-        </mesh>
+        <Arm sign={1} />
       </group>
       <group ref={armLeft} position={[-0.48, -0.52, -0.9]} rotation={[-0.45, 0.2, -0.1]}>
-        <mesh frustumCulled={false}>
-          <boxGeometry args={[0.13, 0.13, 0.38]} />
-          <meshStandardMaterial color={SKIN} emissive={SKIN} emissiveIntensity={0.18} />
-        </mesh>
-        <mesh frustumCulled={false} position={[0, 0, 0.17]}>
-          <boxGeometry args={[0.15, 0.15, 0.12]} />
-          <meshStandardMaterial color="#3aa79a" emissive="#3aa79a" emissiveIntensity={0.18} />
-        </mesh>
+        <Arm sign={-1} />
       </group>
     </group>
   );
 }
 
-/** Césped pixelado generado proceduralmente, con filtro nearest para el look Minecraft. */
-function GrassFloor() {
-  const texture = useMemo(() => {
+// ---------------------------------------------------------------------------
+// Texturas procedurales
+// ---------------------------------------------------------------------------
+
+/** Césped procedural. Pixelado en modo blocky, suave en modo redondo. */
+function useGrassTexture() {
+  const style = useWorldStyle();
+  return useMemo(() => {
     const size = 64;
-    const cell = 4;
+    const cell = style === "blocky" ? 4 : 2;
     const canvas = document.createElement("canvas");
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext("2d")!;
-    const greens = ["#6fbf44", "#5fae3c", "#7bc94f", "#67b841", "#58a839", "#74c24a"];
+    const rand = mulberry32(7);
+    const greens =
+      style === "blocky"
+        ? ["#6fbf44", "#5fae3c", "#7bc94f", "#67b841", "#58a839", "#74c24a"]
+        : ["#71c05a", "#67b755", "#7cc766", "#6bbc5b", "#63b352", "#78c463"];
     for (let y = 0; y < size; y += cell) {
       for (let x = 0; x < size; x += cell) {
-        ctx.fillStyle = greens[Math.floor(Math.random() * greens.length)];
+        ctx.fillStyle = greens[Math.floor(rand() * greens.length)];
         ctx.fillRect(x, y, cell, cell);
       }
     }
     const tex = new THREE.CanvasTexture(canvas);
-    tex.magFilter = THREE.NearestFilter;
+    tex.magFilter = style === "blocky" ? THREE.NearestFilter : THREE.LinearFilter;
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(80, 80);
+    tex.repeat.set(90, 90);
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
-  }, []);
+  }, [style]);
+}
 
+/** Adoquines de piedra para plaza y caminos. */
+function useStoneTexture() {
+  const style = useWorldStyle();
+  return useMemo(() => {
+    const size = 128;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d")!;
+    const rand = mulberry32(313);
+    ctx.fillStyle = "#5f5a52"; // mortero
+    ctx.fillRect(0, 0, size, size);
+    const cells = 5;
+    const step = size / cells;
+    for (let gy = 0; gy < cells; gy++) {
+      for (let gx = 0; gx < cells; gx++) {
+        const j = step * 0.14;
+        const x = gx * step + (rand() - 0.5) * j + 3;
+        const y = gy * step + (rand() - 0.5) * j + 3;
+        const w = step - 6 + (rand() - 0.5) * j;
+        const h = step - 6 + (rand() - 0.5) * j;
+        const g = 128 + Math.floor(rand() * 54);
+        ctx.fillStyle = `rgb(${g},${g - 4},${g - 10})`;
+        const r = 4;
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.fill();
+      }
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.magFilter = style === "blocky" ? THREE.NearestFilter : THREE.LinearFilter;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }, [style]);
+}
+
+// ---------------------------------------------------------------------------
+// Suelo, cielo y ambiente
+// ---------------------------------------------------------------------------
+
+function GrassFloor() {
+  const texture = useGrassTexture();
   return (
     // Lo bastante grande para que las faldas de las montañas no lo desborden
     <mesh rotation-x={-Math.PI / 2} receiveShadow>
@@ -491,21 +655,77 @@ function GrassFloor() {
   );
 }
 
-/** Nubes planas estilo Minecraft que derivan lentamente. */
-function Clouds() {
-  const group = useRef<THREE.Group>(null);
-  const clouds = useMemo(
-    () =>
-      Array.from({ length: 9 }, () => ({
-        x: (Math.random() - 0.5) * 180,
-        y: 26 + Math.random() * 8,
-        z: (Math.random() - 0.5) * 180,
-        w: 7 + Math.random() * 9,
-        d: 4 + Math.random() * 6,
-        speed: 0.4 + Math.random() * 0.6,
-      })),
+/** Hierba alta: matojos instanciados repartidos por el campo (fuera de plaza/caminos). */
+function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const style = useWorldStyle();
+
+  const blades = useMemo(() => {
+    const rand = mulberry32(4242);
+    const list: { x: number; z: number; s: number; rot: number; c: number }[] =
+      [];
+    let attempts = 0;
+    while (list.length < 1800 && attempts < 14000) {
+      attempts++;
+      const angle = rand() * Math.PI * 2;
+      const radius = 8 + rand() * 40;
+      const x = Math.sin(angle) * radius;
+      const z = Math.cos(angle) * radius;
+      if (!clear(x, z)) continue;
+      list.push({
+        x,
+        z,
+        s: 0.7 + rand() * 1.1,
+        rot: rand() * Math.PI,
+        c: rand(),
+      });
+    }
+    return list;
+  }, [clear]);
+
+  const geometry = useMemo(() => new THREE.ConeGeometry(0.07, 0.5, 4), []);
+  const material = useMemo(
+    () => new THREE.MeshStandardMaterial({ roughness: 1 }),
     [],
   );
+
+  useLayoutEffect(() => {
+    const mesh = ref.current;
+    if (!mesh) return;
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+    blades.forEach((b, i) => {
+      dummy.position.set(b.x, 0.25 * b.s, b.z);
+      dummy.rotation.set(0, b.rot, 0);
+      dummy.scale.set(1, b.s, 1);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
+      color.setRGB(0.28 + b.c * 0.14, 0.6 + b.c * 0.22, 0.26 + b.c * 0.12);
+      mesh.setColorAt(i, color);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  }, [blades, style]);
+
+  return (
+    <instancedMesh ref={ref} args={[geometry, material, blades.length]} />
+  );
+}
+
+/** Nubes que derivan lentamente (esponjosas en modo redondo). */
+function Clouds() {
+  const group = useRef<THREE.Group>(null);
+  const clouds = useMemo(() => {
+    const rand = mulberry32(21);
+    return Array.from({ length: 9 }, () => ({
+      x: (rand() - 0.5) * 180,
+      y: 26 + rand() * 8,
+      z: (rand() - 0.5) * 180,
+      w: 7 + rand() * 9,
+      d: 4 + rand() * 6,
+      speed: 0.4 + rand() * 0.6,
+    }));
+  }, []);
 
   useFrame((_, delta) => {
     group.current?.children.forEach((cloud, i) => {
@@ -517,8 +737,7 @@ function Clouds() {
   return (
     <group ref={group}>
       {clouds.map((c, i) => (
-        <mesh key={i} position={[c.x, c.y, c.z]}>
-          <boxGeometry args={[c.w, 0.9, c.d]} />
+        <Block key={i} args={[c.w, 0.9, c.d]} radius={0.45} position={[c.x, c.y, c.z]}>
           <meshStandardMaterial
             color="#ffffff"
             emissive="#ffffff"
@@ -526,47 +745,107 @@ function Clouds() {
             transparent
             opacity={0.92}
           />
-        </mesh>
+        </Block>
       ))}
     </group>
   );
 }
 
-/** Árbol cúbico en la plaza central. */
+// ---------------------------------------------------------------------------
+// Árboles, rocas, flores, hierba
+// ---------------------------------------------------------------------------
+
+/** Árbol grande de la plaza central. */
 function BlockTree() {
+  const style = useWorldStyle();
   return (
     <group>
-      <mesh castShadow position={[0, 2, 0]}>
-        <boxGeometry args={[1, 4, 1]} />
-        <meshStandardMaterial color="#6b4a2b" />
-      </mesh>
-      <mesh castShadow position={[0, 4.6, 0]}>
-        <boxGeometry args={[4.5, 2.2, 4.5]} />
-        <meshStandardMaterial color="#3f9e33" />
-      </mesh>
-      <mesh castShadow position={[0, 6.3, 0]}>
-        <boxGeometry args={[3, 1.6, 3]} />
-        <meshStandardMaterial color="#46ab3a" />
-      </mesh>
+      <Block args={[1, 4, 1]} radius={0.35} castShadow position={[0, 2, 0]}>
+        <meshStandardMaterial color="#6b4a2b" flatShading={style === "blocky"} />
+      </Block>
+      <Block args={[4.5, 2.2, 4.5]} radius={1} castShadow position={[0, 4.6, 0]}>
+        <meshStandardMaterial color="#3f9e33" flatShading={style === "blocky"} />
+      </Block>
+      <Block args={[3, 1.6, 3]} radius={0.8} castShadow position={[0, 6.3, 0]}>
+        <meshStandardMaterial color="#46ab3a" flatShading={style === "blocky"} />
+      </Block>
     </group>
   );
 }
 
-/** Flores cúbicas repartidas por el pueblo. */
-function Flowers() {
+/** Bosque de árboles con variantes de color y tamaño. */
+function DecorTrees() {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const leafColors = ["#3f9e33", "#57b23f", "#2f8f4a"];
+  const trunkColors = ["#6b4a2b", "#7d5a35", "#d9cbb2"];
+  return (
+    <>
+      {TREE_SPOTS.map((t, i) => (
+        <group key={i} position={[t.x, 0, t.z]} scale={t.scale}>
+          <Block args={[0.8, 3.2, 0.8]} radius={0.28} castShadow position={[0, 1.6, 0]}>
+            <meshStandardMaterial color={trunkColors[t.variant]} flatShading={flat} />
+          </Block>
+          <Block args={[3.4, 1.8, 3.4]} radius={0.85} castShadow position={[0, 3.7, 0]}>
+            <meshStandardMaterial color={leafColors[t.variant]} flatShading={flat} />
+          </Block>
+          <Block args={[2.2, 1.2, 2.2]} radius={0.6} castShadow position={[0, 5, 0]}>
+            <meshStandardMaterial
+              color={leafColors[(t.variant + 1) % 3]}
+              flatShading={flat}
+            />
+          </Block>
+        </group>
+      ))}
+    </>
+  );
+}
+
+/** Rocas grises (cantos rodados en modo redondo). */
+function Rocks() {
+  const style = useWorldStyle();
+  return (
+    <>
+      {ROCK_SPOTS.map((r, i) => (
+        <Block
+          key={i}
+          args={[1, 1, 1]}
+          radius={0.42}
+          castShadow
+          position={[r.x, r.s * 0.35, r.z]}
+          rotation={[0, r.rot, 0]}
+          scale={[r.s * 1.4, r.s, r.s]}
+        >
+          <meshStandardMaterial color="#8f8f8f" flatShading={style === "blocky"} />
+        </Block>
+      ))}
+    </>
+  );
+}
+
+/** Flores repartidas por el campo (nunca sobre plaza ni caminos). */
+function Flowers({ clear }: { clear: (x: number, z: number) => boolean }) {
   const flowers = useMemo(() => {
-    const colors = ["#e74c3c", "#f1c40f", "#ffffff", "#e67e22"];
-    return Array.from({ length: 70 }, (_, i) => {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = 5 + Math.random() * 36;
-      return {
-        x: Math.sin(angle) * radius,
-        z: Math.cos(angle) * radius,
-        color: colors[i % colors.length],
-        scale: 0.8 + Math.random() * 0.6,
-      };
-    });
-  }, []);
+    const rand = mulberry32(909);
+    const colors = ["#e74c3c", "#f1c40f", "#ffffff", "#e67e22", "#c084fc"];
+    const list: { x: number; z: number; color: string; scale: number }[] = [];
+    let attempts = 0;
+    while (list.length < 55 && attempts < 800) {
+      attempts++;
+      const angle = rand() * Math.PI * 2;
+      const radius = 8 + rand() * 34;
+      const x = Math.sin(angle) * radius;
+      const z = Math.cos(angle) * radius;
+      if (!clear(x, z)) continue;
+      list.push({
+        x,
+        z,
+        color: colors[Math.floor(rand() * colors.length)],
+        scale: 0.8 + rand() * 0.6,
+      });
+    }
+    return list;
+  }, [clear]);
 
   return (
     <>
@@ -576,98 +855,110 @@ function Flowers() {
             <boxGeometry args={[0.06, 0.3, 0.06]} />
             <meshStandardMaterial color="#3e8e2f" />
           </mesh>
-          <mesh position={[0, 0.35, 0]}>
-            <boxGeometry args={[0.16, 0.14, 0.16]} />
+          <Block args={[0.16, 0.14, 0.16]} radius={0.06} position={[0, 0.35, 0]}>
             <meshStandardMaterial color={f.color} />
-          </mesh>
+          </Block>
         </group>
       ))}
     </>
   );
 }
 
-/** Bosque de árboles cúbicos con variantes de color y tamaño. */
-function DecorTrees() {
-  const leafColors = ["#3f9e33", "#57b23f", "#2f8f4a"];
-  const trunkColors = ["#6b4a2b", "#7d5a35", "#d9cbb2"];
-  return (
-    <>
-      {TREE_SPOTS.map((t, i) => (
-        <group key={i} position={[t.x, 0, t.z]} scale={t.scale}>
-          <mesh castShadow position={[0, 1.6, 0]}>
-            <boxGeometry args={[0.8, 3.2, 0.8]} />
-            <meshStandardMaterial color={trunkColors[t.variant]} />
-          </mesh>
-          <mesh castShadow position={[0, 3.7, 0]}>
-            <boxGeometry args={[3.4, 1.8, 3.4]} />
-            <meshStandardMaterial color={leafColors[t.variant]} />
-          </mesh>
-          <mesh castShadow position={[0, 5, 0]}>
-            <boxGeometry args={[2.2, 1.2, 2.2]} />
-            <meshStandardMaterial color={leafColors[(t.variant + 1) % 3]} />
-          </mesh>
-        </group>
-      ))}
-    </>
-  );
-}
+// ---------------------------------------------------------------------------
+// Plaza, caminos, mobiliario
+// ---------------------------------------------------------------------------
 
-/** Rocas grises medio enterradas. */
-function Rocks() {
+/** Plaza empedrada con bordillo, caminos de piedra con bordillos y bancos. */
+function Plaza({ layout }: { layout: VillageLayout }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const stone = useStoneTexture();
+  const plazaTex = useMemo(() => {
+    const t = stone.clone();
+    t.needsUpdate = true;
+    t.repeat.set(5, 5);
+    return t;
+  }, [stone]);
+  const pathTex = useMemo(() => {
+    const t = stone.clone();
+    t.needsUpdate = true;
+    t.repeat.set(1, 5);
+    return t;
+  }, [stone]);
+
+  const kerb = useMemo(
+    () =>
+      Array.from({ length: 30 }, (_, i) => {
+        const a = (i / 30) * Math.PI * 2;
+        return { x: Math.cos(a) * PLAZA_RADIUS, z: Math.sin(a) * PLAZA_RADIUS, a };
+      }),
+    [],
+  );
+
   return (
-    <>
-      {ROCK_SPOTS.map((r, i) => (
+    <group>
+      {/* Bordillo: cilindro oscuro que asoma como labio alrededor de la plaza */}
+      <mesh position={[0, 0.05, 0]} receiveShadow>
+        <cylinderGeometry args={[PLAZA_RADIUS + 0.35, PLAZA_RADIUS + 0.35, 0.2, 40]} />
+        <meshStandardMaterial color="#4c473f" flatShading={flat} />
+      </mesh>
+      {/* Superficie empedrada */}
+      <mesh rotation-x={-Math.PI / 2} position={[0, 0.16, 0]} receiveShadow>
+        <circleGeometry args={[PLAZA_RADIUS, 44]} />
+        <meshStandardMaterial map={plazaTex} roughness={1} />
+      </mesh>
+      {/* Piedrecitas del borde */}
+      {kerb.map((s, i) => (
         <mesh
           key={i}
           castShadow
-          position={[r.x, r.s * 0.35, r.z]}
-          rotation={[0, r.rot, 0]}
-          scale={[r.s * 1.4, r.s, r.s]}
+          position={[s.x, 0.16, s.z]}
+          rotation={[0, -s.a, 0]}
         >
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="#8f8f8f" flatShading />
+          <boxGeometry args={[0.42, 0.24, 0.5]} />
+          <meshStandardMaterial color={i % 2 ? "#b9b2a4" : "#a49c8e"} flatShading={flat} />
         </mesh>
       ))}
-    </>
-  );
-}
 
-/** Plaza de piedra central, caminos a cada casa y bancos. */
-function Plaza({ layout }: { layout: VillageLayout }) {
-  return (
-    <group>
-      <mesh rotation-x={-Math.PI / 2} position={[0, 0.004, 0]}>
-        <circleGeometry args={[7, 32]} />
-        <meshStandardMaterial color="#b3ac9f" />
-      </mesh>
-      {/* Caminos radiales hasta cada casa */}
-      {layout.map((l, i) => (
-        <group key={i} rotation={[0, l.angle, 0]}>
-          <mesh rotation-x={-Math.PI / 2} position={[0, 0.006, 12.5]}>
-            <planeGeometry args={[1.7, 13]} />
-            <meshStandardMaterial color="#a8a094" />
-          </mesh>
-        </group>
-      ))}
+      {/* Caminos radiales de piedra con bordillos */}
+      {layout.map((l, i) => {
+        const len = PATH_OUTER - PATH_INNER;
+        const mid = (PATH_OUTER + PATH_INNER) / 2;
+        return (
+          <group key={i} rotation={[0, l.angle, 0]}>
+            <mesh position={[0, 0.07, mid]} receiveShadow>
+              <boxGeometry args={[PATH_HALF_WIDTH * 2, 0.14, len]} />
+              <meshStandardMaterial map={pathTex} roughness={1} />
+            </mesh>
+            {[-1, 1].map((s) => (
+              <mesh
+                key={s}
+                castShadow
+                position={[s * (PATH_HALF_WIDTH + 0.11), 0.12, mid]}
+              >
+                <boxGeometry args={[0.22, 0.2, len]} />
+                <meshStandardMaterial color="#8f887b" flatShading={flat} />
+              </mesh>
+            ))}
+          </group>
+        );
+      })}
+
       {/* Bancos mirando al árbol */}
       {BENCH_SPOTS.map((b, i) => (
-        <group key={i} position={[b.x, 0, b.z]} rotation={[0, b.rotY, 0]}>
-          <mesh castShadow position={[0, 0.45, 0]}>
-            <boxGeometry args={[1.6, 0.12, 0.5]} />
-            <meshStandardMaterial color="#9a794f" />
-          </mesh>
-          <mesh castShadow position={[0, 0.72, -0.22]}>
-            <boxGeometry args={[1.6, 0.5, 0.1]} />
-            <meshStandardMaterial color="#9a794f" />
-          </mesh>
-          <mesh position={[-0.65, 0.22, 0]}>
-            <boxGeometry args={[0.12, 0.45, 0.45]} />
-            <meshStandardMaterial color="#6b4a2b" />
-          </mesh>
-          <mesh position={[0.65, 0.22, 0]}>
-            <boxGeometry args={[0.12, 0.45, 0.45]} />
-            <meshStandardMaterial color="#6b4a2b" />
-          </mesh>
+        <group key={i} position={[b.x, 0.16, b.z]} rotation={[0, b.rotY, 0]}>
+          <Block args={[1.6, 0.12, 0.5]} radius={0.06} castShadow position={[0, 0.45, 0]}>
+            <meshStandardMaterial color="#9a794f" flatShading={flat} />
+          </Block>
+          <Block args={[1.6, 0.5, 0.1]} radius={0.05} castShadow position={[0, 0.72, -0.22]}>
+            <meshStandardMaterial color="#9a794f" flatShading={flat} />
+          </Block>
+          <Block args={[0.12, 0.45, 0.45]} radius={0.05} position={[-0.65, 0.22, 0]}>
+            <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+          </Block>
+          <Block args={[0.12, 0.45, 0.45]} radius={0.05} position={[0.65, 0.22, 0]}>
+            <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+          </Block>
         </group>
       ))}
     </group>
@@ -676,27 +967,25 @@ function Plaza({ layout }: { layout: VillageLayout }) {
 
 /** Farolillos de la plaza con linterna cálida. */
 function LampPosts() {
+  const style = useWorldStyle();
   return (
     <>
       {LAMP_SPOTS.map((l, i) => (
-        <group key={i} position={[l.x, 0, l.z]}>
-          <mesh castShadow position={[0, 1.3, 0]}>
-            <boxGeometry args={[0.14, 2.6, 0.14]} />
-            <meshStandardMaterial color="#3d3d3d" />
-          </mesh>
-          <mesh position={[0, 2.75, 0]}>
-            <boxGeometry args={[0.38, 0.42, 0.38]} />
+        <group key={i} position={[l.x, 0.16, l.z]}>
+          <Block args={[0.14, 2.6, 0.14]} radius={0.06} castShadow position={[0, 1.3, 0]}>
+            <meshStandardMaterial color="#3d3d3d" flatShading={style === "blocky"} />
+          </Block>
+          <Block args={[0.38, 0.42, 0.38]} radius={0.1} position={[0, 2.75, 0]}>
             <meshStandardMaterial
               color="#ffd27a"
               emissive="#ffb84d"
               emissiveIntensity={1.6}
               toneMapped={false}
             />
-          </mesh>
-          <mesh castShadow position={[0, 3.02, 0]}>
-            <boxGeometry args={[0.48, 0.12, 0.48]} />
+          </Block>
+          <Block args={[0.48, 0.12, 0.48]} radius={0.05} castShadow position={[0, 3.02, 0]}>
             <meshStandardMaterial color="#3d3d3d" />
-          </mesh>
+          </Block>
         </group>
       ))}
     </>
@@ -705,34 +994,36 @@ function LampPosts() {
 
 /** Pozo de piedra junto a la plaza. */
 function Well() {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const roofSeg = flat ? 4 : 10;
   return (
     <group position={[WELL_POS.x, 0, WELL_POS.z]}>
       {[0, 1, 2, 3].map((i) => (
-        <mesh
+        <Block
           key={i}
+          args={[1.7, 0.6, 0.35]}
+          radius={0.12}
           castShadow
           position={[i < 2 ? 0 : i === 2 ? 0.68 : -0.68, 0.3, i === 0 ? 0.68 : i === 1 ? -0.68 : 0]}
           rotation={[0, i < 2 ? 0 : Math.PI / 2, 0]}
         >
-          <boxGeometry args={[1.7, 0.6, 0.35]} />
-          <meshStandardMaterial color="#8f8f8f" />
-        </mesh>
+          <meshStandardMaterial color="#8f8f8f" flatShading={flat} />
+        </Block>
       ))}
       <mesh position={[0, 0.45, 0]} rotation-x={-Math.PI / 2}>
         <circleGeometry args={[0.55, 16]} />
         <meshStandardMaterial color="#3aa0d8" />
       </mesh>
-      <mesh castShadow position={[-0.75, 1.15, 0]}>
-        <boxGeometry args={[0.14, 1.7, 0.14]} />
-        <meshStandardMaterial color="#6b4a2b" />
-      </mesh>
-      <mesh castShadow position={[0.75, 1.15, 0]}>
-        <boxGeometry args={[0.14, 1.7, 0.14]} />
-        <meshStandardMaterial color="#6b4a2b" />
-      </mesh>
+      <Block args={[0.14, 1.7, 0.14]} radius={0.06} castShadow position={[-0.75, 1.15, 0]}>
+        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      </Block>
+      <Block args={[0.14, 1.7, 0.14]} radius={0.06} castShadow position={[0.75, 1.15, 0]}>
+        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      </Block>
       <mesh castShadow position={[0, 2.25, 0]} rotation={[0, Math.PI / 4, 0]}>
-        <coneGeometry args={[1.4, 0.9, 4]} />
-        <meshStandardMaterial color="#a33f2f" flatShading />
+        <coneGeometry args={[1.4, 0.9, roofSeg]} />
+        <meshStandardMaterial color="#a33f2f" flatShading={flat} />
       </mesh>
     </group>
   );
@@ -740,31 +1031,30 @@ function Well() {
 
 /** Molino de viento con aspas girando, en las afueras. */
 function Windmill() {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
   const blades = useRef<THREE.Group>(null);
   useFrame((_, delta) => {
     if (blades.current) blades.current.rotation.z += delta * 0.7;
   });
   return (
     <group position={[WINDMILL_POS.x, 0, WINDMILL_POS.z]} rotation={[0, Math.PI / 3, 0]}>
-      <mesh castShadow position={[0, 3, 0]}>
-        <boxGeometry args={[3.2, 6, 3.2]} />
-        <meshStandardMaterial color="#cbb489" />
-      </mesh>
+      <Block args={[3.2, 6, 3.2]} radius={0.5} castShadow position={[0, 3, 0]}>
+        <meshStandardMaterial color="#cbb489" flatShading={flat} />
+      </Block>
       <mesh castShadow position={[0, 6.9, 0]} rotation={[0, Math.PI / 4, 0]}>
-        <coneGeometry args={[2.7, 1.9, 4]} />
-        <meshStandardMaterial color="#8a4a3a" flatShading />
+        <coneGeometry args={[2.7, 1.9, flat ? 4 : 10]} />
+        <meshStandardMaterial color="#8a4a3a" flatShading={flat} />
       </mesh>
       <group ref={blades} position={[0, 5.6, 1.9]}>
-        <mesh castShadow>
-          <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial color="#6b4a2b" />
-        </mesh>
+        <Block args={[0.5, 0.5, 0.5]} radius={0.12} castShadow>
+          <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+        </Block>
         {[0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((a) => (
           <group key={a} rotation={[0, 0, a]}>
-            <mesh castShadow position={[0, 2, 0]}>
-              <boxGeometry args={[0.4, 3.6, 0.1]} />
-              <meshStandardMaterial color="#ece1c8" />
-            </mesh>
+            <Block args={[0.4, 3.6, 0.1]} radius={0.05} castShadow position={[0, 2, 0]}>
+              <meshStandardMaterial color="#ece1c8" flatShading={flat} />
+            </Block>
           </group>
         ))}
       </group>
@@ -832,27 +1122,30 @@ function Butterflies() {
 
 /** Montañas y colinas que cierran el horizonte, difuminadas por la niebla. */
 function Mountains() {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const seg = flat ? 5 : 7;
   return (
     <>
       {HILL_SPOTS.map((h, i) => (
         <mesh key={`h${i}`} position={[h.x, h.h / 2 - 0.4, h.z]} rotation={[0, h.rot, 0]}>
-          <coneGeometry args={[h.r, h.h, 5]} />
-          <meshStandardMaterial color="#4c9350" flatShading />
+          <coneGeometry args={[h.r, h.h, seg]} />
+          <meshStandardMaterial color="#4c9350" flatShading={flat} />
         </mesh>
       ))}
       {MOUNTAIN_SPOTS.map((m, i) => (
         <group key={`m${i}`} position={[m.x, 0, m.z]} rotation={[0, m.rot, 0]}>
           <mesh position={[0, m.h / 2, 0]}>
-            <coneGeometry args={[m.r, m.h, 5]} />
+            <coneGeometry args={[m.r, m.h, seg]} />
             <meshStandardMaterial
               color={m.rocky ? "#5c6d7a" : "#54725e"}
-              flatShading
+              flatShading={flat}
             />
           </mesh>
           {m.h > 38 && (
             <mesh position={[0, m.h - (m.h * 0.22) / 2, 0]}>
-              <coneGeometry args={[m.r * 0.27, m.h * 0.22, 5]} />
-              <meshStandardMaterial color="#f1f5f9" flatShading />
+              <coneGeometry args={[m.r * 0.27, m.h * 0.22, seg]} />
+              <meshStandardMaterial color="#f1f5f9" flatShading={flat} />
             </mesh>
           )}
         </group>
@@ -861,68 +1154,70 @@ function Mountains() {
   );
 }
 
-/** Casa cúbica con tejado del color del proyecto. La puerta mira a +Z local. */
+// ---------------------------------------------------------------------------
+// Casa y aldeano
+// ---------------------------------------------------------------------------
+
+/** Casa con tejado del color del proyecto. La puerta mira a +Z local (al centro). */
 function House({ color }: { color: string }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
   return (
     <group>
-      <mesh castShadow receiveShadow position={[0, 1.6, 0]}>
-        <boxGeometry args={[6, 3.2, 5]} />
-        <meshStandardMaterial color="#c9a36a" />
-      </mesh>
+      <Block args={[6, 3.2, 5]} radius={0.3} castShadow receiveShadow position={[0, 1.6, 0]}>
+        <meshStandardMaterial color="#c9a36a" flatShading={flat} />
+      </Block>
       {/* Tejado piramidal */}
       <mesh
         castShadow
         position={[0, 4.35, 0]}
-        rotation={[0, Math.PI / 4, 0]}
+        rotation={[0, flat ? Math.PI / 4 : 0, 0]}
         scale={[1.3, 1, 1.1]}
       >
-        <coneGeometry args={[4.3, 2.3, 4]} />
-        <meshStandardMaterial color={color} flatShading />
+        <coneGeometry args={[4.3, 2.3, flat ? 4 : 8]} />
+        <meshStandardMaterial color={color} flatShading={flat} />
       </mesh>
       {/* Puerta */}
-      <mesh position={[0, 1.05, 2.51]}>
-        <boxGeometry args={[1.1, 2.1, 0.08]} />
-        <meshStandardMaterial color="#6b4a2b" />
-      </mesh>
+      <Block args={[1.1, 2.1, 0.1]} radius={0.06} position={[0, 1.05, 2.5]}>
+        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      </Block>
       {/* Ventanas */}
-      <mesh position={[-1.8, 1.9, 2.51]}>
-        <boxGeometry args={[1, 1, 0.06]} />
-        <meshStandardMaterial color="#bfe9ff" />
-      </mesh>
-      <mesh position={[1.8, 1.9, 2.51]}>
-        <boxGeometry args={[1, 1, 0.06]} />
-        <meshStandardMaterial color="#bfe9ff" />
-      </mesh>
+      <Block args={[1, 1, 0.08]} radius={0.05} position={[-1.8, 1.9, 2.5]}>
+        <meshStandardMaterial
+          color="#bfe9ff"
+          emissive="#bfe9ff"
+          emissiveIntensity={0.2}
+        />
+      </Block>
+      <Block args={[1, 1, 0.08]} radius={0.05} position={[1.8, 1.9, 2.5]}>
+        <meshStandardMaterial
+          color="#bfe9ff"
+          emissive="#bfe9ff"
+          emissiveIntensity={0.2}
+        />
+      </Block>
       {/* Chimenea */}
-      <mesh castShadow position={[1.7, 5, -1]}>
-        <boxGeometry args={[0.6, 1.8, 0.6]} />
-        <meshStandardMaterial color="#8d8d8d" />
-      </mesh>
-      {/* Camino de tierra hasta la puerta */}
-      <mesh rotation-x={-Math.PI / 2} position={[0, 0.01, 3.9]}>
-        <planeGeometry args={[1.6, 3]} />
-        <meshStandardMaterial color="#9b7653" />
-      </mesh>
+      <Block args={[0.6, 1.8, 0.6]} radius={0.1} castShadow position={[1.7, 5, -1]}>
+        <meshStandardMaterial color="#8d8d8d" flatShading={flat} />
+      </Block>
       {/* Vallas del jardincito delantero */}
       {[-2.2, 2.2].map((x) => (
         <group key={x} position={[x, 0, 3.6]}>
           {[-0.9, 0, 0.9].map((z) => (
-            <mesh key={z} castShadow position={[0, 0.45, z]}>
-              <boxGeometry args={[0.14, 0.9, 0.14]} />
-              <meshStandardMaterial color="#8a6a42" />
-            </mesh>
+            <Block key={z} args={[0.14, 0.9, 0.14]} radius={0.05} castShadow position={[0, 0.45, z]}>
+              <meshStandardMaterial color="#8a6a42" flatShading={flat} />
+            </Block>
           ))}
-          <mesh castShadow position={[0, 0.68, 0]}>
-            <boxGeometry args={[0.09, 0.09, 2.1]} />
-            <meshStandardMaterial color="#9a794f" />
-          </mesh>
+          <Block args={[0.09, 0.09, 2.1]} radius={0.04} castShadow position={[0, 0.68, 0]}>
+            <meshStandardMaterial color="#9a794f" flatShading={flat} />
+          </Block>
         </group>
       ))}
     </group>
   );
 }
 
-/** Aldeano cúbico que presenta un proyecto: mira al jugador y saluda. */
+/** Aldeano que presenta un proyecto: mira al jugador y saluda al acercarse. */
 function Villager({
   project,
   color,
@@ -940,6 +1235,8 @@ function Villager({
   drag: DragState;
   onEnter: (project: Project) => void;
 }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
   const group = useRef<THREE.Group>(null);
   const body = useRef<THREE.Group>(null);
   const armLeft = useRef<THREE.Group>(null);
@@ -963,6 +1260,10 @@ function Villager({
     }
   });
 
+  const skin = (
+    <meshStandardMaterial color={SKIN} flatShading={flat} />
+  );
+
   return (
     <group
       ref={group}
@@ -975,50 +1276,71 @@ function Villager({
       onPointerOut={() => (document.body.style.cursor = "default")}
     >
       <group ref={body}>
-        {/* Piernas */}
-        <mesh castShadow position={[-0.14, 0.35, 0]}>
-          <boxGeometry args={[0.24, 0.7, 0.24]} />
-          <meshStandardMaterial color="#3b4a8c" />
-        </mesh>
-        <mesh castShadow position={[0.14, 0.35, 0]}>
-          <boxGeometry args={[0.24, 0.7, 0.24]} />
-          <meshStandardMaterial color="#3b4a8c" />
-        </mesh>
-        {/* Cuerpo con la camiseta del color del proyecto */}
-        <mesh castShadow position={[0, 1.06, 0]}>
-          <boxGeometry args={[0.54, 0.74, 0.3]} />
-          <meshStandardMaterial color={color} />
-        </mesh>
-        {/* Brazos con pivote en el hombro */}
-        <group ref={armLeft} position={[-0.38, 1.38, 0]}>
-          <mesh castShadow position={[0, -0.3, 0]}>
-            <boxGeometry args={[0.2, 0.66, 0.24]} />
-            <meshStandardMaterial color={SKIN} />
-          </mesh>
+        {/* Zapatos */}
+        <Block args={[0.26, 0.16, 0.32]} radius={0.06} castShadow position={[-0.15, 0.08, 0.03]}>
+          <meshStandardMaterial color="#3a2c1c" flatShading={flat} />
+        </Block>
+        <Block args={[0.26, 0.16, 0.32]} radius={0.06} castShadow position={[0.15, 0.08, 0.03]}>
+          <meshStandardMaterial color="#3a2c1c" flatShading={flat} />
+        </Block>
+        {/* Piernas (pantalón) */}
+        <Block args={[0.24, 0.62, 0.24]} radius={0.08} castShadow position={[-0.15, 0.46, 0]}>
+          <meshStandardMaterial color="#3a4a6b" flatShading={flat} />
+        </Block>
+        <Block args={[0.24, 0.62, 0.24]} radius={0.08} castShadow position={[0.15, 0.46, 0]}>
+          <meshStandardMaterial color="#3a4a6b" flatShading={flat} />
+        </Block>
+        {/* Torso con la camiseta del color del proyecto */}
+        <Block args={[0.6, 0.82, 0.34]} radius={0.12} castShadow position={[0, 1.14, 0]}>
+          <meshStandardMaterial color={color} flatShading={flat} />
+        </Block>
+        {/* Cinturón */}
+        <Block args={[0.63, 0.12, 0.37]} radius={0.05} position={[0, 0.78, 0]}>
+          <meshStandardMaterial color="#2c2c34" flatShading={flat} />
+        </Block>
+        {/* Brazos con pivote en el hombro y mano más clara */}
+        <group ref={armLeft} position={[-0.42, 1.48, 0]}>
+          <Block args={[0.2, 0.56, 0.24]} radius={0.08} castShadow position={[0, -0.26, 0]}>
+            <meshStandardMaterial color={color} flatShading={flat} />
+          </Block>
+          <Block args={[0.21, 0.18, 0.25]} radius={0.08} position={[0, -0.56, 0]}>
+            {skin}
+          </Block>
         </group>
-        <group ref={armRight} position={[0.38, 1.38, 0]}>
-          <mesh castShadow position={[0, -0.3, 0]}>
-            <boxGeometry args={[0.2, 0.66, 0.24]} />
-            <meshStandardMaterial color={SKIN} />
-          </mesh>
+        <group ref={armRight} position={[0.42, 1.48, 0]}>
+          <Block args={[0.2, 0.56, 0.24]} radius={0.08} castShadow position={[0, -0.26, 0]}>
+            <meshStandardMaterial color={color} flatShading={flat} />
+          </Block>
+          <Block args={[0.21, 0.18, 0.25]} radius={0.08} position={[0, -0.56, 0]}>
+            <meshStandardMaterial color={SKIN} flatShading={flat} />
+          </Block>
         </group>
+        {/* Cuello */}
+        <Block args={[0.22, 0.12, 0.22]} radius={0.05} position={[0, 1.62, 0]}>
+          {skin}
+        </Block>
         {/* Cabeza */}
-        <mesh castShadow position={[0, 1.7, 0]}>
-          <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshStandardMaterial color={SKIN} />
-        </mesh>
-        {/* Pelo */}
-        <mesh position={[0, 1.97, -0.02]}>
-          <boxGeometry args={[0.54, 0.16, 0.54]} />
-          <meshStandardMaterial color="#4a3320" />
-        </mesh>
+        <Block args={[0.5, 0.52, 0.5]} radius={0.14} castShadow position={[0, 1.94, 0]}>
+          <meshStandardMaterial color={SKIN} flatShading={flat} />
+        </Block>
+        {/* Nariz */}
+        <Block args={[0.1, 0.1, 0.09]} radius={0.03} position={[0, 1.9, 0.27]}>
+          <meshStandardMaterial color="#cf9a71" flatShading={flat} />
+        </Block>
+        {/* Pelo: casquete + flequillo */}
+        <Block args={[0.54, 0.18, 0.54]} radius={0.1} position={[0, 2.2, 0]}>
+          <meshStandardMaterial color="#4a3320" flatShading={flat} />
+        </Block>
+        <Block args={[0.54, 0.12, 0.12]} radius={0.04} position={[0, 2.08, 0.22]}>
+          <meshStandardMaterial color="#4a3320" flatShading={flat} />
+        </Block>
         {/* Ojos */}
-        <mesh position={[-0.11, 1.72, 0.26]}>
-          <boxGeometry args={[0.08, 0.08, 0.02]} />
+        <mesh position={[-0.12, 1.96, 0.26]}>
+          <boxGeometry args={[0.08, 0.09, 0.02]} />
           <meshStandardMaterial color="#2c2c34" />
         </mesh>
-        <mesh position={[0.11, 1.72, 0.26]}>
-          <boxGeometry args={[0.08, 0.08, 0.02]} />
+        <mesh position={[0.12, 1.96, 0.26]}>
+          <boxGeometry args={[0.08, 0.09, 0.02]} />
           <meshStandardMaterial color="#2c2c34" />
         </mesh>
       </group>
@@ -1027,7 +1349,7 @@ function Villager({
       <Html
         center
         zIndexRange={[15, 0]}
-        position={[0, 2.6, 0]}
+        position={[0, 2.75, 0]}
         style={{ pointerEvents: "none" }}
       >
         <div className="whitespace-nowrap text-center">
@@ -1050,7 +1372,7 @@ function Villager({
         <Html
           center
           zIndexRange={[15, 0]}
-          position={[0, 3.4, 0]}
+          position={[0, 3.55, 0]}
           style={{ pointerEvents: "none" }}
         >
           <div
@@ -1169,6 +1491,7 @@ export default function WorldCanvas({
   touch,
   paused,
   casting,
+  style,
   onEnter,
   externalMove,
 }: {
@@ -1176,6 +1499,7 @@ export default function WorldCanvas({
   touch: boolean;
   paused: boolean;
   casting: boolean;
+  style: WorldStyle;
   onEnter: (project: Project) => void;
   externalMove: MoveInput;
 }) {
@@ -1184,6 +1508,7 @@ export default function WorldCanvas({
     () => buildLayout(dict.projects.items.length),
     [dict.projects.items.length],
   );
+  const clear = useMemo(() => makeGroundClear(layout), [layout]);
 
   return (
     <Canvas
@@ -1197,52 +1522,55 @@ export default function WorldCanvas({
         );
       }}
     >
-      <color attach="background" args={["#6cb8ec"]} />
-      <fog attach="fog" args={["#9ed2f2", 50, 220]} />
-      <hemisphereLight color="#cfe8ff" groundColor="#7da35b" intensity={0.85} />
-      <directionalLight
-        castShadow
-        position={[35, 55, 20]}
-        intensity={1.5}
-        color="#fff2d9"
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-left={-55}
-        shadow-camera-right={55}
-        shadow-camera-top={55}
-        shadow-camera-bottom={-55}
-        shadow-camera-far={160}
-        shadow-bias={-0.0004}
-      />
-      <GrassFloor />
-      <Clouds />
-      <Mountains />
-      <BlockTree />
-      <Flowers />
-      <DecorTrees />
-      <Rocks />
-      <Plaza layout={layout} />
-      <LampPosts />
-      <Well />
-      <Windmill />
-      <Butterflies />
-      <Village
-        projects={dict.projects.items}
-        dict={dict}
-        touch={touch}
-        paused={paused}
-        drag={drag}
-        onEnter={onEnter}
-        layout={layout}
-      />
-      <PlayerRig
-        paused={paused}
-        touch={touch}
-        drag={drag}
-        externalMove={externalMove}
-        layout={layout}
-      />
-      <FirstPersonArms casting={casting} />
-      {process.env.NODE_ENV !== "production" && <DebugProbe />}
+      <StyleContext.Provider value={style}>
+        <color attach="background" args={["#6cb8ec"]} />
+        <fog attach="fog" args={["#9ed2f2", 50, 220]} />
+        <hemisphereLight color="#cfe8ff" groundColor="#7da35b" intensity={0.85} />
+        <directionalLight
+          castShadow
+          position={[35, 55, 20]}
+          intensity={1.5}
+          color="#fff2d9"
+          shadow-mapSize={[1024, 1024]}
+          shadow-camera-left={-55}
+          shadow-camera-right={55}
+          shadow-camera-top={55}
+          shadow-camera-bottom={-55}
+          shadow-camera-far={160}
+          shadow-bias={-0.0004}
+        />
+        <GrassFloor />
+        <TallGrass clear={clear} />
+        <Clouds />
+        <Mountains />
+        <BlockTree />
+        <Flowers clear={clear} />
+        <DecorTrees />
+        <Rocks />
+        <Plaza layout={layout} />
+        <LampPosts />
+        <Well />
+        <Windmill />
+        <Butterflies />
+        <Village
+          projects={dict.projects.items}
+          dict={dict}
+          touch={touch}
+          paused={paused}
+          drag={drag}
+          onEnter={onEnter}
+          layout={layout}
+        />
+        <PlayerRig
+          paused={paused}
+          touch={touch}
+          drag={drag}
+          externalMove={externalMove}
+          layout={layout}
+        />
+        <FirstPersonArms casting={casting} />
+        {process.env.NODE_ENV !== "production" && <DebugProbe />}
+      </StyleContext.Provider>
     </Canvas>
   );
 }

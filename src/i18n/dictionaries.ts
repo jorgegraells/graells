@@ -55,6 +55,7 @@ export type Dictionary = {
     exit: string;
     greet: string;
     next: string;
+    style: { blocky: string; rounded: string };
     status: {
       open: string;
       title: string;
@@ -108,6 +109,7 @@ const es: Dictionary = {
     exit: "Salir del mundo",
     greet: "¡Hola, viajero! Bienvenido a {name}. Deja que te lo cuente…",
     next: "Siguiente",
+    style: { blocky: "Cuadrado", rounded: "Redondo" },
     status: {
       open: "Habilidades",
       title: "STATUS",
@@ -309,6 +311,7 @@ const en: Dictionary = {
     exit: "Leave the world",
     greet: "Hi, traveler! Welcome to {name}. Let me tell you about it…",
     next: "Next",
+    style: { blocky: "Blocky", rounded: "Rounded" },
     status: {
       open: "Skills",
       title: "STATUS",

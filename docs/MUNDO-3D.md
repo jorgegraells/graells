@@ -12,6 +12,20 @@ Dos archivos en `src/components/world/`:
   `DecorTrees`, `Plaza`, `Well`, `Windmill`, `LampPosts`, `Butterflies`, `Rocks`,
   `Clouds`, `Flowers`, `GrassFloor`) y `DebugProbe` (solo dev).
 
+## Sistema de estilo (cuadrado ⇄ redondo)
+
+- `WorldStyle = "blocky" | "rounded"` se pasa a `WorldCanvas` como prop `style`
+  (estado en `World.tsx`, toggle en el HUD). Se propaga por **contexto R3F**:
+  `StyleContext.Provider` está DENTRO del `<Canvas>` (obligatorio: R3F usa su
+  propio reconciliador). Los componentes leen con `useWorldStyle()`.
+- Helper **`Block`**: caja que renderiza `boxGeometry` en blocky y `RoundedBox`
+  (drei) en rounded. Radio auto-clampado a `min(args)*0.45`. Úsalo para
+  estructuras nuevas en vez de `<mesh><boxGeometry/>`.
+- Conos (tejados, montañas, hierba): parametrizar segmentos y `flatShading` por
+  estilo (`flat = style === "blocky"`). Blocky = facetado; rounded = suave.
+- Detalles diminutos (ojos, mariposas, flores tallo) siguen siendo `mesh` planos
+  a propósito, por rendimiento (no merece la pena redondearlos).
+
 ## Invariantes del diseño
 
 - **El pueblo escala con los proyectos**: `buildLayout(n)` reparte casas en círculo
