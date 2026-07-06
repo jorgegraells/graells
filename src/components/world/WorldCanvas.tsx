@@ -32,10 +32,12 @@ type DragState = { dist: number };
 
 function PlayerRig({
   paused,
+  touch,
   drag,
   externalMove,
 }: {
   paused: boolean;
+  touch: boolean;
   drag: DragState;
   externalMove: MoveInput;
 }) {
@@ -74,45 +76,56 @@ function PlayerRig({
 
   useEffect(() => {
     const el = gl.domElement;
-    let dragging = false;
+    // Sin esto, el navegador móvil intercepta el gesto (scroll/zoom)
+    // y se pierden la mayoría de los pointermove del arrastre.
+    el.style.touchAction = "none";
+
+    // Solo el dedo que empezó en el canvas controla la cámara: así el
+    // dedo del joystick nunca contamina el arrastre de mirar.
+    let lookPointerId: number | null = null;
     let lastX = 0;
     let lastY = 0;
+    const yawSensitivity = touch ? 0.008 : 0.004;
+    const pitchSensitivity = touch ? 0.006 : 0.003;
 
     const onDown = (e: PointerEvent) => {
       intro.current = 1; // un clic/toque también salta la intro
-      dragging = true;
+      if (lookPointerId !== null) return; // ya hay un dedo mirando
+      lookPointerId = e.pointerId;
       drag.dist = 0;
       lastX = e.clientX;
       lastY = e.clientY;
     };
     const onMove = (e: PointerEvent) => {
-      if (!dragging || pausedRef.current) return;
+      if (e.pointerId !== lookPointerId || pausedRef.current) return;
       const dx = e.clientX - lastX;
       const dy = e.clientY - lastY;
       lastX = e.clientX;
       lastY = e.clientY;
       drag.dist += Math.abs(dx) + Math.abs(dy);
       // Sentido de cámara invertido respecto al arrastre (petición de Jorge)
-      yaw.current += dx * 0.004;
+      yaw.current += dx * yawSensitivity;
       pitch.current = THREE.MathUtils.clamp(
-        pitch.current + dy * 0.003,
+        pitch.current + dy * pitchSensitivity,
         -0.8,
         0.6,
       );
     };
-    const onUp = () => {
-      dragging = false;
+    const onUp = (e: PointerEvent) => {
+      if (e.pointerId === lookPointerId) lookPointerId = null;
     };
 
     el.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
     return () => {
       el.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
     };
-  }, [gl, drag]);
+  }, [gl, drag, touch]);
 
   useFrame((_, rawDelta) => {
     // Delta limitado: evita teletransportes al volver de una pestaña en segundo plano
@@ -652,12 +665,17 @@ function Village({
 /** Solo en desarrollo: expone la posición de la cámara y permite teletransportarla. */
 function DebugProbe() {
   useFrame(({ camera }) => {
-    const w = window as unknown as { __cam?: number[]; __goto?: number[] };
+    const w = window as unknown as {
+      __cam?: number[];
+      __rot?: number[];
+      __goto?: number[];
+    };
     if (w.__goto) {
       camera.position.set(w.__goto[0], EYE_HEIGHT, w.__goto[1]);
       w.__goto = undefined;
     }
     w.__cam = [camera.position.x, camera.position.y, camera.position.z];
+    w.__rot = [camera.rotation.x, camera.rotation.y];
   });
   return null;
 }
@@ -717,7 +735,12 @@ export default function WorldCanvas({
         drag={drag}
         onEnter={onEnter}
       />
-      <PlayerRig paused={paused} drag={drag} externalMove={externalMove} />
+      <PlayerRig
+        paused={paused}
+        touch={touch}
+        drag={drag}
+        externalMove={externalMove}
+      />
       <FirstPersonArms />
       {process.env.NODE_ENV !== "production" && <DebugProbe />}
     </Canvas>
