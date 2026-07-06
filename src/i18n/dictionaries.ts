@@ -164,19 +164,6 @@ const es: Dictionary = {
         status: "En desarrollo",
       },
       {
-        slug: "quizdly",
-        name: "Quizdly",
-        tagline: "Trivia diaria online",
-        description:
-          "Plataforma web de trivia diaria desarrollada full-stack, con sistema de progresión de usuarios. En mantenimiento activo y mejoras para escalar.",
-        role: "Fundador y desarrollador",
-        highlight:
-          "Producto online de principio a fin: frontend, backend, base de datos y operación, todo en solitario.",
-        tech: ["PHP", "JavaScript", "SQL", "HTML/CSS"],
-        status: "Online",
-        url: "https://www.quizdly.com",
-      },
-      {
         slug: "industrial-ai",
         name: "IA en la industria",
         tagline: "IA, cyber y compliance en industria real",
@@ -358,19 +345,6 @@ const en: Dictionary = {
           "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy: zero telemetry, zero tracking, and designed to be used sparingly — an app that fights addiction can't create its own.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
         status: "In development",
-      },
-      {
-        slug: "quizdly",
-        name: "Quizdly",
-        tagline: "Daily online trivia",
-        description:
-          "Daily trivia web platform built full-stack, with a user progression system. Under active maintenance and improvements to scale.",
-        role: "Founder & developer",
-        highlight:
-          "An online product end to end: frontend, backend, database and operations, all built solo.",
-        tech: ["PHP", "JavaScript", "SQL", "HTML/CSS"],
-        status: "Online",
-        url: "https://www.quizdly.com",
       },
       {
         slug: "industrial-ai",
