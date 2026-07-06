@@ -90,6 +90,40 @@ const BENCH_SPOTS = [1.5, 3.7, 5.3].map((a) => ({
 const WELL_POS = { x: 5, z: -4 };
 const WINDMILL_POS = { x: -30, z: -22 };
 
+/** Anillo de montañas del horizonte y colinas intermedias. */
+const MOUNTAIN_SPOTS = (() => {
+  const rand = mulberry32(555);
+  const count = 26;
+  return Array.from({ length: count }, (_, i) => {
+    const angle = (i / count) * Math.PI * 2 + (rand() - 0.5) * 0.18;
+    const radius = 85 + rand() * 28;
+    return {
+      x: Math.sin(angle) * radius,
+      z: Math.cos(angle) * radius,
+      h: 22 + rand() * 26,
+      r: 16 + rand() * 14,
+      rocky: rand() > 0.5,
+      rot: rand() * Math.PI,
+    };
+  });
+})();
+
+const HILL_SPOTS = (() => {
+  const rand = mulberry32(888);
+  const count = 18;
+  return Array.from({ length: count }, (_, i) => {
+    const angle = (i / count) * Math.PI * 2 + (rand() - 0.5) * 0.3;
+    const radius = 58 + rand() * 16;
+    return {
+      x: Math.sin(angle) * radius,
+      z: Math.cos(angle) * radius,
+      h: 7 + rand() * 9,
+      r: 12 + rand() * 9,
+      rot: rand() * Math.PI,
+    };
+  });
+})();
+
 /** Colliders de la decoración sólida (radio sin jugador). */
 const DECOR_COLLIDERS = [
   { x: WELL_POS.x, z: WELL_POS.z, r: 1.3 },
@@ -443,14 +477,15 @@ function GrassFloor() {
     tex.magFilter = THREE.NearestFilter;
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(60, 60);
+    tex.repeat.set(80, 80);
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
   }, []);
 
   return (
+    // Lo bastante grande para que las faldas de las montañas no lo desborden
     <mesh rotation-x={-Math.PI / 2} receiveShadow>
-      <planeGeometry args={[240, 240]} />
+      <planeGeometry args={[320, 320]} />
       <meshStandardMaterial map={texture} roughness={1} />
     </mesh>
   );
@@ -484,7 +519,13 @@ function Clouds() {
       {clouds.map((c, i) => (
         <mesh key={i} position={[c.x, c.y, c.z]}>
           <boxGeometry args={[c.w, 0.9, c.d]} />
-          <meshStandardMaterial color="#ffffff" transparent opacity={0.92} />
+          <meshStandardMaterial
+            color="#ffffff"
+            emissive="#ffffff"
+            emissiveIntensity={0.55}
+            transparent
+            opacity={0.92}
+          />
         </mesh>
       ))}
     </group>
@@ -783,6 +824,37 @@ function Butterflies() {
             <boxGeometry args={[0.18, 0.02, 0.14]} />
             <meshStandardMaterial color={b.color} />
           </mesh>
+        </group>
+      ))}
+    </>
+  );
+}
+
+/** Montañas y colinas que cierran el horizonte, difuminadas por la niebla. */
+function Mountains() {
+  return (
+    <>
+      {HILL_SPOTS.map((h, i) => (
+        <mesh key={`h${i}`} position={[h.x, h.h / 2 - 0.4, h.z]} rotation={[0, h.rot, 0]}>
+          <coneGeometry args={[h.r, h.h, 5]} />
+          <meshStandardMaterial color="#4c9350" flatShading />
+        </mesh>
+      ))}
+      {MOUNTAIN_SPOTS.map((m, i) => (
+        <group key={`m${i}`} position={[m.x, 0, m.z]} rotation={[0, m.rot, 0]}>
+          <mesh position={[0, m.h / 2, 0]}>
+            <coneGeometry args={[m.r, m.h, 5]} />
+            <meshStandardMaterial
+              color={m.rocky ? "#5c6d7a" : "#54725e"}
+              flatShading
+            />
+          </mesh>
+          {m.h > 38 && (
+            <mesh position={[0, m.h - (m.h * 0.22) / 2, 0]}>
+              <coneGeometry args={[m.r * 0.27, m.h * 0.22, 5]} />
+              <meshStandardMaterial color="#f1f5f9" flatShading />
+            </mesh>
+          )}
         </group>
       ))}
     </>
@@ -1126,7 +1198,7 @@ export default function WorldCanvas({
       }}
     >
       <color attach="background" args={["#6cb8ec"]} />
-      <fog attach="fog" args={["#9ed2f2", 50, 170]} />
+      <fog attach="fog" args={["#9ed2f2", 50, 220]} />
       <hemisphereLight color="#cfe8ff" groundColor="#7da35b" intensity={0.85} />
       <directionalLight
         castShadow
@@ -1143,6 +1215,7 @@ export default function WorldCanvas({
       />
       <GrassFloor />
       <Clouds />
+      <Mountains />
       <BlockTree />
       <Flowers />
       <DecorTrees />
