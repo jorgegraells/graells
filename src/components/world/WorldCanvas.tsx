@@ -408,12 +408,12 @@ function PlayerRig({
       if (e.pointerId === lookPointerId) lookPointerId = null;
     };
     // Ratón capturado (Pointer Lock): mirar como en un FPS. Con el ratón libre
-    // el sentido es directo: mover a la derecha gira la cámara a la derecha.
+    // el sentido es directo: derecha→derecha, arriba→arriba.
     const onLockedLook = (e: MouseEvent) => {
       if (document.pointerLockElement !== el || pausedRef.current) return;
       yaw.current -= e.movementX * 0.0022;
       pitch.current = THREE.MathUtils.clamp(
-        pitch.current + e.movementY * 0.002,
+        pitch.current - e.movementY * 0.002,
         -0.8,
         0.6,
       );
@@ -1291,11 +1291,18 @@ function Worker({
   const style = useWorldStyle();
   const flat = style === "blocky";
   const root = useRef<THREE.Group>(null);
+  const hammerArm = useRef<THREE.Group>(null);
   const [talking, setTalking] = useState(false);
   const nearRef = useRef(false);
   const worldPos = useMemo(() => new THREE.Vector3(), []);
+  const phase = position[0] * 1.7 + position[2] * 0.9;
 
-  useFrame(({ camera }) => {
+  useFrame(({ clock, camera }) => {
+    // Martilleo: el brazo se levanta y golpea sin parar
+    if (hammerArm.current) {
+      const t = clock.elapsedTime * 5 + phase;
+      hammerArm.current.rotation.x = -0.35 - Math.abs(Math.sin(t)) * 1.05;
+    }
     if (!root.current || !say) return;
     root.current.getWorldPosition(worldPos);
     const d = Math.hypot(
@@ -1352,16 +1359,63 @@ function Worker({
       <Block args={[0.52, 0.09, 0.32]} radius={0.02} position={[0, 0.68, 0]}>
         <meshStandardMaterial color="#eef3f5" flatShading={flat} />
       </Block>
-      {/* Brazos */}
-      {[-0.33, 0.33].map((x) => (
-        <Block key={x} args={[0.14, 0.52, 0.18]} radius={0.06} castShadow position={[x, 0.76, 0]}>
+      {/* Brazo izquierdo (fijo) */}
+      <Block args={[0.14, 0.52, 0.18]} radius={0.06} castShadow position={[-0.33, 0.76, 0]}>
+        <meshStandardMaterial color="#f26a1b" flatShading={flat} />
+      </Block>
+      {/* Brazo derecho con martillo, pivota en el hombro y golpea */}
+      <group ref={hammerArm} position={[0.33, 1.02, 0]}>
+        <Block args={[0.14, 0.52, 0.18]} radius={0.06} castShadow position={[0, -0.26, 0]}>
           <meshStandardMaterial color="#f26a1b" flatShading={flat} />
         </Block>
-      ))}
+        {/* Mano */}
+        <Block args={[0.15, 0.14, 0.16]} radius={0.06} position={[0, -0.52, 0.02]}>
+          <meshStandardMaterial color="#d8a171" flatShading={flat} />
+        </Block>
+        {/* Martillo (mango + cabeza) */}
+        <group position={[0, -0.54, 0.1]}>
+          <Block args={[0.05, 0.05, 0.34]} radius={0.02} position={[0, 0, 0.14]}>
+            <meshStandardMaterial color="#8a5a34" flatShading={flat} />
+          </Block>
+          <mesh position={[0, 0, 0.34]}>
+            <boxGeometry args={[0.14, 0.14, 0.16]} />
+            <meshStandardMaterial color="#5b5b5b" metalness={0.5} roughness={0.4} />
+          </mesh>
+        </group>
+      </group>
       {/* Cabeza */}
       <Block args={[0.34, 0.36, 0.34]} radius={0.1} castShadow position={[0, 1.24, 0]}>
         <meshStandardMaterial color="#d8a171" flatShading={flat} />
       </Block>
+      {/* Cara */}
+      {[-0.08, 0.08].map((x) => (
+        <group key={x} position={[x, 1.28, 0.17]}>
+          <mesh>
+            <boxGeometry args={[0.08, 0.08, 0.02]} />
+            <meshStandardMaterial color="#f4f4f4" />
+          </mesh>
+          <mesh position={[0, 0, 0.015]}>
+            <boxGeometry args={[0.04, 0.05, 0.02]} />
+            <meshStandardMaterial color="#2c2c34" />
+          </mesh>
+        </group>
+      ))}
+      {/* Cejas */}
+      {[-0.08, 0.08].map((x) => (
+        <mesh key={x} position={[x, 1.35, 0.17]}>
+          <boxGeometry args={[0.09, 0.025, 0.02]} />
+          <meshStandardMaterial color="#4a3320" />
+        </mesh>
+      ))}
+      {/* Nariz */}
+      <Block args={[0.07, 0.08, 0.07]} radius={0.02} position={[0, 1.24, 0.19]}>
+        <meshStandardMaterial color="#cf9a71" flatShading={flat} />
+      </Block>
+      {/* Boca */}
+      <mesh position={[0, 1.15, 0.18]}>
+        <boxGeometry args={[0.12, 0.025, 0.02]} />
+        <meshStandardMaterial color="#7a3b32" />
+      </mesh>
       {/* Casco de obra */}
       <Block args={[0.42, 0.18, 0.42]} radius={0.16} position={[0, 1.44, 0]}>
         <meshStandardMaterial color="#f2c14e" flatShading={flat} />
