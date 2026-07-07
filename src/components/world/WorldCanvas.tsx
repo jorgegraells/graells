@@ -270,12 +270,14 @@ function PlayerRig({
   drag,
   externalMove,
   layout,
+  extraColliders,
 }: {
   paused: boolean;
   touch: boolean;
   drag: DragState;
   externalMove: MoveInput;
   layout: VillageLayout;
+  extraColliders: { x: number; z: number; r: number }[];
 }) {
   const { camera, gl } = useThree();
   const keys = useRef(new Set<string>());
@@ -314,9 +316,14 @@ function PlayerRig({
           z: c.z,
           r: c.r + PLAYER_RADIUS,
         })),
+        ...extraColliders.map((c) => ({
+          x: c.x,
+          z: c.z,
+          r: c.r + PLAYER_RADIUS,
+        })),
       ],
     }),
-    [layout],
+    [layout, extraColliders],
   );
 
   useEffect(() => {
@@ -397,10 +404,11 @@ function PlayerRig({
     const onUp = (e: PointerEvent) => {
       if (e.pointerId === lookPointerId) lookPointerId = null;
     };
-    // Ratón capturado (Pointer Lock): mirar como en un FPS, sin pulsar
+    // Ratón capturado (Pointer Lock): mirar como en un FPS. Con el ratón libre
+    // el sentido es directo: mover a la derecha gira la cámara a la derecha.
     const onLockedLook = (e: MouseEvent) => {
       if (document.pointerLockElement !== el || pausedRef.current) return;
-      yaw.current += e.movementX * 0.0022;
+      yaw.current -= e.movementX * 0.0022;
       pitch.current = THREE.MathUtils.clamp(
         pitch.current + e.movementY * 0.002,
         -0.8,
@@ -1191,6 +1199,75 @@ function Windmill() {
   );
 }
 
+/** Grúa torre de obra: mástil, pluma con gancho colgando y contrapeso.
+ *  Oscila muy despacio para dar sensación de obra en marcha. */
+function ConstructionCrane({ phase }: { phase: number }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const top = useRef<THREE.Group>(null);
+  const hook = useRef<THREE.Group>(null);
+  const H = 10;
+
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime + phase;
+    if (top.current) top.current.rotation.y = Math.sin(t * 0.15) * 0.35;
+    if (hook.current) hook.current.position.x = 5 + Math.sin(t * 0.5) * 0.4;
+  });
+
+  return (
+    <group>
+      {/* Base de hormigón */}
+      <Block args={[1.6, 0.5, 1.6]} radius={0.1} castShadow position={[0, 0.25, 0]}>
+        <meshStandardMaterial color="#6a6a6a" flatShading={flat} />
+      </Block>
+      {/* Mástil (torre) */}
+      <Block args={[0.55, H, 0.55]} radius={0.08} castShadow position={[0, H / 2 + 0.3, 0]}>
+        <meshStandardMaterial color="#f2c14e" flatShading={flat} />
+      </Block>
+      {/* Cruces de la torre para aspecto de celosía */}
+      {[1.8, 3.6, 5.4, 7.2].map((y) => (
+        <Block key={y} args={[0.62, 0.12, 0.12]} radius={0.03} position={[0, y, 0]}>
+          <meshStandardMaterial color="#d9a72f" flatShading={flat} />
+        </Block>
+      ))}
+
+      {/* Conjunto giratorio: cabina + pluma + contrapluma + gancho */}
+      <group ref={top} position={[0, H + 0.3, 0]}>
+        {/* Cabina del operario */}
+        <Block args={[0.85, 0.8, 0.85]} radius={0.12} castShadow position={[0.55, -0.2, 0]}>
+          <meshStandardMaterial color="#e0a800" flatShading={flat} />
+        </Block>
+        {/* Pluma hacia +X */}
+        <Block args={[7, 0.35, 0.35]} radius={0.05} castShadow position={[3.6, 0.35, 0]}>
+          <meshStandardMaterial color="#f2c14e" flatShading={flat} />
+        </Block>
+        {/* Contrapluma hacia -X */}
+        <Block args={[2.2, 0.35, 0.35]} radius={0.05} castShadow position={[-1.3, 0.35, 0]}>
+          <meshStandardMaterial color="#f2c14e" flatShading={flat} />
+        </Block>
+        {/* Contrapeso */}
+        <Block args={[1, 0.8, 1]} radius={0.08} castShadow position={[-2.3, 0.15, 0]}>
+          <meshStandardMaterial color="#3d3d3d" flatShading={flat} />
+        </Block>
+        {/* Torreta superior */}
+        <Block args={[0.4, 0.6, 0.4]} radius={0.06} position={[0, 0.75, 0]}>
+          <meshStandardMaterial color="#d9a72f" flatShading={flat} />
+        </Block>
+        {/* Carro con cable y gancho colgando */}
+        <group ref={hook} position={[5, 0.2, 0]}>
+          <mesh position={[0, -1.6, 0]}>
+            <boxGeometry args={[0.05, 3.2, 0.05]} />
+            <meshStandardMaterial color="#2a2a2a" />
+          </mesh>
+          <Block args={[0.28, 0.4, 0.28]} radius={0.06} castShadow position={[0, -3.3, 0]}>
+            <meshStandardMaterial color="#c0392b" flatShading={flat} />
+          </Block>
+        </group>
+      </group>
+    </group>
+  );
+}
+
 /** Mariposas revoloteando por el pueblo. */
 function Butterflies() {
   const refs = useRef<(THREE.Group | null)[]>([]);
@@ -1769,6 +1846,32 @@ export default function WorldCanvas({
   );
   const clear = useMemo(() => makeGroundClear(layout), [layout]);
 
+  // Grúas de obra flanqueando la casa de EchoGEO (proyecto "en construcción")
+  const cranes = useMemo(() => {
+    const idx = dict.projects.items.findIndex((p) => p.slug === "echogeo");
+    if (idx < 0) return [];
+    const l = layout[idx];
+    const perp = new THREE.Vector3(Math.cos(l.angle), 0, -Math.sin(l.angle));
+    const dir = new THREE.Vector3(Math.sin(l.angle), 0, Math.cos(l.angle));
+    return [1, -1].map((side, i) => {
+      const pos = l.housePos
+        .clone()
+        .addScaledVector(perp, side * 5.5)
+        .addScaledVector(dir, 0.8);
+      const toHouse = l.housePos.clone().sub(pos);
+      return {
+        x: pos.x,
+        z: pos.z,
+        rotY: Math.atan2(-toHouse.z, toHouse.x),
+        phase: i * 2.3,
+      };
+    });
+  }, [dict.projects.items, layout]);
+  const craneColliders = useMemo(
+    () => cranes.map((c) => ({ x: c.x, z: c.z, r: 0.95 })),
+    [cranes],
+  );
+
   return (
     <Canvas
       shadows
@@ -1810,6 +1913,11 @@ export default function WorldCanvas({
         <LampPosts />
         <Well />
         <Windmill />
+        {cranes.map((c, i) => (
+          <group key={i} position={[c.x, 0, c.z]} rotation={[0, c.rotY, 0]}>
+            <ConstructionCrane phase={c.phase} />
+          </group>
+        ))}
         <Butterflies />
         <Village
           projects={dict.projects.items}
@@ -1826,6 +1934,7 @@ export default function WorldCanvas({
           drag={drag}
           externalMove={externalMove}
           layout={layout}
+          extraColliders={craneColliders}
         />
         <FirstPersonArms casting={casting} />
         {process.env.NODE_ENV !== "production" && <DebugProbe />}
