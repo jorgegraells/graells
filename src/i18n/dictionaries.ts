@@ -108,7 +108,7 @@ const es: Dictionary = {
   world: {
     title: "Mundo virtual de Graells",
     loading: "Generando el mundo…",
-    hint: "WASD / flechas para moverte · arrastra para mirar · acércate a un vecino y pulsa E",
+    hint: "WASD para moverte · mueve el ratón para mirar · acércate y pulsa E · Esc libera el ratón",
     hintTouch: "Joystick para moverte · arrastra para mirar · toca a un vecino para hablar",
     hintNear: "Pulsa E para hablar",
     hintNearTouch: "Toca para hablar",
@@ -125,7 +125,7 @@ const es: Dictionary = {
       cta: "Entrar al pueblo",
       controls: [
         "Moverte — WASD o flechas",
-        "Mirar — arrastra el ratón",
+        "Mirar — mueve el ratón (Esc lo libera)",
         "Hablar con un vecino — acércate y pulsa E",
         "Tus habilidades — tecla C",
       ],
@@ -328,7 +328,7 @@ const en: Dictionary = {
   world: {
     title: "Graells' virtual world",
     loading: "Generating the world…",
-    hint: "WASD / arrows to move · drag to look · walk up to a villager and press E",
+    hint: "WASD to move · move the mouse to look · walk up and press E · Esc frees the mouse",
     hintTouch: "Joystick to move · drag to look · tap a villager to talk",
     hintNear: "Press E to talk",
     hintNearTouch: "Tap to talk",
@@ -345,7 +345,7 @@ const en: Dictionary = {
       cta: "Enter the village",
       controls: [
         "Move — WASD or arrows",
-        "Look around — drag the mouse",
+        "Look around — move the mouse (Esc frees it)",
         "Talk to a villager — walk up and press E",
         "Your skills — press C",
       ],

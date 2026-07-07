@@ -262,6 +262,11 @@ function PlayerRig({
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
 
+  // Al pausar (diálogo, STATUS, bienvenida) se libera el ratón para poder clicar
+  useEffect(() => {
+    if (paused && document.pointerLockElement) document.exitPointerLock();
+  }, [paused]);
+
   // Colliders del pueblo: cajas rotadas (casas) y círculos (árbol, aldeanos)
   const colliders = useMemo(
     () => ({
@@ -328,14 +333,29 @@ function PlayerRig({
 
     const onDown = (e: PointerEvent) => {
       intro.current = 1; // un clic/toque también salta la intro
+      // En escritorio, un clic captura el ratón: se mira moviéndolo, sin arrastrar
+      if (!touch && !pausedRef.current && document.pointerLockElement !== el) {
+        try {
+          const req = (
+            el.requestPointerLock as () => Promise<void> | void
+          )();
+          if (req && typeof (req as Promise<void>).catch === "function") {
+            (req as Promise<void>).catch(() => {});
+          }
+        } catch {
+          /* pointer lock no disponible: seguimos con arrastre */
+        }
+      }
       if (lookPointerId !== null) return; // ya hay un dedo mirando
       lookPointerId = e.pointerId;
       drag.dist = 0;
       lastX = e.clientX;
       lastY = e.clientY;
     };
+    // Arrastre (respaldo y táctil): mirar manteniendo pulsado
     const onMove = (e: PointerEvent) => {
       if (e.pointerId !== lookPointerId || pausedRef.current) return;
+      if (document.pointerLockElement === el) return; // ya mira el ratón capturado
       const dx = e.clientX - lastX;
       const dy = e.clientY - lastY;
       lastX = e.clientX;
@@ -352,16 +372,28 @@ function PlayerRig({
     const onUp = (e: PointerEvent) => {
       if (e.pointerId === lookPointerId) lookPointerId = null;
     };
+    // Ratón capturado (Pointer Lock): mirar como en un FPS, sin pulsar
+    const onLockedLook = (e: MouseEvent) => {
+      if (document.pointerLockElement !== el || pausedRef.current) return;
+      yaw.current += e.movementX * 0.0022;
+      pitch.current = THREE.MathUtils.clamp(
+        pitch.current + e.movementY * 0.002,
+        -0.8,
+        0.6,
+      );
+    };
 
     el.addEventListener("pointerdown", onDown);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onUp);
     window.addEventListener("pointercancel", onUp);
+    document.addEventListener("mousemove", onLockedLook);
     return () => {
       el.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onUp);
       window.removeEventListener("pointercancel", onUp);
+      document.removeEventListener("mousemove", onLockedLook);
     };
   }, [gl, drag, touch]);
 

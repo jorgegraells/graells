@@ -403,6 +403,24 @@ export default function World({
     setTouchDevice(window.matchMedia("(pointer: coarse)").matches);
   }, []);
 
+  // Entrar al pueblo: en escritorio captura el ratón para mirar como en un FPS
+  const start = useCallback(() => {
+    setStarted(true);
+    if (!window.matchMedia("(pointer: coarse)").matches) {
+      try {
+        const canvas = document.querySelector("canvas");
+        const req = (
+          canvas?.requestPointerLock as (() => Promise<void> | void) | undefined
+        )?.call(canvas);
+        if (req && typeof (req as Promise<void>).catch === "function") {
+          (req as Promise<void>).catch(() => {});
+        }
+      } catch {
+        /* sin pointer lock: el jugador puede clicar para capturar el ratón */
+      }
+    }
+  }, []);
+
   const activeIndex = active
     ? dict.projects.items.findIndex((p) => p.slug === active.slug)
     : -1;
@@ -467,6 +485,11 @@ export default function World({
         </button>
       </div>
 
+      {/* Mira central en modo escritorio (feel de FPS) */}
+      {started && !touchDevice && !active && !skillsOpen && (
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 shadow-[0_0_4px_rgba(0,0,0,0.6)]" />
+      )}
+
       {/* Pista de controles (oculta antes de entrar, en diálogo o en STATUS) */}
       {started && !active && !skillsOpen && (
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-4">
@@ -482,7 +505,7 @@ export default function World({
             key="welcome"
             dict={dict}
             touch={touchDevice}
-            onStart={() => setStarted(true)}
+            onStart={start}
           />
         )}
         {active && (
