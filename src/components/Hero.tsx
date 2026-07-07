@@ -98,27 +98,35 @@ export default function Hero({
           className="relative mt-2 h-[42vh] max-h-[460px] min-h-[280px]"
           style={{ transition: "transform 0.16s ease-out" }}
         >
-          <div className="animate-float-slow relative h-full">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/jorge-holo.jpg"
-              alt="Jorge Graells en holograma"
-              className="holo-mask holo-live holo-flicker h-full w-auto object-contain"
-            />
-            {/* Barrido de escaneo */}
-            <div className="holo-scan pointer-events-none absolute inset-0" />
-            {/* Motas ascendentes desde la base */}
-            {MOTES.map((m, i) => (
-              <span
-                key={i}
-                className="holo-mote"
-                style={{
-                  left: `calc(50% + ${m.x}px)`,
-                  bottom: "8%",
-                  animationDelay: `${m.d}s`,
-                }}
+          <div className="animate-float-slow relative mx-auto h-full w-fit">
+            <div className="holo-idle relative h-full">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/jorge-holo-cut.webp"
+                alt="Jorge Graells en holograma"
+                className="holo-live holo-flicker h-full w-auto object-contain"
               />
-            ))}
+              {/* Efectos ceñidos a la silueta (la imagen hace de máscara) */}
+              <div className="holo-sil pointer-events-none absolute inset-0">
+                <div className="holo-scanline" />
+                <div
+                  className="holo-blink"
+                  style={{ top: "31.5%", left: "34%", width: "32%", height: "5.5%" }}
+                />
+              </div>
+              {/* Motas ascendentes desde la base */}
+              {MOTES.map((m, i) => (
+                <span
+                  key={i}
+                  className="holo-mote"
+                  style={{
+                    left: `calc(50% + ${m.x}px)`,
+                    bottom: "12%",
+                    animationDelay: `${m.d}s`,
+                  }}
+                />
+              ))}
+            </div>
           </div>
         </motion.div>
 

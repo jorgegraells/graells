@@ -207,62 +207,90 @@ body {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-14px);
+    transform: translateY(-8px);
   }
 }
 .animate-float-slow {
   animation: float-slow 6s ease-in-out infinite;
 }
 
-/* Holograma: recorta el fondo de laboratorio y lo funde con el hero */
-.holo-mask {
-  -webkit-mask-image: radial-gradient(
-    ellipse 58% 70% at 50% 42%,
-    #000 48%,
-    transparent 78%
-  );
-  mask-image: radial-gradient(
-    ellipse 58% 70% at 50% 42%,
-    #000 48%,
-    transparent 78%
-  );
-  mix-blend-mode: screen;
-}
-
-/* Ondulación líquida (filtro SVG) + resplandor cian */
+/* Ondulación líquida (filtro SVG) + resplandor cian sobre la silueta real */
 .holo-live {
-  filter: url(#holoDistort) drop-shadow(0 0 30px rgba(34, 211, 238, 0.45))
+  filter: url(#holoDistort) drop-shadow(0 0 26px rgba(34, 211, 238, 0.5))
     drop-shadow(0 0 60px rgba(56, 189, 248, 0.3));
 }
 
-/* Barrido de escaneo que recorre el holograma de arriba abajo */
-.holo-scan {
-  -webkit-mask-image: radial-gradient(
-    ellipse 58% 70% at 50% 42%,
-    #000 48%,
-    transparent 78%
-  );
-  mask-image: radial-gradient(
-    ellipse 58% 70% at 50% 42%,
-    #000 48%,
-    transparent 78%
-  );
+/* Capa de efectos ceñida a la silueta: usa la propia imagen como máscara,
+   así el barrido y el parpadeo solo pintan sobre el holograma. */
+.holo-sil {
+  -webkit-mask: url("/jorge-holo-cut.webp") center / 100% 100% no-repeat;
+  mask: url("/jorge-holo-cut.webp") center / 100% 100% no-repeat;
+  overflow: hidden;
+}
+
+/* Franja de escaneo que recorre solo la silueta */
+.holo-scanline {
+  position: absolute;
+  inset: 0;
   background: linear-gradient(
     180deg,
     transparent 44%,
-    rgba(186, 245, 255, 0.55) 50%,
+    rgba(186, 245, 255, 0.5) 50%,
     transparent 56%
   );
-  mix-blend-mode: screen;
-  animation: holo-scan 3.6s linear infinite;
+  animation: holo-scan 3.8s linear infinite;
 }
 @keyframes holo-scan {
   from {
-    transform: translateY(-120%);
+    transform: translateY(-70%);
   }
   to {
-    transform: translateY(120%);
+    transform: translateY(70%);
   }
+}
+
+/* Parpadeo: oscurece brevemente la franja de los ojos */
+.holo-blink {
+  position: absolute;
+  background: radial-gradient(
+    ellipse 50% 55% at 50% 50%,
+    rgba(6, 16, 28, 0.95) 30%,
+    transparent 75%
+  );
+  opacity: 0;
+  animation: holo-blink 5.4s ease-in-out infinite;
+}
+@keyframes holo-blink {
+  0%,
+  90.5%,
+  94.5%,
+  100% {
+    opacity: 0;
+  }
+  92%,
+  93% {
+    opacity: 1;
+  }
+}
+
+/* Micro-movimientos de cabeza: el holograma "vive" */
+@keyframes holo-idle {
+  0%,
+  100% {
+    transform: rotate(0deg) translate(0, 0) scale(1);
+  }
+  28% {
+    transform: rotate(0.6deg) translate(2px, -2px) scale(1.004);
+  }
+  52% {
+    transform: rotate(-0.5deg) translate(-2px, 1px) scale(1);
+  }
+  76% {
+    transform: rotate(0.25deg) translate(1px, 2px) scale(1.002);
+  }
+}
+.holo-idle {
+  animation: holo-idle 10s ease-in-out infinite;
 }
 
 /* Motas de luz que ascienden desde la base proyectora */
