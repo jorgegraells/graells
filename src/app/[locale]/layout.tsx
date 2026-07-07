@@ -75,6 +75,9 @@ export async function generateMetadata({
         ],
     authors: [{ name: "Jorge Graells", url: SITE }],
     creator: "Jorge Graells",
+    verification: {
+      google: "XEnp1fS5vMfANKqkk72g2EPt0XwEGjZdiIZbrPpBtdY",
+    },
     robots: {
       index: true,
       follow: true,
