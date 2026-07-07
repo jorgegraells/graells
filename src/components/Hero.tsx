@@ -1,8 +1,20 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { Dictionary, Locale } from "@/i18n/dictionaries";
+
+const MOTES = [
+  { x: -30, d: 0 },
+  { x: -12, d: 0.8 },
+  { x: 0, d: 1.6 },
+  { x: 14, d: 0.4 },
+  { x: 32, d: 2.1 },
+  { x: -22, d: 2.8 },
+  { x: 22, d: 3.4 },
+  { x: 6, d: 1.1 },
+];
 
 export default function Hero({
   locale,
@@ -11,15 +23,59 @@ export default function Hero({
   locale: Locale;
   dict: Dictionary;
 }) {
+  const holoRef = useRef<HTMLDivElement>(null);
+
+  const onMove = (e: React.MouseEvent) => {
+    const el = holoRef.current;
+    if (!el) return;
+    const dx = e.clientX / window.innerWidth - 0.5;
+    const dy = e.clientY / window.innerHeight - 0.5;
+    el.style.transform = `translate3d(${dx * 20}px, ${dy * 14}px, 0) rotateY(${dx * 9}deg) rotateX(${-dy * 8}deg)`;
+  };
+  const onLeave = () => {
+    if (holoRef.current) holoRef.current.style.transform = "";
+  };
+
   return (
-    <section className="synth-sky relative flex min-h-screen flex-col items-center justify-center overflow-hidden py-6">
+    <section
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="synth-sky relative flex min-h-screen flex-col items-center justify-center overflow-hidden py-6"
+      style={{ perspective: "900px" }}
+    >
+      {/* Filtro de ondulación líquida del holograma */}
+      <svg width="0" height="0" className="absolute" aria-hidden>
+        <filter id="holoDistort">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.006 0.014"
+            numOctaves={2}
+            seed={3}
+            result="noise"
+          >
+            <animate
+              attributeName="baseFrequency"
+              dur="7s"
+              values="0.006 0.014; 0.009 0.02; 0.006 0.014"
+              repeatCount="indefinite"
+            />
+          </feTurbulence>
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale={5}
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
+
       {/* Rejilla en perspectiva (plataforma proyectora) */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 top-[62%] overflow-hidden">
         <div className="synth-grid absolute inset-x-[-50%] bottom-0 top-0" />
       </div>
-      {/* Resplandor cian tras el holograma */}
-      <div className="pointer-events-none absolute left-1/2 top-[38%] h-[60vh] w-[60vh] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.22)_0%,transparent_65%)]" />
-      {/* Líneas de escaneo + viñeta */}
+      {/* Resplandor cian que respira tras el holograma */}
+      <div className="animate-glow-breathe pointer-events-none absolute left-1/2 top-[38%] h-[60vh] w-[60vh] rounded-full bg-[radial-gradient(circle,rgba(34,211,238,0.24)_0%,transparent_65%)]" />
       <div className="scanlines pointer-events-none absolute inset-0 opacity-30" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(7,5,16,0.65)_100%)]" />
 
@@ -33,22 +89,40 @@ export default function Hero({
           ★ {dict.hero.playable}
         </motion.p>
 
-        {/* Holograma */}
+        {/* Holograma vivo */}
         <motion.div
+          ref={holoRef}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.2 }}
-          className="animate-float-slow relative mt-2 h-[42vh] max-h-[460px] min-h-[280px]"
+          className="relative mt-2 h-[42vh] max-h-[460px] min-h-[280px]"
+          style={{ transition: "transform 0.16s ease-out" }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/jorge-holo.jpg"
-            alt="Jorge Graells en holograma"
-            className="holo-mask holo-flicker h-full w-auto object-contain"
-          />
+          <div className="animate-float-slow relative h-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/jorge-holo.jpg"
+              alt="Jorge Graells en holograma"
+              className="holo-mask holo-live holo-flicker h-full w-auto object-contain"
+            />
+            {/* Barrido de escaneo */}
+            <div className="holo-scan pointer-events-none absolute inset-0" />
+            {/* Motas ascendentes desde la base */}
+            {MOTES.map((m, i) => (
+              <span
+                key={i}
+                className="holo-mote"
+                style={{
+                  left: `calc(50% + ${m.x}px)`,
+                  bottom: "8%",
+                  animationDelay: `${m.d}s`,
+                }}
+              />
+            ))}
+          </div>
         </motion.div>
 
-        {/* Nombre (se integra bajo el haz del proyector) */}
+        {/* Nombre */}
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
