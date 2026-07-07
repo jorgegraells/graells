@@ -89,6 +89,67 @@ function JumpButton({ move }: { move: MoveInput }) {
   );
 }
 
+/** Pantalla de bienvenida: enmarca el mundo como un videojuego antes de empezar. */
+function Welcome({
+  dict,
+  touch,
+  onStart,
+}: {
+  dict: Dictionary;
+  touch: boolean;
+  onStart: () => void;
+}) {
+  const controls = touch
+    ? dict.world.intro.controlsTouch
+    : dict.world.intro.controls;
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 p-5 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.94 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 240, damping: 24 }}
+        className="glass w-full max-w-lg rounded-3xl p-8 text-center shadow-[0_0_80px_-20px_rgba(34,211,238,0.7)]"
+      >
+        <p className="font-mono text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+          {dict.world.intro.eyebrow}
+        </p>
+        <h2 className="mt-3 bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-3xl font-bold text-transparent sm:text-4xl">
+          {dict.world.intro.title}
+        </h2>
+        <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-white/80">
+          {dict.world.intro.body}
+        </p>
+
+        <ul className="mx-auto mt-6 grid max-w-sm gap-2 text-left">
+          {controls.map((line) => (
+            <li
+              key={line}
+              className="flex items-start gap-2 text-sm text-white/85"
+            >
+              <span className="mt-0.5 text-accent">▹</span>
+              {line}
+            </li>
+          ))}
+        </ul>
+
+        <button
+          type="button"
+          onClick={onStart}
+          className="glow-ring mt-8 w-full rounded-full bg-accent/15 px-6 py-3.5 text-sm font-semibold text-accent transition-colors hover:bg-accent/25"
+        >
+          {dict.world.intro.cta} →
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 /** Ventana STATUS estilo Solo Leveling: emerge sobre la mano extendida del jugador. */
 function StatusPanel({
   dict,
@@ -309,10 +370,13 @@ export default function World({
   const [active, setActive] = useState<Project | null>(null);
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [worldStyle, setWorldStyle] = useState<WorldStyle>("blocky");
+  const [started, setStarted] = useState(false);
   const [touchDevice, setTouchDevice] = useState(false);
   const move = useRef<MoveInput>({ x: 0, y: 0, jump: false }).current;
   const activeRef = useRef(active);
   activeRef.current = active;
+  const startedRef = useRef(started);
+  startedRef.current = started;
 
   const close = useCallback(() => setActive(null), []);
   const onEnter = useCallback((project: Project) => {
@@ -326,8 +390,8 @@ export default function World({
         setActive(null);
         setSkillsOpen(false);
       }
-      // C abre/cierra la ventana de habilidades (si no hay diálogo)
-      if (e.code === "KeyC" && activeRef.current === null) {
+      // C abre/cierra la ventana de habilidades (si ya se ha entrado y no hay diálogo)
+      if (e.code === "KeyC" && activeRef.current === null && startedRef.current) {
         setSkillsOpen((open) => !open);
       }
     };
@@ -352,14 +416,14 @@ export default function World({
       <WorldCanvas
         dict={dict}
         touch={touchDevice}
-        paused={active !== null || skillsOpen}
+        paused={active !== null || skillsOpen || !started}
         casting={skillsOpen}
         style={worldStyle}
         onEnter={onEnter}
         externalMove={move}
       />
 
-      {touchDevice && !active && !skillsOpen && (
+      {touchDevice && started && !active && !skillsOpen && (
         <>
           <Joystick move={move} />
           <JumpButton move={move} />
@@ -403,8 +467,8 @@ export default function World({
         </button>
       </div>
 
-      {/* Pista de controles (oculta durante el diálogo o el STATUS) */}
-      {!active && !skillsOpen && (
+      {/* Pista de controles (oculta antes de entrar, en diálogo o en STATUS) */}
+      {started && !active && !skillsOpen && (
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-4">
           <p className="glass rounded-full px-5 py-2.5 text-center font-mono text-xs text-white/85">
             {touchDevice ? dict.world.hintTouch : dict.world.hint}
@@ -413,6 +477,14 @@ export default function World({
       )}
 
       <AnimatePresence>
+        {!started && (
+          <Welcome
+            key="welcome"
+            dict={dict}
+            touch={touchDevice}
+            onStart={() => setStarted(true)}
+          />
+        )}
         {active && (
           <Dialogue
             key={active.slug}

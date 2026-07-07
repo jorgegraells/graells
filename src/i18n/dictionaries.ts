@@ -56,6 +56,14 @@ export type Dictionary = {
     greet: string;
     next: string;
     style: { blocky: string; rounded: string };
+    intro: {
+      eyebrow: string;
+      title: string;
+      body: string;
+      cta: string;
+      controls: string[];
+      controlsTouch: string[];
+    };
     status: {
       open: string;
       title: string;
@@ -110,6 +118,24 @@ const es: Dictionary = {
     greet: "¡Hola, viajero! Bienvenido a {name}. Deja que te lo cuente…",
     next: "Siguiente",
     style: { blocky: "Cuadrado", rounded: "Redondo" },
+    intro: {
+      eyebrow: "Mundo virtual · un pequeño videojuego",
+      title: "Bienvenido al pueblo de Graells",
+      body: "Cada casa es un proyecto y cada vecino te cuenta un capítulo de la carrera de Jorge Graells como desarrollador e ingeniero de IA. Pasea por el pueblo, acércate a un vecino y deja que te cuente su historia.",
+      cta: "Entrar al pueblo",
+      controls: [
+        "Moverte — WASD o flechas",
+        "Mirar — arrastra el ratón",
+        "Hablar con un vecino — acércate y pulsa E",
+        "Tus habilidades — tecla C",
+      ],
+      controlsTouch: [
+        "Moverte — joystick",
+        "Mirar — arrastra el dedo",
+        "Hablar con un vecino — toca al vecino",
+        "Tus habilidades — botón ⬡",
+      ],
+    },
     status: {
       open: "Habilidades",
       title: "STATUS",
@@ -312,6 +338,24 @@ const en: Dictionary = {
     greet: "Hi, traveler! Welcome to {name}. Let me tell you about it…",
     next: "Next",
     style: { blocky: "Blocky", rounded: "Rounded" },
+    intro: {
+      eyebrow: "Virtual world · a little videogame",
+      title: "Welcome to Graells' village",
+      body: "Every house is a project and every villager tells you a chapter of Jorge Graells' career as a developer and AI engineer. Wander the village, walk up to a villager and let them tell you their story.",
+      cta: "Enter the village",
+      controls: [
+        "Move — WASD or arrows",
+        "Look around — drag the mouse",
+        "Talk to a villager — walk up and press E",
+        "Your skills — press C",
+      ],
+      controlsTouch: [
+        "Move — joystick",
+        "Look around — drag your finger",
+        "Talk to a villager — tap the villager",
+        "Your skills — ⬡ button",
+      ],
+    },
     status: {
       open: "Skills",
       title: "STATUS",
