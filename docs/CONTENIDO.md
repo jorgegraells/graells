@@ -40,6 +40,19 @@ Los proyectos son `projects.items[]` (tipo `Project`). Campos:
 
 `siteLinks` (mismo archivo): GitHub, LinkedIn, email. Se usan en Contact y Footer.
 
+## SEO / GEO (posicionamiento en buscadores e IAs)
+
+- **JSON-LD** (Person + WebSite + ProfilePage + ItemList de proyectos): se
+  genera en `src/app/[locale]/layout.tsx` **desde el diccionario** — al editar
+  proyectos se actualiza solo. Si cambias el titular de Jorge, revisa
+  `jobTitle` y las descriptions de `generateMetadata` ahí mismo.
+- **`public/llms.txt`**: índice del sitio para LLMs (estándar llms.txt). Al
+  añadir/quitar un proyecto, actualízalo a mano (una línea por proyecto,
+  mismas reglas de contenido: sin precios/VTEQ/SofIA).
+- `src/app/sitemap.ts` y `src/app/robots.ts`: el robots permite explícitamente
+  los crawlers de IA (GPTBot, PerplexityBot, ClaudeBot…) — NO bloquearlos.
+- Imagen social: `public/og.jpg` (se regenera con `node scripts/og-image.mjs`).
+
 ## Checklist al terminar
 
 1. ¿ES y EN actualizados y equivalentes?

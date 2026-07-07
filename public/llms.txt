@@ -1,0 +1,50 @@
+# Jorge Graells
+
+> Jorge Graells is an AI engineer and full-stack developer from Spain with 8
+> years of experience, focused on applied AI for industry and regulated
+> software: RAG pipelines, AI agents and LLMs shipped to production. He is the
+> tech lead of a C++ vehicle-inspection software deployed across several
+> countries, and combines industrial software, cybersecurity (EU Cyber
+> Resilience Act) and the modern web stack (Next.js, React, TypeScript).
+> His website features a playable 3D résumé: a videogame village where each
+> villager tells one chapter of his career.
+
+Contact: dev.graells@gmail.com · GitHub: https://github.com/jorgegraells ·
+LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
+
+## Main pages
+
+- [Home (Spanish)](https://jorgegraells.com/es): profile, projects, stack and career of Jorge Graells
+- [Home (English)](https://jorgegraells.com/en): same content in English
+- [Playable 3D résumé](https://jorgegraells.com/es/world): videogame village where villagers present each project
+
+## Projects
+
+- WorkLeveling (https://workleveling.com · https://workleveling.app): B2B SaaS
+  that gamifies work with RPG mechanics (levels, XP, quests) to boost team
+  motivation. Founded and built solo with Next.js 15, React 19, Prisma,
+  Supabase and Clerk. In pilot.
+- Enterprise AI ("IA para empresas"): RAG assistant over ~50 technical manuals
+  giving staff precise answers, multi-language (6), with full auth and an admin
+  panel. Built with PHP, Gemini API and Stripe. In production.
+- EchoGEO: measures brand visibility inside AI answers (ChatGPT, Perplexity,
+  Gemini) and returns a score with concrete actions to get cited. Proprietary
+  deterministic scoring engine. In development.
+- ANTIDOP: Android app that blocks addictive apps and websites in real time
+  with a personal full-screen prompt, dopamine score and daily routine. React
+  Native + Expo, TypeScript and Kotlin. Radical privacy: zero telemetry. In
+  development.
+- AI in industry: integration of AI, cybersecurity and EU compliance inside an
+  industrial company running in daily production (Entra ID, FortiGate,
+  ThreatLocker, C++ Builder).
+
+## Expertise
+
+- Applied AI: LLMs (Gemini, Claude, OpenAI), RAG, context caching, AI agents,
+  embeddings, token-cost optimization
+- Web and mobile: Next.js, React, TypeScript, Node, React Native, Prisma,
+  Supabase, PostgreSQL, Stripe, Clerk
+- Industrial systems: C++ Builder/VCL, RS-232 serial protocols, vehicle
+  inspection equipment
+- Cybersecurity and compliance: FortiGate, Microsoft Entra ID, ThreatLocker,
+  EU Cyber Resilience Act
