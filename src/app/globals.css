@@ -213,3 +213,45 @@ body {
 .animate-float-slow {
   animation: float-slow 6s ease-in-out infinite;
 }
+
+/* Holograma: recorta el fondo de laboratorio y lo funde con glow + parpadeo */
+.holo-mask {
+  -webkit-mask-image: radial-gradient(
+    ellipse 58% 70% at 50% 42%,
+    #000 48%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 58% 70% at 50% 42%,
+    #000 48%,
+    transparent 78%
+  );
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.45))
+    drop-shadow(0 0 60px rgba(56, 189, 248, 0.3));
+}
+
+@keyframes holo-flicker {
+  0%,
+  100% {
+    opacity: 0.97;
+  }
+  45% {
+    opacity: 1;
+  }
+  47% {
+    opacity: 0.86;
+  }
+  49% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.93;
+  }
+  82% {
+    opacity: 1;
+  }
+}
+.holo-flicker {
+  animation: holo-flicker 4.5s ease-in-out infinite;
+}
