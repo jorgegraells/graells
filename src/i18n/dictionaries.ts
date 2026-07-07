@@ -54,6 +54,7 @@ export type Dictionary = {
     close: string;
     exit: string;
     escHint: string;
+    building: string;
     greet: string;
     next: string;
     style: { blocky: string; rounded: string };
@@ -117,13 +118,14 @@ const es: Dictionary = {
     close: "Volver al pueblo",
     exit: "Salir del mundo",
     escHint: "Esc · libera el ratón para salir",
+    building: "Construyendo",
     greet: "¡Hola, viajero! Bienvenido a {name}. Deja que te lo cuente…",
     next: "Siguiente",
     style: { blocky: "Cuadrado", rounded: "Redondo" },
     intro: {
       eyebrow: "Mundo virtual · un pequeño videojuego",
       title: "Bienvenido al pueblo de Graells",
-      body: "Cada casa es un proyecto y cada vecino te cuenta un capítulo de la carrera de Jorge Graells como desarrollador e ingeniero de IA. Pasea por el pueblo, acércate a un vecino y deja que te cuente su historia.",
+      body: "Hola, soy Jorge Graells y he desarrollado un videojuego para presentar mi currículum. Cada casa es un proyecto y cada vecino te cuenta un capítulo de mi carrera como desarrollador e ingeniero de IA. Acércate a un vecino y deja que te cuente su historia.",
       cta: "Entrar al pueblo",
       controls: [
         "Moverte — WASD o flechas",
@@ -338,13 +340,14 @@ const en: Dictionary = {
     close: "Back to the village",
     exit: "Leave the world",
     escHint: "Esc · free the mouse to exit",
+    building: "Building",
     greet: "Hi, traveler! Welcome to {name}. Let me tell you about it…",
     next: "Next",
     style: { blocky: "Blocky", rounded: "Rounded" },
     intro: {
       eyebrow: "Virtual world · a little videogame",
       title: "Welcome to Graells' village",
-      body: "Every house is a project and every villager tells you a chapter of Jorge Graells' career as a developer and AI engineer. Wander the village, walk up to a villager and let them tell you their story.",
+      body: "Hi, I'm Jorge Graells and I built a videogame to present my résumé. Every house is a project and every villager tells you a chapter of my career as a developer and AI engineer. Walk up to a villager and let them tell you their story.",
       cta: "Enter the village",
       controls: [
         "Move — WASD or arrows",

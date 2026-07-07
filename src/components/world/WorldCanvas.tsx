@@ -1268,6 +1268,188 @@ function ConstructionCrane({ phase }: { phase: number }) {
   );
 }
 
+/** Obrero con chaleco reflectante y casco. */
+function Worker({
+  position,
+  rotY = 0,
+}: {
+  position: [number, number, number];
+  rotY?: number;
+}) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  return (
+    <group position={position} rotation={[0, rotY, 0]}>
+      {/* Piernas */}
+      <Block args={[0.2, 0.5, 0.2]} radius={0.06} castShadow position={[-0.12, 0.25, 0]}>
+        <meshStandardMaterial color="#2c3448" flatShading={flat} />
+      </Block>
+      <Block args={[0.2, 0.5, 0.2]} radius={0.06} castShadow position={[0.12, 0.25, 0]}>
+        <meshStandardMaterial color="#2c3448" flatShading={flat} />
+      </Block>
+      {/* Chaleco naranja con franjas reflectantes */}
+      <Block args={[0.5, 0.6, 0.3]} radius={0.1} castShadow position={[0, 0.78, 0]}>
+        <meshStandardMaterial color="#f26a1b" flatShading={flat} />
+      </Block>
+      <Block args={[0.52, 0.09, 0.32]} radius={0.02} position={[0, 0.88, 0]}>
+        <meshStandardMaterial color="#eef3f5" flatShading={flat} />
+      </Block>
+      <Block args={[0.52, 0.09, 0.32]} radius={0.02} position={[0, 0.68, 0]}>
+        <meshStandardMaterial color="#eef3f5" flatShading={flat} />
+      </Block>
+      {/* Brazos */}
+      {[-0.33, 0.33].map((x) => (
+        <Block key={x} args={[0.14, 0.52, 0.18]} radius={0.06} castShadow position={[x, 0.76, 0]}>
+          <meshStandardMaterial color="#f26a1b" flatShading={flat} />
+        </Block>
+      ))}
+      {/* Cabeza */}
+      <Block args={[0.34, 0.36, 0.34]} radius={0.1} castShadow position={[0, 1.24, 0]}>
+        <meshStandardMaterial color="#d8a171" flatShading={flat} />
+      </Block>
+      {/* Casco de obra */}
+      <Block args={[0.42, 0.18, 0.42]} radius={0.16} position={[0, 1.44, 0]}>
+        <meshStandardMaterial color="#f2c14e" flatShading={flat} />
+      </Block>
+      <Block args={[0.52, 0.05, 0.52]} radius={0.03} position={[0, 1.36, 0]}>
+        <meshStandardMaterial color="#e0a800" flatShading={flat} />
+      </Block>
+    </group>
+  );
+}
+
+/** Valla de obra de barras rojas y blancas de la longitud indicada (a lo largo de X). */
+function StripedRail({ length }: { length: number }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const seg = 0.5;
+  const n = Math.max(1, Math.round(length / seg));
+  const start = -((n - 1) * seg) / 2;
+  return (
+    <group>
+      {Array.from({ length: n }).map((_, i) => (
+        <Block key={i} args={[seg * 0.96, 0.18, 0.1]} radius={0.03} position={[start + i * seg, 0.6, 0]}>
+          <meshStandardMaterial color={i % 2 ? "#d63d2e" : "#f3f3f3"} flatShading={flat} />
+        </Block>
+      ))}
+      {[start - seg / 2, -start + seg / 2].map((x, i) => (
+        <Block key={i} args={[0.1, 0.78, 0.1]} radius={0.03} castShadow position={[x, 0.39, 0]}>
+          <meshStandardMaterial color="#7a7a7a" flatShading={flat} />
+        </Block>
+      ))}
+    </group>
+  );
+}
+
+/** Andamio tubular pegado a un muro (lado izquierdo o derecho de la casa). */
+function Scaffold({ side, flat }: { side: number; flat: boolean }) {
+  const pole = "#9a9a9a";
+  const x = side * 3.15;
+  return (
+    <group>
+      {[-2, 2].map((z) => (
+        <Block key={z} args={[0.1, 4.6, 0.1]} radius={0.03} castShadow position={[x, 2.3, z]}>
+          <meshStandardMaterial color={pole} flatShading={flat} />
+        </Block>
+      ))}
+      {[-2, 2].map((z) => (
+        <Block key={`o${z}`} args={[0.1, 4.6, 0.1]} radius={0.03} castShadow position={[x + side * 0.9, 2.3, z]}>
+          <meshStandardMaterial color={pole} flatShading={flat} />
+        </Block>
+      ))}
+      {[1.4, 2.8, 4.2].map((y) => (
+        <Block key={y} args={[0.08, 0.08, 4]} radius={0.02} position={[x + side * 0.45, y, 0]}>
+          <meshStandardMaterial color={pole} flatShading={flat} />
+        </Block>
+      ))}
+      {/* Tablones de la plataforma */}
+      {[-1.3, -0.4, 0.5, 1.4].map((z) => (
+        <Block key={z} args={[1, 0.1, 0.8]} radius={0.02} castShadow position={[x + side * 0.45, 2.85, z]}>
+          <meshStandardMaterial color="#c19a5b" flatShading={flat} />
+        </Block>
+      ))}
+    </group>
+  );
+}
+
+/** Obra alrededor de la casa de EchoGEO: vallas, andamios y materiales. */
+function ConstructionSite({
+  position,
+  rotationY,
+}: {
+  position: [number, number, number];
+  rotationY: number;
+}) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const HW = 3.95;
+  const HD = 3.5;
+  return (
+    <group position={position} rotation={[0, rotationY, 0]}>
+      {/* Vallas: traseras, laterales y frontales con hueco central para pasar */}
+      <group position={[0, 0, -HD]}>
+        <StripedRail length={HW * 2} />
+      </group>
+      <group position={[-HW, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <StripedRail length={HD * 2} />
+      </group>
+      <group position={[HW, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <StripedRail length={HD * 2} />
+      </group>
+      <group position={[-(HW / 2 + 0.35), 0, HD]}>
+        <StripedRail length={HW - 0.7} />
+      </group>
+      <group position={[HW / 2 + 0.35, 0, HD]}>
+        <StripedRail length={HW - 0.7} />
+      </group>
+
+      {/* Andamios en ambos laterales */}
+      <Scaffold side={-1} flat={flat} />
+      <Scaffold side={1} flat={flat} />
+
+      {/* Montón de ladrillos */}
+      <group position={[-2.9, 0, 2.2]}>
+        {Array.from({ length: 3 }).map((_, r) =>
+          Array.from({ length: 3 }).map((_, c) => (
+            <Block
+              key={`${r}-${c}`}
+              args={[0.5, 0.22, 0.28]}
+              radius={0.03}
+              castShadow
+              position={[(c - 1) * 0.55, 0.12 + r * 0.24, (r % 2) * 0.08]}
+            >
+              <meshStandardMaterial color="#b1442f" flatShading={flat} />
+            </Block>
+          )),
+        )}
+      </group>
+      {/* Pila de tablones */}
+      <group position={[2.9, 0, 2.3]}>
+        {[0, 1, 2].map((i) => (
+          <Block key={i} args={[0.35, 0.12, 2.4]} radius={0.03} castShadow position={[(i - 1) * 0.4, 0.1, 0]}>
+            <meshStandardMaterial color="#c19a5b" flatShading={flat} />
+          </Block>
+        ))}
+      </group>
+      {/* Montón de arena */}
+      <mesh castShadow position={[2.9, 0.4, 0.2]}>
+        <coneGeometry args={[0.9, 0.8, flat ? 5 : 12]} />
+        <meshStandardMaterial color="#d9c18a" flatShading={flat} />
+      </mesh>
+      {/* Carretilla sencilla */}
+      <group position={[-2.6, 0, 0.4]}>
+        <Block args={[0.7, 0.3, 0.5]} radius={0.06} castShadow position={[0, 0.5, 0]}>
+          <meshStandardMaterial color="#d63d2e" flatShading={flat} />
+        </Block>
+        <mesh position={[0, 0.22, 0.35]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.2, 0.2, 0.12, 12]} />
+          <meshStandardMaterial color="#2a2a2a" />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
 /** Mariposas revoloteando por el pueblo. */
 function Butterflies() {
   const refs = useRef<(THREE.Group | null)[]>([]);
@@ -1364,47 +1546,138 @@ function Mountains() {
 // Casa y aldeano
 // ---------------------------------------------------------------------------
 
+/** Ventana con marco de madera y montantes en cruz. */
+function Window({ x, flat }: { x: number; flat: boolean }) {
+  const frame = "#5b3f26";
+  return (
+    <group position={[x, 1.95, 2.5]}>
+      {/* Cristal */}
+      <Block args={[1, 1, 0.06]} radius={0.04} position={[0, 0, 0.02]}>
+        <meshStandardMaterial
+          color="#bfe9ff"
+          emissive="#bfe9ff"
+          emissiveIntensity={0.25}
+          metalness={0.1}
+          roughness={0.3}
+        />
+      </Block>
+      {/* Marco */}
+      {[
+        [0, 0.56, 1.16, 0.12],
+        [0, -0.56, 1.16, 0.12],
+        [-0.56, 0, 0.12, 1.24],
+        [0.56, 0, 0.12, 1.24],
+      ].map(([px, py, w, h], i) => (
+        <Block key={i} args={[w, h, 0.14]} radius={0.03} position={[px, py, 0.05]}>
+          <meshStandardMaterial color={frame} flatShading={flat} />
+        </Block>
+      ))}
+      {/* Montantes en cruz */}
+      <Block args={[1, 0.07, 0.1]} radius={0.02} position={[0, 0, 0.07]}>
+        <meshStandardMaterial color={frame} flatShading={flat} />
+      </Block>
+      <Block args={[0.07, 1, 0.1]} radius={0.02} position={[0, 0, 0.07]}>
+        <meshStandardMaterial color={frame} flatShading={flat} />
+      </Block>
+      {/* Jardinera con florecitas */}
+      <Block args={[1.16, 0.2, 0.24]} radius={0.05} castShadow position={[0, -0.66, 0.14]}>
+        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      </Block>
+      {[-0.32, 0, 0.32].map((fx, i) => (
+        <mesh key={i} position={[fx, -0.52, 0.22]}>
+          <boxGeometry args={[0.12, 0.12, 0.12]} />
+          <meshStandardMaterial color={["#e74c3c", "#f1c40f", "#ffffff"][i]} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 /** Casa con tejado del color del proyecto. La puerta mira a +Z local (al centro). */
 function House({ color }: { color: string }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
+  const beam = "#6b4a2b";
   return (
     <group>
-      <Block args={[6, 3.2, 5]} radius={0.3} castShadow receiveShadow position={[0, 1.6, 0]}>
-        <meshStandardMaterial color="#c9a36a" flatShading={flat} />
+      {/* Zócalo de piedra */}
+      <Block args={[6.3, 0.5, 5.3]} radius={0.12} castShadow receiveShadow position={[0, 0.25, 0]}>
+        <meshStandardMaterial color="#8f8272" flatShading={flat} />
       </Block>
-      {/* Tejado piramidal */}
+      {/* Muros */}
+      <Block args={[6, 3.2, 5]} radius={0.25} castShadow receiveShadow position={[0, 2, 0]}>
+        <meshStandardMaterial color="#d8b483" flatShading={flat} />
+      </Block>
+      {/* Vigas de entramado en las esquinas (estilo casa de campo) */}
+      {[
+        [-2.9, 3.5],
+        [2.9, 3.5],
+        [-2.9, -3.5],
+        [2.9, -3.5],
+      ].map(([bx, bz], i) => (
+        <Block key={i} args={[0.28, 3.4, 0.28]} radius={0.05} position={[bx, 2, bz]}>
+          <meshStandardMaterial color={beam} flatShading={flat} />
+        </Block>
+      ))}
+      {/* Cenefa bajo el alero */}
+      <Block args={[6.2, 0.3, 5.2]} radius={0.08} position={[0, 3.65, 0]}>
+        <meshStandardMaterial color={beam} flatShading={flat} />
+      </Block>
+      {/* Tejado piramidal con alero volado */}
       <mesh
         castShadow
-        position={[0, 4.35, 0]}
+        position={[0, 4.55, 0]}
         rotation={[0, flat ? Math.PI / 4 : 0, 0]}
-        scale={[1.3, 1, 1.1]}
+        scale={[1.35, 1, 1.15]}
       >
-        <coneGeometry args={[4.3, 2.3, flat ? 4 : 8]} />
+        <coneGeometry args={[4.5, 2.5, flat ? 4 : 8]} />
         <meshStandardMaterial color={color} flatShading={flat} />
       </mesh>
-      {/* Puerta */}
-      <Block args={[1.1, 2.1, 0.1]} radius={0.06} position={[0, 1.05, 2.5]}>
-        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      {/* Remate del tejado */}
+      <Block args={[0.3, 0.3, 0.3]} radius={0.08} position={[0, 6, 0]}>
+        <meshStandardMaterial color="#f4f4f4" flatShading={flat} />
       </Block>
-      {/* Ventanas */}
-      <Block args={[1, 1, 0.08]} radius={0.05} position={[-1.8, 1.9, 2.5]}>
-        <meshStandardMaterial
-          color="#bfe9ff"
-          emissive="#bfe9ff"
-          emissiveIntensity={0.2}
-        />
+      {/* Puerta con marco, panel y pomo */}
+      <Block args={[1.4, 2.5, 0.16]} radius={0.05} position={[0, 1.25, 2.48]}>
+        <meshStandardMaterial color={beam} flatShading={flat} />
       </Block>
-      <Block args={[1, 1, 0.08]} radius={0.05} position={[1.8, 1.9, 2.5]}>
-        <meshStandardMaterial
-          color="#bfe9ff"
-          emissive="#bfe9ff"
-          emissiveIntensity={0.2}
-        />
+      <Block args={[1.1, 2.2, 0.14]} radius={0.05} position={[0, 1.15, 2.54]}>
+        <meshStandardMaterial color="#8a5a34" flatShading={flat} />
       </Block>
-      {/* Chimenea */}
-      <Block args={[0.6, 1.8, 0.6]} radius={0.1} castShadow position={[1.7, 5, -1]}>
-        <meshStandardMaterial color="#8d8d8d" flatShading={flat} />
+      <Block args={[0.78, 0.9, 0.06]} radius={0.03} position={[0, 1.5, 2.6]}>
+        <meshStandardMaterial color="#7a4f2c" flatShading={flat} />
+      </Block>
+      <mesh position={[0.36, 1.1, 2.62]}>
+        <sphereGeometry args={[0.07, 10, 10]} />
+        <meshStandardMaterial color="#e8c14a" metalness={0.6} roughness={0.3} />
+      </mesh>
+      {/* Escalón de piedra */}
+      <Block args={[1.7, 0.18, 0.6]} radius={0.05} castShadow position={[0, 0.09, 2.9]}>
+        <meshStandardMaterial color="#9a8f7d" flatShading={flat} />
+      </Block>
+      {/* Farolito junto a la puerta */}
+      <group position={[0.95, 2.2, 2.55]}>
+        <Block args={[0.08, 0.5, 0.08]} radius={0.03} position={[0, 0, 0]}>
+          <meshStandardMaterial color="#3d3d3d" flatShading={flat} />
+        </Block>
+        <Block args={[0.2, 0.24, 0.2]} radius={0.05} position={[0, -0.3, 0]}>
+          <meshStandardMaterial
+            color="#ffd27a"
+            emissive="#ffb84d"
+            emissiveIntensity={1.4}
+            toneMapped={false}
+          />
+        </Block>
+      </group>
+      {/* Ventanas detalladas */}
+      <Window x={-1.85} flat={flat} />
+      <Window x={1.85} flat={flat} />
+      {/* Chimenea con remate */}
+      <Block args={[0.6, 1.9, 0.6]} radius={0.1} castShadow position={[1.7, 5.1, -1]}>
+        <meshStandardMaterial color="#9a6b52" flatShading={flat} />
+      </Block>
+      <Block args={[0.78, 0.3, 0.78]} radius={0.05} position={[1.7, 6.05, -1]}>
+        <meshStandardMaterial color="#7a4f3c" flatShading={flat} />
       </Block>
       {/* Vallas del jardincito delantero */}
       {[-2.2, 2.2].map((x) => (
@@ -1846,14 +2119,15 @@ export default function WorldCanvas({
   );
   const clear = useMemo(() => makeGroundClear(layout), [layout]);
 
-  // Grúas de obra flanqueando la casa de EchoGEO (proyecto "en construcción")
-  const cranes = useMemo(() => {
+  // Obra de EchoGEO (proyecto "en construcción"): grúas flanqueando la casa,
+  // andamios, vallas, materiales y obreros. Se ancla a la casa por slug.
+  const echo = useMemo(() => {
     const idx = dict.projects.items.findIndex((p) => p.slug === "echogeo");
-    if (idx < 0) return [];
+    if (idx < 0) return null;
     const l = layout[idx];
     const perp = new THREE.Vector3(Math.cos(l.angle), 0, -Math.sin(l.angle));
     const dir = new THREE.Vector3(Math.sin(l.angle), 0, Math.cos(l.angle));
-    return [1, -1].map((side, i) => {
+    const cranes = [1, -1].map((side, i) => {
       const pos = l.housePos
         .clone()
         .addScaledVector(perp, side * 5.5)
@@ -1866,16 +2140,17 @@ export default function WorldCanvas({
         phase: i * 2.3,
       };
     });
+    return {
+      house: { x: l.housePos.x, z: l.housePos.z, rotationY: l.angle + Math.PI },
+      cranes,
+    };
   }, [dict.projects.items, layout]);
-  const craneColliders = useMemo(
-    () => cranes.map((c) => ({ x: c.x, z: c.z, r: 0.95 })),
-    [cranes],
-  );
+  const buildLabel = `${dict.world.building} EchoGEO`;
 
   return (
     <Canvas
       shadows
-      camera={{ fov: 65, near: 0.1, far: 300 }}
+      camera={{ fov: touch ? 74 : 65, near: 0.1, far: 300 }}
       dpr={[1, 1.75]}
       onCreated={({ gl }) => {
         // Permitir que el navegador restaure el contexto WebGL si se pierde
@@ -1913,9 +2188,28 @@ export default function WorldCanvas({
         <LampPosts />
         <Well />
         <Windmill />
-        {cranes.map((c, i) => (
+        {echo && (
+          <ConstructionSite
+            position={[echo.house.x, 0, echo.house.z]}
+            rotationY={echo.house.rotationY}
+          />
+        )}
+        {echo?.cranes.map((c, i) => (
           <group key={i} position={[c.x, 0, c.z]} rotation={[0, c.rotY, 0]}>
             <ConstructionCrane phase={c.phase} />
+            {/* Dos obreros bajo la pluma (que apunta a +X local) */}
+            <Worker position={[2.1, 0, -0.7]} rotY={-Math.PI / 2} />
+            <Worker position={[2.7, 0, 0.7]} rotY={-Math.PI / 2 - 0.3} />
+            <Html
+              center
+              zIndexRange={[15, 0]}
+              position={[2.4, 2.2, 0]}
+              style={{ pointerEvents: "none" }}
+            >
+              <div className="whitespace-nowrap rounded-full bg-[#f2a01b] px-3 py-1 text-xs font-bold text-black shadow-lg">
+                🚧 {buildLabel}
+              </div>
+            </Html>
           </group>
         ))}
         <Butterflies />
@@ -1934,7 +2228,7 @@ export default function WorldCanvas({
           drag={drag}
           externalMove={externalMove}
           layout={layout}
-          extraColliders={craneColliders}
+          extraColliders={[]}
         />
         <FirstPersonArms casting={casting} />
         {process.env.NODE_ENV !== "production" && <DebugProbe />}
