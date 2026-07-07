@@ -38,6 +38,7 @@ export type Dictionary = {
     name: string;
     role: string;
     tagline: string;
+    playable: string;
     ctaProjects: string;
     ctaContact: string;
     ctaWorld: string;
@@ -102,6 +103,7 @@ const es: Dictionary = {
     role: "AI Engineer & Full-Stack Developer",
     tagline:
       "IA aplicada de verdad para industria y software regulado: RAG, agentes y LLMs resolviendo problemas reales de empresa.",
+    playable: "Un currículum que se juega",
     ctaProjects: "Ver proyectos",
     ctaContact: "Hablemos",
     ctaWorld: "Entrar en el mundo virtual de Graells",
@@ -324,6 +326,7 @@ const en: Dictionary = {
     role: "AI Engineer & Full-Stack Developer",
     tagline:
       "Applied AI for industry and regulated software: RAG, agents and LLMs solving real business problems.",
+    playable: "A résumé you can play",
     ctaProjects: "View projects",
     ctaContact: "Let's talk",
     ctaWorld: "Enter Graells' virtual world",
