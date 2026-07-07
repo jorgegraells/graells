@@ -43,33 +43,6 @@ export default function Hero({
       className="synth-sky relative flex min-h-screen flex-col items-center justify-center overflow-hidden py-6"
       style={{ perspective: "900px" }}
     >
-      {/* Filtro de ondulación líquida del holograma */}
-      <svg width="0" height="0" className="absolute" aria-hidden>
-        <filter id="holoDistort">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.006 0.014"
-            numOctaves={2}
-            seed={3}
-            result="noise"
-          >
-            <animate
-              attributeName="baseFrequency"
-              dur="7s"
-              values="0.006 0.014; 0.009 0.02; 0.006 0.014"
-              repeatCount="indefinite"
-            />
-          </feTurbulence>
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="noise"
-            scale={5}
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </svg>
-
       {/* Rejilla en perspectiva (plataforma proyectora) */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 top-[62%] overflow-hidden">
         <div className="synth-grid absolute inset-x-[-50%] bottom-0 top-0" />
@@ -109,10 +82,6 @@ export default function Hero({
               {/* Efectos ceñidos a la silueta (la imagen hace de máscara) */}
               <div className="holo-sil pointer-events-none absolute inset-0">
                 <div className="holo-scanline" />
-                <div
-                  className="holo-blink"
-                  style={{ top: "31.5%", left: "34%", width: "32%", height: "5.5%" }}
-                />
               </div>
               {/* Motas ascendentes desde la base */}
               {MOTES.map((m, i) => (

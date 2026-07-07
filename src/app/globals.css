@@ -214,9 +214,9 @@ body {
   animation: float-slow 6s ease-in-out infinite;
 }
 
-/* Ondulación líquida (filtro SVG) + resplandor cian sobre la silueta real */
+/* Resplandor cian sobre la silueta real (sin distorsión: la cara no se deforma) */
 .holo-live {
-  filter: url(#holoDistort) drop-shadow(0 0 26px rgba(34, 211, 238, 0.5))
+  filter: drop-shadow(0 0 26px rgba(34, 211, 238, 0.5))
     drop-shadow(0 0 60px rgba(56, 189, 248, 0.3));
 }
 
@@ -246,30 +246,6 @@ body {
   }
   to {
     transform: translateY(70%);
-  }
-}
-
-/* Parpadeo: oscurece brevemente la franja de los ojos */
-.holo-blink {
-  position: absolute;
-  background: radial-gradient(
-    ellipse 50% 55% at 50% 50%,
-    rgba(6, 16, 28, 0.95) 30%,
-    transparent 75%
-  );
-  opacity: 0;
-  animation: holo-blink 5.4s ease-in-out infinite;
-}
-@keyframes holo-blink {
-  0%,
-  90.5%,
-  94.5%,
-  100% {
-    opacity: 0;
-  }
-  92%,
-  93% {
-    opacity: 1;
   }
 }
 
