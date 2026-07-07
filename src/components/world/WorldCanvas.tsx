@@ -199,6 +199,9 @@ export const VILLAGE_COLORS = [
   "#c94f4f",
 ];
 
+/** Proyecto cuya casa está en obras (grúas, vallas, obreros). */
+const CONSTRUCTION_SLUG = "echogeo";
+
 /** Rasgos que dan personalidad única a cada aldeano. */
 type Persona = {
   skin: string;
@@ -1200,18 +1203,24 @@ function Windmill() {
 }
 
 /** Grúa torre de obra: mástil, pluma con gancho colgando y contrapeso.
- *  Oscila muy despacio para dar sensación de obra en marcha. */
-function ConstructionCrane({ phase }: { phase: number }) {
+ *  Cada grúa tiene su altura: así las plumas de dos grúas enfrentadas nunca
+ *  se cruzan a la misma cota aunque oscilen. La oscilación es suave para que
+ *  la pluma no barra la otra grúa ni la casa. */
+function ConstructionCrane({ phase, height }: { phase: number; height: number }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
   const top = useRef<THREE.Group>(null);
   const hook = useRef<THREE.Group>(null);
-  const H = 10;
+  const H = height;
+  const braces = useMemo(
+    () => Array.from({ length: Math.floor((H - 1) / 1.8) }, (_, i) => 1.8 * (i + 1)),
+    [H],
+  );
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime + phase;
-    if (top.current) top.current.rotation.y = Math.sin(t * 0.15) * 0.35;
-    if (hook.current) hook.current.position.x = 5 + Math.sin(t * 0.5) * 0.4;
+    if (top.current) top.current.rotation.y = Math.sin(t * 0.15) * 0.22;
+    if (hook.current) hook.current.position.x = 3.6 + Math.sin(t * 0.5) * 0.4;
   });
 
   return (
@@ -1225,7 +1234,7 @@ function ConstructionCrane({ phase }: { phase: number }) {
         <meshStandardMaterial color="#f2c14e" flatShading={flat} />
       </Block>
       {/* Cruces de la torre para aspecto de celosía */}
-      {[1.8, 3.6, 5.4, 7.2].map((y) => (
+      {braces.map((y) => (
         <Block key={y} args={[0.62, 0.12, 0.12]} radius={0.03} position={[0, y, 0]}>
           <meshStandardMaterial color="#d9a72f" flatShading={flat} />
         </Block>
@@ -1237,8 +1246,8 @@ function ConstructionCrane({ phase }: { phase: number }) {
         <Block args={[0.85, 0.8, 0.85]} radius={0.12} castShadow position={[0.55, -0.2, 0]}>
           <meshStandardMaterial color="#e0a800" flatShading={flat} />
         </Block>
-        {/* Pluma hacia +X */}
-        <Block args={[7, 0.35, 0.35]} radius={0.05} castShadow position={[3.6, 0.35, 0]}>
+        {/* Pluma hacia +X (corta: no llega a la torre de la grúa de enfrente) */}
+        <Block args={[6, 0.35, 0.35]} radius={0.05} castShadow position={[3.1, 0.35, 0]}>
           <meshStandardMaterial color="#f2c14e" flatShading={flat} />
         </Block>
         {/* Contrapluma hacia -X */}
@@ -1253,8 +1262,8 @@ function ConstructionCrane({ phase }: { phase: number }) {
         <Block args={[0.4, 0.6, 0.4]} radius={0.06} position={[0, 0.75, 0]}>
           <meshStandardMaterial color="#d9a72f" flatShading={flat} />
         </Block>
-        {/* Carro con cable y gancho colgando */}
-        <group ref={hook} position={[5, 0.2, 0]}>
+        {/* Carro con cable y gancho colgando (siempre sobre el tejado) */}
+        <group ref={hook} position={[3.6, 0.2, 0]}>
           <mesh position={[0, -1.6, 0]}>
             <boxGeometry args={[0.05, 3.2, 0.05]} />
             <meshStandardMaterial color="#2a2a2a" />
@@ -1268,18 +1277,64 @@ function ConstructionCrane({ phase }: { phase: number }) {
   );
 }
 
-/** Obrero con chaleco reflectante y casco. */
+/** Obrero con chaleco reflectante y casco. Si le pasas `say`, suelta un
+ *  bocadillo con la frase al acercarte o al hacerle clic. */
 function Worker({
   position,
   rotY = 0,
+  say,
 }: {
   position: [number, number, number];
   rotY?: number;
+  say?: string;
 }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
+  const root = useRef<THREE.Group>(null);
+  const [talking, setTalking] = useState(false);
+  const nearRef = useRef(false);
+  const worldPos = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame(({ camera }) => {
+    if (!root.current || !say) return;
+    root.current.getWorldPosition(worldPos);
+    const d = Math.hypot(
+      camera.position.x - worldPos.x,
+      camera.position.z - worldPos.z,
+    );
+    const near = d < 3.2;
+    if (near !== nearRef.current) {
+      nearRef.current = near;
+      setTalking(near);
+    }
+  });
+
   return (
-    <group position={position} rotation={[0, rotY, 0]}>
+    <group
+      ref={root}
+      position={position}
+      rotation={[0, rotY, 0]}
+      onClick={(e) => {
+        if (!say) return;
+        e.stopPropagation();
+        setTalking(true);
+      }}
+      onPointerOver={() => say && (document.body.style.cursor = "pointer")}
+      onPointerOut={() => say && (document.body.style.cursor = "default")}
+    >
+      {talking && say && (
+        <Html
+          center
+          zIndexRange={[15, 0]}
+          position={[0, 2, 0]}
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="relative whitespace-nowrap rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-slate-800 shadow-lg">
+            🚧 {say}
+            <div className="absolute -bottom-1 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rotate-45 bg-white" />
+          </div>
+        </Html>
+      )}
       {/* Piernas */}
       <Block args={[0.2, 0.5, 0.2]} radius={0.06} castShadow position={[-0.12, 0.25, 0]}>
         <meshStandardMaterial color="#2c3448" flatShading={flat} />
@@ -1372,7 +1427,10 @@ function Scaffold({ side, flat }: { side: number; flat: boolean }) {
   );
 }
 
-/** Obra alrededor de la casa de EchoGEO: vallas, andamios y materiales. */
+/** Obra alrededor de la casa de EchoGEO: vallas, andamios y materiales.
+ *  El perímetro (HW/HD) queda fuera de los andamios (x ±4.05) y el hueco
+ *  frontal (±1.6) es más ancho que el camino con bordillos (±1.42):
+ *  nada se cruza con nada. */
 function ConstructionSite({
   position,
   rotationY,
@@ -1382,11 +1440,12 @@ function ConstructionSite({
 }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
-  const HW = 3.95;
-  const HD = 3.5;
+  const HW = 4.6;
+  const HD = 4.3;
+  const GAP = 1.6; // semiancho del hueco frontal (el camino mide ±1.42)
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
-      {/* Vallas: traseras, laterales y frontales con hueco central para pasar */}
+      {/* Vallas: trasera, laterales y frontales con hueco alineado al camino */}
       <group position={[0, 0, -HD]}>
         <StripedRail length={HW * 2} />
       </group>
@@ -1396,19 +1455,19 @@ function ConstructionSite({
       <group position={[HW, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
         <StripedRail length={HD * 2} />
       </group>
-      <group position={[-(HW / 2 + 0.35), 0, HD]}>
-        <StripedRail length={HW - 0.7} />
+      <group position={[-(HW + GAP) / 2, 0, HD]}>
+        <StripedRail length={HW - GAP} />
       </group>
-      <group position={[HW / 2 + 0.35, 0, HD]}>
-        <StripedRail length={HW - 0.7} />
+      <group position={[(HW + GAP) / 2, 0, HD]}>
+        <StripedRail length={HW - GAP} />
       </group>
 
       {/* Andamios en ambos laterales */}
       <Scaffold side={-1} flat={flat} />
       <Scaffold side={1} flat={flat} />
 
-      {/* Montón de ladrillos */}
-      <group position={[-2.9, 0, 2.2]}>
+      {/* Montón de ladrillos (zona delantera izquierda, lejos del andamio) */}
+      <group position={[-2.2, 0, 3.1]}>
         {Array.from({ length: 3 }).map((_, r) =>
           Array.from({ length: 3 }).map((_, c) => (
             <Block
@@ -1423,21 +1482,21 @@ function ConstructionSite({
           )),
         )}
       </group>
-      {/* Pila de tablones */}
-      <group position={[2.9, 0, 2.3]}>
+      {/* Pila de tablones (delantera derecha) */}
+      <group position={[2.4, 0, 3.2]} rotation={[0, Math.PI / 2, 0]}>
         {[0, 1, 2].map((i) => (
-          <Block key={i} args={[0.35, 0.12, 2.4]} radius={0.03} castShadow position={[(i - 1) * 0.4, 0.1, 0]}>
+          <Block key={i} args={[0.35, 0.12, 1.8]} radius={0.03} castShadow position={[(i - 1) * 0.4, 0.1, 0]}>
             <meshStandardMaterial color="#c19a5b" flatShading={flat} />
           </Block>
         ))}
       </group>
-      {/* Montón de arena */}
-      <mesh castShadow position={[2.9, 0.4, 0.2]}>
-        <coneGeometry args={[0.9, 0.8, flat ? 5 : 12]} />
+      {/* Montón de arena (trasera, entre casa y valla) */}
+      <mesh castShadow position={[1.4, 0.4, -3.4]}>
+        <coneGeometry args={[0.8, 0.8, flat ? 5 : 12]} />
         <meshStandardMaterial color="#d9c18a" flatShading={flat} />
       </mesh>
-      {/* Carretilla sencilla */}
-      <group position={[-2.6, 0, 0.4]}>
+      {/* Carretilla sencilla (trasera izquierda) */}
+      <group position={[-1.6, 0, -3.4]} rotation={[0, 0.6, 0]}>
         <Block args={[0.7, 0.3, 0.5]} radius={0.06} castShadow position={[0, 0.5, 0]}>
           <meshStandardMaterial color="#d63d2e" flatShading={flat} />
         </Block>
@@ -1593,8 +1652,15 @@ function Window({ x, flat }: { x: number; flat: boolean }) {
   );
 }
 
-/** Casa con tejado del color del proyecto. La puerta mira a +Z local (al centro). */
-function House({ color }: { color: string }) {
+/** Casa con tejado del color del proyecto. La puerta mira a +Z local (al centro).
+ *  Con `construction` se omiten las vallas del jardín (las sustituyen las de obra). */
+function House({
+  color,
+  construction = false,
+}: {
+  color: string;
+  construction?: boolean;
+}) {
   const style = useWorldStyle();
   const flat = style === "blocky";
   const beam = "#6b4a2b";
@@ -1608,12 +1674,12 @@ function House({ color }: { color: string }) {
       <Block args={[6, 3.2, 5]} radius={0.25} castShadow receiveShadow position={[0, 2, 0]}>
         <meshStandardMaterial color="#d8b483" flatShading={flat} />
       </Block>
-      {/* Vigas de entramado en las esquinas (estilo casa de campo) */}
+      {/* Vigas de entramado empotradas en las esquinas del muro */}
       {[
-        [-2.9, 3.5],
-        [2.9, 3.5],
-        [-2.9, -3.5],
-        [2.9, -3.5],
+        [-2.92, 2.42],
+        [2.92, 2.42],
+        [-2.92, -2.42],
+        [2.92, -2.42],
       ].map(([bx, bz], i) => (
         <Block key={i} args={[0.28, 3.4, 0.28]} radius={0.05} position={[bx, 2, bz]}>
           <meshStandardMaterial color={beam} flatShading={flat} />
@@ -1633,8 +1699,8 @@ function House({ color }: { color: string }) {
         <coneGeometry args={[4.5, 2.5, flat ? 4 : 8]} />
         <meshStandardMaterial color={color} flatShading={flat} />
       </mesh>
-      {/* Remate del tejado */}
-      <Block args={[0.3, 0.3, 0.3]} radius={0.08} position={[0, 6, 0]}>
+      {/* Remate del tejado (asentado en el pico del cono, que llega a 5.8) */}
+      <Block args={[0.3, 0.3, 0.3]} radius={0.08} position={[0, 5.82, 0]}>
         <meshStandardMaterial color="#f4f4f4" flatShading={flat} />
       </Block>
       {/* Puerta con marco, panel y pomo */}
@@ -1679,19 +1745,20 @@ function House({ color }: { color: string }) {
       <Block args={[0.78, 0.3, 0.78]} radius={0.05} position={[1.7, 6.05, -1]}>
         <meshStandardMaterial color="#7a4f3c" flatShading={flat} />
       </Block>
-      {/* Vallas del jardincito delantero */}
-      {[-2.2, 2.2].map((x) => (
-        <group key={x} position={[x, 0, 3.6]}>
-          {[-0.9, 0, 0.9].map((z) => (
-            <Block key={z} args={[0.14, 0.9, 0.14]} radius={0.05} castShadow position={[0, 0.45, z]}>
-              <meshStandardMaterial color="#8a6a42" flatShading={flat} />
+      {/* Vallas del jardincito delantero (no en la casa en obra) */}
+      {!construction &&
+        [-2.2, 2.2].map((x) => (
+          <group key={x} position={[x, 0, 3.6]}>
+            {[-0.9, 0, 0.9].map((z) => (
+              <Block key={z} args={[0.14, 0.9, 0.14]} radius={0.05} castShadow position={[0, 0.45, z]}>
+                <meshStandardMaterial color="#8a6a42" flatShading={flat} />
+              </Block>
+            ))}
+            <Block args={[0.09, 0.09, 2.1]} radius={0.04} castShadow position={[0, 0.68, 0]}>
+              <meshStandardMaterial color="#9a794f" flatShading={flat} />
             </Block>
-          ))}
-          <Block args={[0.09, 0.09, 2.1]} radius={0.04} castShadow position={[0, 0.68, 0]}>
-            <meshStandardMaterial color="#9a794f" flatShading={flat} />
-          </Block>
-        </group>
-      ))}
+          </group>
+        ))}
     </group>
   );
 }
@@ -2059,7 +2126,10 @@ function Village({
               if (drag.dist < 8) onEnter(project);
             }}
           >
-            <House color={VILLAGE_COLORS[i % VILLAGE_COLORS.length]} />
+            <House
+              color={VILLAGE_COLORS[i % VILLAGE_COLORS.length]}
+              construction={project.slug === CONSTRUCTION_SLUG}
+            />
           </group>
           <Villager
             project={project}
@@ -2122,7 +2192,9 @@ export default function WorldCanvas({
   // Obra de EchoGEO (proyecto "en construcción"): grúas flanqueando la casa,
   // andamios, vallas, materiales y obreros. Se ancla a la casa por slug.
   const echo = useMemo(() => {
-    const idx = dict.projects.items.findIndex((p) => p.slug === "echogeo");
+    const idx = dict.projects.items.findIndex(
+      (p) => p.slug === CONSTRUCTION_SLUG,
+    );
     if (idx < 0) return null;
     const l = layout[idx];
     const perp = new THREE.Vector3(Math.cos(l.angle), 0, -Math.sin(l.angle));
@@ -2138,14 +2210,43 @@ export default function WorldCanvas({
         z: pos.z,
         rotY: Math.atan2(-toHouse.z, toHouse.x),
         phase: i * 2.3,
+        height: i === 0 ? 10 : 13, // alturas distintas: las plumas nunca se cruzan
       };
+    });
+    // Obreros junto a la base de cada grúa, fuera de vallas (±4.6) y andamios
+    const workers = cranes.flatMap((c) => {
+      const offsets = [
+        { lx: 0.25, lz: -1.2 },
+        { lx: 0.35, lz: 1.2 },
+      ];
+      return offsets.map((o) => {
+        const wx = c.x + o.lx * Math.cos(c.rotY) + o.lz * Math.sin(c.rotY);
+        const wz = c.z - o.lx * Math.sin(c.rotY) + o.lz * Math.cos(c.rotY);
+        return {
+          x: wx,
+          z: wz,
+          rotY: Math.atan2(l.housePos.x - wx, l.housePos.z - wz),
+        };
+      });
     });
     return {
       house: { x: l.housePos.x, z: l.housePos.z, rotationY: l.angle + Math.PI },
       cranes,
+      workers,
     };
   }, [dict.projects.items, layout]);
   const buildLabel = `${dict.world.building} EchoGEO`;
+  // Grúas y obreros son sólidos: no se atraviesan
+  const siteColliders = useMemo(
+    () =>
+      echo
+        ? [
+            ...echo.cranes.map((c) => ({ x: c.x, z: c.z, r: 1.0 })),
+            ...echo.workers.map((w) => ({ x: w.x, z: w.z, r: 0.35 })),
+          ]
+        : [],
+    [echo],
+  );
 
   return (
     <Canvas
@@ -2196,21 +2297,16 @@ export default function WorldCanvas({
         )}
         {echo?.cranes.map((c, i) => (
           <group key={i} position={[c.x, 0, c.z]} rotation={[0, c.rotY, 0]}>
-            <ConstructionCrane phase={c.phase} />
-            {/* Dos obreros bajo la pluma (que apunta a +X local) */}
-            <Worker position={[2.1, 0, -0.7]} rotY={-Math.PI / 2} />
-            <Worker position={[2.7, 0, 0.7]} rotY={-Math.PI / 2 - 0.3} />
-            <Html
-              center
-              zIndexRange={[15, 0]}
-              position={[2.4, 2.2, 0]}
-              style={{ pointerEvents: "none" }}
-            >
-              <div className="whitespace-nowrap rounded-full bg-[#f2a01b] px-3 py-1 text-xs font-bold text-black shadow-lg">
-                🚧 {buildLabel}
-              </div>
-            </Html>
+            <ConstructionCrane phase={c.phase} height={c.height} />
           </group>
+        ))}
+        {echo?.workers.map((w, i) => (
+          <Worker
+            key={i}
+            position={[w.x, 0, w.z]}
+            rotY={w.rotY}
+            say={buildLabel}
+          />
         ))}
         <Butterflies />
         <Village
@@ -2228,7 +2324,7 @@ export default function WorldCanvas({
           drag={drag}
           externalMove={externalMove}
           layout={layout}
-          extraColliders={[]}
+          extraColliders={siteColliders}
         />
         <FirstPersonArms casting={casting} />
         {process.env.NODE_ENV !== "production" && <DebugProbe />}
