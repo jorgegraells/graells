@@ -199,6 +199,31 @@ export const VILLAGE_COLORS = [
   "#c94f4f",
 ];
 
+/** Rasgos que dan personalidad única a cada aldeano. */
+type Persona = {
+  skin: string;
+  hair: string;
+  head: "short" | "tuft" | "long" | "bald";
+  hat: "none" | "cap" | "hardhat" | "beanie";
+  accessory: "none" | "glasses" | "headphones" | "beard" | "mustache";
+  build: number;
+};
+
+const VILLAGER_PERSONAS: Persona[] = [
+  // WorkLeveling — gamer con cascos y cresta
+  { skin: "#e8b98d", hair: "#3a2a1a", head: "tuft", hat: "none", accessory: "headphones", build: 1.0 },
+  // IA para empresas — analista con gafas
+  { skin: "#f0c9a0", hair: "#1f1f26", head: "short", hat: "none", accessory: "glasses", build: 0.97 },
+  // EchoGEO — melena
+  { skin: "#c8925a", hair: "#6b4423", head: "long", hat: "none", accessory: "none", build: 1.02 },
+  // ANTIDOP — gorrito
+  { skin: "#9c6b43", hair: "#caa24b", head: "short", hat: "beanie", accessory: "none", build: 0.99 },
+  // IA en la industria — casco de obra y bigote
+  { skin: "#e8b98d", hair: "#2b2b2b", head: "short", hat: "hardhat", accessory: "mustache", build: 1.05 },
+  // extra — calvo con barba
+  { skin: "#7a4f30", hair: "#2c2c34", head: "bald", hat: "none", accessory: "beard", build: 1.03 },
+];
+
 /**
  * Predicado: ¿está libre este punto del suelo para plantar flores/hierba?
  * Excluye plaza, caminos, casas, aldeanos y decoración sólida — así no salen
@@ -1325,6 +1350,7 @@ function House({ color }: { color: string }) {
 function Villager({
   project,
   color,
+  persona,
   position,
   near,
   nearLabel,
@@ -1333,6 +1359,7 @@ function Villager({
 }: {
   project: Project;
   color: string;
+  persona: Persona;
   position: THREE.Vector3;
   near: boolean;
   nearLabel: string;
@@ -1364,9 +1391,8 @@ function Villager({
     }
   });
 
-  const skin = (
-    <meshStandardMaterial color={SKIN} flatShading={flat} />
-  );
+  const P = persona;
+  const hairMat = () => <meshStandardMaterial color={P.hair} flatShading={flat} />;
 
   return (
     <group
@@ -1379,7 +1405,7 @@ function Villager({
       onPointerOver={() => (document.body.style.cursor = "pointer")}
       onPointerOut={() => (document.body.style.cursor = "default")}
     >
-      <group ref={body}>
+      <group ref={body} scale={P.build}>
         {/* Zapatos */}
         <Block args={[0.26, 0.16, 0.32]} radius={0.06} castShadow position={[-0.15, 0.08, 0.03]}>
           <meshStandardMaterial color="#3a2c1c" flatShading={flat} />
@@ -1398,17 +1424,23 @@ function Villager({
         <Block args={[0.6, 0.82, 0.34]} radius={0.12} castShadow position={[0, 1.14, 0]}>
           <meshStandardMaterial color={color} flatShading={flat} />
         </Block>
+        {/* Tirantes para dar detalle al peto */}
+        {[-0.16, 0.16].map((x) => (
+          <Block key={x} args={[0.08, 0.66, 0.02]} radius={0.02} position={[x, 1.2, 0.18]}>
+            <meshStandardMaterial color="#2c2c34" flatShading={flat} />
+          </Block>
+        ))}
         {/* Cinturón */}
         <Block args={[0.63, 0.12, 0.37]} radius={0.05} position={[0, 0.78, 0]}>
           <meshStandardMaterial color="#2c2c34" flatShading={flat} />
         </Block>
-        {/* Brazos con pivote en el hombro y mano más clara */}
+        {/* Brazos con pivote en el hombro y mano de piel */}
         <group ref={armLeft} position={[-0.42, 1.48, 0]}>
           <Block args={[0.2, 0.56, 0.24]} radius={0.08} castShadow position={[0, -0.26, 0]}>
             <meshStandardMaterial color={color} flatShading={flat} />
           </Block>
           <Block args={[0.21, 0.18, 0.25]} radius={0.08} position={[0, -0.56, 0]}>
-            {skin}
+            <meshStandardMaterial color={P.skin} flatShading={flat} />
           </Block>
         </group>
         <group ref={armRight} position={[0.42, 1.48, 0]}>
@@ -1416,37 +1448,159 @@ function Villager({
             <meshStandardMaterial color={color} flatShading={flat} />
           </Block>
           <Block args={[0.21, 0.18, 0.25]} radius={0.08} position={[0, -0.56, 0]}>
-            <meshStandardMaterial color={SKIN} flatShading={flat} />
+            <meshStandardMaterial color={P.skin} flatShading={flat} />
           </Block>
         </group>
         {/* Cuello */}
         <Block args={[0.22, 0.12, 0.22]} radius={0.05} position={[0, 1.62, 0]}>
-          {skin}
+          <meshStandardMaterial color={P.skin} flatShading={flat} />
         </Block>
         {/* Cabeza */}
         <Block args={[0.5, 0.52, 0.5]} radius={0.14} castShadow position={[0, 1.94, 0]}>
-          <meshStandardMaterial color={SKIN} flatShading={flat} />
+          <meshStandardMaterial color={P.skin} flatShading={flat} />
         </Block>
+        {/* Orejas */}
+        {[-0.27, 0.27].map((x) => (
+          <Block key={x} args={[0.06, 0.14, 0.12]} radius={0.03} position={[x, 1.94, 0]}>
+            <meshStandardMaterial color={P.skin} flatShading={flat} />
+          </Block>
+        ))}
         {/* Nariz */}
-        <Block args={[0.1, 0.1, 0.09]} radius={0.03} position={[0, 1.9, 0.27]}>
-          <meshStandardMaterial color="#cf9a71" flatShading={flat} />
+        <Block args={[0.1, 0.11, 0.1]} radius={0.03} position={[0, 1.9, 0.27]}>
+          <meshStandardMaterial color={P.skin} flatShading={flat} />
         </Block>
-        {/* Pelo: casquete + flequillo */}
-        <Block args={[0.54, 0.18, 0.54]} radius={0.1} position={[0, 2.2, 0]}>
-          <meshStandardMaterial color="#4a3320" flatShading={flat} />
-        </Block>
-        <Block args={[0.54, 0.12, 0.12]} radius={0.04} position={[0, 2.08, 0.22]}>
-          <meshStandardMaterial color="#4a3320" flatShading={flat} />
-        </Block>
-        {/* Ojos */}
-        <mesh position={[-0.12, 1.96, 0.26]}>
-          <boxGeometry args={[0.08, 0.09, 0.02]} />
-          <meshStandardMaterial color="#2c2c34" />
+        {/* Cejas */}
+        {[-0.12, 0.12].map((x) => (
+          <mesh key={x} position={[x, 2.07, 0.26]}>
+            <boxGeometry args={[0.13, 0.03, 0.03]} />
+            {hairMat()}
+          </mesh>
+        ))}
+        {/* Ojos: blanco + pupila */}
+        {[-0.12, 0.12].map((x) => (
+          <group key={x} position={[x, 1.97, 0.25]}>
+            <Block args={[0.12, 0.12, 0.02]} radius={0.05}>
+              <meshStandardMaterial color="#f4f4f4" />
+            </Block>
+            <mesh position={[0, 0, 0.02]}>
+              <boxGeometry args={[0.055, 0.07, 0.02]} />
+              <meshStandardMaterial color="#2c2c34" />
+            </mesh>
+          </group>
+        ))}
+        {/* Boca */}
+        <mesh position={[0, 1.81, 0.27]}>
+          <boxGeometry args={[0.17, 0.035, 0.02]} />
+          <meshStandardMaterial color="#7a3b32" />
         </mesh>
-        <mesh position={[0.12, 1.96, 0.26]}>
-          <boxGeometry args={[0.08, 0.09, 0.02]} />
-          <meshStandardMaterial color="#2c2c34" />
-        </mesh>
+
+        {/* Pelo (si no lleva gorro) */}
+        {P.hat === "none" && P.head !== "bald" && (
+          <>
+            <Block args={[0.54, 0.18, 0.54]} radius={0.1} position={[0, 2.2, 0]}>
+              {hairMat()}
+            </Block>
+            <Block args={[0.54, 0.12, 0.14]} radius={0.04} position={[0, 2.08, 0.22]}>
+              {hairMat()}
+            </Block>
+            {[-0.27, 0.27].map((x) => (
+              <Block key={x} args={[0.05, 0.3, 0.42]} radius={0.02} position={[x, 2.03, -0.02]}>
+                {hairMat()}
+              </Block>
+            ))}
+            {P.head === "tuft" && (
+              <Block args={[0.22, 0.26, 0.28]} radius={0.09} position={[0, 2.36, -0.02]}>
+                {hairMat()}
+              </Block>
+            )}
+            {P.head === "long" && (
+              <Block args={[0.5, 0.46, 0.14]} radius={0.06} position={[0, 1.96, -0.27]}>
+                {hairMat()}
+              </Block>
+            )}
+          </>
+        )}
+
+        {/* Gorro / casco */}
+        {P.hat === "beanie" && (
+          <>
+            <Block args={[0.56, 0.26, 0.56]} radius={0.16} position={[0, 2.25, 0]}>
+              <meshStandardMaterial color={color} flatShading={flat} />
+            </Block>
+            <Block args={[0.58, 0.1, 0.58]} radius={0.05} position={[0, 2.09, 0]}>
+              <meshStandardMaterial color="#eef1f4" flatShading={flat} />
+            </Block>
+            <Block args={[0.14, 0.14, 0.14]} radius={0.06} position={[0, 2.44, 0]}>
+              <meshStandardMaterial color="#eef1f4" flatShading={flat} />
+            </Block>
+          </>
+        )}
+        {P.hat === "hardhat" && (
+          <>
+            <Block args={[0.58, 0.24, 0.58]} radius={0.2} position={[0, 2.25, 0]}>
+              <meshStandardMaterial color="#f2c14e" flatShading={flat} />
+            </Block>
+            <Block args={[0.74, 0.06, 0.74]} radius={0.05} position={[0, 2.13, 0]}>
+              <meshStandardMaterial color="#e0a800" flatShading={flat} />
+            </Block>
+            <Block args={[0.1, 0.22, 0.6]} radius={0.03} position={[0, 2.32, 0]}>
+              <meshStandardMaterial color="#e0a800" flatShading={flat} />
+            </Block>
+          </>
+        )}
+        {P.hat === "cap" && (
+          <>
+            <Block args={[0.56, 0.2, 0.56]} radius={0.14} position={[0, 2.23, 0]}>
+              <meshStandardMaterial color="#2b6cb0" flatShading={flat} />
+            </Block>
+            <Block args={[0.5, 0.06, 0.3]} radius={0.03} position={[0, 2.15, 0.34]}>
+              <meshStandardMaterial color="#2b6cb0" flatShading={flat} />
+            </Block>
+          </>
+        )}
+
+        {/* Accesorio */}
+        {P.accessory === "glasses" && (
+          <group position={[0, 1.97, 0.28]}>
+            {[-0.12, 0.12].map((x) => (
+              <Block key={x} args={[0.16, 0.14, 0.03]} radius={0.03} position={[x, 0, 0]}>
+                <meshStandardMaterial color="#20242c" flatShading={flat} />
+              </Block>
+            ))}
+            <mesh position={[0, 0, 0]}>
+              <boxGeometry args={[0.1, 0.03, 0.03]} />
+              <meshStandardMaterial color="#20242c" />
+            </mesh>
+          </group>
+        )}
+        {P.accessory === "headphones" && (
+          <>
+            <Block args={[0.6, 0.1, 0.14]} radius={0.05} position={[0, 2.34, 0]}>
+              <meshStandardMaterial color="#26262e" flatShading={flat} />
+            </Block>
+            {[-0.31, 0.31].map((x) => (
+              <Block key={x} args={[0.12, 0.24, 0.26]} radius={0.07} position={[x, 1.96, 0]}>
+                <meshStandardMaterial color={color} flatShading={flat} />
+              </Block>
+            ))}
+          </>
+        )}
+        {P.accessory === "mustache" && (
+          <mesh position={[0, 1.84, 0.28]}>
+            <boxGeometry args={[0.24, 0.055, 0.05]} />
+            {hairMat()}
+          </mesh>
+        )}
+        {P.accessory === "beard" && (
+          <>
+            <Block args={[0.44, 0.26, 0.24]} radius={0.09} position={[0, 1.76, 0.14]}>
+              {hairMat()}
+            </Block>
+            <Block args={[0.24, 0.09, 0.09]} radius={0.03} position={[0, 1.85, 0.28]}>
+              {hairMat()}
+            </Block>
+          </>
+        )}
       </group>
 
       {/* Cartel con el proyecto del que habla, encima de la cabeza */}
@@ -1560,6 +1714,7 @@ function Village({
           <Villager
             project={project}
             color={VILLAGE_COLORS[i % VILLAGE_COLORS.length]}
+            persona={VILLAGER_PERSONAS[i % VILLAGER_PERSONAS.length]}
             position={layout[i].npcPos}
             near={i === nearIndex}
             nearLabel={touch ? dict.world.hintNearTouch : dict.world.hintNear}

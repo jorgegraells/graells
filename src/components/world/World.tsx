@@ -490,6 +490,13 @@ export default function World({
         <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 shadow-[0_0_4px_rgba(0,0,0,0.6)]" />
       )}
 
+      {/* Recordatorio de Esc para liberar el ratón / salir (escritorio, en juego) */}
+      {started && !touchDevice && !active && !skillsOpen && (
+        <p className="glass pointer-events-none absolute bottom-6 right-6 z-10 rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/80">
+          {dict.world.escHint}
+        </p>
+      )}
+
       {/* Pista de controles (oculta antes de entrar, en diálogo o en STATUS) */}
       {started && !active && !skillsOpen && (
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-4">

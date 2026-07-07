@@ -28,6 +28,9 @@ Dos archivos en `src/components/world/`:
 
 ## Invariantes del diseño
 
+- **Cada aldeano es único**: `VILLAGER_PERSONAS[i]` define piel, pelo, peinado,
+  gorro (cap/casco/gorrito) y accesorio (gafas/cascos/barba/bigote) por índice de
+  proyecto. Para cambiar el aspecto de un vecino, edita su entrada ahí.
 - **El pueblo escala con los proyectos**: `buildLayout(n)` reparte casas en círculo
   de radio `HOUSE_RADIUS` (22); aldeano a 4.5 delante de su casa. NUNCA posicionar
   casas a mano.
