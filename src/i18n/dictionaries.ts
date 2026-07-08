@@ -182,7 +182,7 @@ const es: Dictionary = {
     paragraphs: [
       "Desarrollador full-stack e ingeniero de IA con 8 años de experiencia. Líder técnico de un software de inspección de vehículos en C++ desplegado en talleres y centros de inspección de varios países, a caballo entre el software industrial, la ciberseguridad y el stack web moderno.",
       "Construyo productos de principio a fin, de la idea al MVP en producción, con foco en IA aplicada de verdad: RAG, agentes y LLMs resolviendo problemas reales de empresa.",
-      "Soy creativo y autodidacta, y lo que más disfruto es convertir ideas en realidad. Ahora me apasiona la inteligencia artificial: aprender algo nuevo cada día y ponerlo a trabajar. Y como amante de los videojuegos desde siempre, tengo un propósito que lo atraviesa todo: convertir la vida en un videojuego, que hasta lo más cotidiano y aburrido se vuelva divertido y motivante. Esta web —un currículum que se juega— es solo el principio.",
+      "Soy creativo y autodidacta, y lo que más me gusta es coger una idea y convertirla en algo real. Ahora mismo estoy volcado en la inteligencia artificial, aprendiendo algo nuevo cada día y llevándolo a la práctica. Desde siempre me han apasionado los videojuegos, y de ahí nace el objetivo que hay detrás de casi todo lo que hago: convertir la vida en un videojuego, conseguir que hasta lo más rutinario resulte divertido y motivante. Esta web es un primer ejemplo.",
     ],
   },
   projects: {
@@ -415,7 +415,7 @@ const en: Dictionary = {
     paragraphs: [
       "Full-stack developer and AI engineer with 8 years of experience. Tech lead of a C++ vehicle inspection software deployed in workshops and inspection centers across several countries, straddling industrial software, cybersecurity and the modern web stack.",
       "I build products end to end, from idea to MVP in production, focused on AI that actually ships: RAG, agents and LLMs solving real business problems.",
-      "I'm creative and self-taught, and what I enjoy most is turning ideas into reality. Right now I'm hooked on artificial intelligence: learning something new every day and putting it to work. And as a lifelong videogame lover, I have one purpose that runs through everything I do — to turn life into a videogame, making even the most mundane, boring things fun and motivating. This site —a résumé you can play— is just the start.",
+      "I'm creative and self-taught, and what I enjoy most is taking an idea and turning it into something real. Right now I'm all in on artificial intelligence, learning something new every day and putting it into practice. I've loved videogames for as long as I can remember, and that's where the goal behind almost everything I do comes from: turning life into a videogame, making even the most routine things feel fun and motivating. This site is a first example of that.",
     ],
   },
   projects: {
