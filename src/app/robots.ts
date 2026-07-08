@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE = "https://jorgegraells.com";
+const SITE = "https://www.jorgegraells.com";
 
 // Los crawlers de IA (búsqueda generativa) se permiten EXPLÍCITAMENTE:
 // que ChatGPT, Perplexity, Claude y Gemini puedan leer y citar la web
