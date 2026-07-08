@@ -14,9 +14,9 @@ LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
 
 ## Main pages
 
-- [Home (Spanish)](https://www.jorgegraells.com/es): profile, projects, stack and career of Jorge Graells
-- [Home (English)](https://www.jorgegraells.com/en): same content in English
-- [Playable 3D résumé](https://www.jorgegraells.com/es/world): videogame village where villagers present each project
+- [Home (Spanish)](https://jorgegraells.com/es): profile, projects, stack and career of Jorge Graells
+- [Home (English)](https://jorgegraells.com/en): same content in English
+- [Playable 3D résumé](https://jorgegraells.com/es/world): videogame village where villagers present each project
 
 ## Projects
 

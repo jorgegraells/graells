@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE = "https://www.jorgegraells.com";
+const SITE = "https://jorgegraells.com";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
