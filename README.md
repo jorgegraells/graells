@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="public/og.jpg" alt="Jorge Graells — AI Engineer & Full-Stack Developer" width="640" />
+  <img src="public/og.jpg" alt="Jorge Graells - AI Engineer & Full-Stack Developer" width="640" />
 </p>
 
 <h1 align="center">jorgegraells.com</h1>
 
 <p align="center">
   <strong>Un currículum que se juega.</strong><br/>
-  Web de marca personal de <a href="https://jorgegraells.com">Jorge Graells</a> — Ingeniero de IA y Desarrollador Full-Stack.
+  Web de marca personal de <a href="https://jorgegraells.com">Jorge Graells</a> - Ingeniero de IA y Desarrollador Full-Stack.
 </p>
 
 <p align="center">
