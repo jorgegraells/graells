@@ -254,7 +254,7 @@ function Dialogue({
     () => [
       dict.world.greet.replace("{name}", project.name),
       project.description,
-      `${project.tech.join(" · ")} — ${project.role}`,
+      `${project.tech.join(" · ")} · ${project.role}`,
     ],
     [project, dict],
   );

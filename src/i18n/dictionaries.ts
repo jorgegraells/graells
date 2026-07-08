@@ -150,16 +150,16 @@ const es: Dictionary = {
       body: "Hola, soy Jorge Graells y he desarrollado un videojuego para presentar mi currículum. Cada casa es un proyecto y cada vecino te cuenta un capítulo de mi carrera como desarrollador e ingeniero de IA. Acércate a un vecino y deja que te cuente su historia.",
       cta: "Entrar al pueblo",
       controls: [
-        "Moverte — WASD o flechas",
-        "Mirar — mueve el ratón (Esc lo libera)",
-        "Hablar con un vecino — acércate y pulsa E",
-        "Tus habilidades — tecla C",
+        "Moverte: WASD o flechas",
+        "Mirar: mueve el ratón (Esc lo libera)",
+        "Hablar con un vecino: acércate y pulsa E",
+        "Tus habilidades: tecla C",
       ],
       controlsTouch: [
-        "Moverte — joystick",
-        "Mirar — arrastra el dedo",
-        "Hablar con un vecino — toca al vecino",
-        "Tus habilidades — botón ⬡",
+        "Moverte: joystick",
+        "Mirar: arrastra el dedo",
+        "Hablar con un vecino: toca al vecino",
+        "Tus habilidades: botón ⬡",
       ],
     },
     status: {
@@ -198,7 +198,7 @@ const es: Dictionary = {
           "SaaS B2B que convierte el progreso del equipo en niveles, XP y quests para aumentar la motivación y dar visibilidad al avance diario. Resuelve la desconexión entre el esfuerzo y la sensación de avance.",
         role: "Fundador y desarrollador único",
         highlight:
-          "Piloto real en producción con un equipo de software: producto validado en uso diario, no una demo.",
+          "Piloto real en producción con un equipo de software, en uso diario desde hace meses.",
         tech: ["Next.js 15", "React 19", "Prisma", "Supabase", "Clerk"],
         status: "En piloto",
         links: [
@@ -238,7 +238,7 @@ const es: Dictionary = {
           "App Android que bloquea en tiempo real las apps y webs adictivas en el instante exacto en que intentas abrirlas: un aviso a pantalla completa te muestra un mensaje que tú mismo te escribiste y eliges resistir o rendirte. Con score de dopamina (0–100), rutina diaria y diario de progreso.",
         role: "Fundador y desarrollador",
         highlight:
-          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical: cero telemetría, cero tracking, y diseñada para usarse poco — la app que combate la adicción no puede crear la suya.",
+          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical, cero telemetría y cero tracking, pensada para usarse lo mínimo posible: una app contra la adicción no debería crear la suya.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
         status: "En desarrollo",
       },
@@ -305,13 +305,13 @@ const es: Dictionary = {
     title: "Trayectoria",
     items: [
       {
-        period: "2018 — hoy",
+        period: "2018 - hoy",
         title: "Full-Stack Developer & IT/Cyber Lead",
         description:
           "Desarrollador principal de un software de inspección de vehículos en C++ usado en varios países. Apps Android en React Native, plataforma web de gestión de stock, seguridad de servidores y migración completa de infraestructura. Representación en eventos internacionales como CloudFest y MSP Global.",
       },
       {
-        period: "2017 — 2018",
+        period: "2017 - 2018",
         title: "Developer en BOSCH",
         description:
           "Implantación de Industria 4.0 en planta: automatización, formación interna y scripts de eficiencia. Prácticas finalizadas con carta de recomendación personalizada.",
@@ -320,7 +320,7 @@ const es: Dictionary = {
         period: "Formación",
         title: "Ingeniería Informática (UOC)",
         description:
-          "Grado en curso en la Universitat Oberta de Catalunya. CFGS de Desarrollo de Aplicaciones Multiplataforma (EDUCEM, 2016 — 2018).",
+          "Grado en curso en la Universitat Oberta de Catalunya. CFGS de Desarrollo de Aplicaciones Multiplataforma (EDUCEM, 2016 - 2018).",
       },
     ],
   },
@@ -383,16 +383,16 @@ const en: Dictionary = {
       body: "Hi, I'm Jorge Graells and I built a videogame to present my résumé. Every house is a project and every villager tells you a chapter of my career as a developer and AI engineer. Walk up to a villager and let them tell you their story.",
       cta: "Enter the village",
       controls: [
-        "Move — WASD or arrows",
-        "Look around — move the mouse (Esc frees it)",
-        "Talk to a villager — walk up and press E",
-        "Your skills — press C",
+        "Move: WASD or arrows",
+        "Look around: move the mouse (Esc frees it)",
+        "Talk to a villager: walk up and press E",
+        "Your skills: press C",
       ],
       controlsTouch: [
-        "Move — joystick",
-        "Look around — drag your finger",
-        "Talk to a villager — tap the villager",
-        "Your skills — ⬡ button",
+        "Move: joystick",
+        "Look around: drag your finger",
+        "Talk to a villager: tap the villager",
+        "Your skills: ⬡ button",
       ],
     },
     status: {
@@ -431,7 +431,7 @@ const en: Dictionary = {
           "B2B SaaS that turns team progress into levels, XP and quests to boost motivation and make daily progress visible. It fixes the disconnect between effort and the feeling of moving forward.",
         role: "Founder & sole developer",
         highlight:
-          "Real pilot in production with a software team: a product validated in daily use, not a demo.",
+          "Real pilot running with a software team, in daily use for months now.",
         tech: ["Next.js 15", "React 19", "Prisma", "Supabase", "Clerk"],
         status: "In pilot",
         links: [
@@ -471,7 +471,7 @@ const en: Dictionary = {
           "Android app that blocks addictive apps and websites in real time, at the exact instant you try to open them: a full-screen prompt shows a message you wrote to yourself, and you choose to resist or give in. With a dopamine score (0–100), daily routine and progress journal.",
         role: "Founder & developer",
         highlight:
-          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy: zero telemetry, zero tracking, and designed to be used sparingly — an app that fights addiction can't create its own.",
+          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy, zero telemetry and zero tracking, built to be used as little as possible: an app against addiction shouldn't create its own.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
         status: "In development",
       },
@@ -538,13 +538,13 @@ const en: Dictionary = {
     title: "Journey",
     items: [
       {
-        period: "2018 — today",
+        period: "2018 - today",
         title: "Full-Stack Developer & IT/Cyber Lead",
         description:
           "Lead developer of a C++ vehicle inspection software used across several countries. Android apps in React Native, stock management web platform, server security and a full infrastructure migration. Represented the company at international events like CloudFest and MSP Global.",
       },
       {
-        period: "2017 — 2018",
+        period: "2017 - 2018",
         title: "Developer at BOSCH",
         description:
           "Industry 4.0 rollout on the factory floor: automation, internal training and efficiency scripts. Internship closed with a personalized recommendation letter.",
@@ -553,7 +553,7 @@ const en: Dictionary = {
         period: "Education",
         title: "Computer Engineering (UOC)",
         description:
-          "Degree in progress at Universitat Oberta de Catalunya. Higher Degree in Multiplatform Application Development (EDUCEM, 2016 — 2018).",
+          "Degree in progress at Universitat Oberta de Catalunya. Higher Degree in Multiplatform Application Development (EDUCEM, 2016 - 2018).",
       },
     ],
   },
