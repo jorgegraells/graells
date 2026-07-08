@@ -6,7 +6,7 @@ export default function Contact({ dict }: { dict: Dictionary }) {
     <Section id="contact" className="text-center">
       <div className="hud-panel hud-corners clip-corner mx-auto max-w-3xl px-6 py-14">
         <p className="font-mono text-xs font-semibold uppercase tracking-[0.35em] text-neon-pink">
-          ◢ 05 <span className="mx-2 text-white/25">//</span>
+          ◢ 06 <span className="mx-2 text-white/25">//</span>
           <span className="text-neon-violet">GAME OVER?</span>
         </p>
         <h2 className="text-gradient neon-text mx-auto mt-4 max-w-2xl text-4xl font-black uppercase tracking-tight sm:text-5xl">

@@ -31,7 +31,17 @@ export type Dictionary = {
     projects: string;
     skills: string;
     journey: string;
+    blog: string;
     contact: string;
+  };
+  blog: {
+    title: string;
+    subtitle: string;
+    tag: string;
+    readMore: string;
+    back: string;
+    minRead: string;
+    empty: string;
   };
   hero: {
     greeting: string;
@@ -95,7 +105,17 @@ const es: Dictionary = {
     projects: "Proyectos",
     skills: "Stack",
     journey: "Trayectoria",
+    blog: "Artículos",
     contact: "Contacto",
+  },
+  blog: {
+    title: "Artículos",
+    subtitle: "Notas sobre IA, desarrollo y posicionamiento",
+    tag: "DEV LOG",
+    readMore: "Leer artículo",
+    back: "Volver a artículos",
+    minRead: "min de lectura",
+    empty: "Todavía no hay artículos publicados.",
   },
   hero: {
     greeting: "Hola, soy",
@@ -318,7 +338,17 @@ const en: Dictionary = {
     projects: "Projects",
     skills: "Stack",
     journey: "Journey",
+    blog: "Articles",
     contact: "Contact",
+  },
+  blog: {
+    title: "Articles",
+    subtitle: "Notes on AI, development and visibility",
+    tag: "DEV LOG",
+    readMore: "Read article",
+    back: "Back to articles",
+    minRead: "min read",
+    empty: "No articles published yet.",
   },
   hero: {
     greeting: "Hi, I'm",

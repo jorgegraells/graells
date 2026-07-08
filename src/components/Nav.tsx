@@ -13,11 +13,12 @@ export default function Nav({
   const otherLocale: Locale = locale === "es" ? "en" : "es";
 
   const links = [
-    { href: "#about", label: dict.nav.about },
-    { href: "#projects", label: dict.nav.projects },
-    { href: "#skills", label: dict.nav.skills },
-    { href: "#journey", label: dict.nav.journey },
-    { href: "#contact", label: dict.nav.contact },
+    { href: `/${locale}#about`, label: dict.nav.about },
+    { href: `/${locale}#projects`, label: dict.nav.projects },
+    { href: `/${locale}#skills`, label: dict.nav.skills },
+    { href: `/${locale}#journey`, label: dict.nav.journey },
+    { href: `/${locale}/blog`, label: dict.nav.blog },
+    { href: `/${locale}#contact`, label: dict.nav.contact },
   ];
 
   return (
