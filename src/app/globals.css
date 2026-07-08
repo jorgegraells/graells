@@ -309,38 +309,60 @@ body {
   animation: glow-breathe 5s ease-in-out infinite;
 }
 
-/* Corchetes de esquina para la ventana STATUS: en las esquinas rectas (no
-   recortadas por clip-corner), ya que ahí sí se ven enteros. */
-.status-corners::before,
-.status-corners::after {
-  content: "";
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--neon-cyan);
-  pointer-events: none;
-}
-.status-corners::before {
-  top: -1px;
-  right: -1px;
-  border-left: 0;
-  border-bottom: 0;
-}
-.status-corners::after {
-  bottom: -1px;
-  left: -1px;
-  border-right: 0;
-  border-top: 0;
+/* ---------------------------------------------------------------------------
+   Ventana STATUS del mundo: menú de personaje estilo Minecraft
+   (panel gris con bisel, ranuras de inventario, esquinas pixeladas)
+--------------------------------------------------------------------------- */
+.mc-panel {
+  background: #c6c6c6;
+  border: 2px solid #1b1b1b;
+  box-shadow:
+    inset 3px 3px 0 rgba(255, 255, 255, 0.75),
+    inset -3px -3px 0 rgba(0, 0, 0, 0.28),
+    0 10px 30px rgba(0, 0, 0, 0.4);
+  /* Esquinas con muesca pixelada */
+  clip-path: polygon(
+    0 6px,
+    6px 6px,
+    6px 0,
+    calc(100% - 6px) 0,
+    calc(100% - 6px) 6px,
+    100% 6px,
+    100% calc(100% - 6px),
+    calc(100% - 6px) calc(100% - 6px),
+    calc(100% - 6px) 100%,
+    6px 100%,
+    6px calc(100% - 6px),
+    0 calc(100% - 6px)
+  );
 }
 
-/* Ventana STATUS: glifo de marca de agua girando muy lento (proyección estable) */
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
+/* Ranura de inventario: hundida (bisel invertido) */
+.mc-slot {
+  background: #8b8b8b;
+  border: 2px solid;
+  border-color: #373737 #ffffff #ffffff #373737;
 }
-.status-glyph-spin {
-  animation: spin-slow 22s linear infinite;
+
+/* Botón con relieve, se hunde al pulsarlo */
+.mc-btn {
+  background: #c6c6c6;
+  border: 2px solid;
+  border-color: #ffffff #373737 #373737 #ffffff;
+  color: #3f3f3f;
+}
+.mc-btn:active {
+  border-color: #373737 #ffffff #ffffff #373737;
+}
+
+/* Barra de experiencia: pista hundida y relleno verde bitono */
+.mc-bar-track {
+  background: #262626;
+  border: 2px solid;
+  border-color: #171717 #4a4a4a #4a4a4a #171717;
+}
+.mc-bar-fill {
+  background: linear-gradient(180deg, #8fe63f 0%, #8fe63f 48%, #3db325 52%, #3db325 100%);
 }
 
 @keyframes holo-flicker {

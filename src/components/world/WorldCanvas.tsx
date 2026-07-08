@@ -308,7 +308,7 @@ function PlayerRig({
         halfD: 2.5 + PLAYER_RADIUS,
       })),
       circles: [
-        { x: 0, z: 0, r: 1 + PLAYER_RADIUS }, // tronco del árbol central
+        { x: 0, z: 0, r: 1.5 + PLAYER_RADIUS }, // peana del holograma central
         ...layout.map((l) => ({
           x: l.npcPos.x,
           z: l.npcPos.z,
@@ -895,20 +895,111 @@ function Clouds() {
 // Árboles, rocas, flores, hierba
 // ---------------------------------------------------------------------------
 
-/** Árbol grande de la plaza central. */
-function BlockTree() {
+/** Holograma de Jorge en el centro de la plaza: proyector de piedra con anillo
+ *  de energía, la silueta flotando (siempre de cara al jugador) y motas que
+ *  ascienden. Es el mismo holograma del hero de la landing, viviendo en el pueblo. */
+function PlazaHologram() {
   const style = useWorldStyle();
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  const [aspect, setAspect] = useState(1);
+  const holo = useRef<THREE.Group>(null);
+  const ring = useRef<THREE.MeshStandardMaterial>(null);
+  const moteRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const { camera } = useThree();
+
+  useEffect(() => {
+    let alive = true;
+    new THREE.TextureLoader().load("/jorge-holo-cut.webp", (t) => {
+      if (!alive) return;
+      t.colorSpace = THREE.SRGBColorSpace;
+      setAspect(t.image.width / t.image.height);
+      setTex(t);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    if (holo.current) {
+      holo.current.position.y = 3.1 + Math.sin(t * 1.1) * 0.12;
+      // Billboard en yaw: la silueta siempre mira al jugador
+      holo.current.rotation.y = Math.atan2(camera.position.x, camera.position.z);
+    }
+    if (ring.current) {
+      ring.current.emissiveIntensity = 1.6 + Math.sin(t * 2.2) * 0.5;
+    }
+    moteRefs.current.forEach((m, i) => {
+      if (!m) return;
+      const p = (t * 0.22 + i * 0.26) % 1;
+      const a = i * 2.4 + t * 0.5;
+      const r = 0.85 - p * 0.35;
+      m.position.set(Math.cos(a) * r, 0.6 + p * 3.6, Math.sin(a) * r);
+      (m.material as THREE.MeshBasicMaterial).opacity =
+        p < 0.12 ? p * 8 : Math.max(0, 1 - p) * 0.9;
+    });
+  });
+
+  const holoHeight = 3.2;
   return (
     <group>
-      <Block args={[1, 4, 1]} radius={0.35} castShadow position={[0, 2, 0]}>
-        <meshStandardMaterial color="#6b4a2b" flatShading={style === "blocky"} />
+      {/* Peana del proyector: piedra + disco oscuro + anillo de energía */}
+      <Block args={[2.8, 0.35, 2.8]} radius={0.5} castShadow position={[0, 0.18, 0]}>
+        <meshStandardMaterial color="#9a9a9a" flatShading={style === "blocky"} />
       </Block>
-      <Block args={[4.5, 2.2, 4.5]} radius={1} castShadow position={[0, 4.6, 0]}>
-        <meshStandardMaterial color="#3f9e33" flatShading={style === "blocky"} />
+      <Block args={[2, 0.25, 2]} radius={0.4} position={[0, 0.45, 0]}>
+        <meshStandardMaterial color="#2b3440" flatShading={style === "blocky"} />
       </Block>
-      <Block args={[3, 1.6, 3]} radius={0.8} castShadow position={[0, 6.3, 0]}>
-        <meshStandardMaterial color="#46ab3a" flatShading={style === "blocky"} />
-      </Block>
+      <mesh position={[0, 0.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.78, 0.07, 10, 36]} />
+        <meshStandardMaterial
+          ref={ring}
+          color="#22d3ee"
+          emissive="#22d3ee"
+          emissiveIntensity={1.6}
+          toneMapped={false}
+        />
+      </mesh>
+      <pointLight position={[0, 1.2, 0]} color="#57e6ff" intensity={1.4} distance={9} />
+
+      {/* Cono de proyección */}
+      <mesh position={[0, 2.4, 0]}>
+        <cylinderGeometry args={[1.15, 0.55, 3.6, 24, 1, true]} />
+        <meshBasicMaterial
+          color="#7fe3ff"
+          transparent
+          opacity={0.09}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* La silueta holográfica */}
+      {tex && (
+        <group ref={holo} position={[0, 3.1, 0]}>
+          <mesh>
+            <planeGeometry args={[holoHeight * aspect, holoHeight]} />
+            <meshBasicMaterial
+              map={tex}
+              transparent
+              opacity={0.92}
+              color="#d8fbff"
+              toneMapped={false}
+              depthWrite={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        </group>
+      )}
+
+      {/* Motas de luz ascendentes */}
+      {Array.from({ length: 5 }, (_, i) => (
+        <mesh key={i} ref={(m) => void (moteRefs.current[i] = m)}>
+          <sphereGeometry args={[0.045, 6, 6]} />
+          <meshBasicMaterial color="#aef2ff" transparent toneMapped={false} />
+        </mesh>
+      ))}
     </group>
   );
 }
@@ -2335,7 +2426,7 @@ export default function WorldCanvas({
         <TallGrass clear={clear} />
         <Clouds />
         <Mountains />
-        <BlockTree />
+        <PlazaHologram />
         <Flowers clear={clear} />
         <DecorTrees />
         <Rocks />

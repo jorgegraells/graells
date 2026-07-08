@@ -150,19 +150,11 @@ function Welcome({
   );
 }
 
-const STATUS_MOTES = [
-  { x: -60, d: 0 },
-  { x: -20, d: 1.2 },
-  { x: 30, d: 0.6 },
-  { x: 70, d: 2 },
-];
-
-const EQUIP_COLOR = ["#22d3ee", "#a855f7", "#ff3d9a", "#c6ff2e"];
+const EQUIP_COLOR = ["#0e7490", "#7e22ce", "#be185d", "#3f6212"];
 const EQUIP_ICON = ["⚔", "✦", "▣", "◆"];
 
-/** Ventana STATUS: proyección que el jugador invoca con la mano, hermana de
- *  las otras ventanas del juego (mismo cristal violeta translúcido). El cian
- *  queda reservado como "energía": barras, corchetes de esquina y partículas. */
+/** Ventana STATUS: menú de personaje estilo Minecraft (panel gris con bisel,
+ *  barras de XP verdes y ranuras de inventario), a juego con el pueblo voxel. */
 function StatusPanel({
   dict,
   onClose,
@@ -171,156 +163,97 @@ function StatusPanel({
   onClose: () => void;
 }) {
   return (
-    <>
-      {/* Chispa y trazo: el gesto de invocación nace de la mano del jugador */}
-      <motion.span
-        initial={{ scale: 0, opacity: 0, rotate: 0 }}
-        animate={{ scale: 1, opacity: 1, rotate: 45 }}
-        exit={{ scale: 0, opacity: 0 }}
-        transition={{ duration: 0.16 }}
-        className="pointer-events-none fixed z-20 h-3 w-3 rounded-sm bg-cyan-300 shadow-[0_0_18px_6px_rgba(34,211,238,0.85)]"
-        style={{ right: "30%", bottom: "26%" }}
-        aria-hidden
-      />
-      <motion.span
-        initial={{ scaleY: 0, opacity: 0 }}
-        animate={{ scaleY: 1, opacity: 1 }}
-        exit={{ scaleY: 0, opacity: 0 }}
-        transition={{ duration: 0.2, delay: 0.08 }}
-        className="pointer-events-none fixed z-20 w-px origin-bottom bg-gradient-to-t from-cyan-300 via-cyan-300/40 to-transparent"
-        style={{ right: "calc(30% + 5px)", bottom: "26%", height: "16vh" }}
-        aria-hidden
-      />
-
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.12 }}
+      className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 p-4"
+      onClick={onClose}
+    >
       <motion.div
-        initial={{ opacity: 0, y: 40, scaleY: 0.15 }}
-        animate={{ opacity: [0, 1, 0.7, 1, 0.85, 1], y: 0, scaleY: 1 }}
-        exit={{ opacity: 0, y: 30, scaleY: 0.15 }}
-        transition={{
-          scaleY: { type: "spring", stiffness: 220, damping: 22, delay: 0.18 },
-          y: { type: "spring", stiffness: 220, damping: 22, delay: 0.18 },
-          opacity: {
-            duration: 0.55,
-            delay: 0.18,
-            times: [0, 0.25, 0.4, 0.55, 0.75, 1],
-          },
-        }}
-        className="absolute inset-x-0 bottom-24 z-20 flex origin-bottom justify-center px-4"
+        initial={{ scale: 0.94, y: 10 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.96, y: 8 }}
+        transition={{ duration: 0.14, ease: "easeOut" }}
+        className="mc-panel max-h-[80vh] w-full max-w-md overflow-y-auto p-5 font-mono"
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Motas ambiente: fuera del marco recortado para poder escapar de sus bordes */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto h-40 w-full max-w-md"
-          aria-hidden
-        >
-          {STATUS_MOTES.map((m, i) => (
-            <span
-              key={i}
-              className="holo-mote"
-              style={{
-                left: `calc(50% + ${m.x}px)`,
-                bottom: "6%",
-                animationDelay: `${m.d}s`,
-              }}
-            />
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#3f3f3f]">
+            {dict.world.status.title}
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="mc-btn grid h-7 w-7 place-items-center text-xs font-bold leading-none"
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div className="mt-4">
+          <p className="text-lg font-bold text-[#2b2b2b]">Jorge Graells</p>
+          <p className="text-xs text-[#5c5c5c]">
+            {dict.world.status.playerClass}
+          </p>
+          <p className="mt-1 text-xs font-bold text-[#2e7d1e]">
+            {dict.world.status.level}
+          </p>
+          <p className="mt-0.5 text-xs italic text-[#6d4a1f]">
+            {dict.world.status.epithet}
+          </p>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          {dict.world.status.attributes.map((attr, i) => (
+            <div key={attr.name}>
+              <div className="flex items-baseline justify-between">
+                <p className="text-[11px] font-semibold text-[#3f3f3f]">
+                  {attr.name}
+                </p>
+                <p className="text-[11px] font-bold text-[#2e7d1e]">
+                  {attr.value}
+                </p>
+              </div>
+              <div className="mc-bar-track mt-1 h-3.5 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${attr.value}%` }}
+                  transition={{ duration: 0.6, delay: 0.15 + i * 0.07 }}
+                  className="mc-bar-fill h-full"
+                />
+              </div>
+            </div>
           ))}
         </div>
 
-        <div
-          className="glass status-corners clip-corner relative max-h-[70vh] w-full max-w-md overflow-hidden shadow-[0_0_70px_-16px_rgba(168,85,247,0.6)]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Marca de agua: el mismo glifo, girando muy despacio */}
-          <span
-            className="status-glyph-spin pointer-events-none absolute inset-0 grid place-items-center text-[150px] leading-none text-cyan-300/[0.05] select-none"
-            aria-hidden
-          >
-            ⬡
-          </span>
-
-          <div className="relative max-h-[70vh] overflow-y-auto p-6">
-            <div className="flex items-center justify-between">
-              <p className="font-mono text-sm font-bold uppercase tracking-[0.4em] text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.9)]">
-                ⬡ {dict.world.status.title}
-              </p>
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded-full px-2 font-mono text-sm text-cyan-200/60 transition-colors hover:text-cyan-100"
-                aria-label="Cerrar"
+        <p className="mt-6 text-[10px] font-bold uppercase tracking-wider text-[#3f3f3f]">
+          {dict.world.status.equipmentLabel}
+        </p>
+        <div className="mt-2 grid grid-cols-2 gap-3">
+          {dict.world.status.equipment.map((slot, i) => (
+            <div key={slot.slot} className="flex items-start gap-2">
+              <span
+                className="mc-slot grid h-9 w-9 shrink-0 place-items-center text-base"
+                style={{ color: EQUIP_COLOR[i % EQUIP_COLOR.length] }}
               >
-                ✕
-              </button>
+                {EQUIP_ICON[i % EQUIP_ICON.length]}
+              </span>
+              <div>
+                <p className="text-[9px] font-bold uppercase tracking-wider text-[#5c5c5c]">
+                  {slot.slot}
+                </p>
+                <p className="text-[11px] leading-snug text-[#2b2b2b]">
+                  {slot.items}
+                </p>
+              </div>
             </div>
-            <div className="mt-3 h-px w-full bg-gradient-to-r from-cyan-400/70 via-cyan-400/15 to-transparent" />
-
-            <div className="mt-4">
-              <p className="text-lg font-bold text-white">Jorge Graells</p>
-              <p className="text-sm text-cyan-200/80">
-                {dict.world.status.playerClass}
-              </p>
-              <p className="mt-0.5 font-mono text-xs text-cyan-400">
-                {dict.world.status.level}
-              </p>
-              <p className="mt-1 text-xs italic text-amber-300/80">
-                {dict.world.status.epithet}
-              </p>
-            </div>
-
-            <div className="mt-5 space-y-3">
-              {dict.world.status.attributes.map((attr, i) => (
-                <div key={attr.name}>
-                  <div className="flex items-baseline justify-between">
-                    <p className="text-xs font-semibold text-cyan-100/90">
-                      {attr.name}
-                    </p>
-                    <p className="font-mono text-xs text-cyan-300">
-                      {attr.value}
-                    </p>
-                  </div>
-                  <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-cyan-950/60">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${attr.value}%` }}
-                      transition={{ duration: 0.7, delay: 0.5 + i * 0.08 }}
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-violet-500 shadow-[0_0_8px_rgba(34,211,238,0.9)]"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="mt-6 font-mono text-[10px] uppercase tracking-wider text-violet-300">
-              {dict.world.status.equipmentLabel}
-            </p>
-            <div className="mt-2 grid grid-cols-2 gap-3">
-              {dict.world.status.equipment.map((slot, i) => (
-                <div key={slot.slot} className="flex items-start gap-2">
-                  <span
-                    className="mt-0.5 grid h-6 w-6 shrink-0 rotate-45 place-items-center rounded-sm border text-[10px]"
-                    style={{
-                      borderColor: `${EQUIP_COLOR[i % EQUIP_COLOR.length]}88`,
-                      color: EQUIP_COLOR[i % EQUIP_COLOR.length],
-                    }}
-                  >
-                    <span className="-rotate-45">
-                      {EQUIP_ICON[i % EQUIP_ICON.length]}
-                    </span>
-                  </span>
-                  <div>
-                    <p className="font-mono text-[9px] uppercase tracking-wider text-violet-300/90">
-                      {slot.slot}
-                    </p>
-                    <p className="text-[11px] leading-snug text-cyan-100/80">
-                      {slot.items}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </motion.div>
-    </>
+    </motion.div>
   );
 }
 
