@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<p align="center">
+  <img src="public/og.jpg" alt="Jorge Graells — AI Engineer & Full-Stack Developer" width="640" />
+</p>
 
-## Getting Started
+<h1 align="center">jorgegraells.com</h1>
 
-First, run the development server:
+<p align="center">
+  <strong>Un currículum que se juega.</strong><br/>
+  Web de marca personal de <a href="https://jorgegraells.com">Jorge Graells</a> — Ingeniero de IA y Desarrollador Full-Stack.
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+<p align="center">
+  🌐 <a href="https://jorgegraells.com">jorgegraells.com</a> &nbsp;·&nbsp; 🎮 <a href="https://jorgegraells.com/es/world">Mundo virtual</a>
+</p>
+
+---
+
+No es un portfolio normal: es una **landing estilo arcade/synthwave** con un
+holograma vivo en el hero, y un **mundo virtual 3D jugable** donde cada proyecto
+es una casa y un vecino te cuenta su historia. Bilingüe (ES/EN).
+
+## ✨ Destacado
+
+- **Hero holográfico** con recorte real (segmentación por IA), barrido de
+  escaneo, glow y parallax.
+- **Mundo 3D jugable** (React Three Fiber): movimiento WASD + ratón estilo FPS,
+  aldeanos con personalidad y diálogos, ventana de habilidades tipo *Solo
+  Leveling*, dos estilos visuales (cuadrado / redondo), obra de construcción con
+  grúas y obreros, montañas, y controles táctiles en móvil.
+- **Estética arcade/HUD 2026**: neón, tarjetas *level select*, barras de XP,
+  *quest log*.
+- **Bilingüe ES/EN** con detección de idioma.
+- **SEO + GEO**: JSON-LD (Person + proyectos), `sitemap.xml` con hreflang,
+  Open Graph, `robots.txt` que permite los crawlers de IA y `llms.txt` para que
+  ChatGPT / Perplexity / Claude / Gemini puedan citar el sitio.
+
+## 🛠️ Stack
+
+Next.js 16 (App Router, Turbopack) · React 19 · React Three Fiber · Tailwind v4 ·
+Framer Motion · TypeScript. Desplegado en **Vercel**.
+
+## 📂 Estructura
+
+```
+src/
+  app/[locale]/        Landing (page.tsx) y mundo 3D (world/)
+  app/sitemap.ts,      SEO: sitemap y robots (crawlers de IA incluidos)
+  app/robots.ts
+  components/          Una sección por archivo + world/ (escena y HUD)
+  i18n/dictionaries.ts TODO el contenido visible (objetos es / en)
+public/                Holograma, OG image, llms.txt
+docs/                  Guías de mantenimiento (contenido, mundo 3D, operaciones)
+scripts/               Utilidades (recorte del holograma, imagen OG)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Casi todo el contenido visible vive en `src/i18n/dictionaries.ts`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Desarrollo
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # build de producción
+```
 
-## Learn More
+## 👤 Contacto
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Jorge Graells** — dev.graells@gmail.com ·
+[GitHub](https://github.com/jorgegraells) ·
+[LinkedIn](https://www.linkedin.com/in/jorge-graells-4a2911117/)
