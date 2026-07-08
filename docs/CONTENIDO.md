@@ -40,6 +40,21 @@ Los proyectos son `projects.items[]` (tipo `Project`). Campos:
 
 `siteLinks` (mismo archivo): GitHub, LinkedIn, email. Se usan en Contact y Footer.
 
+## Añadir un artículo al blog
+
+Los artículos viven en `src/content/articles.ts` (arrays `es` y `en`, uno por
+idioma). Para publicar uno nuevo:
+
+1. Añade un objeto `Article` a `es` **y** a `en` (mismo tema, cada uno en su
+   idioma). Campos: `slug` (URL, distinto por idioma y sin tildes), `title`,
+   `description` (= respuesta directa/lead y meta description), `date` (ISO),
+   `readingMinutes`, `tags[]`, `body` (Markdown).
+2. El `body` admite Markdown (encabezados `##`/`###`, listas, tablas, código,
+   citas). Para GEO: respuesta directa en las primeras frases, una idea por
+   sección, y cifras concretas.
+3. Nada más. Ruta, listado, teaser de la home, sitemap y JSON-LD se generan
+   solos. Recuerda: ES **y** EN, sin precios/VTEQ/SofIA.
+
 ## SEO / GEO (posicionamiento en buscadores e IAs)
 
 - **JSON-LD** (Person + WebSite + ProfilePage + ItemList de proyectos): se
