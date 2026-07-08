@@ -309,6 +309,40 @@ body {
   animation: glow-breathe 5s ease-in-out infinite;
 }
 
+/* Corchetes de esquina para la ventana STATUS: en las esquinas rectas (no
+   recortadas por clip-corner), ya que ahí sí se ven enteros. */
+.status-corners::before,
+.status-corners::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--neon-cyan);
+  pointer-events: none;
+}
+.status-corners::before {
+  top: -1px;
+  right: -1px;
+  border-left: 0;
+  border-bottom: 0;
+}
+.status-corners::after {
+  bottom: -1px;
+  left: -1px;
+  border-right: 0;
+  border-top: 0;
+}
+
+/* Ventana STATUS: glifo de marca de agua girando muy lento (proyección estable) */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.status-glyph-spin {
+  animation: spin-slow 22s linear infinite;
+}
+
 @keyframes holo-flicker {
   0%,
   100% {

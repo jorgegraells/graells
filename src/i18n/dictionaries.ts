@@ -82,7 +82,10 @@ export type Dictionary = {
       title: string;
       playerClass: string;
       level: string;
+      epithet: string;
+      equipmentLabel: string;
       attributes: { name: string; value: number }[];
+      equipment: { slot: string; items: string }[];
     };
   };
   about: { title: string; paragraphs: string[] };
@@ -167,6 +170,8 @@ const es: Dictionary = {
       title: "STATUS",
       playerClass: "AI Engineer & Full-Stack Developer",
       level: "Nivel 8 · 8 años de experiencia",
+      epithet: "Forjador de MVPs",
+      equipmentLabel: "Equipamiento",
       attributes: [
         { name: "Inteligencia · IA & LLMs", value: 92 },
         { name: "Forja · Full-Stack", value: 90 },
@@ -174,6 +179,12 @@ const es: Dictionary = {
         { name: "Voluntad · Ciberseguridad", value: 85 },
         { name: "Visión · Producto & MVP", value: 84 },
         { name: "Templanza · Compliance EU", value: 82 },
+      ],
+      equipment: [
+        { slot: "Arma principal", items: "Next.js · React · TypeScript" },
+        { slot: "Grimorio", items: "LLMs · RAG · Agentes" },
+        { slot: "Armadura", items: "C++ industrial · Kotlin" },
+        { slot: "Amuleto", items: "FortiGate · Entra ID" },
       ],
     },
   },
@@ -400,6 +411,8 @@ const en: Dictionary = {
       title: "STATUS",
       playerClass: "AI Engineer & Full-Stack Developer",
       level: "Level 8 · 8 years of experience",
+      epithet: "Forger of MVPs",
+      equipmentLabel: "Equipment",
       attributes: [
         { name: "Intelligence · AI & LLMs", value: 92 },
         { name: "Forge · Full-Stack", value: 90 },
@@ -407,6 +420,12 @@ const en: Dictionary = {
         { name: "Willpower · Cybersecurity", value: 85 },
         { name: "Vision · Product & MVP", value: 84 },
         { name: "Temperance · EU Compliance", value: 82 },
+      ],
+      equipment: [
+        { slot: "Main weapon", items: "Next.js · React · TypeScript" },
+        { slot: "Grimoire", items: "LLMs · RAG · Agents" },
+        { slot: "Armor", items: "Industrial C++ · Kotlin" },
+        { slot: "Amulet", items: "FortiGate · Entra ID" },
       ],
     },
   },
