@@ -11,7 +11,15 @@ export type Article = {
   body: string; // Markdown
 };
 
-const es: Article[] = [
+/** Los artículos se escriben sin `readingMinutes`: se calcula del cuerpo. */
+type ArticleData = Omit<Article, "readingMinutes">;
+
+function readingMinutes(body: string): number {
+  const words = body.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
+const es: ArticleData[] = [
   {
     slug: "que-es-geo-posicionar-web-en-respuestas-de-ia",
     title:
@@ -19,7 +27,6 @@ const es: Article[] = [
     description:
       "El GEO (Generative Engine Optimization) es estructurar tu web para que las IAs la citen al redactar sus respuestas. No buscas rankear en una lista de enlaces: buscas ser la fuente que el modelo elige. Estas son las técnicas que funcionan en 2026.",
     date: "2026-07-08",
-    readingMinutes: 7,
     tags: ["GEO", "SEO", "IA", "LLM"],
     body: `El **GEO (Generative Engine Optimization)** es la práctica de estructurar tu web para que los motores de respuesta de IA —ChatGPT, Perplexity, Claude, Gemini, Google AI Overviews o Bing Copilot— la **citen dentro de sus respuestas**. A diferencia del SEO clásico, no compites por un puesto en una lista de diez enlaces azules: compites por ser **la fuente que el modelo elige** cuando redacta.
 
@@ -93,7 +100,7 @@ Esta web aplica todo lo anterior. Y es justo el problema que resuelve **EchoGEO*
   },
 ];
 
-const en: Article[] = [
+const en: ArticleData[] = [
   {
     slug: "what-is-geo-rank-your-website-in-ai-answers",
     title:
@@ -101,7 +108,6 @@ const en: Article[] = [
     description:
       "GEO (Generative Engine Optimization) is structuring your website so AI engines cite it when they write answers. You're not chasing a spot in a list of links: you're chasing being the source the model picks. Here are the techniques that work in 2026.",
     date: "2026-07-08",
-    readingMinutes: 7,
     tags: ["GEO", "SEO", "AI", "LLM"],
     body: `**GEO (Generative Engine Optimization)** is the practice of structuring your website so AI answer engines —ChatGPT, Perplexity, Claude, Gemini, Google AI Overviews or Bing Copilot— **cite it inside their answers**. Unlike classic SEO, you're not competing for a slot in a list of ten blue links: you're competing to be **the source the model picks** when it writes.
 
@@ -175,14 +181,21 @@ This site applies everything above. And it's exactly the problem **EchoGEO** sol
   },
 ];
 
-const articles: Record<Locale, Article[]> = { es, en };
+const articles: Record<Locale, ArticleData[]> = { es, en };
+
+function toArticle(a: ArticleData): Article {
+  return { ...a, readingMinutes: readingMinutes(a.body) };
+}
 
 export function getArticles(locale: Locale): Article[] {
-  return [...articles[locale]].sort((a, b) => b.date.localeCompare(a.date));
+  return [...articles[locale]]
+    .map(toArticle)
+    .sort((a, b) => b.date.localeCompare(a.date));
 }
 
 export function getArticle(locale: Locale, slug: string): Article | undefined {
-  return articles[locale].find((a) => a.slug === slug);
+  const a = articles[locale].find((x) => x.slug === slug);
+  return a ? toArticle(a) : undefined;
 }
 
 export function getAllArticleParams(): { locale: Locale; slug: string }[] {

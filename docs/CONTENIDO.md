@@ -48,7 +48,7 @@ idioma). Para publicar uno nuevo:
 1. Añade un objeto `Article` a `es` **y** a `en` (mismo tema, cada uno en su
    idioma). Campos: `slug` (URL, distinto por idioma y sin tildes), `title`,
    `description` (= respuesta directa/lead y meta description), `date` (ISO),
-   `readingMinutes`, `tags[]`, `body` (Markdown).
+   `tags[]`, `body` (Markdown). El tiempo de lectura se calcula solo del cuerpo.
 2. El `body` admite Markdown (encabezados `##`/`###`, listas, tablas, código,
    citas). Para GEO: respuesta directa en las primeras frases, una idea por
    sección, y cifras concretas.
