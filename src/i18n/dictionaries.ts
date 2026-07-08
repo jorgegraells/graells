@@ -90,6 +90,9 @@ export type Dictionary = {
     personal: {
       library: string;
       librarySubtitle: string;
+      libraryHint: string;
+      libraryHintTouch: string;
+      libraryQuote: string;
       geek: string;
     };
   };
@@ -195,6 +198,10 @@ const es: Dictionary = {
     personal: {
       library: "Biblioteca",
       librarySubtitle: "Lecturas que recomiendo",
+      libraryHint: "Pulsa E para ver las recomendaciones",
+      libraryHintTouch: "Toca la estantería para ver las recomendaciones",
+      libraryQuote:
+        "Jorge Graells recomienda estos libros: le fueron genial para su evolución personal y profesional.",
       geek: "Zona friki",
     },
   },
@@ -441,6 +448,10 @@ const en: Dictionary = {
     personal: {
       library: "Library",
       librarySubtitle: "Reads I recommend",
+      libraryHint: "Press E to see the recommendations",
+      libraryHintTouch: "Tap the bookshelf to see the recommendations",
+      libraryQuote:
+        "Jorge Graells recommends these books: they were key to his personal and professional growth.",
       geek: "Geek corner",
     },
   },

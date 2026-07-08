@@ -44,12 +44,16 @@ Dos archivos en `src/components/world/`:
 - **Controles**: WASD/flechas + arrastre (sentido INVERTIDO adrede — petición de
   Jorge), Espacio salta (gravedad simple), E habla, C abre STATUS, ESC cierra.
   Móvil (`pointer: coarse`): joystick + botón salto + textos `hintTouch`.
-- **Zona personal** (sector este, apartada del pueblo de la experiencia):
+- **Zona personal** (este/sureste, repartida y lejos del pueblo):
   `LIBRARY_POS`/`GEEK_POS`/`PITCH_POS` + `inPersonalZone()` (despeja árboles,
-  rocas, hierba y flores de la parcela). Biblioteca: libros en `BOOKS` (ranking;
-  los `top` van en la balda de arriba con peana dorada). Zona friki: pósters
-  procedurales en `usePosterTextures()` (canvas). El campo se pisa (sin collider);
-  solo las porterías y los edificios coliden.
+  rocas, hierba y flores). Los edificios son VISITABLES: `BuildingShell` monta
+  paredes con hueco de puerta + `AutoDoor` (se abre sola por proximidad) y las
+  colisiones van por segmentos de pared (`shellSegs` + `wallColliders` →
+  `PERSONAL_BOX_COLLIDERS`, cajas como las casas). Biblioteca: `BOOKS` (ranking),
+  estanterías `Bookcase` (lomos deterministas) e interacción E/toque que muestra
+  la recomendación (`dict.world.personal.libraryQuote`). Zona friki: pósters
+  procedurales (`usePosterTextures`), LED, sofá, PC, funkos, consolas. Campo:
+  césped a franjas, gradas con collider, porterías con red; el campo se pisa.
 - **Holograma de la plaza** (`PlazaHologram`): usa `public/jorge-holo-head.webp`
   (variante SIN el disco pintado — el disco es la peana 3D; se regenera con
   `node scripts/holo-head.mjs`). La landing sigue usando `jorge-holo-cut.webp`.
