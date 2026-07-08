@@ -65,6 +65,6 @@ npm run build      # build de producción
 
 ## 👤 Contacto
 
-**Jorge Graells** — dev.graells@gmail.com ·
+**Jorge Graells** - dev.graells@gmail.com ·
 [GitHub](https://github.com/jorgegraells) ·
 [LinkedIn](https://www.linkedin.com/in/jorge-graells-4a2911117/)
