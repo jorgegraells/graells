@@ -102,6 +102,25 @@ function mulberry32(seed: number) {
   };
 }
 
+/** Zona personal, apartada del pueblo de la experiencia (sector este):
+ *  biblioteca con lecturas recomendadas, zona friki y campito de fútbol. */
+const LIBRARY_POS = { x: 32, z: 12, rotY: -Math.PI / 2 + 0.25 };
+const GEEK_POS = { x: 37, z: 2, rotY: -Math.PI / 2 };
+const PITCH_POS = { x: 30, z: -8.5 };
+const PITCH_W = 8;
+const PITCH_L = 13;
+
+/** ¿Cae este punto dentro de la zona personal? (para despejar árboles,
+ *  rocas, hierba alta y flores de esa parcela) */
+function inPersonalZone(x: number, z: number) {
+  if (Math.hypot(x - LIBRARY_POS.x, z - LIBRARY_POS.z) < 7) return true;
+  if (Math.hypot(x - GEEK_POS.x, z - GEEK_POS.z) < 7) return true;
+  return (
+    Math.abs(x - PITCH_POS.x) < PITCH_W / 2 + 2 &&
+    Math.abs(z - PITCH_POS.z) < PITCH_L / 2 + 2
+  );
+}
+
 /** Bosque alrededor del pueblo (fuera del anillo de casas). */
 const TREE_SPOTS = (() => {
   const rand = mulberry32(1337);
@@ -114,7 +133,7 @@ const TREE_SPOTS = (() => {
       scale: 0.7 + rand() * 0.7,
       variant: Math.floor(rand() * 3),
     };
-  });
+  }).filter((t) => !inPersonalZone(t.x, t.z));
 })();
 
 /** Rocas medio enterradas. */
@@ -129,7 +148,7 @@ const ROCK_SPOTS = (() => {
       s: 0.35 + rand() * 0.6,
       rot: rand() * Math.PI,
     };
-  });
+  }).filter((r) => !inPersonalZone(r.x, r.z));
 })();
 
 const LAMP_SPOTS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((a) => ({
@@ -187,6 +206,11 @@ const DECOR_COLLIDERS = [
   ...TREE_SPOTS.map((t) => ({ x: t.x, z: t.z, r: 0.7 * t.scale })),
   ...LAMP_SPOTS.map((l) => ({ x: l.x, z: l.z, r: 0.3 })),
   ...BENCH_SPOTS.map((b) => ({ x: b.x, z: b.z, r: 0.9 })),
+  // Zona personal: edificios y porterías (el campo se pisa)
+  { x: LIBRARY_POS.x, z: LIBRARY_POS.z, r: 3.4 },
+  { x: GEEK_POS.x, z: GEEK_POS.z, r: 3.7 },
+  { x: PITCH_POS.x, z: PITCH_POS.z - PITCH_L / 2, r: 1.1 },
+  { x: PITCH_POS.x, z: PITCH_POS.z + PITCH_L / 2, r: 1.1 },
 ];
 
 /** Color de tejado y camiseta del aldeano de cada proyecto. */
@@ -237,7 +261,8 @@ function makeGroundClear(layout: VillageLayout) {
   return (x: number, z: number) => {
     const r = Math.hypot(x, z);
     if (r < PLAZA_RADIUS + 0.7) return false; // plaza + bordillo
-    if (r < 2.6) return false; // árbol central
+    if (r < 2.6) return false; // holograma central
+    if (inPersonalZone(x, z)) return false; // biblioteca, zona friki y campito
     for (const l of layout) {
       // Caminos radiales (en el marco local del camino)
       scratch.set(x, 0, z).applyAxisAngle(UP, -l.angle);
@@ -451,6 +476,16 @@ function PlayerRig({
       return;
     }
 
+    // Solo dev: window.__look = [yaw, pitch] orienta la cámara (para depurar)
+    if (process.env.NODE_ENV !== "production") {
+      const w = window as Window & { __look?: [number, number] };
+      if (w.__look) {
+        yaw.current = w.__look[0];
+        pitch.current = w.__look[1];
+        w.__look = undefined;
+      }
+    }
+
     camera.rotation.set(pitch.current, yaw.current, 0);
     if (pausedRef.current) return;
 
@@ -538,7 +573,10 @@ function PlayerRig({
  *  la ventana de habilidades. */
 const CAST_ARM_POSITION = new THREE.Vector3(0.16, -0.34, -0.62);
 const CAST_ARM_ROTATION = new THREE.Euler(-1.25, 0, 0);
-const IDLE_ARM_ROTATION_RIGHT = new THREE.Euler(-0.45, -0.2, 0.1);
+// El extremo +z del brazo es la mano: en reposo el brazo gira ~180º en X para
+// que la mano apunte hacia delante (lejos de la cámara), no hacia el jugador.
+const IDLE_ARM_ROTATION_RIGHT = new THREE.Euler(Math.PI - 0.45, -0.2, 0.1);
+const IDLE_ARM_ROTATION_LEFT = new THREE.Euler(Math.PI - 0.45, 0.2, -0.1);
 
 function Arm({ sign }: { sign: number }) {
   return (
@@ -621,10 +659,18 @@ function FirstPersonArms({ casting }: { casting: boolean }) {
 
   return (
     <group ref={root}>
-      <group ref={armRight} position={[0.48, -0.52, -0.9]} rotation={[-0.45, -0.2, 0.1]}>
+      <group
+        ref={armRight}
+        position={[0.48, -0.52, -0.9]}
+        rotation={IDLE_ARM_ROTATION_RIGHT}
+      >
         <Arm sign={1} />
       </group>
-      <group ref={armLeft} position={[-0.48, -0.52, -0.9]} rotation={[-0.45, 0.2, -0.1]}>
+      <group
+        ref={armLeft}
+        position={[-0.48, -0.52, -0.9]}
+        rotation={IDLE_ARM_ROTATION_LEFT}
+      >
         <Arm sign={-1} />
       </group>
     </group>
@@ -909,7 +955,8 @@ function PlazaHologram() {
 
   useEffect(() => {
     let alive = true;
-    new THREE.TextureLoader().load("/jorge-holo-cut.webp", (t) => {
+    // Variante sin el disco proyector pintado: aquí la peana ya es 3D
+    new THREE.TextureLoader().load("/jorge-holo-head.webp", (t) => {
       if (!alive) return;
       t.colorSpace = THREE.SRGBColorSpace;
       setAspect(t.image.width / t.image.height);
@@ -923,7 +970,7 @@ function PlazaHologram() {
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     if (holo.current) {
-      holo.current.position.y = 3.1 + Math.sin(t * 1.1) * 0.12;
+      holo.current.position.y = 2.9 + Math.sin(t * 1.1) * 0.12;
       // Billboard en yaw: la silueta siempre mira al jugador
       holo.current.rotation.y = Math.atan2(camera.position.x, camera.position.z);
     }
@@ -941,7 +988,7 @@ function PlazaHologram() {
     });
   });
 
-  const holoHeight = 3.2;
+  const holoHeight = 2.6;
   return (
     <group>
       {/* Peana del proyector: piedra + disco oscuro + anillo de energía */}
@@ -977,7 +1024,7 @@ function PlazaHologram() {
 
       {/* La silueta holográfica */}
       {tex && (
-        <group ref={holo} position={[0, 3.1, 0]}>
+        <group ref={holo} position={[0, 2.9, 0]}>
           <mesh>
             <planeGeometry args={[holoHeight * aspect, holoHeight]} />
             <meshBasicMaterial
@@ -1289,6 +1336,487 @@ function Windmill() {
           </group>
         ))}
       </group>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Zona personal: biblioteca, zona friki y campito de fútbol
+// ---------------------------------------------------------------------------
+
+/** Lecturas recomendadas de Jorge, en orden de ranking. */
+const BOOKS = [
+  { title: "Can't Hurt Me", author: "David Goggins", top: true, color: "#d97706" },
+  { title: "Never Finished", author: "David Goggins", top: true, color: "#b91c1c" },
+  { title: "Shoe Dog", author: "Phil Knight", top: false, color: "#ef4444" },
+  { title: "Principles", author: "Ray Dalio", top: false, color: "#e2e8f0" },
+  { title: "Zero to One", author: "Peter Thiel", top: false, color: "#2563eb" },
+];
+
+/** Caseta de frente abierto: suelo, tres paredes, postes y techo plano. */
+function OpenHut({
+  w,
+  d,
+  h,
+  roofColor,
+  children,
+}: {
+  w: number;
+  d: number;
+  h: number;
+  roofColor: string;
+  children?: ReactNode;
+}) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  return (
+    <group>
+      <Block args={[w, 0.2, d]} position={[0, 0.1, 0]} receiveShadow>
+        <meshStandardMaterial color="#8a6a42" flatShading={flat} />
+      </Block>
+      {/* Pared trasera y laterales (el frente queda abierto) */}
+      <Block args={[w, h, 0.3]} castShadow position={[0, h / 2, -d / 2 + 0.15]}>
+        <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+      </Block>
+      <Block args={[0.3, h, d]} castShadow position={[-w / 2 + 0.15, h / 2, 0]}>
+        <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+      </Block>
+      <Block args={[0.3, h, d]} castShadow position={[w / 2 - 0.15, h / 2, 0]}>
+        <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+      </Block>
+      {/* Postes del frente */}
+      {[-1, 1].map((s) => (
+        <Block
+          key={s}
+          args={[0.35, h, 0.35]}
+          castShadow
+          position={[s * (w / 2 - 0.2), h / 2, d / 2 - 0.2]}
+        >
+          <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+        </Block>
+      ))}
+      <Block args={[w + 0.9, 0.35, d + 0.9]} castShadow position={[0, h + 0.18, 0]}>
+        <meshStandardMaterial color={roofColor} flatShading={flat} />
+      </Block>
+      {/* Luz interior cálida para que se vea lo de dentro */}
+      <pointLight position={[0, h - 0.6, 0.4]} color="#ffe6bf" intensity={0.9} distance={8} />
+      {children}
+    </group>
+  );
+}
+
+/** Biblioteca: estantería con las lecturas recomendadas. Los dos TOP de
+ *  Goggins presiden la balda de arriba sobre peana dorada. */
+function RecommendedLibrary({ dict }: { dict: Dictionary }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const shelfZ = -1.75;
+  const topBooks = BOOKS.filter((b) => b.top);
+  const restBooks = BOOKS.filter((b) => !b.top);
+  return (
+    <group
+      position={[LIBRARY_POS.x, 0, LIBRARY_POS.z]}
+      rotation={[0, LIBRARY_POS.rotY, 0]}
+    >
+      <OpenHut w={7} d={5} h={3.6} roofColor="#3f6212">
+        {/* Estantería: dos baldas y laterales */}
+        {[1.0, 2.05].map((y) => (
+          <Block key={y} args={[5.4, 0.14, 0.9]} position={[0, y, shelfZ]}>
+            <meshStandardMaterial color="#5e4326" flatShading={flat} />
+          </Block>
+        ))}
+        {[-1, 1].map((s) => (
+          <Block key={s} args={[0.14, 2.7, 0.9]} position={[s * 2.7, 1.4, shelfZ]}>
+            <meshStandardMaterial color="#5e4326" flatShading={flat} />
+          </Block>
+        ))}
+        {/* Balda de arriba: los dos TOP sobre peana dorada */}
+        {topBooks.map((b, i) => {
+          const x = i === 0 ? -0.6 : 0.6;
+          return (
+            <group key={b.title} position={[x, 0, shelfZ]}>
+              <Block args={[0.66, 0.07, 0.4]} position={[0, 2.155, 0]}>
+                <meshStandardMaterial
+                  color="#d4af37"
+                  emissive="#d4af37"
+                  emissiveIntensity={0.25}
+                  flatShading={flat}
+                />
+              </Block>
+              <Block args={[0.52, 0.95, 0.3]} radius={0.03} position={[0, 2.665, 0]}>
+                <meshStandardMaterial color={b.color} flatShading={flat} />
+              </Block>
+            </group>
+          );
+        })}
+        {/* Balda de abajo: el resto */}
+        {restBooks.map((b, i) => (
+          <Block
+            key={b.title}
+            args={[0.52, 0.9, 0.3]}
+            radius={0.03}
+            position={[-1.2 + i * 1.2, 1.52, shelfZ]}
+          >
+            <meshStandardMaterial color={b.color} flatShading={flat} />
+          </Block>
+        ))}
+        {/* Lista con el ranking, colgada sobre la estantería */}
+        <Html
+          center
+          zIndexRange={[15, 0]}
+          position={[0, 3.05, shelfZ + 0.6]}
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="w-48 rounded-lg bg-[#241a10]/92 px-3 py-2 shadow-lg">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-amber-300">
+              {dict.world.personal.librarySubtitle}
+            </p>
+            <ol className="mt-1 space-y-0.5 text-[9px] leading-tight text-amber-50/90">
+              {BOOKS.map((b, i) => (
+                <li key={b.title}>
+                  <span className="font-bold text-amber-400">{i + 1}.</span>{" "}
+                  {b.title} · <span className="opacity-70">{b.author}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </Html>
+      </OpenHut>
+      <Html
+        center
+        zIndexRange={[15, 0]}
+        position={[0, 4.7, 0]}
+        style={{ pointerEvents: "none" }}
+      >
+        <p className="whitespace-nowrap rounded-lg bg-[#3f6212] px-3 py-1 text-sm font-bold text-white shadow-lg">
+          📚 {dict.world.personal.library}
+        </p>
+      </Html>
+    </group>
+  );
+}
+
+/** Pósters procedurales de la zona friki (pintados en canvas). */
+function usePosterTextures() {
+  return useMemo(() => {
+    const make = (draw: (ctx: CanvasRenderingContext2D) => void) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = 128;
+      canvas.height = 176;
+      const ctx = canvas.getContext("2d")!;
+      draw(ctx);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      return tex;
+    };
+    const title = (
+      ctx: CanvasRenderingContext2D,
+      text: string,
+      color: string,
+    ) => {
+      ctx.fillStyle = color;
+      ctx.font = "bold 13px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText(text, 64, 162);
+    };
+
+    const spiderman = make((ctx) => {
+      ctx.fillStyle = "#b31219";
+      ctx.fillRect(0, 0, 128, 176);
+      // Telaraña
+      ctx.strokeStyle = "rgba(0,0,0,0.35)";
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 8; i++) {
+        ctx.beginPath();
+        ctx.moveTo(64, 70);
+        ctx.lineTo(64 + Math.cos((i / 8) * Math.PI * 2) * 90, 70 + Math.sin((i / 8) * Math.PI * 2) * 90);
+        ctx.stroke();
+      }
+      for (const r of [22, 42, 62]) {
+        ctx.beginPath();
+        ctx.arc(64, 70, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      // Araña
+      ctx.fillStyle = "#0a0a0a";
+      ctx.beginPath();
+      ctx.ellipse(64, 74, 9, 15, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#0a0a0a";
+      ctx.lineWidth = 3;
+      for (const [dx, dy] of [[-22, -18], [22, -18], [-26, 0], [26, 0], [-22, 18], [22, 18], [-14, 28], [14, 28]]) {
+        ctx.beginPath();
+        ctx.moveTo(64, 72);
+        ctx.lineTo(64 + dx, 72 + dy);
+        ctx.stroke();
+      }
+      title(ctx, "SPIDER-MAN", "#ffffff");
+    });
+
+    const pokemon = make((ctx) => {
+      ctx.fillStyle = "#f7f7f7";
+      ctx.fillRect(0, 0, 128, 176);
+      // Pokébola
+      ctx.beginPath();
+      ctx.arc(64, 74, 36, Math.PI, 0);
+      ctx.fillStyle = "#ee1515";
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(64, 74, 36, 0, Math.PI);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.strokeStyle = "#111";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(64, 74, 36, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(28, 74);
+      ctx.lineTo(100, 74);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(64, 74, 9, 0, Math.PI * 2);
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+      ctx.stroke();
+      title(ctx, "POKÉMON", "#2a75bb");
+    });
+
+    const rickMorty = make((ctx) => {
+      ctx.fillStyle = "#0d1f14";
+      ctx.fillRect(0, 0, 128, 176);
+      // Portal verde
+      for (const [r, c] of [
+        [44, "#3f7d2c"],
+        [36, "#97ce4c"],
+        [27, "#c8f169"],
+        [18, "#97ce4c"],
+        [10, "#e8ffd0"],
+      ] as const) {
+        ctx.beginPath();
+        ctx.arc(64, 74, r, 0, Math.PI * 2);
+        ctx.fillStyle = c;
+        ctx.fill();
+      }
+      title(ctx, "RICK & MORTY", "#97ce4c");
+    });
+
+    const minecraft = make((ctx) => {
+      // Cielo, banda de hierba y tierra con pixelado
+      ctx.fillStyle = "#7fb2e5";
+      ctx.fillRect(0, 0, 128, 64);
+      ctx.fillStyle = "#67b841";
+      ctx.fillRect(0, 64, 128, 14);
+      const rand = mulberry32(42);
+      const browns = ["#7a5230", "#6c4628", "#835a36", "#5f3f24"];
+      for (let y = 78; y < 176; y += 8) {
+        for (let x = 0; x < 128; x += 8) {
+          ctx.fillStyle = browns[Math.floor(rand() * browns.length)];
+          ctx.fillRect(x, y, 8, 8);
+        }
+      }
+      ctx.fillStyle = "#3f3f3f";
+      ctx.font = "bold 14px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("MINECRAFT", 65, 163);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText("MINECRAFT", 64, 162);
+    });
+
+    const valorant = make((ctx) => {
+      ctx.fillStyle = "#0f1923";
+      ctx.fillRect(0, 0, 128, 176);
+      ctx.strokeStyle = "#ff4655";
+      ctx.lineWidth = 13;
+      ctx.beginPath();
+      ctx.moveTo(32, 40);
+      ctx.lineTo(64, 108);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(96, 40);
+      ctx.lineTo(76, 82);
+      ctx.stroke();
+      title(ctx, "VALORANT", "#ece8e1");
+    });
+
+    return { spiderman, pokemon, rickMorty, minecraft, valorant };
+  }, []);
+}
+
+/** Figurita tipo funko: cabezón y cuerpo pequeño. */
+function Funko({ color, position }: { color: string; position: [number, number, number] }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  return (
+    <group position={position}>
+      <Block args={[0.18, 0.2, 0.13]} radius={0.04} position={[0, 0.1, 0]}>
+        <meshStandardMaterial color={color} flatShading={flat} />
+      </Block>
+      <Block args={[0.26, 0.26, 0.24]} radius={0.06} position={[0, 0.34, 0]}>
+        <meshStandardMaterial color="#e8b98d" flatShading={flat} />
+      </Block>
+      <Block args={[0.27, 0.1, 0.25]} radius={0.04} position={[0, 0.44, 0]}>
+        <meshStandardMaterial color={color} flatShading={flat} />
+      </Block>
+    </group>
+  );
+}
+
+/** Zona friki: pósters, funkos, cartas de Pokémon y consolas. */
+function GeekDen({ dict }: { dict: Dictionary }) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const posters = usePosterTextures();
+  const poster = (
+    tex: THREE.Texture,
+    position: [number, number, number],
+    rotY = 0,
+  ) => (
+    <mesh position={position} rotation={[0, rotY, 0]}>
+      <planeGeometry args={[1.2, 1.62]} />
+      <meshBasicMaterial map={tex} toneMapped={false} />
+    </mesh>
+  );
+  return (
+    <group position={[GEEK_POS.x, 0, GEEK_POS.z]} rotation={[0, GEEK_POS.rotY, 0]}>
+      <OpenHut w={8} d={6} h={3.8} roofColor="#6d28d9">
+        {/* Pósters: tres en la pared del fondo, dos en la izquierda */}
+        {poster(posters.spiderman, [-2.4, 2.3, -2.68])}
+        {poster(posters.pokemon, [0, 2.3, -2.68])}
+        {poster(posters.rickMorty, [2.4, 2.3, -2.68])}
+        {poster(posters.minecraft, [-3.68, 2.3, -0.9], Math.PI / 2)}
+        {poster(posters.valorant, [-3.68, 2.3, 1.1], Math.PI / 2)}
+
+        {/* Balda con funkos bajo los pósters del fondo */}
+        <Block args={[2.4, 0.1, 0.45]} position={[-1.6, 1.25, -2.4]}>
+          <meshStandardMaterial color="#5e4326" flatShading={flat} />
+        </Block>
+        <Funko color="#c1121f" position={[-2.5, 1.3, -2.4]} />
+        <Funko color="#ffcb05" position={[-1.9, 1.3, -2.4]} />
+        <Funko color="#97ce4c" position={[-1.3, 1.3, -2.4]} />
+        <Funko color="#ff4655" position={[-0.7, 1.3, -2.4]} />
+
+        {/* Mesita con cartas de Pokémon */}
+        <Block args={[0.16, 0.6, 0.16]} position={[1.4, 0.3, -1.5]}>
+          <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+        </Block>
+        <Block args={[1.15, 0.09, 0.75]} position={[1.4, 0.64, -1.5]}>
+          <meshStandardMaterial color="#8a6a42" flatShading={flat} />
+        </Block>
+        {[-0.3, 0.02, 0.34].map((dx, i) => (
+          <group
+            key={i}
+            position={[1.4 + dx, 0.7, -1.5 + (i % 2) * 0.08]}
+            rotation={[0, (i - 1) * 0.35, 0]}
+          >
+            <Block args={[0.26, 0.02, 0.36]}>
+              <meshStandardMaterial color="#eab308" flatShading={flat} />
+            </Block>
+            <Block args={[0.2, 0.022, 0.28]}>
+              <meshStandardMaterial color="#e5e7eb" flatShading={flat} />
+            </Block>
+          </group>
+        ))}
+
+        {/* TV y mueble con las consolas (pared derecha) */}
+        <Block args={[0.08, 1.05, 1.75]} position={[3.62, 2.15, -0.4]}>
+          <meshStandardMaterial color="#111827" flatShading={flat} />
+        </Block>
+        <Block args={[0.04, 0.88, 1.58]} position={[3.56, 2.15, -0.4]}>
+          <meshStandardMaterial
+            color="#1d3346"
+            emissive="#1d3346"
+            emissiveIntensity={0.5}
+            flatShading={flat}
+          />
+        </Block>
+        <Block args={[0.55, 0.5, 2.3]} castShadow position={[3.35, 0.25, -0.4]}>
+          <meshStandardMaterial color="#5e4326" flatShading={flat} />
+        </Block>
+        {/* Nintendo: pantalla con joycons rojo y azul */}
+        <group position={[3.32, 0.62, -1.15]}>
+          <Block args={[0.05, 0.2, 0.44]}>
+            <meshStandardMaterial color="#1f2937" flatShading={flat} />
+          </Block>
+          <Block args={[0.05, 0.2, 0.1]} position={[0, 0, -0.27]}>
+            <meshStandardMaterial color="#ef4444" flatShading={flat} />
+          </Block>
+          <Block args={[0.05, 0.2, 0.1]} position={[0, 0, 0.27]}>
+            <meshStandardMaterial color="#3b82f6" flatShading={flat} />
+          </Block>
+        </group>
+        {/* PlayStation: torre blanca con núcleo negro y mando */}
+        <group position={[3.32, 0.8, 0.25]}>
+          <Block args={[0.16, 0.6, 0.36]} radius={0.05}>
+            <meshStandardMaterial color="#f4f4f5" flatShading={flat} />
+          </Block>
+          <Block args={[0.17, 0.5, 0.12]}>
+            <meshStandardMaterial color="#0a0a0a" flatShading={flat} />
+          </Block>
+        </group>
+        <Block args={[0.22, 0.08, 0.15]} radius={0.04} position={[3.3, 0.54, 0.75]}>
+          <meshStandardMaterial color="#1f2937" flatShading={flat} />
+        </Block>
+      </OpenHut>
+      <Html
+        center
+        zIndexRange={[15, 0]}
+        position={[0, 4.9, 0]}
+        style={{ pointerEvents: "none" }}
+      >
+        <p className="whitespace-nowrap rounded-lg bg-[#6d28d9] px-3 py-1 text-sm font-bold text-white shadow-lg">
+          🕹️ {dict.world.personal.geek}
+        </p>
+      </Html>
+    </group>
+  );
+}
+
+/** Campito de fútbol: césped marcado con líneas, dos porterías y balón. */
+function FootballPitch() {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const goal = (z: number) => (
+    <group position={[0, 0, z]}>
+      {[-1, 1].map((s) => (
+        <Block key={s} args={[0.12, 1.3, 0.12]} castShadow position={[s * 1.5, 0.65, 0]}>
+          <meshStandardMaterial color="#f2f2f2" flatShading={flat} />
+        </Block>
+      ))}
+      <Block args={[3.12, 0.12, 0.12]} castShadow position={[0, 1.36, 0]}>
+        <meshStandardMaterial color="#f2f2f2" flatShading={flat} />
+      </Block>
+    </group>
+  );
+  return (
+    <group position={[PITCH_POS.x, 0, PITCH_POS.z]}>
+      {/* Césped del campo, un punto más oscuro que el prado */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} receiveShadow>
+        <planeGeometry args={[PITCH_W, PITCH_L]} />
+        <meshStandardMaterial color="#54a03c" roughness={1} />
+      </mesh>
+      {/* Líneas: perímetro, medio campo y círculo central */}
+      {[-1, 1].map((s) => (
+        <Block key={`v${s}`} args={[0.12, 0.02, PITCH_L]} position={[s * (PITCH_W / 2 - 0.06), 0.035, 0]}>
+          <meshStandardMaterial color="#f5f5f5" />
+        </Block>
+      ))}
+      {[-1, 0, 1].map((s) => (
+        <Block key={`h${s}`} args={[PITCH_W, 0.02, 0.12]} position={[0, 0.035, s * (PITCH_L / 2 - 0.06)]}>
+          <meshStandardMaterial color="#f5f5f5" />
+        </Block>
+      ))}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.04, 0]}>
+        <ringGeometry args={[1.35, 1.5, 36]} />
+        <meshStandardMaterial color="#f5f5f5" />
+      </mesh>
+      {goal(-PITCH_L / 2)}
+      {goal(PITCH_L / 2)}
+      {/* Balón */}
+      <mesh castShadow position={[0.9, 0.24, 1.4]}>
+        <sphereGeometry args={[0.24, 12, 12]} />
+        <meshStandardMaterial color="#f5f5f5" flatShading={flat} />
+      </mesh>
     </group>
   );
 }
@@ -2434,6 +2962,9 @@ export default function WorldCanvas({
         <LampPosts />
         <Well />
         <Windmill />
+        <RecommendedLibrary dict={dict} />
+        <GeekDen dict={dict} />
+        <FootballPitch />
         {echo && (
           <ConstructionSite
             position={[echo.house.x, 0, echo.house.z]}

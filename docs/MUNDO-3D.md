@@ -44,6 +44,15 @@ Dos archivos en `src/components/world/`:
 - **Controles**: WASD/flechas + arrastre (sentido INVERTIDO adrede — petición de
   Jorge), Espacio salta (gravedad simple), E habla, C abre STATUS, ESC cierra.
   Móvil (`pointer: coarse`): joystick + botón salto + textos `hintTouch`.
+- **Zona personal** (sector este, apartada del pueblo de la experiencia):
+  `LIBRARY_POS`/`GEEK_POS`/`PITCH_POS` + `inPersonalZone()` (despeja árboles,
+  rocas, hierba y flores de la parcela). Biblioteca: libros en `BOOKS` (ranking;
+  los `top` van en la balda de arriba con peana dorada). Zona friki: pósters
+  procedurales en `usePosterTextures()` (canvas). El campo se pisa (sin collider);
+  solo las porterías y los edificios coliden.
+- **Holograma de la plaza** (`PlazaHologram`): usa `public/jorge-holo-head.webp`
+  (variante SIN el disco pintado — el disco es la peana 3D; se regenera con
+  `node scripts/holo-head.mjs`). La landing sigue usando `jorge-holo-cut.webp`.
 
 ## Trampas conocidas (no re-descubrir)
 
@@ -65,3 +74,5 @@ Dos archivos en `src/components/world/`:
 
 `DebugProbe` expone en `window`: `__cam` [x,y,z], `__rot` [pitch,yaw] y acepta
 `__goto = [x, z]` para teletransportar. Útil para probar proximidad/colisiones.
+`PlayerRig` acepta además `__look = [yaw, pitch]` para orientar la cámara
+(imprescindible al verificar por script: la rotación se pisa cada frame).

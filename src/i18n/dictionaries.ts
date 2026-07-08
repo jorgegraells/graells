@@ -87,6 +87,11 @@ export type Dictionary = {
       attributes: { name: string; value: number }[];
       equipment: { slot: string; items: string }[];
     };
+    personal: {
+      library: string;
+      librarySubtitle: string;
+      geek: string;
+    };
   };
   about: { title: string; paragraphs: string[] };
   projects: { title: string; subtitle: string; highlightLabel: string; items: Project[] };
@@ -170,22 +175,27 @@ const es: Dictionary = {
       title: "STATUS",
       playerClass: "AI Engineer & Full-Stack Developer",
       level: "Nivel 8 · 8 años de experiencia",
-      epithet: "Forjador de MVPs",
-      equipmentLabel: "Equipamiento",
+      epithet: "De la idea al MVP en producción",
+      equipmentLabel: "Herramientas",
       attributes: [
-        { name: "Inteligencia · IA & LLMs", value: 92 },
-        { name: "Forja · Full-Stack", value: 90 },
-        { name: "Vigor · C++ industrial", value: 88 },
-        { name: "Voluntad · Ciberseguridad", value: 85 },
-        { name: "Visión · Producto & MVP", value: 84 },
-        { name: "Templanza · Compliance EU", value: 82 },
+        { name: "IA & LLMs", value: 92 },
+        { name: "Full-Stack", value: 90 },
+        { name: "C++ industrial", value: 88 },
+        { name: "Ciberseguridad", value: 85 },
+        { name: "Producto & MVP", value: 84 },
+        { name: "Compliance EU", value: 82 },
       ],
       equipment: [
-        { slot: "Arma principal", items: "Next.js · React · TypeScript" },
-        { slot: "Grimorio", items: "LLMs · RAG · Agentes" },
-        { slot: "Armadura", items: "C++ industrial · Kotlin" },
-        { slot: "Amuleto", items: "FortiGate · Entra ID" },
+        { slot: "Web", items: "Next.js · React · TypeScript" },
+        { slot: "IA", items: "LLMs · RAG · Agentes" },
+        { slot: "Industrial", items: "C++ · Kotlin · RS-232" },
+        { slot: "Cyber", items: "FortiGate · Entra ID" },
       ],
+    },
+    personal: {
+      library: "Biblioteca",
+      librarySubtitle: "Lecturas que recomiendo",
+      geek: "Zona friki",
     },
   },
   about: {
@@ -411,22 +421,27 @@ const en: Dictionary = {
       title: "STATUS",
       playerClass: "AI Engineer & Full-Stack Developer",
       level: "Level 8 · 8 years of experience",
-      epithet: "Forger of MVPs",
-      equipmentLabel: "Equipment",
+      epithet: "From idea to MVP in production",
+      equipmentLabel: "Toolbox",
       attributes: [
-        { name: "Intelligence · AI & LLMs", value: 92 },
-        { name: "Forge · Full-Stack", value: 90 },
-        { name: "Vigor · Industrial C++", value: 88 },
-        { name: "Willpower · Cybersecurity", value: 85 },
-        { name: "Vision · Product & MVP", value: 84 },
-        { name: "Temperance · EU Compliance", value: 82 },
+        { name: "AI & LLMs", value: 92 },
+        { name: "Full-Stack", value: 90 },
+        { name: "Industrial C++", value: 88 },
+        { name: "Cybersecurity", value: 85 },
+        { name: "Product & MVP", value: 84 },
+        { name: "EU Compliance", value: 82 },
       ],
       equipment: [
-        { slot: "Main weapon", items: "Next.js · React · TypeScript" },
-        { slot: "Grimoire", items: "LLMs · RAG · Agents" },
-        { slot: "Armor", items: "Industrial C++ · Kotlin" },
-        { slot: "Amulet", items: "FortiGate · Entra ID" },
+        { slot: "Web", items: "Next.js · React · TypeScript" },
+        { slot: "AI", items: "LLMs · RAG · Agents" },
+        { slot: "Industrial", items: "C++ · Kotlin · RS-232" },
+        { slot: "Cyber", items: "FortiGate · Entra ID" },
       ],
+    },
+    personal: {
+      library: "Library",
+      librarySubtitle: "Reads I recommend",
+      geek: "Geek corner",
     },
   },
   about: {
