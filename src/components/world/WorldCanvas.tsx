@@ -1347,17 +1347,31 @@ function LampPosts() {
 }
 
 /** Pozo de piedra junto a la plaza. */
-/** Combinaciones de aspecto para la gente sentada en los bancos. */
-const SEAT_PEOPLE = [
-  { skin: "#e8b98d", shirt: "#c94f4f", pants: "#3a4a6b", hair: "#3a2a1a" },
-  { skin: "#f0c9a0", shirt: "#2f9e57", pants: "#4a3520", hair: "#1f1f26" },
-  { skin: "#d8a171", shirt: "#7c5cd6", pants: "#2c2c34", hair: "#4a3320" },
-  { skin: "#e8b98d", shirt: "#e0912f", pants: "#3a4a6b", hair: "#6b4a2b" },
-  { skin: "#f0c9a0", shirt: "#3f6f9e", pants: "#4a3520", hair: "#2a1a10" },
-  { skin: "#d8a171", shirt: "#d6558e", pants: "#2c2c34", hair: "#1f1f26" },
-];
+/** Gente sentada en los bancos: cada una con peinado y accesorio distintos. */
+type SeatLook = {
+  skin: string;
+  shirt: string;
+  pants: string;
+  hair: string;
+  style: "short" | "tuft" | "long" | "bald";
+  accessory: "none" | "glasses" | "beard" | "mustache";
+  hat: "none" | "beanie" | "cap";
+};
 
-type SeatLook = (typeof SEAT_PEOPLE)[number];
+const SEAT_PEOPLE: SeatLook[] = [
+  // Cresta, sin accesorio
+  { skin: "#e8b98d", shirt: "#c94f4f", pants: "#3a4a6b", hair: "#2a1a10", style: "tuft", accessory: "none", hat: "none" },
+  // Corto con gafas
+  { skin: "#f0c9a0", shirt: "#2f9e57", pants: "#4a3520", hair: "#1f1f26", style: "short", accessory: "glasses", hat: "none" },
+  // Pelo largo
+  { skin: "#d8a171", shirt: "#7c5cd6", pants: "#2c2c34", hair: "#5a3a1a", style: "long", accessory: "none", hat: "none" },
+  // Corto con barba
+  { skin: "#e8b98d", shirt: "#e0912f", pants: "#3a4a6b", hair: "#3a2418", style: "short", accessory: "beard", hat: "none" },
+  // Gorro de lana
+  { skin: "#f0c9a0", shirt: "#3f6f9e", pants: "#4a3520", hair: "#2a1a10", style: "short", accessory: "none", hat: "beanie" },
+  // Calvo con bigote y gorra
+  { skin: "#d8a171", shirt: "#d6558e", pants: "#2c2c34", hair: "#1f1f26", style: "bald", accessory: "mustache", hat: "cap" },
+];
 
 /** Persona sentada, mirando hacia +Z (donde el banco encara la plaza). El
  *  origen del grupo está en la superficie del asiento; respira suavemente. */
@@ -1373,6 +1387,7 @@ function SeatedPerson({ look, phase }: { look: SeatLook; phase: number }) {
     }
   });
   const skinMat = () => <meshStandardMaterial color={look.skin} flatShading={flat} />;
+  const hairMat = () => <meshStandardMaterial color={look.hair} flatShading={flat} />;
   return (
     <group>
       {/* Cadera y muslos (horizontales hacia delante) */}
@@ -1408,7 +1423,8 @@ function SeatedPerson({ look, phase }: { look: SeatLook; phase: number }) {
           </Block>
         </group>
       ))}
-      {/* Cuello + cabeza (con leve movimiento) */}
+      {/* Cuello + cabeza (con leve movimiento). Coordenadas relativas al
+          centro de la cabeza; mismo lenguaje que los aldeanos de pie. */}
       <Block args={[0.18, 0.12, 0.18]} radius={0.05} position={[0, 0.72, -0.02]}>
         {skinMat()}
       </Block>
@@ -1416,27 +1432,123 @@ function SeatedPerson({ look, phase }: { look: SeatLook; phase: number }) {
         <Block args={[0.36, 0.38, 0.36]} radius={0.12} castShadow>
           {skinMat()}
         </Block>
-        {/* Pelo */}
-        <Block args={[0.4, 0.16, 0.4]} radius={0.08} position={[0, 0.19, -0.02]}>
-          <meshStandardMaterial color={look.hair} flatShading={flat} />
+        {/* Orejas */}
+        {[-0.19, 0.19].map((x) => (
+          <Block key={x} args={[0.05, 0.1, 0.09]} radius={0.02} position={[x, 0, 0]}>
+            {skinMat()}
+          </Block>
+        ))}
+        {/* Nariz */}
+        <Block args={[0.07, 0.08, 0.07]} radius={0.02} position={[0, -0.03, 0.19]}>
+          {skinMat()}
         </Block>
-        {/* Ojos */}
-        {[-0.09, 0.09].map((x) => (
-          <group key={x} position={[x, 0.02, 0.18]}>
-            <mesh>
-              <boxGeometry args={[0.07, 0.07, 0.02]} />
+        {/* Cejas */}
+        {[-0.086, 0.086].map((x) => (
+          <mesh key={x} position={[x, 0.094, 0.187]}>
+            <boxGeometry args={[0.094, 0.022, 0.022]} />
+            {hairMat()}
+          </mesh>
+        ))}
+        {/* Ojos: blanco + pupila */}
+        {[-0.086, 0.086].map((x) => (
+          <group key={x} position={[x, 0.022, 0.18]}>
+            <Block args={[0.086, 0.086, 0.02]} radius={0.03}>
               <meshStandardMaterial color="#f4f4f4" />
-            </mesh>
-            <mesh position={[0, 0, 0.015]}>
-              <boxGeometry args={[0.035, 0.045, 0.02]} />
+            </Block>
+            <mesh position={[0, 0, 0.02]}>
+              <boxGeometry args={[0.04, 0.05, 0.02]} />
               <meshStandardMaterial color="#2c2c34" />
             </mesh>
           </group>
         ))}
-        {/* Nariz */}
-        <Block args={[0.07, 0.08, 0.07]} radius={0.02} position={[0, -0.02, 0.19]}>
-          {skinMat()}
-        </Block>
+        {/* Boca */}
+        <mesh position={[0, -0.094, 0.19]}>
+          <boxGeometry args={[0.122, 0.025, 0.02]} />
+          <meshStandardMaterial color="#7a3b32" />
+        </mesh>
+
+        {/* Pelo (si no lleva gorro y no es calvo) */}
+        {look.hat === "none" && look.style !== "bald" && (
+          <>
+            <Block args={[0.389, 0.13, 0.389]} radius={0.08} position={[0, 0.187, 0]}>
+              {hairMat()}
+            </Block>
+            <Block args={[0.389, 0.086, 0.1]} radius={0.03} position={[0, 0.1, 0.158]}>
+              {hairMat()}
+            </Block>
+            {[-0.194, 0.194].map((x) => (
+              <Block key={x} args={[0.036, 0.216, 0.302]} radius={0.02} position={[x, 0.065, -0.014]}>
+                {hairMat()}
+              </Block>
+            ))}
+            {look.style === "tuft" && (
+              <Block args={[0.158, 0.19, 0.202]} radius={0.06} position={[0, 0.31, -0.014]}>
+                {hairMat()}
+              </Block>
+            )}
+            {look.style === "long" && (
+              <Block args={[0.36, 0.331, 0.1]} radius={0.05} position={[0, 0.014, -0.194]}>
+                {hairMat()}
+              </Block>
+            )}
+          </>
+        )}
+
+        {/* Gorros */}
+        {look.hat === "beanie" && (
+          <>
+            <Block args={[0.403, 0.187, 0.403]} radius={0.11} position={[0, 0.16, 0]}>
+              <meshStandardMaterial color={look.shirt} flatShading={flat} />
+            </Block>
+            <Block args={[0.418, 0.072, 0.418]} radius={0.04} position={[0, 0.055, 0]}>
+              <meshStandardMaterial color="#eef1f4" flatShading={flat} />
+            </Block>
+            <Block args={[0.1, 0.1, 0.1]} radius={0.04} position={[0, 0.28, 0]}>
+              <meshStandardMaterial color="#eef1f4" flatShading={flat} />
+            </Block>
+          </>
+        )}
+        {look.hat === "cap" && (
+          <>
+            <Block args={[0.403, 0.144, 0.403]} radius={0.1} position={[0, 0.16, 0]}>
+              <meshStandardMaterial color="#2b6cb0" flatShading={flat} />
+            </Block>
+            <Block args={[0.36, 0.043, 0.216]} radius={0.02} position={[0, 0.09, 0.245]}>
+              <meshStandardMaterial color="#2b6cb0" flatShading={flat} />
+            </Block>
+          </>
+        )}
+
+        {/* Accesorios */}
+        {look.accessory === "glasses" && (
+          <group position={[0, 0.022, 0.2]}>
+            {[-0.086, 0.086].map((x) => (
+              <Block key={x} args={[0.115, 0.1, 0.022]} radius={0.02} position={[x, 0, 0]}>
+                <meshStandardMaterial color="#20242c" flatShading={flat} />
+              </Block>
+            ))}
+            <mesh>
+              <boxGeometry args={[0.072, 0.022, 0.022]} />
+              <meshStandardMaterial color="#20242c" />
+            </mesh>
+          </group>
+        )}
+        {look.accessory === "mustache" && (
+          <mesh position={[0, -0.072, 0.2]}>
+            <boxGeometry args={[0.173, 0.04, 0.036]} />
+            {hairMat()}
+          </mesh>
+        )}
+        {look.accessory === "beard" && (
+          <>
+            <Block args={[0.317, 0.187, 0.173]} radius={0.06} position={[0, -0.13, 0.1]}>
+              {hairMat()}
+            </Block>
+            <Block args={[0.173, 0.065, 0.065]} radius={0.02} position={[0, -0.065, 0.194]}>
+              {hairMat()}
+            </Block>
+          </>
+        )}
       </group>
     </group>
   );
