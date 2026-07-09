@@ -1423,16 +1423,18 @@ const BOOKS = [
   { title: "Zero to One", author: "Peter Thiel", top: false, color: "#2563eb" },
 ];
 
-/** Puerta de madera con bisagra que se abre sola (hacia dentro) cuando el
- *  jugador se acerca, y se cierra al alejarse. */
+const DOOR_H = 2.5; // alto del hueco de puerta
+
+/** Puerta de madera con bisagra que se abre sola (hacia dentro) al acercarse.
+ *  La hoja encaja en un hueco de DOOR_W × DOOR_H con marco de jambas y dintel. */
 function AutoDoor({ position }: { position: [number, number, number] }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
   const hinge = useRef<THREE.Group>(null);
   const world = useRef(new THREE.Vector3());
   const { camera } = useThree();
-  const W = DOOR_W - 0.2;
-  const H = 2.5;
+  const LW = DOOR_W - 0.18; // ancho de la hoja (holgura en el hueco)
+  const LH = DOOR_H - 0.12; // alto de la hoja
 
   useFrame((_, rawDelta) => {
     const delta = Math.min(rawDelta, 0.05);
@@ -1446,34 +1448,39 @@ function AutoDoor({ position }: { position: [number, number, number] }) {
       ) < 3.4;
     g.rotation.y = THREE.MathUtils.lerp(
       g.rotation.y,
-      near ? 1.9 : 0, // hacia dentro, sin barrer al jugador
+      near ? 1.95 : 0, // hacia dentro, sin barrer al jugador
       1 - Math.exp(-delta * 6),
     );
   });
 
   return (
     <group position={position}>
-      {/* Marco: jambas y dintel */}
+      {/* Marco de madera que forra el hueco (jambas + dintel) */}
       {[-1, 1].map((s) => (
-        <Block key={s} args={[0.18, H + 0.15, 0.4]} position={[s * (W / 2 + 0.12), (H + 0.15) / 2, 0]}>
+        <Block
+          key={s}
+          args={[0.1, DOOR_H, 0.36]}
+          position={[s * (DOOR_W / 2 - 0.05), DOOR_H / 2, 0]}
+        >
           <meshStandardMaterial color="#5a3d22" flatShading={flat} />
         </Block>
       ))}
-      <Block args={[W + 0.55, 0.2, 0.4]} position={[0, H + 0.18, 0]}>
+      <Block args={[DOOR_W, 0.1, 0.36]} position={[0, DOOR_H - 0.05, 0]}>
         <meshStandardMaterial color="#5a3d22" flatShading={flat} />
       </Block>
-      {/* Hoja con bisagra a la izquierda */}
-      <group ref={hinge} position={[-W / 2, 0, 0]}>
-        <Block args={[W - 0.06, H - 0.08, 0.1]} radius={0.02} castShadow position={[(W - 0.06) / 2 + 0.02, (H - 0.08) / 2 + 0.03, 0]}>
+      {/* Hoja con bisagra a la izquierda del hueco */}
+      <group ref={hinge} position={[-(DOOR_W / 2 - 0.09), 0.02, 0]}>
+        <Block args={[LW, LH, 0.08]} radius={0.02} castShadow position={[LW / 2, LH / 2, 0]}>
           <meshStandardMaterial color="#7a5230" flatShading={flat} />
         </Block>
-        {/* Travesaños y pomo */}
-        {[0.65, 1.85].map((y) => (
-          <Block key={y} args={[W - 0.2, 0.1, 0.13]} position={[(W - 0.06) / 2 + 0.02, y, 0]}>
+        {/* Travesaños */}
+        {[0.55, 1.75].map((y) => (
+          <Block key={y} args={[LW - 0.14, 0.11, 0.11]} position={[LW / 2, y, 0]}>
             <meshStandardMaterial color="#5a3d22" flatShading={flat} />
           </Block>
         ))}
-        <Block args={[0.09, 0.09, 0.16]} position={[W - 0.28, 1.2, 0]}>
+        {/* Pomo */}
+        <Block args={[0.09, 0.09, 0.16]} position={[LW - 0.22, 1.15, 0]}>
           <meshStandardMaterial color="#d4af37" flatShading={flat} />
         </Block>
       </group>
@@ -1494,10 +1501,10 @@ function WindowPane({
   const flat = style === "blocky";
   return (
     <group position={position} rotation={[0, rotY, 0]}>
-      <Block args={[1.15, 1.35, 0.38]} radius={0.03}>
+      <Block args={[1.15, 1.35, 0.42]} radius={0.03}>
         <meshStandardMaterial color="#5a3d22" flatShading={flat} />
       </Block>
-      <Block args={[0.92, 1.12, 0.42]}>
+      <Block args={[0.92, 1.12, 0.46]}>
         <meshStandardMaterial
           color="#bfe3f5"
           emissive="#9fd4ee"
@@ -1506,101 +1513,171 @@ function WindowPane({
         />
       </Block>
       {/* Cruceta */}
-      <Block args={[0.06, 1.12, 0.44]}>
+      <Block args={[0.06, 1.12, 0.48]}>
         <meshStandardMaterial color="#5a3d22" flatShading={flat} />
       </Block>
-      <Block args={[0.92, 0.06, 0.44]}>
+      <Block args={[0.92, 0.06, 0.48]}>
         <meshStandardMaterial color="#5a3d22" flatShading={flat} />
       </Block>
     </group>
   );
 }
 
-/** Edificio visitable: cuatro paredes con hueco de puerta (y AutoDoor),
- *  zócalo de piedra, suelo y techo de madera, vigas de esquina y tejado
- *  piramidal a juego con el pueblo. El interior va en `children`. */
+/** Cartel de madera colgado con texto pintado (canvas), para que desde fuera
+ *  se lea qué es cada edificio. */
+function Signboard({
+  text,
+  emoji,
+  bg,
+  position,
+  width = 2.6,
+}: {
+  text: string;
+  emoji: string;
+  bg: string;
+  position: [number, number, number];
+  width?: number;
+}) {
+  const tex = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 320;
+    canvas.height = 100;
+    const ctx = canvas.getContext("2d")!;
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 320, 100);
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    ctx.fillRect(0, 78, 320, 22);
+    ctx.font = "42px serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(emoji, 44, 46);
+    ctx.fillStyle = "#fdf6e3";
+    ctx.font = "bold 34px Georgia, serif";
+    ctx.fillText(text.toUpperCase(), 176, 50);
+    const t = new THREE.CanvasTexture(canvas);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, [text, emoji, bg]);
+  const h = width * (100 / 320);
+  return (
+    <group position={position}>
+      <Block args={[width + 0.18, h + 0.18, 0.1]} position={[0, 0, 0]}>
+        <meshStandardMaterial color="#4a3520" />
+      </Block>
+      <mesh position={[0, 0, 0.06]}>
+        <planeGeometry args={[width, h]} />
+        <meshBasicMaterial map={tex} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+/** Edificio visitable: paredes que BUTAN entre postes de esquina salientes
+ *  (sin caras coplanares, así no titilan las aristas), hueco de puerta con
+ *  AutoDoor, zócalo de piedra, suelo/techo de madera y tejado piramidal recto
+ *  (la escala en Z va en el grupo padre, tras la rotación, para no torcerlo). */
 function BuildingShell({
   w,
   d,
   h,
   roofColor,
+  wallColor = "#e8d8b0",
   children,
 }: {
   w: number;
   d: number;
   h: number;
   roofColor: string;
+  wallColor?: string;
   children?: ReactNode;
 }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
-  const sideHalf = (w / 2 - DOOR_W / 2) / 2;
-  const sideCx = DOOR_W / 2 + sideHalf;
+  const wallT = 0.25;
+  const postT = 0.44;
+  const postC = 0.16; // centro de poste medido desde el borde (sobresale ~0.06)
+  const postInner = w / 2 - postC - postT / 2; // cara interior de poste (X)
+  const postInnerZ = d / 2 - postC - postT / 2;
+  const wallMat = <meshStandardMaterial color={wallColor} flatShading={flat} />;
+  const trimMat = () => <meshStandardMaterial color="#6b4a2b" flatShading={flat} />;
+  const roofR = (w + 0.8) / 1.414; // pirámide de 4 caras que cubre el ancho
+  const roofScaleZ = (d + 0.8) / (w + 0.8);
+  const frontSegW = postInner + postT / 2 - DOOR_W / 2; // ancho del segmento entre poste y puerta
+
   return (
     <group>
       {/* Zócalo de piedra y suelo de madera */}
       <Block args={[w + 0.4, 0.3, d + 0.4]} position={[0, 0.15, 0]} receiveShadow>
         <meshStandardMaterial color="#8f8f8f" flatShading={flat} />
       </Block>
-      <Block args={[w - 0.5, 0.14, d - 0.5]} position={[0, 0.3, 0]} receiveShadow>
+      <Block args={[w - 0.3, 0.14, d - 0.3]} position={[0, 0.3, 0]} receiveShadow>
         <meshStandardMaterial color="#9a7648" flatShading={flat} />
       </Block>
-      {/* Paredes: trasera, laterales y frente con hueco de puerta */}
-      <Block args={[w, h, 0.3]} castShadow position={[0, h / 2, -d / 2 + 0.15]}>
-        <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+
+      {/* Pared trasera (buta entre postes) */}
+      <Block args={[w - 2 * postC, h, wallT]} castShadow position={[0, h / 2, -d / 2 + wallT / 2]}>
+        {wallMat}
       </Block>
+      {/* Paredes laterales (butan entre paredes frontal y trasera) */}
       {[-1, 1].map((s) => (
-        <Block key={s} args={[0.3, h, d]} castShadow position={[s * (w / 2 - 0.15), h / 2, 0]}>
-          <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+        <Block
+          key={s}
+          args={[wallT, h, d - 2 * wallT]}
+          castShadow
+          position={[s * (w / 2 - wallT / 2), h / 2, 0]}
+        >
+          {wallMat}
         </Block>
       ))}
+      {/* Fachada: dos segmentos a los lados del hueco de puerta */}
       {[-1, 1].map((s) => (
         <Block
           key={`f${s}`}
-          args={[sideHalf * 2, h, 0.3]}
+          args={[frontSegW, h, wallT]}
           castShadow
-          position={[s * sideCx, h / 2, d / 2 - 0.15]}
+          position={[s * (DOOR_W / 2 + frontSegW / 2), h / 2, d / 2 - wallT / 2]}
         >
-          <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+          {wallMat}
         </Block>
       ))}
       {/* Dintel sobre la puerta */}
-      <Block args={[DOOR_W + 0.2, h - 2.7, 0.3]} position={[0, 2.7 + (h - 2.7) / 2, d / 2 - 0.15]}>
-        <meshStandardMaterial color="#e8d8b0" flatShading={flat} />
+      <Block args={[DOOR_W, h - DOOR_H, wallT]} position={[0, DOOR_H + (h - DOOR_H) / 2, d / 2 - wallT / 2]}>
+        {wallMat}
       </Block>
-      {/* Vigas de esquina */}
+
+      {/* Postes de esquina salientes: tapan los encuentros de paredes */}
       {[-1, 1].flatMap((sx) =>
         [-1, 1].map((sz) => (
           <Block
             key={`${sx}${sz}`}
-            args={[0.42, h + 0.1, 0.42]}
+            args={[postT, h + 0.35, postT]}
             castShadow
-            position={[sx * (w / 2 - 0.21), (h + 0.1) / 2, sz * (d / 2 - 0.21)]}
+            position={[sx * postInner, (h + 0.35) / 2, sz * postInnerZ]}
           >
-            <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+            {trimMat()}
           </Block>
         )),
       )}
-      {/* Techo interior, alero y tejado piramidal */}
-      <Block args={[w - 0.5, 0.12, d - 0.5]} position={[0, h - 0.06, 0]}>
+
+      {/* Techo interior y alero */}
+      <Block args={[w - 0.3, 0.12, d - 0.3]} position={[0, h - 0.06, 0]}>
         <meshStandardMaterial color="#6e5335" flatShading={flat} />
       </Block>
-      <Block args={[w + 1, 0.22, d + 1]} castShadow position={[0, h + 0.11, 0]}>
+      <Block args={[w + 0.8, 0.24, d + 0.8]} castShadow position={[0, h + 0.12, 0]}>
         <meshStandardMaterial color="#5a4a33" flatShading={flat} />
       </Block>
-      <mesh
-        castShadow
-        position={[0, h + 0.22 + 1.15, 0]}
-        rotation={[0, Math.PI / 4, 0]}
-        scale={[1, 1, (d + 1) / (w + 1)]}
-      >
-        <coneGeometry args={[(w / 2 + 0.5) / 0.707, 2.4, 4]} />
-        <meshStandardMaterial color={roofColor} flatShading={flat} />
-      </mesh>
-      {/* Puerta que se abre al acercarse */}
-      <AutoDoor position={[0, 0.3, d / 2 - 0.15]} />
+      {/* Tejado piramidal recto: escala Z en el grupo padre (tras la rotación) */}
+      <group position={[0, h + 0.24, 0]} scale={[1, 1, roofScaleZ]}>
+        <mesh castShadow rotation={[0, Math.PI / 4, 0]} position={[0, 1.1, 0]}>
+          <coneGeometry args={[roofR, 2.2, 4]} />
+          <meshStandardMaterial color={roofColor} flatShading={flat} />
+        </mesh>
+      </group>
+
+      {/* Puerta automática, empotrada en el plano de fachada */}
+      <AutoDoor position={[0, 0.3, d / 2 - wallT / 2]} />
       {/* Luz interior cálida */}
-      <pointLight position={[0, h - 0.9, 0]} color="#ffe0b3" intensity={1.6} distance={10} />
+      <pointLight position={[0, h - 0.9, 0]} color="#ffe0b3" intensity={1.6} distance={11} />
       {children}
     </group>
   );
@@ -1676,17 +1753,28 @@ function Bookcase({
   );
 }
 
-/** Biblioteca visitable: estanterías llenas, mesa expositora con las cinco
- *  lecturas recomendadas (los TOP de Goggins sobre peana dorada), sillón y
- *  alfombra. La estantería es interactuable: E (o toque) muestra la
- *  recomendación de Jorge con el ranking. */
-function RecommendedLibrary({ dict, touch }: { dict: Dictionary; touch: boolean }) {
+/** Biblioteca visitable: fachada con cartel, estanterías llenas, mesa
+ *  expositora con las cinco lecturas recomendadas, sillón y alfombra. Al
+ *  acercarse a las estanterías, E (o toque) abre un diálogo estilo aldeano
+ *  donde Jorge cuenta los libros. */
+function RecommendedLibrary({
+  dict,
+  touch,
+  paused,
+  onLibrary,
+}: {
+  dict: Dictionary;
+  touch: boolean;
+  paused: boolean;
+  onLibrary: () => void;
+}) {
   const style = useWorldStyle();
   const flat = style === "blocky";
   const { camera } = useThree();
   const [near, setNear] = useState(false);
-  const [open, setOpen] = useState(false);
   const nearRef = useRef(false);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   // Punto de interacción: las estanterías del fondo, en coords de mundo
   const focus = useMemo(() => {
@@ -1702,39 +1790,39 @@ function RecommendedLibrary({ dict, touch }: { dict: Dictionary; touch: boolean 
 
   useFrame(() => {
     const d = Math.hypot(camera.position.x - focus.x, camera.position.z - focus.z);
-    const isNear = d < 3.2;
+    const isNear = d < 3.4;
     if (isNear !== nearRef.current) {
       nearRef.current = isNear;
       setNear(isNear);
-      if (!isNear) setOpen(false);
     }
   });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "KeyE" && nearRef.current) setOpen((o) => !o);
-      if (e.code === "Escape") setOpen(false);
+      if ((e.code === "KeyE" || e.code === "Enter") && nearRef.current && !pausedRef.current) {
+        onLibrary();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [onLibrary]);
 
   return (
     <group
       position={[LIBRARY_POS.x, 0, LIBRARY_POS.z]}
       rotation={[0, LIBRARY_POS.rotY, 0]}
     >
-      <BuildingShell w={8} d={6} h={3.4} roofColor="#3f6212">
-        {/* Ventanas: dos al frente y una por lateral */}
-        <WindowPane position={[-2.4, 1.8, 2.85]} />
-        <WindowPane position={[2.4, 1.8, 2.85]} />
-        <WindowPane position={[-3.85, 1.8, -0.4]} rotY={Math.PI / 2} />
-        <WindowPane position={[3.85, 1.8, -0.4]} rotY={Math.PI / 2} />
+      <BuildingShell w={8} d={6} h={3.4} roofColor="#3f6212" wallColor="#e6d3a8">
+        {/* Ventanas: una a cada lado de la puerta y una por lateral */}
+        <WindowPane position={[-2.7, 1.7, 3.0]} />
+        <WindowPane position={[2.7, 1.7, 3.0]} />
+        <WindowPane position={[-3.9, 1.7, -0.4]} rotY={Math.PI / 2} />
+        <WindowPane position={[3.9, 1.7, -0.4]} rotY={Math.PI / 2} />
 
         {/* Estanterías del fondo (interactuables) */}
-        <group onClick={() => nearRef.current && setOpen((o) => !o)}>
-          <Bookcase seed={101} position={[-1.75, 0.35, -2.45]} />
-          <Bookcase seed={202} position={[1.75, 0.35, -2.45]} />
+        <group onClick={() => nearRef.current && !pausedRef.current && onLibrary()}>
+          <Bookcase seed={101} position={[-1.75, 0.35, -2.5]} />
+          <Bookcase seed={202} position={[1.75, 0.35, -2.5]} />
         </group>
 
         {/* Mesa expositora con las 5 recomendaciones de cara al visitante */}
@@ -1754,17 +1842,7 @@ function RecommendedLibrary({ dict, touch }: { dict: Dictionary; touch: boolean 
           </Block>
           {BOOKS.map((b, i) => (
             <group key={b.title} position={[-0.64 + i * 0.32, 0, 0]} rotation={[0, (i - 2) * 0.06, 0]}>
-              {b.top && (
-                <Block args={[0.38, 0.05, 0.2]} position={[0, 0.955, 0]}>
-                  <meshStandardMaterial
-                    color="#d4af37"
-                    emissive="#d4af37"
-                    emissiveIntensity={0.3}
-                    flatShading={flat}
-                  />
-                </Block>
-              )}
-              <Block args={[0.26, 0.44, 0.08]} radius={0.01} position={[0, (b.top ? 0.98 : 0.93) + 0.22, 0]}>
+              <Block args={[0.26, 0.44, 0.08]} radius={0.01} position={[0, 0.93 + 0.22, 0]}>
                 <meshStandardMaterial color={b.color} flatShading={flat} />
               </Block>
             </group>
@@ -1805,50 +1883,29 @@ function RecommendedLibrary({ dict, touch }: { dict: Dictionary; touch: boolean 
           <meshStandardMaterial color="#b08968" roughness={1} />
         </mesh>
 
-        {/* Interacción con la estantería */}
-        {near && !open && (
+        {/* Cartel exterior sobre la puerta */}
+        <Signboard text={dict.world.personal.library} emoji="📚" bg="#3f6212" position={[0, 2.95, 3.0]} width={2.4} />
+
+        {/* Aviso de interacción estilo aldeano (flotante sobre las estanterías) */}
+        {near && (
           <Html
             center
-            zIndexRange={[15, 0]}
-            position={[0, 2.4, -1.9]}
-            style={{ pointerEvents: "none" }}
-          >
-            <p className="animate-pulse whitespace-nowrap rounded-full bg-black/70 px-4 py-1.5 font-mono text-xs font-semibold text-amber-200 shadow-lg">
-              {touch
-                ? dict.world.personal.libraryHintTouch
-                : dict.world.personal.libraryHint}
-            </p>
-          </Html>
-        )}
-        {open && (
-          <Html
-            center
+            distanceFactor={9}
             zIndexRange={[15, 0]}
             position={[0, 2.6, -1.9]}
             style={{ pointerEvents: "none" }}
           >
-            <div className="w-64 rounded-xl border border-amber-400/40 bg-[#241a10]/95 px-4 py-3 shadow-2xl">
-              <p className="text-[11px] font-semibold leading-snug text-amber-100">
-                {dict.world.personal.libraryQuote}
-              </p>
-              <ol className="mt-2 space-y-1 text-[10px] leading-tight text-amber-50/90">
-                {BOOKS.map((b, i) => (
-                  <li key={b.title}>
-                    <span className="font-bold text-amber-400">
-                      {i < 2 ? `TOP ${i + 1}` : i + 1}.
-                    </span>{" "}
-                    {b.title} · <span className="opacity-70">{b.author}</span>
-                  </li>
-                ))}
-              </ol>
+            <div className="animate-pulse whitespace-nowrap rounded-full bg-[#e0a82f] px-4 py-1.5 font-mono text-xs font-semibold uppercase tracking-widest text-white shadow-lg">
+              {touch ? dict.world.hintNearTouch : dict.world.hintNear}
             </div>
           </Html>
         )}
       </BuildingShell>
       <Html
         center
+        distanceFactor={12}
         zIndexRange={[15, 0]}
-        position={[0, 6.3, 0]}
+        position={[0, 6.1, 0]}
         style={{ pointerEvents: "none" }}
       >
         <p className="whitespace-nowrap rounded-lg bg-[#3f6212] px-3 py-1 text-sm font-bold text-white shadow-lg">
@@ -2043,9 +2100,11 @@ function GeekDen({ dict }: { dict: Dictionary }) {
   );
   return (
     <group position={[GEEK_POS.x, 0, GEEK_POS.z]} rotation={[0, GEEK_POS.rotY, 0]}>
-      <BuildingShell w={9} d={7} h={3.6} roofColor="#6d28d9">
+      <BuildingShell w={9} d={7} h={3.6} roofColor="#6d28d9" wallColor="#d8cbe6">
         {/* Ventana al frente, a la derecha de la puerta */}
-        <WindowPane position={[2.9, 1.8, 3.35]} />
+        <WindowPane position={[2.9, 1.7, 3.375]} />
+        {/* Cartel exterior sobre la puerta */}
+        <Signboard text={dict.world.personal.geek} emoji="🕹️" bg="#6d28d9" position={[0, 3.05, 3.5]} width={2.4} />
 
         {/* Pósters: tres al fondo, dos en la pared izquierda */}
         {poster(posters.spiderman, [-2.6, 2.35, -3.18])}
@@ -2207,6 +2266,7 @@ function GeekDen({ dict }: { dict: Dictionary }) {
       </BuildingShell>
       <Html
         center
+        distanceFactor={12}
         zIndexRange={[15, 0]}
         position={[0, 6.5, 0]}
         style={{ pointerEvents: "none" }}
@@ -2265,25 +2325,48 @@ function FootballPitch() {
     return tex;
   }, []);
 
+  const GOAL_HW = 1.7; // media anchura de portería
+  const GOAL_H = 1.5; // alto
+  const NET_D = 1.1; // fondo de la red (hacia atrás)
+  const netMat = () => (
+    <meshBasicMaterial
+      map={netTex}
+      transparent
+      side={THREE.DoubleSide}
+      depthWrite={false}
+    />
+  );
   const goal = (end: number) => (
     <group position={[0, 0, end * (PITCH_L / 2)]}>
+      {/* Postes y larguero (marco delantero, en la línea de gol) */}
       {[-1, 1].map((s) => (
-        <Block key={s} args={[0.12, 1.4, 0.12]} castShadow position={[s * 1.7, 0.7, 0]}>
+        <Block key={s} args={[0.12, GOAL_H, 0.12]} castShadow position={[s * GOAL_HW, GOAL_H / 2, 0]}>
           <meshStandardMaterial color="#f2f2f2" flatShading={flat} />
         </Block>
       ))}
-      <Block args={[3.55, 0.12, 0.12]} castShadow position={[0, 1.46, 0]}>
+      <Block args={[GOAL_HW * 2 + 0.12, 0.12, 0.12]} castShadow position={[0, GOAL_H, 0]}>
         <meshStandardMaterial color="#f2f2f2" flatShading={flat} />
       </Block>
-      {/* Red inclinada hacia atrás */}
-      <mesh position={[0, 0.72, end * 0.5]} rotation={[end * 0.55, 0, 0]}>
-        <planeGeometry args={[3.4, 1.55]} />
-        <meshBasicMaterial
-          map={netTex}
-          transparent
-          side={THREE.DoubleSide}
-          depthWrite={false}
-        />
+      {/* Postes traseros que sujetan la red */}
+      {[-1, 1].map((s) => (
+        <Block key={`b${s}`} args={[0.08, GOAL_H - 0.4, 0.08]} position={[s * GOAL_HW, (GOAL_H - 0.4) / 2, end * NET_D]}>
+          <meshStandardMaterial color="#e2e2e2" flatShading={flat} />
+        </Block>
+      ))}
+      {/* Red: fondo vertical, dos laterales y techo (caja de la red) */}
+      <mesh position={[0, (GOAL_H - 0.4) / 2, end * NET_D]}>
+        <planeGeometry args={[GOAL_HW * 2, GOAL_H - 0.4]} />
+        {netMat()}
+      </mesh>
+      {[-1, 1].map((s) => (
+        <mesh key={`s${s}`} position={[s * GOAL_HW, GOAL_H / 2 - 0.1, (end * NET_D) / 2]} rotation={[0, Math.PI / 2, 0]}>
+          <planeGeometry args={[NET_D, GOAL_H - 0.2]} />
+          {netMat()}
+        </mesh>
+      ))}
+      <mesh position={[0, GOAL_H - 0.16, (end * NET_D) / 2]} rotation={[Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[GOAL_HW * 2, NET_D]} />
+        {netMat()}
       </mesh>
     </group>
   );
@@ -3251,9 +3334,12 @@ function Villager({
         )}
       </group>
 
-      {/* Cartel con el proyecto del que habla, encima de la cabeza */}
+      {/* Cartel con el proyecto del que habla, encima de la cabeza.
+          distanceFactor: escala con la perspectiva como el aldeano, así no se
+          llena la pantalla de etiquetas del mismo tamaño. */}
       <Html
         center
+        distanceFactor={9}
         zIndexRange={[15, 0]}
         position={[0, 2.75, 0]}
         style={{ pointerEvents: "none" }}
@@ -3277,6 +3363,7 @@ function Villager({
       {near && (
         <Html
           center
+          distanceFactor={9}
           zIndexRange={[15, 0]}
           position={[0, 3.55, 0]}
           style={{ pointerEvents: "none" }}
@@ -3403,6 +3490,7 @@ export default function WorldCanvas({
   casting,
   style,
   onEnter,
+  onLibrary,
   externalMove,
 }: {
   dict: Dictionary;
@@ -3411,6 +3499,7 @@ export default function WorldCanvas({
   casting: boolean;
   style: WorldStyle;
   onEnter: (project: Project) => void;
+  onLibrary: () => void;
   externalMove: MoveInput;
 }) {
   const drag = useRef<DragState>({ dist: 0 }).current;
@@ -3520,7 +3609,7 @@ export default function WorldCanvas({
         <LampPosts />
         <Well />
         <Windmill />
-        <RecommendedLibrary dict={dict} touch={touch} />
+        <RecommendedLibrary dict={dict} touch={touch} paused={paused} onLibrary={onLibrary} />
         <GeekDen dict={dict} />
         <FootballPitch />
         {echo && (

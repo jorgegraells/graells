@@ -381,6 +381,94 @@ function Dialogue({
   );
 }
 
+/** Diálogo de la biblioteca: mismo formato que el de un aldeano (máquina de
+ *  escribir, línea a línea), pero para que Jorge cuente los libros que recomienda. */
+function LibraryDialogue({
+  dict,
+  touch,
+  onClose,
+}: {
+  dict: Dictionary;
+  touch: boolean;
+  onClose: () => void;
+}) {
+  const color = "#e0a82f";
+  const lines = dict.world.personal.libraryLines;
+  const [lineIndex, setLineIndex] = useState(0);
+  const [chars, setChars] = useState(0);
+  const line = lines[lineIndex];
+  const done = chars >= line.length;
+  const isLast = lineIndex === lines.length - 1;
+
+  useEffect(() => {
+    if (chars >= lines[lineIndex].length) return;
+    const id = setTimeout(() => setChars((c) => c + 2), 18);
+    return () => clearTimeout(id);
+  }, [chars, lineIndex, lines]);
+
+  const advance = useCallback(() => {
+    if (!done) setChars(line.length);
+    else if (!isLast) {
+      setLineIndex((i) => i + 1);
+      setChars(0);
+    } else onClose();
+  }, [done, isLast, line.length, onClose]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code === "KeyE" || e.code === "Enter" || e.code === "Space") {
+        e.preventDefault();
+        advance();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [advance]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 40 }}
+      transition={{ type: "spring", stiffness: 300, damping: 28 }}
+      className="absolute inset-x-0 bottom-0 z-20 flex justify-center p-5"
+    >
+      <div
+        onClick={advance}
+        className="glass w-full max-w-2xl cursor-pointer select-none rounded-2xl p-6"
+        style={{ boxShadow: `0 8px 60px -12px ${color}` }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold" style={{ color }}>
+            📚 {dict.world.personal.libraryTitle}
+          </span>
+        </div>
+        <p className="mt-3 min-h-20 text-base leading-relaxed text-foreground/90">
+          {line.slice(0, chars)}
+          {!done && <span className="animate-pulse text-accent">▌</span>}
+        </p>
+        <div className="mt-4 flex items-center justify-between">
+          <div className="flex gap-1.5">
+            {lines.map((_, i) => (
+              <span
+                key={i}
+                className="h-1.5 w-1.5 rounded-full"
+                style={{
+                  background: i <= lineIndex ? color : "rgba(148,163,184,0.3)",
+                }}
+              />
+            ))}
+          </div>
+          <p className="font-mono text-xs text-muted">
+            {done && isLast ? dict.world.close : dict.world.next}
+            {!touch && " · E"}
+          </p>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function World({
   locale,
   dict,
@@ -390,6 +478,7 @@ export default function World({
 }) {
   const [active, setActive] = useState<Project | null>(null);
   const [skillsOpen, setSkillsOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [worldStyle, setWorldStyle] = useState<WorldStyle>("blocky");
   const [started, setStarted] = useState(false);
   const [touchDevice, setTouchDevice] = useState(false);
@@ -402,7 +491,13 @@ export default function World({
   const close = useCallback(() => setActive(null), []);
   const onEnter = useCallback((project: Project) => {
     setSkillsOpen(false);
+    setLibraryOpen(false);
     setActive(project);
+  }, []);
+  const onLibrary = useCallback(() => {
+    setSkillsOpen(false);
+    setActive(null);
+    setLibraryOpen(true);
   }, []);
 
   useEffect(() => {
@@ -410,6 +505,7 @@ export default function World({
       if (e.code === "Escape") {
         setActive(null);
         setSkillsOpen(false);
+        setLibraryOpen(false);
       }
       // C abre/cierra la ventana de habilidades (si ya se ha entrado y no hay diálogo)
       if (e.code === "KeyC" && activeRef.current === null && startedRef.current) {
@@ -455,14 +551,15 @@ export default function World({
       <WorldCanvas
         dict={dict}
         touch={touchDevice}
-        paused={active !== null || skillsOpen || !started}
+        paused={active !== null || skillsOpen || libraryOpen || !started}
         casting={skillsOpen}
         style={worldStyle}
         onEnter={onEnter}
+        onLibrary={onLibrary}
         externalMove={move}
       />
 
-      {touchDevice && started && !active && !skillsOpen && (
+      {touchDevice && started && !active && !skillsOpen && !libraryOpen && (
         <>
           <Joystick move={move} />
           <JumpButton move={move} />
@@ -507,19 +604,19 @@ export default function World({
       </div>
 
       {/* Mira central en modo escritorio (feel de FPS) */}
-      {started && !touchDevice && !active && !skillsOpen && (
+      {started && !touchDevice && !active && !skillsOpen && !libraryOpen && (
         <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/70 shadow-[0_0_4px_rgba(0,0,0,0.6)]" />
       )}
 
       {/* Recordatorio de Esc para liberar el ratón / salir (escritorio, en juego) */}
-      {started && !touchDevice && !active && !skillsOpen && (
+      {started && !touchDevice && !active && !skillsOpen && !libraryOpen && (
         <p className="glass pointer-events-none absolute bottom-6 right-6 z-10 rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/80">
           {dict.world.escHint}
         </p>
       )}
 
       {/* Pista de controles (oculta antes de entrar, en diálogo o en STATUS) */}
-      {started && !active && !skillsOpen && (
+      {started && !active && !skillsOpen && !libraryOpen && (
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center px-4">
           <p className="glass rounded-full px-5 py-2.5 text-center font-mono text-xs text-white/85">
             {touchDevice ? dict.world.hintTouch : dict.world.hint}
@@ -551,6 +648,14 @@ export default function World({
             key="status"
             dict={dict}
             onClose={() => setSkillsOpen(false)}
+          />
+        )}
+        {libraryOpen && (
+          <LibraryDialogue
+            key="library"
+            dict={dict}
+            touch={touchDevice}
+            onClose={() => setLibraryOpen(false)}
           />
         )}
       </AnimatePresence>

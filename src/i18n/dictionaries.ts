@@ -89,11 +89,9 @@ export type Dictionary = {
     };
     personal: {
       library: string;
-      librarySubtitle: string;
-      libraryHint: string;
-      libraryHintTouch: string;
-      libraryQuote: string;
       geek: string;
+      libraryTitle: string;
+      libraryLines: string[];
     };
   };
   about: { title: string; paragraphs: string[] };
@@ -143,7 +141,7 @@ const es: Dictionary = {
   world: {
     title: "Mundo virtual de Graells",
     loading: "Generando el mundo…",
-    hint: "WASD para moverte · mueve el ratón para mirar · acércate y pulsa E · Esc libera el ratón",
+    hint: "WASD para moverte · mueve el ratón para mirar · acércate y pulsa E",
     hintTouch: "Joystick para moverte · arrastra para mirar · toca a un vecino para hablar",
     hintNear: "Pulsa E para hablar",
     hintNearTouch: "Toca para hablar",
@@ -197,12 +195,15 @@ const es: Dictionary = {
     },
     personal: {
       library: "Biblioteca",
-      librarySubtitle: "Lecturas que recomiendo",
-      libraryHint: "Pulsa E para ver las recomendaciones",
-      libraryHintTouch: "Toca la estantería para ver las recomendaciones",
-      libraryQuote:
-        "Jorge Graells recomienda estos libros: le fueron genial para su evolución personal y profesional.",
       geek: "Zona friki",
+      libraryTitle: "Biblioteca de Jorge",
+      libraryLines: [
+        "Estos son los libros que recomiendo. A mí me marcaron de verdad, tanto en lo personal como en lo profesional.",
+        "Can't Hurt Me y Never Finished, de David Goggins: disciplina, cabeza dura y seguir cuando todo te pide parar.",
+        "Shoe Dog, de Phil Knight: cómo se levantó Nike desde cero, con todos sus tropiezos por el camino.",
+        "Principios, de Ray Dalio: una forma clara de tomar decisiones y aprender de los propios errores.",
+        "De cero a uno, de Peter Thiel: cómo crear algo realmente nuevo en vez de copiar lo que ya existe.",
+      ],
     },
   },
   about: {
@@ -393,7 +394,7 @@ const en: Dictionary = {
   world: {
     title: "Graells' virtual world",
     loading: "Generating the world…",
-    hint: "WASD to move · move the mouse to look · walk up and press E · Esc frees the mouse",
+    hint: "WASD to move · move the mouse to look · walk up and press E",
     hintTouch: "Joystick to move · drag to look · tap a villager to talk",
     hintNear: "Press E to talk",
     hintNearTouch: "Tap to talk",
@@ -447,12 +448,15 @@ const en: Dictionary = {
     },
     personal: {
       library: "Library",
-      librarySubtitle: "Reads I recommend",
-      libraryHint: "Press E to see the recommendations",
-      libraryHintTouch: "Tap the bookshelf to see the recommendations",
-      libraryQuote:
-        "Jorge Graells recommends these books: they were key to his personal and professional growth.",
       geek: "Geek corner",
+      libraryTitle: "Jorge's library",
+      libraryLines: [
+        "These are the books I recommend. They genuinely shaped me, both personally and professionally.",
+        "Can't Hurt Me and Never Finished, by David Goggins: discipline, mental toughness and pushing on when everything tells you to stop.",
+        "Shoe Dog, by Phil Knight: how Nike was built from nothing, stumbles and all.",
+        "Principles, by Ray Dalio: a clear way to make decisions and learn from your own mistakes.",
+        "Zero to One, by Peter Thiel: how to create something truly new instead of copying what already exists.",
+      ],
     },
   },
   about: {
