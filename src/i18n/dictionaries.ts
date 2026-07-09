@@ -328,6 +328,16 @@ const es: Dictionary = {
           "EU Cyber Resilience Act",
         ],
       },
+      {
+        name: "Lenguajes",
+        items: [
+          "JavaScript · TypeScript",
+          "HTML · CSS",
+          "PHP · Kotlin",
+          "C · C++ · C#",
+          "SQL · PostgreSQL · SQLite",
+        ],
+      },
     ],
   },
   journey: {
@@ -579,6 +589,16 @@ const en: Dictionary = {
           "ThreatLocker",
           "VLAN / networking",
           "EU Cyber Resilience Act",
+        ],
+      },
+      {
+        name: "Languages",
+        items: [
+          "JavaScript · TypeScript",
+          "HTML · CSS",
+          "PHP · Kotlin",
+          "C · C++ · C#",
+          "SQL · PostgreSQL · SQLite",
         ],
       },
     ],

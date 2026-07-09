@@ -5,8 +5,8 @@ import type { Dictionary } from "@/i18n/dictionaries";
 import Section from "@/components/Section";
 import SectionHead from "@/components/SectionHead";
 
-const NEON = ["#22d3ee", "#a855f7", "#ff3d9a", "#c6ff2e"];
-const LEVEL = [96, 92, 90, 88];
+const NEON = ["#22d3ee", "#a855f7", "#ff3d9a", "#c6ff2e", "#38bdf8"];
+const LEVEL = [96, 92, 90, 88, 94];
 
 export default function Skills({ dict }: { dict: Dictionary }) {
   return (
