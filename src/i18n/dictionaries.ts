@@ -302,20 +302,20 @@ const es: Dictionary = {
         name: "Web y móvil",
         items: [
           "Next.js 15 · React 19",
-          "TypeScript · Node",
           "React Native (Android)",
-          "Prisma · Supabase · PostgreSQL",
-          "Stripe · Clerk · Mapbox · Vercel",
+          "Node · Prisma · Supabase",
+          "Stripe · Clerk",
+          "Mapbox · Vercel",
         ],
       },
       {
         name: "Industrial / Sistemas",
         items: [
-          "C++ Builder / VCL · C#",
+          "C++ Builder / VCL",
           "Protocolos serie RS-232",
           "Equipos de inspección de vehículos",
-          "PostgreSQL · SQLite",
-          "PHP",
+          "Integración de hardware real",
+          "Migración de servidores",
         ],
       },
       {
@@ -565,20 +565,20 @@ const en: Dictionary = {
         name: "Web & Mobile",
         items: [
           "Next.js 15 · React 19",
-          "TypeScript · Node",
           "React Native (Android)",
-          "Prisma · Supabase · PostgreSQL",
-          "Stripe · Clerk · Mapbox · Vercel",
+          "Node · Prisma · Supabase",
+          "Stripe · Clerk",
+          "Mapbox · Vercel",
         ],
       },
       {
         name: "Industrial / Systems",
         items: [
-          "C++ Builder / VCL · C#",
+          "C++ Builder / VCL",
           "RS-232 serial protocols",
           "Vehicle inspection equipment",
-          "PostgreSQL · SQLite",
-          "PHP",
+          "Real hardware integration",
+          "Server migration",
         ],
       },
       {
