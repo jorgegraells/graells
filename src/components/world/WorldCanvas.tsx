@@ -225,7 +225,6 @@ const BENCH_SPOTS = [1.5, 3.7, 5.3].map((a) => ({
   rotY: a + Math.PI,
 }));
 
-const WELL_POS = { x: 5, z: -4 };
 const WINDMILL_POS = { x: -30, z: -22 };
 
 /** Anillo de montañas del horizonte y colinas intermedias. */
@@ -264,7 +263,6 @@ const HILL_SPOTS = (() => {
 
 /** Colliders de la decoración sólida (radio sin jugador). */
 const DECOR_COLLIDERS = [
-  { x: WELL_POS.x, z: WELL_POS.z, r: 1.3 },
   { x: WINDMILL_POS.x, z: WINDMILL_POS.z, r: 2.6 },
   ...TREE_SPOTS.map((t) => ({ x: t.x, z: t.z, r: 0.7 * t.scale })),
   ...LAMP_SPOTS.map((l) => ({ x: l.x, z: l.z, r: 0.3 })),
@@ -1292,7 +1290,7 @@ function Plaza({ layout }: { layout: VillageLayout }) {
         );
       })}
 
-      {/* Bancos mirando al árbol */}
+      {/* Bancos con gente sentada mirando el holograma de la plaza */}
       {BENCH_SPOTS.map((b, i) => (
         <group key={i} position={[b.x, 0.16, b.z]} rotation={[0, b.rotY, 0]}>
           <Block args={[1.6, 0.12, 0.5]} radius={0.06} castShadow position={[0, 0.45, 0]}>
@@ -1307,6 +1305,14 @@ function Plaza({ layout }: { layout: VillageLayout }) {
           <Block args={[0.12, 0.45, 0.45]} radius={0.05} position={[0.65, 0.22, 0]}>
             <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
           </Block>
+          {[-0.4, 0.4].map((dx, j) => (
+            <group key={j} position={[dx, 0.51, 0.02]}>
+              <SeatedPerson
+                look={SEAT_PEOPLE[(i * 2 + j) % SEAT_PEOPLE.length]}
+                phase={(i * 2 + j) * 1.7}
+              />
+            </group>
+          ))}
         </group>
       ))}
     </group>
@@ -1341,38 +1347,97 @@ function LampPosts() {
 }
 
 /** Pozo de piedra junto a la plaza. */
-function Well() {
+/** Combinaciones de aspecto para la gente sentada en los bancos. */
+const SEAT_PEOPLE = [
+  { skin: "#e8b98d", shirt: "#c94f4f", pants: "#3a4a6b", hair: "#3a2a1a" },
+  { skin: "#f0c9a0", shirt: "#2f9e57", pants: "#4a3520", hair: "#1f1f26" },
+  { skin: "#d8a171", shirt: "#7c5cd6", pants: "#2c2c34", hair: "#4a3320" },
+  { skin: "#e8b98d", shirt: "#e0912f", pants: "#3a4a6b", hair: "#6b4a2b" },
+  { skin: "#f0c9a0", shirt: "#3f6f9e", pants: "#4a3520", hair: "#2a1a10" },
+  { skin: "#d8a171", shirt: "#d6558e", pants: "#2c2c34", hair: "#1f1f26" },
+];
+
+type SeatLook = (typeof SEAT_PEOPLE)[number];
+
+/** Persona sentada, mirando hacia +Z (donde el banco encara la plaza). El
+ *  origen del grupo está en la superficie del asiento; respira suavemente. */
+function SeatedPerson({ look, phase }: { look: SeatLook; phase: number }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
-  const roofSeg = flat ? 4 : 10;
+  const head = useRef<THREE.Group>(null);
+  useFrame(({ clock }) => {
+    if (head.current) {
+      const t = clock.elapsedTime + phase;
+      head.current.rotation.y = Math.sin(t * 0.6) * 0.12;
+      head.current.position.y = 0.94 + Math.sin(t * 1.4) * 0.012;
+    }
+  });
+  const skinMat = () => <meshStandardMaterial color={look.skin} flatShading={flat} />;
   return (
-    <group position={[WELL_POS.x, 0, WELL_POS.z]}>
-      {[0, 1, 2, 3].map((i) => (
-        <Block
-          key={i}
-          args={[1.7, 0.6, 0.35]}
-          radius={0.12}
-          castShadow
-          position={[i < 2 ? 0 : i === 2 ? 0.68 : -0.68, 0.3, i === 0 ? 0.68 : i === 1 ? -0.68 : 0]}
-          rotation={[0, i < 2 ? 0 : Math.PI / 2, 0]}
-        >
-          <meshStandardMaterial color="#8f8f8f" flatShading={flat} />
-        </Block>
+    <group>
+      {/* Cadera y muslos (horizontales hacia delante) */}
+      <Block args={[0.46, 0.2, 0.34]} radius={0.06} position={[0, 0.1, 0]}>
+        <meshStandardMaterial color={look.pants} flatShading={flat} />
+      </Block>
+      <Block args={[0.42, 0.17, 0.5]} radius={0.06} castShadow position={[0, 0.14, 0.32]}>
+        <meshStandardMaterial color={look.pants} flatShading={flat} />
+      </Block>
+      {/* Espinillas (bajan al suelo) y pies */}
+      {[-0.11, 0.11].map((x) => (
+        <group key={x}>
+          <Block args={[0.16, 0.68, 0.16]} radius={0.06} castShadow position={[x, -0.34, 0.55]}>
+            <meshStandardMaterial color={look.pants} flatShading={flat} />
+          </Block>
+          <Block args={[0.17, 0.12, 0.3]} radius={0.05} castShadow position={[x, -0.64, 0.66]}>
+            <meshStandardMaterial color="#3a2c1c" flatShading={flat} />
+          </Block>
+        </group>
       ))}
-      <mesh position={[0, 0.45, 0]} rotation-x={-Math.PI / 2}>
-        <circleGeometry args={[0.55, 16]} />
-        <meshStandardMaterial color="#3aa0d8" />
-      </mesh>
-      <Block args={[0.14, 1.7, 0.14]} radius={0.06} castShadow position={[-0.75, 1.15, 0]}>
-        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      {/* Torso apoyado en el respaldo */}
+      <Block args={[0.46, 0.52, 0.3]} radius={0.1} castShadow position={[0, 0.42, -0.03]}>
+        <meshStandardMaterial color={look.shirt} flatShading={flat} />
       </Block>
-      <Block args={[0.14, 1.7, 0.14]} radius={0.06} castShadow position={[0.75, 1.15, 0]}>
-        <meshStandardMaterial color="#6b4a2b" flatShading={flat} />
+      {/* Brazos descansando sobre los muslos */}
+      {[-0.29, 0.29].map((x) => (
+        <group key={x}>
+          <Block args={[0.14, 0.44, 0.15]} radius={0.06} castShadow position={[x, 0.36, 0.02]}>
+            <meshStandardMaterial color={look.shirt} flatShading={flat} />
+          </Block>
+          <Block args={[0.15, 0.12, 0.16]} radius={0.05} position={[x, 0.14, 0.16]}>
+            {skinMat()}
+          </Block>
+        </group>
+      ))}
+      {/* Cuello + cabeza (con leve movimiento) */}
+      <Block args={[0.18, 0.12, 0.18]} radius={0.05} position={[0, 0.72, -0.02]}>
+        {skinMat()}
       </Block>
-      <mesh castShadow position={[0, 2.25, 0]} rotation={[0, Math.PI / 4, 0]}>
-        <coneGeometry args={[1.4, 0.9, roofSeg]} />
-        <meshStandardMaterial color="#a33f2f" flatShading={flat} />
-      </mesh>
+      <group ref={head} position={[0, 0.94, 0]}>
+        <Block args={[0.36, 0.38, 0.36]} radius={0.12} castShadow>
+          {skinMat()}
+        </Block>
+        {/* Pelo */}
+        <Block args={[0.4, 0.16, 0.4]} radius={0.08} position={[0, 0.19, -0.02]}>
+          <meshStandardMaterial color={look.hair} flatShading={flat} />
+        </Block>
+        {/* Ojos */}
+        {[-0.09, 0.09].map((x) => (
+          <group key={x} position={[x, 0.02, 0.18]}>
+            <mesh>
+              <boxGeometry args={[0.07, 0.07, 0.02]} />
+              <meshStandardMaterial color="#f4f4f4" />
+            </mesh>
+            <mesh position={[0, 0, 0.015]}>
+              <boxGeometry args={[0.035, 0.045, 0.02]} />
+              <meshStandardMaterial color="#2c2c34" />
+            </mesh>
+          </group>
+        ))}
+        {/* Nariz */}
+        <Block args={[0.07, 0.08, 0.07]} radius={0.02} position={[0, -0.02, 0.19]}>
+          {skinMat()}
+        </Block>
+      </group>
     </group>
   );
 }
@@ -3607,7 +3672,6 @@ export default function WorldCanvas({
         <Rocks />
         <Plaza layout={layout} />
         <LampPosts />
-        <Well />
         <Windmill />
         <RecommendedLibrary dict={dict} touch={touch} paused={paused} onLibrary={onLibrary} />
         <GeekDen dict={dict} />
