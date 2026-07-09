@@ -131,7 +131,7 @@ const es: Dictionary = {
     name: "Jorge Graells",
     role: "AI Engineer & Full-Stack Developer",
     tagline:
-      "IA aplicada de verdad para industria y software regulado: RAG, agentes y LLMs resolviendo problemas reales de empresa.",
+      "Pongo la inteligencia artificial a resolver problemas reales de empresa, sobre todo en industria y software regulado.",
     playable: "Un currículum que se juega",
     ctaProjects: "Ver proyectos",
     ctaContact: "Hablemos",
@@ -209,22 +209,22 @@ const es: Dictionary = {
   about: {
     title: "Sobre mí",
     paragraphs: [
-      "Desarrollador full-stack e ingeniero de IA con 8 años de experiencia. Líder técnico de un software de inspección de vehículos en C++ desplegado en talleres y centros de inspección de varios países, a caballo entre el software industrial, la ciberseguridad y el stack web moderno.",
-      "Construyo productos de principio a fin, de la idea al MVP en producción, con foco en IA aplicada de verdad: RAG, agentes y LLMs resolviendo problemas reales de empresa.",
+      "Soy desarrollador full-stack e ingeniero de IA, y llevo ocho años dedicándome a esto. Ahora mismo dirijo el software de inspección de vehículos de una empresa, escrito en C++ y funcionando en talleres y estaciones de varios países. Me muevo entre tres mundos que no suelen ir juntos: el software industrial, la ciberseguridad y la web moderna.",
+      "Me gusta llevar un producto de principio a fin, desde la primera idea hasta verlo funcionando en producción. Ahí es donde encaja la IA que construyo: RAG, agentes y modelos de lenguaje puestos a resolver cosas concretas del día a día de una empresa.",
       "Soy creativo y autodidacta, y lo que más me gusta es coger una idea y convertirla en algo real. Ahora mismo estoy volcado en la inteligencia artificial, aprendiendo algo nuevo cada día y llevándolo a la práctica. Desde siempre me han apasionado los videojuegos, y de ahí nace el objetivo que hay detrás de casi todo lo que hago: convertir la vida en un videojuego, conseguir que hasta lo más rutinario resulte divertido y motivante. Esta web es un primer ejemplo.",
     ],
   },
   projects: {
     title: "Proyectos",
     subtitle: "Cosas que he construido",
-    highlightLabel: "Lo que impresiona",
+    highlightLabel: "Lo mejor",
     items: [
       {
         slug: "workleveling",
         name: "WorkLeveling",
         tagline: "Gamifica el trabajo con mecánicas RPG",
         description:
-          "SaaS B2B que convierte el progreso del equipo en niveles, XP y quests para aumentar la motivación y dar visibilidad al avance diario. Resuelve la desconexión entre el esfuerzo y la sensación de avance.",
+          "SaaS B2B que convierte el progreso del equipo en niveles, XP y quests para subir la motivación y hacer visible el avance del día a día. Nace de algo que conozco bien: esforzarte un montón y no sentir que avanzas.",
         role: "Fundador y desarrollador único",
         highlight:
           "Piloto real en producción con un equipo de software, en uso diario desde hace meses.",
@@ -355,7 +355,7 @@ const es: Dictionary = {
   },
   contact: {
     title: "¿Construimos algo juntos?",
-    text: "Estoy abierto a proyectos, colaboraciones y buenas conversaciones sobre IA aplicada.",
+    text: "Si tienes un proyecto en mente, quieres colaborar o solo te apetece hablar de IA, escríbeme.",
     cta: "Escríbeme",
   },
   footer: { rights: "Hecho con Next.js y Three.js" },
@@ -384,7 +384,7 @@ const en: Dictionary = {
     name: "Jorge Graells",
     role: "AI Engineer & Full-Stack Developer",
     tagline:
-      "Applied AI for industry and regulated software: RAG, agents and LLMs solving real business problems.",
+      "I put artificial intelligence to work on real business problems, mostly in industry and regulated software.",
     playable: "A résumé you can play",
     ctaProjects: "View projects",
     ctaContact: "Let's talk",
@@ -462,22 +462,22 @@ const en: Dictionary = {
   about: {
     title: "About me",
     paragraphs: [
-      "Full-stack developer and AI engineer with 8 years of experience. Tech lead of a C++ vehicle inspection software deployed in workshops and inspection centers across several countries, straddling industrial software, cybersecurity and the modern web stack.",
-      "I build products end to end, from idea to MVP in production, focused on AI that actually ships: RAG, agents and LLMs solving real business problems.",
+      "I'm a full-stack developer and AI engineer, and I've been at this for eight years. Right now I lead the C++ vehicle inspection software of a company, running in workshops and inspection centers across several countries. I work across three worlds that don't usually mix: industrial software, cybersecurity and the modern web.",
+      "I like taking a product from start to finish, from the first idea to seeing it live in production. That's where the AI I build fits in: RAG, agents and language models put to work on the concrete, everyday problems of a company.",
       "I'm creative and self-taught, and what I enjoy most is taking an idea and turning it into something real. Right now I'm all in on artificial intelligence, learning something new every day and putting it into practice. I've loved videogames for as long as I can remember, and that's where the goal behind almost everything I do comes from: turning life into a videogame, making even the most routine things feel fun and motivating. This site is a first example of that.",
     ],
   },
   projects: {
     title: "Projects",
     subtitle: "Things I've built",
-    highlightLabel: "The impressive bit",
+    highlightLabel: "The best part",
     items: [
       {
         slug: "workleveling",
         name: "WorkLeveling",
         tagline: "Gamify work with RPG mechanics",
         description:
-          "B2B SaaS that turns team progress into levels, XP and quests to boost motivation and make daily progress visible. It fixes the disconnect between effort and the feeling of moving forward.",
+          "B2B SaaS that turns team progress into levels, XP and quests to boost motivation and make day-to-day progress visible. It comes from something I know well: putting in a ton of effort and not feeling like you're moving forward.",
         role: "Founder & sole developer",
         highlight:
           "Real pilot running with a software team, in daily use for months now.",
@@ -608,7 +608,7 @@ const en: Dictionary = {
   },
   contact: {
     title: "Let's build something together",
-    text: "I'm open to projects, collaborations and good conversations about applied AI.",
+    text: "If you've got a project in mind, want to collaborate, or just feel like talking about AI, get in touch.",
     cta: "Get in touch",
   },
   footer: { rights: "Built with Next.js and Three.js" },
