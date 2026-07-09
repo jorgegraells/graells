@@ -209,9 +209,9 @@ const es: Dictionary = {
   about: {
     title: "Sobre mí",
     paragraphs: [
-      "Soy desarrollador full-stack e ingeniero de IA, y llevo ocho años dedicándome a esto. Ahora mismo dirijo el software de inspección de vehículos de una empresa, escrito en C++ y funcionando en talleres y estaciones de varios países. Me muevo entre tres mundos que no suelen ir juntos: el software industrial, la ciberseguridad y la web moderna.",
-      "Me gusta llevar un producto de principio a fin, desde la primera idea hasta verlo funcionando en producción. Ahí es donde encaja la IA que construyo: RAG, agentes y modelos de lenguaje puestos a resolver cosas concretas del día a día de una empresa.",
-      "Soy creativo y autodidacta, y lo que más me gusta es coger una idea y convertirla en algo real. Ahora mismo estoy volcado en la inteligencia artificial, aprendiendo algo nuevo cada día y llevándolo a la práctica. Desde siempre me han apasionado los videojuegos, y de ahí nace el objetivo que hay detrás de casi todo lo que hago: convertir la vida en un videojuego, conseguir que hasta lo más rutinario resulte divertido y motivante. Esta web es un primer ejemplo.",
+      "Soy desarrollador full-stack e ingeniero de IA, y llevo ocho años dedicándome a esto. Dirijo el software de inspección de vehículos de una empresa, escrito en C++ y funcionando en talleres y estaciones de varios países. Me muevo entre tres mundos que no suelen ir juntos: el software industrial, la ciberseguridad y la web moderna.",
+      "Me gusta llevar un producto de principio a fin, desde la primera idea hasta verlo funcionando en producción. Ahí es donde encaja la IA que construyo: RAG, agentes y modelos de lenguaje puestos a resolver problemas concretos del día a día de una empresa.",
+      "En lo personal, soy creativo y autodidacta: disfruto descubriendo cómo funcionan las cosas y no paro hasta entenderlas. La inteligencia artificial es lo que más me engancha ahora mismo, aprendo algo nuevo casi cada día y lo llevo a la práctica. Desde siempre me han apasionado los videojuegos, y de ahí sale el propósito que hay detrás de casi todo lo que hago: convertir la vida en un videojuego, conseguir que hasta lo más rutinario resulte divertido y motivante. Esta web es un primer ejemplo.",
     ],
   },
   projects: {
@@ -462,9 +462,9 @@ const en: Dictionary = {
   about: {
     title: "About me",
     paragraphs: [
-      "I'm a full-stack developer and AI engineer, and I've been at this for eight years. Right now I lead the C++ vehicle inspection software of a company, running in workshops and inspection centers across several countries. I work across three worlds that don't usually mix: industrial software, cybersecurity and the modern web.",
+      "I'm a full-stack developer and AI engineer, and I've been at this for eight years. I lead the C++ vehicle inspection software of a company, running in workshops and inspection centers across several countries. I work across three worlds that don't usually mix: industrial software, cybersecurity and the modern web.",
       "I like taking a product from start to finish, from the first idea to seeing it live in production. That's where the AI I build fits in: RAG, agents and language models put to work on the concrete, everyday problems of a company.",
-      "I'm creative and self-taught, and what I enjoy most is taking an idea and turning it into something real. Right now I'm all in on artificial intelligence, learning something new every day and putting it into practice. I've loved videogames for as long as I can remember, and that's where the goal behind almost everything I do comes from: turning life into a videogame, making even the most routine things feel fun and motivating. This site is a first example of that.",
+      "On a personal level, I'm creative and self-taught: I enjoy figuring out how things work and I don't stop until I really get them. Artificial intelligence is what hooks me most right now; I learn something new almost every day and put it into practice. I've loved videogames for as long as I can remember, and that's where the purpose behind almost everything I do comes from: turning life into a videogame, making even the most routine things feel fun and motivating. This site is a first example of that.",
     ],
   },
   projects: {
