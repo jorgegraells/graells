@@ -93,6 +93,10 @@ export type Dictionary = {
       libraryTitle: string;
       libraryLines: string[];
     };
+    theme: {
+      toOverworld: string;
+      toVoxel: string;
+    };
   };
   about: { title: string; paragraphs: string[] };
   projects: { title: string; subtitle: string; highlightLabel: string; items: Project[] };
@@ -204,6 +208,10 @@ const es: Dictionary = {
         "Principios, de Ray Dalio: una forma clara de tomar decisiones y aprender de los propios errores.",
         "De cero a uno, de Peter Thiel: cómo crear algo realmente nuevo en vez de copiar lo que ya existe.",
       ],
+    },
+    theme: {
+      toOverworld: "Modo overworld",
+      toVoxel: "Modo voxel",
     },
   },
   about: {
@@ -467,6 +475,10 @@ const en: Dictionary = {
         "Principles, by Ray Dalio: a clear way to make decisions and learn from your own mistakes.",
         "Zero to One, by Peter Thiel: how to create something truly new instead of copying what already exists.",
       ],
+    },
+    theme: {
+      toOverworld: "Overworld mode",
+      toVoxel: "Voxel mode",
     },
   },
   about: {

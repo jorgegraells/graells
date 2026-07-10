@@ -58,6 +58,17 @@ Dos archivos en `src/components/world/`:
   (variante SIN el disco pintado — el disco es la peana 3D; se regenera con
   `node scripts/holo-head.mjs`). La landing sigue usando `jorge-holo-cut.webp`.
 
+- **Tema del mundo** (`WorldTheme` "voxel"|"overworld"): se alterna con el
+  botón arcade de la plaza (`ThemeButton` en `THEME_BUTTON_POS`), que dispara
+  `onThemeButton` → `World.tsx` orquesta un fogonazo blanco (~250 ms cerrar,
+  ~350 ms abrir) y cambia el tema en el punto más blanco. El tema viaja por
+  `ThemeContext`/`useWorldTheme` (paralelo a `StyleContext`) y afecta a cielo,
+  niebla, luces y paletas de hierba; en overworld la geometría se FUERZA a
+  "rounded". El voxel es el estado por defecto e intacto.
+  **Fase 2 pendiente**: cel-shading real en overworld con `MeshToonMaterial`
+  y contornos negros (inverted-hull o postprocessing) para que pase de
+  "otros colores" a "otro juego".
+
 ## Trampas conocidas (no re-descubrir)
 
 1. **Delta clamp**: `Math.min(delta, 0.05)` en todo `useFrame` con física — sin

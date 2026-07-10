@@ -38,6 +38,13 @@ export type WorldStyle = "blocky" | "rounded";
 const StyleContext = createContext<WorldStyle>("blocky");
 const useWorldStyle = () => useContext(StyleContext);
 
+/** Tema visual del mundo: "voxel" (el pueblo Minecraft de siempre) u
+ *  "overworld" (pastel, luz cálida y formas redondeadas, aire de RPG japonés).
+ *  Se alterna con el botón arcade de la plaza. */
+export type WorldTheme = "voxel" | "overworld";
+const ThemeContext = createContext<WorldTheme>("voxel");
+const useWorldTheme = () => useContext(ThemeContext);
+
 type BlockProps = {
   args: [number, number, number];
   radius?: number;
@@ -225,6 +232,10 @@ const BENCH_SPOTS = [1.5, 3.7, 5.3].map((a) => ({
   rotY: a + Math.PI,
 }));
 
+/** Botón arcade que alterna el tema del mundo: en la plaza, de cara al
+ *  spawn, en el hueco libre entre holograma, bancos y farolas. */
+const THEME_BUTTON_POS = { x: 0, z: 4.7 };
+
 const WINDMILL_POS = { x: -30, z: -22 };
 
 /** Anillo de montañas del horizonte y colinas intermedias. */
@@ -264,6 +275,7 @@ const HILL_SPOTS = (() => {
 /** Colliders de la decoración sólida (radio sin jugador). */
 const DECOR_COLLIDERS = [
   { x: WINDMILL_POS.x, z: WINDMILL_POS.z, r: 2.6 },
+  { x: THEME_BUTTON_POS.x, z: THEME_BUTTON_POS.z, r: 0.75 },
   ...TREE_SPOTS.map((t) => ({ x: t.x, z: t.z, r: 0.7 * t.scale })),
   ...LAMP_SPOTS.map((l) => ({ x: l.x, z: l.z, r: 0.3 })),
   ...BENCH_SPOTS.map((b) => ({ x: b.x, z: b.z, r: 0.9 })),
@@ -749,9 +761,11 @@ function FirstPersonArms({ casting }: { casting: boolean }) {
 // Texturas procedurales
 // ---------------------------------------------------------------------------
 
-/** Césped procedural. Pixelado en modo blocky, suave en modo redondo. */
+/** Césped procedural. Pixelado en modo blocky, suave en modo redondo;
+ *  verdes pastel más luminosos en el tema overworld. */
 function useGrassTexture() {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   return useMemo(() => {
     const size = 64;
     const cell = style === "blocky" ? 4 : 2;
@@ -761,9 +775,11 @@ function useGrassTexture() {
     const ctx = canvas.getContext("2d")!;
     const rand = mulberry32(7);
     const greens =
-      style === "blocky"
-        ? ["#6fbf44", "#5fae3c", "#7bc94f", "#67b841", "#58a839", "#74c24a"]
-        : ["#71c05a", "#67b755", "#7cc766", "#6bbc5b", "#63b352", "#78c463"];
+      theme === "overworld"
+        ? ["#8ad97f", "#7ecf74", "#95e18a", "#83d478", "#78ca6e", "#90dd85"]
+        : style === "blocky"
+          ? ["#6fbf44", "#5fae3c", "#7bc94f", "#67b841", "#58a839", "#74c24a"]
+          : ["#71c05a", "#67b755", "#7cc766", "#6bbc5b", "#63b352", "#78c463"];
     for (let y = 0; y < size; y += cell) {
       for (let x = 0; x < size; x += cell) {
         ctx.fillStyle = greens[Math.floor(rand() * greens.length)];
@@ -777,7 +793,7 @@ function useGrassTexture() {
     tex.repeat.set(90, 90);
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
-  }, [style]);
+  }, [style, theme]);
 }
 
 /** Adoquines de piedra para plaza y caminos. */
@@ -838,13 +854,14 @@ function GrassFloor() {
 }
 
 /** Geometría de un matojo: varias briznas curvadas y estrechadas, con degradado
- *  de color de la base (oscura) a la punta (clara). Una sola geometría instanciada. */
-function makeBladeTuft() {
+ *  de color de la base (oscura) a la punta (clara). Una sola geometría instanciada.
+ *  En overworld el degradado es más pastel y luminoso. */
+function makeBladeTuft(theme: WorldTheme) {
   const positions: number[] = [];
   const colors: number[] = [];
   const indices: number[] = [];
-  const base = new THREE.Color("#3c7a2c");
-  const tip = new THREE.Color("#9bd662");
+  const base = new THREE.Color(theme === "overworld" ? "#55a94f" : "#3c7a2c");
+  const tip = new THREE.Color(theme === "overworld" ? "#c9f5a4" : "#9bd662");
   const bladeCount = 4;
   let vOffset = 0;
 
@@ -890,6 +907,7 @@ function makeBladeTuft() {
 
 /** Hierba alta: matojos de briznas instanciados, con viento suave por shader. */
 function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
+  const theme = useWorldTheme();
   const ref = useRef<THREE.InstancedMesh>(null);
   const uTime = useRef({ value: 0 }).current;
 
@@ -916,7 +934,7 @@ function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
     return list;
   }, [clear]);
 
-  const geometry = useMemo(makeBladeTuft, []);
+  const geometry = useMemo(() => makeBladeTuft(theme), [theme]);
   const material = useMemo(() => {
     const mat = new THREE.MeshStandardMaterial({
       vertexColors: true,
@@ -957,7 +975,9 @@ function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
     });
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-  }, [tufts]);
+    // `geometry` en deps: al cambiar de tema se recrea el instancedMesh y hay
+    // que volver a sembrar matrices y tintes en el mesh nuevo.
+  }, [tufts, geometry]);
 
   useFrame(({ clock }) => {
     uTime.value = clock.elapsedTime;
@@ -1583,6 +1603,133 @@ function Windmill() {
           </group>
         ))}
       </group>
+    </group>
+  );
+}
+
+/** Botón arcade de la plaza: peana de piedra con pulsador rojo que alterna
+ *  el tema del mundo (voxel ⇄ overworld). Misma interacción que la
+ *  biblioteca: proximidad + E en escritorio, toque en móvil. */
+function ThemeButton({
+  dict,
+  touch,
+  paused,
+  onPress,
+}: {
+  dict: Dictionary;
+  touch: boolean;
+  paused: boolean;
+  onPress: () => void;
+}) {
+  const style = useWorldStyle();
+  const flat = style === "blocky";
+  const theme = useWorldTheme();
+  const { camera } = useThree();
+  const [near, setNear] = useState(false);
+  const nearRef = useRef(false);
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
+  const domeMat = useRef<THREE.MeshStandardMaterial>(null);
+
+  useFrame(({ clock }) => {
+    const d = Math.hypot(
+      camera.position.x - THEME_BUTTON_POS.x,
+      camera.position.z - THEME_BUTTON_POS.z,
+    );
+    const isNear = d < 3;
+    if (isNear !== nearRef.current) {
+      nearRef.current = isNear;
+      setNear(isNear);
+    }
+    // El pulsador "respira"; late más deprisa cuando estás al lado
+    if (domeMat.current) {
+      const t = clock.elapsedTime;
+      domeMat.current.emissiveIntensity =
+        (isNear ? 0.85 : 0.4) + Math.sin(t * (isNear ? 6 : 2.2)) * 0.22;
+    }
+  });
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (
+        (e.code === "KeyE" || e.code === "Enter") &&
+        nearRef.current &&
+        !pausedRef.current
+      ) {
+        onPress();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onPress]);
+
+  // La etiqueta anuncia el modo al que se va a cambiar
+  const label =
+    theme === "voxel" ? dict.world.theme.toOverworld : dict.world.theme.toVoxel;
+
+  return (
+    <group
+      position={[THEME_BUTTON_POS.x, 0.2, THEME_BUTTON_POS.z]}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (nearRef.current && !pausedRef.current) onPress();
+      }}
+      onPointerOver={() => (document.body.style.cursor = "pointer")}
+      onPointerOut={() => (document.body.style.cursor = "default")}
+    >
+      {/* Peana de piedra con placa metálica */}
+      <Block args={[1.1, 0.55, 1.1]} radius={0.08} castShadow position={[0, 0.275, 0]}>
+        <meshStandardMaterial color="#8f8f8f" flatShading={flat} />
+      </Block>
+      <Block args={[0.9, 0.12, 0.9]} radius={0.04} position={[0, 0.6, 0]}>
+        <meshStandardMaterial color="#3a3f47" flatShading={flat} />
+      </Block>
+      {/* Aro de energía y pulsador rojo tipo arcade */}
+      <mesh position={[0, 0.675, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.3, 0.035, 10, 28]} />
+        <meshStandardMaterial
+          color="#22d3ee"
+          emissive="#22d3ee"
+          emissiveIntensity={1.2}
+          toneMapped={false}
+        />
+      </mesh>
+      <mesh castShadow position={[0, 0.68, 0]} scale={[1, 0.55, 1]}>
+        <sphereGeometry args={[0.26, 20, 14]} />
+        <meshStandardMaterial
+          ref={domeMat}
+          color="#e23c3c"
+          emissive="#e23c3c"
+          emissiveIntensity={0.5}
+          flatShading={flat}
+        />
+      </mesh>
+
+      {/* A qué modo cambia */}
+      <Html
+        center
+        distanceFactor={9}
+        zIndexRange={[15, 0]}
+        position={[0, 1.35, 0]}
+        style={{ pointerEvents: "none" }}
+      >
+        <p className="whitespace-nowrap rounded-full bg-[#0f121e]/80 px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-white">
+          ⬡ {label}
+        </p>
+      </Html>
+      {near && (
+        <Html
+          center
+          distanceFactor={9}
+          zIndexRange={[15, 0]}
+          position={[0, 1.85, 0]}
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="animate-pulse whitespace-nowrap rounded-full bg-[#e23c3c] px-4 py-1.5 font-mono text-xs font-semibold uppercase tracking-widest text-white shadow-lg">
+            {touch ? dict.world.hintNearTouch : dict.world.hintNear}
+          </div>
+        </Html>
+      )}
     </group>
   );
 }
@@ -3666,8 +3813,10 @@ export default function WorldCanvas({
   paused,
   casting,
   style,
+  theme,
   onEnter,
   onLibrary,
+  onThemeButton,
   externalMove,
 }: {
   dict: Dictionary;
@@ -3675,8 +3824,10 @@ export default function WorldCanvas({
   paused: boolean;
   casting: boolean;
   style: WorldStyle;
+  theme: WorldTheme;
   onEnter: (project: Project) => void;
   onLibrary: () => void;
+  onThemeButton: () => void;
   externalMove: MoveInput;
 }) {
   const drag = useRef<DragState>({ dist: 0 }).current;
@@ -3757,15 +3908,28 @@ export default function WorldCanvas({
         );
       }}
     >
-      <StyleContext.Provider value={style}>
-        <color attach="background" args={["#6cb8ec"]} />
-        <fog attach="fog" args={["#9ed2f2", 50, 220]} />
-        <hemisphereLight color="#cfe8ff" groundColor="#7da35b" intensity={0.85} />
+      {/* En overworld la geometría se fuerza a redonda: nada de aristas voxel */}
+      <StyleContext.Provider value={theme === "overworld" ? "rounded" : style}>
+      <ThemeContext.Provider value={theme}>
+        {/* Cielo, niebla y luz: pastel y cálidos en overworld */}
+        <color
+          attach="background"
+          args={[theme === "overworld" ? "#c2e9f5" : "#6cb8ec"]}
+        />
+        <fog
+          attach="fog"
+          args={[theme === "overworld" ? "#e0f4f9" : "#9ed2f2", 50, 220]}
+        />
+        <hemisphereLight
+          color={theme === "overworld" ? "#fff3dc" : "#cfe8ff"}
+          groundColor={theme === "overworld" ? "#9ccb84" : "#7da35b"}
+          intensity={theme === "overworld" ? 1.0 : 0.85}
+        />
         <directionalLight
           castShadow
           position={[35, 55, 20]}
-          intensity={1.5}
-          color="#fff2d9"
+          intensity={theme === "overworld" ? 1.3 : 1.5}
+          color={theme === "overworld" ? "#ffe8c2" : "#fff2d9"}
           shadow-mapSize={[1024, 1024]}
           shadow-camera-left={-55}
           shadow-camera-right={55}
@@ -3784,6 +3948,12 @@ export default function WorldCanvas({
         <Rocks />
         <Plaza layout={layout} />
         <LampPosts />
+        <ThemeButton
+          dict={dict}
+          touch={touch}
+          paused={paused}
+          onPress={onThemeButton}
+        />
         <Windmill />
         <RecommendedLibrary dict={dict} touch={touch} paused={paused} onLibrary={onLibrary} />
         <GeekDen dict={dict} />
@@ -3827,6 +3997,7 @@ export default function WorldCanvas({
         />
         <FirstPersonArms casting={casting} />
         {process.env.NODE_ENV !== "production" && <DebugProbe />}
+      </ThemeContext.Provider>
       </StyleContext.Provider>
     </Canvas>
   );

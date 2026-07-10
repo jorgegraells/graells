@@ -9,6 +9,7 @@ import {
   VILLAGE_COLORS,
   type MoveInput,
   type WorldStyle,
+  type WorldTheme,
 } from "@/components/world/WorldCanvas";
 
 const WorldCanvas = dynamic(() => import("@/components/world/WorldCanvas"), {
@@ -480,6 +481,9 @@ export default function World({
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [worldStyle, setWorldStyle] = useState<WorldStyle>("blocky");
+  const [worldTheme, setWorldTheme] = useState<WorldTheme>("voxel");
+  const [themeFlash, setThemeFlash] = useState(false);
+  const flashingRef = useRef(false);
   const [started, setStarted] = useState(false);
   const [touchDevice, setTouchDevice] = useState(false);
   const move = useRef<MoveInput>({ x: 0, y: 0, jump: false }).current;
@@ -498,6 +502,21 @@ export default function World({
     setSkillsOpen(false);
     setActive(null);
     setLibraryOpen(true);
+  }, []);
+
+  // Botón arcade de la plaza: fogonazo blanco estilo transición de RPG y,
+  // en el punto más blanco, se cambia el tema del mundo.
+  const onThemeButton = useCallback(() => {
+    if (flashingRef.current) return;
+    flashingRef.current = true;
+    setThemeFlash(true);
+    window.setTimeout(() => {
+      setWorldTheme((t) => (t === "voxel" ? "overworld" : "voxel"));
+    }, 250);
+    window.setTimeout(() => {
+      setThemeFlash(false);
+      flashingRef.current = false;
+    }, 550);
   }, []);
 
   useEffect(() => {
@@ -554,8 +573,10 @@ export default function World({
         paused={active !== null || skillsOpen || libraryOpen || !started}
         casting={skillsOpen}
         style={worldStyle}
+        theme={worldTheme}
         onEnter={onEnter}
         onLibrary={onLibrary}
+        onThemeButton={onThemeButton}
         externalMove={move}
       />
 
@@ -656,6 +677,16 @@ export default function World({
             dict={dict}
             touch={touchDevice}
             onClose={() => setLibraryOpen(false)}
+          />
+        )}
+        {themeFlash && (
+          <motion.div
+            key="theme-flash"
+            className="pointer-events-none absolute inset-0 z-40 bg-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.35, ease: "easeOut" } }}
+            transition={{ duration: 0.22, ease: "easeIn" }}
           />
         )}
       </AnimatePresence>
