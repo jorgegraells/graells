@@ -75,6 +75,14 @@ Dos archivos en `src/components/world/`:
   instanciada (shader de viento), y
   `material.userData.outlineParameters.visible = false` para planos finos
   (pósters, carteles, red de portería, holo, cono, motas, briznas).
+  **Fase 3 (hecha)**: diseños propios por tema, no solo recolor. En overworld:
+  casas de JRPG (muros crema sin entramado, cenefa del color del tejado, cono
+  suave 14 seg con remate esférico, ventana redonda con marco blanco, valla
+  blanca, sin chimenea), árboles de copa esférica doble, gente chibi (cabeza
+  ×1.3 vía doble grupo pivotado en el centro de la cabeza, sin tocar
+  coordenadas: Villager, SeatedPerson, Worker), pradera de manchas suaves en
+  vez de píxel, losetas arena redondeadas y montañas menta/lavanda. Todo con
+  ramas condicionales por `useWorldTheme()`; el voxel queda intacto.
 
 ## Trampas conocidas (no re-descubrir)
 

@@ -775,16 +775,39 @@ function useGrassTexture() {
     canvas.height = size;
     const ctx = canvas.getContext("2d")!;
     const rand = mulberry32(7);
-    const greens =
-      theme === "overworld"
-        ? ["#8ad97f", "#7ecf74", "#95e18a", "#83d478", "#78ca6e", "#90dd85"]
-        : style === "blocky"
+    if (theme === "overworld") {
+      // Pradera de JRPG: verde plano con manchas suaves y motitas claras,
+      // nada de ruido pixelado
+      ctx.fillStyle = "#86d67b";
+      ctx.fillRect(0, 0, size, size);
+      for (let i = 0; i < 16; i++) {
+        ctx.fillStyle = i % 2 ? "#79cb6e" : "#8fdd84";
+        ctx.beginPath();
+        ctx.ellipse(
+          rand() * size,
+          rand() * size,
+          3 + rand() * 5,
+          2 + rand() * 4,
+          rand() * Math.PI,
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
+      }
+      for (let i = 0; i < 10; i++) {
+        ctx.fillStyle = "#a8ec9b";
+        ctx.fillRect(rand() * size, rand() * size, 2, 1);
+      }
+    } else {
+      const greens =
+        style === "blocky"
           ? ["#6fbf44", "#5fae3c", "#7bc94f", "#67b841", "#58a839", "#74c24a"]
           : ["#71c05a", "#67b755", "#7cc766", "#6bbc5b", "#63b352", "#78c463"];
-    for (let y = 0; y < size; y += cell) {
-      for (let x = 0; x < size; x += cell) {
-        ctx.fillStyle = greens[Math.floor(rand() * greens.length)];
-        ctx.fillRect(x, y, cell, cell);
+      for (let y = 0; y < size; y += cell) {
+        for (let x = 0; x < size; x += cell) {
+          ctx.fillStyle = greens[Math.floor(rand() * greens.length)];
+          ctx.fillRect(x, y, cell, cell);
+        }
       }
     }
     const tex = new THREE.CanvasTexture(canvas);
@@ -800,6 +823,7 @@ function useGrassTexture() {
 /** Adoquines de piedra para plaza y caminos. */
 function useStoneTexture() {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   return useMemo(() => {
     const size = 128;
     const canvas = document.createElement("canvas");
@@ -807,7 +831,9 @@ function useStoneTexture() {
     canvas.height = size;
     const ctx = canvas.getContext("2d")!;
     const rand = mulberry32(313);
-    ctx.fillStyle = "#5f5a52"; // mortero
+    const overworld = theme === "overworld";
+    // Mortero: gris piedra en voxel, arena cálida en overworld
+    ctx.fillStyle = overworld ? "#cdbc97" : "#5f5a52";
     ctx.fillRect(0, 0, size, size);
     const cells = 5;
     const step = size / cells;
@@ -819,8 +845,12 @@ function useStoneTexture() {
         const w = step - 6 + (rand() - 0.5) * j;
         const h = step - 6 + (rand() - 0.5) * j;
         const g = 128 + Math.floor(rand() * 54);
-        ctx.fillStyle = `rgb(${g},${g - 4},${g - 10})`;
-        const r = 4;
+        // Losetas tostadas y muy redondeadas en overworld (aire de camino de
+        // pueblo de JRPG); adoquín grisáceo en voxel
+        ctx.fillStyle = overworld
+          ? `rgb(${g + 92},${g + 68},${g + 26})`
+          : `rgb(${g},${g - 4},${g - 10})`;
+        const r = overworld ? 11 : 4;
         ctx.beginPath();
         ctx.moveTo(x + r, y);
         ctx.arcTo(x + w, y, x + w, y + h, r);
@@ -836,7 +866,7 @@ function useStoneTexture() {
     tex.wrapT = THREE.RepeatWrapping;
     tex.colorSpace = THREE.SRGBColorSpace;
     return tex;
-  }, [style]);
+  }, [style, theme]);
 }
 
 // ---------------------------------------------------------------------------
@@ -1156,12 +1186,19 @@ function PlazaHologram() {
   );
 }
 
-/** Bosque de árboles con variantes de color y tamaño. */
+/** Bosque de árboles con variantes de color y tamaño. En overworld pasan a
+ *  copas esféricas gorditas y verdes vivos, aire de arbolito de JRPG. */
 function DecorTrees() {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
-  const leafColors = ["#3f9e33", "#57b23f", "#2f8f4a"];
-  const trunkColors = ["#6b4a2b", "#7d5a35", "#d9cbb2"];
+  const overworld = theme === "overworld";
+  const leafColors = overworld
+    ? ["#46c15c", "#5ad06a", "#3ab567"]
+    : ["#3f9e33", "#57b23f", "#2f8f4a"];
+  const trunkColors = overworld
+    ? ["#8a5f3a", "#96683f", "#e2d2b6"]
+    : ["#6b4a2b", "#7d5a35", "#d9cbb2"];
   return (
     <>
       {TREE_SPOTS.map((t, i) => (
@@ -1169,15 +1206,31 @@ function DecorTrees() {
           <Block args={[0.8, 3.2, 0.8]} radius={0.28} castShadow position={[0, 1.6, 0]}>
             <meshStandardMaterial color={trunkColors[t.variant]} flatShading={flat} />
           </Block>
-          <Block args={[3.4, 1.8, 3.4]} radius={0.85} castShadow position={[0, 3.7, 0]}>
-            <meshStandardMaterial color={leafColors[t.variant]} flatShading={flat} />
-          </Block>
-          <Block args={[2.2, 1.2, 2.2]} radius={0.6} castShadow position={[0, 5, 0]}>
-            <meshStandardMaterial
-              color={leafColors[(t.variant + 1) % 3]}
-              flatShading={flat}
-            />
-          </Block>
+          {overworld ? (
+            <>
+              {/* Copa doble a base de esferas achatadas */}
+              <mesh castShadow position={[0, 3.8, 0]} scale={[1, 0.82, 1]}>
+                <sphereGeometry args={[2.1, 18, 14]} />
+                <meshStandardMaterial color={leafColors[t.variant]} />
+              </mesh>
+              <mesh castShadow position={[0, 5.15, 0]} scale={[1, 0.85, 1]}>
+                <sphereGeometry args={[1.35, 16, 12]} />
+                <meshStandardMaterial color={leafColors[(t.variant + 1) % 3]} />
+              </mesh>
+            </>
+          ) : (
+            <>
+              <Block args={[3.4, 1.8, 3.4]} radius={0.85} castShadow position={[0, 3.7, 0]}>
+                <meshStandardMaterial color={leafColors[t.variant]} flatShading={flat} />
+              </Block>
+              <Block args={[2.2, 1.2, 2.2]} radius={0.6} castShadow position={[0, 5, 0]}>
+                <meshStandardMaterial
+                  color={leafColors[(t.variant + 1) % 3]}
+                  flatShading={flat}
+                />
+              </Block>
+            </>
+          )}
         </group>
       ))}
     </>
@@ -1414,7 +1467,9 @@ const SEAT_PEOPLE: SeatLook[] = [
  *  origen del grupo está en la superficie del asiento; respira suavemente. */
 function SeatedPerson({ look, phase }: { look: SeatLook; phase: number }) {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
+  const headScale = theme === "overworld" ? 1.3 : 1;
   const head = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
     if (head.current) {
@@ -1465,7 +1520,7 @@ function SeatedPerson({ look, phase }: { look: SeatLook; phase: number }) {
       <Block args={[0.18, 0.12, 0.18]} radius={0.05} position={[0, 0.72, -0.02]}>
         {skinMat()}
       </Block>
-      <group ref={head} position={[0, 0.94, 0]}>
+      <group ref={head} position={[0, 0.94, 0]} scale={headScale}>
         <Block args={[0.36, 0.38, 0.36]} radius={0.12} castShadow>
           {skinMat()}
         </Block>
@@ -2034,6 +2089,7 @@ function BuildingShell({
   children?: ReactNode;
 }) {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
   const wallT = 0.25;
   const postT = 0.44;
@@ -2108,12 +2164,26 @@ function BuildingShell({
       <Block args={[w + 0.8, 0.24, d + 0.8]} castShadow position={[0, h + 0.12, 0]}>
         <meshStandardMaterial color="#5a4a33" flatShading={flat} />
       </Block>
-      {/* Tejado piramidal recto: escala Z en el grupo padre (tras la rotación) */}
+      {/* Tejado recto: pirámide voxel o cono suave con remate en overworld.
+          La escala Z va en el grupo padre (tras la rotación). */}
       <group position={[0, h + 0.24, 0]} scale={[1, 1, roofScaleZ]}>
-        <mesh castShadow rotation={[0, Math.PI / 4, 0]} position={[0, 1.1, 0]}>
-          <coneGeometry args={[roofR, 2.2, 4]} />
-          <meshStandardMaterial color={roofColor} flatShading={flat} />
-        </mesh>
+        {theme === "overworld" ? (
+          <>
+            <mesh castShadow position={[0, 1.4, 0]}>
+              <coneGeometry args={[roofR, 2.8, 14]} />
+              <meshStandardMaterial color={roofColor} />
+            </mesh>
+            <mesh castShadow position={[0, 2.85, 0]}>
+              <sphereGeometry args={[0.26, 14, 12]} />
+              <meshStandardMaterial color="#faf4e6" />
+            </mesh>
+          </>
+        ) : (
+          <mesh castShadow rotation={[0, Math.PI / 4, 0]} position={[0, 1.1, 0]}>
+            <coneGeometry args={[roofR, 2.2, 4]} />
+            <meshStandardMaterial color={roofColor} flatShading={flat} />
+          </mesh>
+        )}
       </group>
 
       {/* Puerta automática, empotrada en el plano de fachada */}
@@ -2996,7 +3066,9 @@ function Worker({
   say?: string;
 }) {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
+  const headScale = theme === "overworld" ? 1.3 : 1;
   const root = useRef<THREE.Group>(null);
   const hammerArm = useRef<THREE.Group>(null);
   const [talking, setTalking] = useState(false);
@@ -3090,6 +3162,9 @@ function Worker({
           </mesh>
         </group>
       </group>
+      {/* Cabeza completa escalada chibi en overworld (pivote en su centro) */}
+      <group position={[0, 1.28, 0]} scale={headScale}>
+      <group position={[0, -1.28, 0]}>
       {/* Cabeza */}
       <Block args={[0.34, 0.36, 0.34]} radius={0.1} castShadow position={[0, 1.24, 0]}>
         <meshStandardMaterial color="#d8a171" flatShading={flat} />
@@ -3130,6 +3205,8 @@ function Worker({
       <Block args={[0.52, 0.05, 0.52]} radius={0.03} position={[0, 1.36, 0]}>
         <meshStandardMaterial color="#e0a800" flatShading={flat} />
       </Block>
+      </group>
+      </group>
     </group>
   );
 }
@@ -3328,17 +3405,20 @@ function Butterflies() {
   );
 }
 
-/** Montañas y colinas que cierran el horizonte, difuminadas por la niebla. */
+/** Montañas y colinas que cierran el horizonte, difuminadas por la niebla.
+ *  En overworld pasan a menta y azul lavanda, como fondo de anime. */
 function Mountains() {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
   const seg = flat ? 5 : 7;
+  const overworld = theme === "overworld";
   return (
     <>
       {HILL_SPOTS.map((h, i) => (
         <mesh key={`h${i}`} position={[h.x, h.h / 2 - 0.4, h.z]} rotation={[0, h.rot, 0]}>
           <coneGeometry args={[h.r, h.h, seg]} />
-          <meshStandardMaterial color="#4c9350" flatShading={flat} />
+          <meshStandardMaterial color={overworld ? "#6cc487" : "#4c9350"} flatShading={flat} />
         </mesh>
       ))}
       {MOUNTAIN_SPOTS.map((m, i) => (
@@ -3346,7 +3426,15 @@ function Mountains() {
           <mesh position={[0, m.h / 2, 0]}>
             <coneGeometry args={[m.r, m.h, seg]} />
             <meshStandardMaterial
-              color={m.rocky ? "#5c6d7a" : "#54725e"}
+              color={
+                m.rocky
+                  ? overworld
+                    ? "#8d9bc4"
+                    : "#5c6d7a"
+                  : overworld
+                    ? "#77b98d"
+                    : "#54725e"
+              }
               flatShading={flat}
             />
           </mesh>
@@ -3366,9 +3454,45 @@ function Mountains() {
 // Casa y aldeano
 // ---------------------------------------------------------------------------
 
-/** Ventana con marco de madera y montantes en cruz. */
+/** Ventana con marco de madera y montantes en cruz; en overworld pasa a
+ *  ojo de buey redondo con marco blanco, muy de casa de JRPG. */
 function Window({ x, flat }: { x: number; flat: boolean }) {
+  const theme = useWorldTheme();
   const frame = "#5b3f26";
+  if (theme === "overworld") {
+    return (
+      <group position={[x, 1.95, 2.5]}>
+        {/* Cristal redondo (el cilindro se tumba para mirar al frente) */}
+        <mesh position={[0, 0, 0.03]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.5, 0.5, 0.06, 20]} />
+          <meshStandardMaterial
+            color="#bfe9ff"
+            emissive="#bfe9ff"
+            emissiveIntensity={0.3}
+          />
+        </mesh>
+        {/* Marco anular blanco (el toro ya mira al frente por defecto) */}
+        <mesh position={[0, 0, 0.06]}>
+          <torusGeometry args={[0.52, 0.09, 10, 24]} />
+          <meshStandardMaterial color="#faf4e6" />
+        </mesh>
+        {/* Travesaño horizontal */}
+        <Block args={[1.0, 0.07, 0.1]} radius={0.03} position={[0, 0, 0.07]}>
+          <meshStandardMaterial color="#faf4e6" />
+        </Block>
+        {/* Jardinera con florecitas */}
+        <Block args={[1.16, 0.2, 0.24]} radius={0.05} castShadow position={[0, -0.66, 0.14]}>
+          <meshStandardMaterial color="#8a5f3a" />
+        </Block>
+        {[-0.32, 0, 0.32].map((fx, i) => (
+          <mesh key={i} position={[fx, -0.52, 0.22]}>
+            <boxGeometry args={[0.12, 0.12, 0.12]} />
+            <meshStandardMaterial color={["#ff6b81", "#ffd93d", "#ffffff"][i]} />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
   return (
     <group position={[x, 1.95, 2.5]}>
       {/* Cristal */}
@@ -3423,56 +3547,75 @@ function House({
   construction?: boolean;
 }) {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
+  const overworld = theme === "overworld";
   const beam = "#6b4a2b";
   return (
     <group>
       {/* Zócalo de piedra */}
       <Block args={[6.3, 0.5, 5.3]} radius={0.12} castShadow receiveShadow position={[0, 0.25, 0]}>
-        <meshStandardMaterial color="#8f8272" flatShading={flat} />
+        <meshStandardMaterial color={overworld ? "#cabb9a" : "#8f8272"} flatShading={flat} />
       </Block>
-      {/* Muros */}
+      {/* Muros: entramado rústico en voxel, crema liso en overworld */}
       <Block args={[6, 3.2, 5]} radius={0.25} castShadow receiveShadow position={[0, 2, 0]}>
-        <meshStandardMaterial color="#d8b483" flatShading={flat} />
+        <meshStandardMaterial color={overworld ? "#f7eedd" : "#d8b483"} flatShading={flat} />
       </Block>
-      {/* Vigas de entramado empotradas en las esquinas del muro */}
-      {[
-        [-2.92, 2.42],
-        [2.92, 2.42],
-        [-2.92, -2.42],
-        [2.92, -2.42],
-      ].map(([bx, bz], i) => (
-        <Block key={i} args={[0.28, 3.4, 0.28]} radius={0.05} position={[bx, 2, bz]}>
-          <meshStandardMaterial color={beam} flatShading={flat} />
-        </Block>
-      ))}
-      {/* Cenefa bajo el alero */}
+      {/* Vigas de entramado empotradas en las esquinas del muro (solo voxel) */}
+      {!overworld &&
+        [
+          [-2.92, 2.42],
+          [2.92, 2.42],
+          [-2.92, -2.42],
+          [2.92, -2.42],
+        ].map(([bx, bz], i) => (
+          <Block key={i} args={[0.28, 3.4, 0.28]} radius={0.05} position={[bx, 2, bz]}>
+            <meshStandardMaterial color={beam} flatShading={flat} />
+          </Block>
+        ))}
+      {/* Cenefa bajo el alero: en overworld, franja del color del tejado */}
       <Block args={[6.2, 0.3, 5.2]} radius={0.08} position={[0, 3.65, 0]}>
-        <meshStandardMaterial color={beam} flatShading={flat} />
+        <meshStandardMaterial color={overworld ? color : beam} flatShading={flat} />
       </Block>
-      {/* Tejado piramidal con alero volado */}
-      <mesh
-        castShadow
-        position={[0, 4.55, 0]}
-        rotation={[0, flat ? Math.PI / 4 : 0, 0]}
-        scale={[1.35, 1, 1.15]}
-      >
-        <coneGeometry args={[4.5, 2.5, flat ? 4 : 8]} />
-        <meshStandardMaterial color={color} flatShading={flat} />
-      </mesh>
-      {/* Remate del tejado (asentado en el pico del cono, que llega a 5.8) */}
-      <Block args={[0.3, 0.3, 0.3]} radius={0.08} position={[0, 5.82, 0]}>
-        <meshStandardMaterial color="#f4f4f4" flatShading={flat} />
-      </Block>
-      {/* Puerta con marco, panel y pomo */}
+      {/* Tejado: pirámide voxel, o cono alto y suave con remate esférico
+          (silueta de casita de JRPG) en overworld */}
+      {overworld ? (
+        <>
+          <mesh castShadow position={[0, 4.9, 0]} scale={[1.3, 1, 1.12]}>
+            <coneGeometry args={[4.5, 3.1, 14]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+          <mesh castShadow position={[0, 6.5, 0]}>
+            <sphereGeometry args={[0.3, 14, 12]} />
+            <meshStandardMaterial color="#faf4e6" />
+          </mesh>
+        </>
+      ) : (
+        <>
+          <mesh
+            castShadow
+            position={[0, 4.55, 0]}
+            rotation={[0, flat ? Math.PI / 4 : 0, 0]}
+            scale={[1.35, 1, 1.15]}
+          >
+            <coneGeometry args={[4.5, 2.5, flat ? 4 : 8]} />
+            <meshStandardMaterial color={color} flatShading={flat} />
+          </mesh>
+          {/* Remate del tejado (asentado en el pico del cono, que llega a 5.8) */}
+          <Block args={[0.3, 0.3, 0.3]} radius={0.08} position={[0, 5.82, 0]}>
+            <meshStandardMaterial color="#f4f4f4" flatShading={flat} />
+          </Block>
+        </>
+      )}
+      {/* Puerta con marco, panel y pomo (marco blanco y madera viva en overworld) */}
       <Block args={[1.4, 2.5, 0.16]} radius={0.05} position={[0, 1.25, 2.48]}>
-        <meshStandardMaterial color={beam} flatShading={flat} />
+        <meshStandardMaterial color={overworld ? "#faf4e6" : beam} flatShading={flat} />
       </Block>
-      <Block args={[1.1, 2.2, 0.14]} radius={0.05} position={[0, 1.15, 2.54]}>
-        <meshStandardMaterial color="#8a5a34" flatShading={flat} />
+      <Block args={[1.1, 2.2, 0.14]} radius={overworld ? 0.4 : 0.05} position={[0, 1.15, 2.54]}>
+        <meshStandardMaterial color={overworld ? "#b06a3c" : "#8a5a34"} flatShading={flat} />
       </Block>
       <Block args={[0.78, 0.9, 0.06]} radius={0.03} position={[0, 1.5, 2.6]}>
-        <meshStandardMaterial color="#7a4f2c" flatShading={flat} />
+        <meshStandardMaterial color={overworld ? "#9c5c33" : "#7a4f2c"} flatShading={flat} />
       </Block>
       <mesh position={[0.36, 1.1, 2.62]}>
         <sphereGeometry args={[0.07, 10, 10]} />
@@ -3499,24 +3642,29 @@ function House({
       {/* Ventanas detalladas */}
       <Window x={-1.85} flat={flat} />
       <Window x={1.85} flat={flat} />
-      {/* Chimenea con remate */}
-      <Block args={[0.6, 1.9, 0.6]} radius={0.1} castShadow position={[1.7, 5.1, -1]}>
-        <meshStandardMaterial color="#9a6b52" flatShading={flat} />
-      </Block>
-      <Block args={[0.78, 0.3, 0.78]} radius={0.05} position={[1.7, 6.05, -1]}>
-        <meshStandardMaterial color="#7a4f3c" flatShading={flat} />
-      </Block>
-      {/* Vallas del jardincito delantero (no en la casa en obra) */}
+      {/* Chimenea con remate (solo voxel: la silueta overworld va limpia) */}
+      {!overworld && (
+        <>
+          <Block args={[0.6, 1.9, 0.6]} radius={0.1} castShadow position={[1.7, 5.1, -1]}>
+            <meshStandardMaterial color="#9a6b52" flatShading={flat} />
+          </Block>
+          <Block args={[0.78, 0.3, 0.78]} radius={0.05} position={[1.7, 6.05, -1]}>
+            <meshStandardMaterial color="#7a4f3c" flatShading={flat} />
+          </Block>
+        </>
+      )}
+      {/* Vallas del jardincito delantero (no en la casa en obra);
+          valla blanca de pueblo de JRPG en overworld */}
       {!construction &&
         [-2.2, 2.2].map((x) => (
           <group key={x} position={[x, 0, 3.6]}>
             {[-0.9, 0, 0.9].map((z) => (
               <Block key={z} args={[0.14, 0.9, 0.14]} radius={0.05} castShadow position={[0, 0.45, z]}>
-                <meshStandardMaterial color="#8a6a42" flatShading={flat} />
+                <meshStandardMaterial color={overworld ? "#f3ecda" : "#8a6a42"} flatShading={flat} />
               </Block>
             ))}
             <Block args={[0.09, 0.09, 2.1]} radius={0.04} castShadow position={[0, 0.68, 0]}>
-              <meshStandardMaterial color="#9a794f" flatShading={flat} />
+              <meshStandardMaterial color={overworld ? "#faf4e6" : "#9a794f"} flatShading={flat} />
             </Block>
           </group>
         ))}
@@ -3545,7 +3693,10 @@ function Villager({
   onEnter: (project: Project) => void;
 }) {
   const style = useWorldStyle();
+  const theme = useWorldTheme();
   const flat = style === "blocky";
+  // Proporción chibi en overworld: cabezón anime, cuerpo igual
+  const headScale = theme === "overworld" ? 1.32 : 1;
   const group = useRef<THREE.Group>(null);
   const body = useRef<THREE.Group>(null);
   const armLeft = useRef<THREE.Group>(null);
@@ -3633,6 +3784,11 @@ function Villager({
         <Block args={[0.22, 0.12, 0.22]} radius={0.05} position={[0, 1.62, 0]}>
           <meshStandardMaterial color={P.skin} flatShading={flat} />
         </Block>
+        {/* Cabeza completa (con pelo, gorro y accesorios) escalada chibi en
+            overworld: el doble grupo pivota la escala en el centro de la
+            cabeza sin tocar ninguna coordenada */}
+        <group position={[0, 1.94, 0]} scale={headScale}>
+        <group position={[0, -1.94, 0]}>
         {/* Cabeza */}
         <Block args={[0.5, 0.52, 0.5]} radius={0.14} castShadow position={[0, 1.94, 0]}>
           <meshStandardMaterial color={P.skin} flatShading={flat} />
@@ -3779,6 +3935,8 @@ function Villager({
             </Block>
           </>
         )}
+        </group>
+        </group>
       </group>
 
       {/* Cartel con el proyecto del que habla, encima de la cabeza.
