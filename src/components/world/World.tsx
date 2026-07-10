@@ -8,7 +8,6 @@ import type { Dictionary, Locale, Project } from "@/i18n/dictionaries";
 import {
   VILLAGE_COLORS,
   type MoveInput,
-  type WorldStyle,
   type WorldTheme,
 } from "@/components/world/WorldCanvas";
 
@@ -480,7 +479,6 @@ export default function World({
   const [active, setActive] = useState<Project | null>(null);
   const [skillsOpen, setSkillsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
-  const [worldStyle, setWorldStyle] = useState<WorldStyle>("blocky");
   const [worldTheme, setWorldTheme] = useState<WorldTheme>("voxel");
   const [themeFlash, setThemeFlash] = useState(false);
   const flashingRef = useRef(false);
@@ -572,7 +570,6 @@ export default function World({
         touch={touchDevice}
         paused={active !== null || skillsOpen || libraryOpen || !started}
         casting={skillsOpen}
-        style={worldStyle}
         theme={worldTheme}
         onEnter={onEnter}
         onLibrary={onLibrary}
@@ -589,25 +586,12 @@ export default function World({
 
       {/* HUD superior */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-2 p-5">
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/${locale}`}
-            className="glass pointer-events-auto rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/80 transition-colors hover:text-white"
-          >
-            ← {dict.world.exit}
-          </Link>
-          <button
-            type="button"
-            onClick={() =>
-              setWorldStyle((s) => (s === "blocky" ? "rounded" : "blocky"))
-            }
-            className="glass pointer-events-auto rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/80 transition-colors hover:text-white"
-            aria-label={dict.world.style[worldStyle]}
-          >
-            {worldStyle === "blocky" ? "◼" : "⬤"}{" "}
-            {dict.world.style[worldStyle]}
-          </button>
-        </div>
+        <Link
+          href={`/${locale}`}
+          className="glass pointer-events-auto rounded-full px-4 py-2 font-mono text-xs uppercase tracking-wider text-white/80 transition-colors hover:text-white"
+        >
+          ← {dict.world.exit}
+        </Link>
         <p className="glass hidden rounded-full px-5 py-2 font-mono text-xs uppercase tracking-[0.3em] text-white sm:block">
           {dict.world.title}
         </p>

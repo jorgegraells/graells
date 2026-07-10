@@ -68,7 +68,6 @@ export type Dictionary = {
     building: string;
     greet: string;
     next: string;
-    style: { blocky: string; rounded: string };
     intro: {
       eyebrow: string;
       title: string;
@@ -156,7 +155,6 @@ const es: Dictionary = {
     building: "Construyendo",
     greet: "¡Hola, viajero! Bienvenido a {name}. Deja que te lo cuente…",
     next: "Siguiente",
-    style: { blocky: "Cuadrado", rounded: "Redondo" },
     intro: {
       eyebrow: "Mundo virtual · un pequeño videojuego",
       title: "Bienvenido al pueblo de Graells",
@@ -423,7 +421,6 @@ const en: Dictionary = {
     building: "Building",
     greet: "Hi, traveler! Welcome to {name}. Let me tell you about it…",
     next: "Next",
-    style: { blocky: "Blocky", rounded: "Rounded" },
     intro: {
       eyebrow: "Virtual world · a little videogame",
       title: "Welcome to Graells' village",

@@ -13,6 +13,7 @@ import {
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
+import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import type { Dictionary, Project } from "@/i18n/dictionaries";
 
 const HOUSE_RADIUS = 22;
@@ -941,6 +942,8 @@ function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
       side: THREE.DoubleSide,
       roughness: 1,
     });
+    // Sin contorno: el hull invertido sobre 1500 matojos sería ruido y coste
+    mat.userData.outlineParameters = { visible: false };
     // Viento: las briznas ondulan según su altura y su posición en el mundo
     mat.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = uTime;
@@ -983,7 +986,14 @@ function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
     uTime.value = clock.elapsedTime;
   });
 
-  return <instancedMesh ref={ref} args={[geometry, material, tufts.length]} />;
+  // noToon: el clon toon perdería el shader de viento inyectado
+  return (
+    <instancedMesh
+      ref={ref}
+      args={[geometry, material, tufts.length]}
+      userData={{ noToon: true }}
+    />
+  );
 }
 
 /** Nubes que derivan lentamente (esponjosas en modo redondo). */
@@ -1086,7 +1096,7 @@ function PlazaHologram() {
       <Block args={[2, 0.25, 2]} radius={0.4} position={[0, 0.45, 0]}>
         <meshStandardMaterial color="#2b3440" flatShading={style === "blocky"} />
       </Block>
-      <mesh position={[0, 0.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh position={[0, 0.6, 0]} rotation={[-Math.PI / 2, 0, 0]} userData={{ noToon: true }}>
         <torusGeometry args={[0.78, 0.07, 10, 36]} />
         <meshStandardMaterial
           ref={ring}
@@ -1107,6 +1117,7 @@ function PlazaHologram() {
           opacity={0.09}
           side={THREE.DoubleSide}
           depthWrite={false}
+          userData={{ outlineParameters: { visible: false } }}
         />
       </mesh>
 
@@ -1123,6 +1134,7 @@ function PlazaHologram() {
               toneMapped={false}
               depthWrite={false}
               side={THREE.DoubleSide}
+              userData={{ outlineParameters: { visible: false } }}
             />
           </mesh>
         </group>
@@ -1132,7 +1144,12 @@ function PlazaHologram() {
       {Array.from({ length: 5 }, (_, i) => (
         <mesh key={i} ref={(m) => void (moteRefs.current[i] = m)}>
           <sphereGeometry args={[0.045, 6, 6]} />
-          <meshBasicMaterial color="#aef2ff" transparent toneMapped={false} />
+          <meshBasicMaterial
+            color="#aef2ff"
+            transparent
+            toneMapped={false}
+            userData={{ outlineParameters: { visible: false } }}
+          />
         </mesh>
       ))}
     </group>
@@ -1694,7 +1711,7 @@ function ThemeButton({
           toneMapped={false}
         />
       </mesh>
-      <mesh castShadow position={[0, 0.68, 0]} scale={[1, 0.55, 1]}>
+      <mesh castShadow position={[0, 0.68, 0]} scale={[1, 0.55, 1]} userData={{ noToon: true }}>
         <sphereGeometry args={[0.26, 20, 14]} />
         <meshStandardMaterial
           ref={domeMat}
@@ -1732,6 +1749,103 @@ function ThemeButton({
       )}
     </group>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Fase 2 del tema overworld: cel-shading (toon) + contornos
+// ---------------------------------------------------------------------------
+
+/** Gradiente de 4 escalones para el sombreado toon (banding tipo anime). */
+function makeToonGradient() {
+  const tex = new THREE.DataTexture(
+    new Uint8Array([105, 170, 220, 255]),
+    4,
+    1,
+    THREE.RedFormat,
+  );
+  tex.minFilter = THREE.NearestFilter;
+  tex.magFilter = THREE.NearestFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+/** En overworld sustituye cada MeshStandardMaterial de la escena por un clon
+ *  MeshToonMaterial (cacheado por material original) y lo restaura al volver
+ *  a voxel. Los meshes con userData.noToon no se tocan (sus materiales se
+ *  animan por ref y el clon rompería la animación). */
+function ToonMaterialSwap() {
+  const theme = useWorldTheme();
+  const scene = useThree((s) => s.scene);
+  const gradient = useMemo(makeToonGradient, []);
+  const cache = useRef(
+    new WeakMap<THREE.MeshStandardMaterial, THREE.MeshToonMaterial>(),
+  ).current;
+
+  useEffect(() => {
+    const toToon = theme === "overworld";
+    scene.traverse((obj) => {
+      const mesh = obj as THREE.Mesh & {
+        userData: { noToon?: boolean; origMat?: THREE.Material };
+      };
+      if (!mesh.isMesh || Array.isArray(mesh.material)) return;
+      if (toToon) {
+        if (mesh.userData.noToon || mesh.userData.origMat) return;
+        const std = mesh.material as THREE.MeshStandardMaterial;
+        if (!std.isMeshStandardMaterial) return;
+        let toon = cache.get(std);
+        if (!toon) {
+          toon = new THREE.MeshToonMaterial({
+            color: std.color.clone(),
+            map: std.map,
+            gradientMap: gradient,
+            emissive: std.emissive.clone(),
+            emissiveIntensity: std.emissiveIntensity,
+            transparent: std.transparent,
+            opacity: std.opacity,
+            side: std.side,
+          });
+          toon.vertexColors = std.vertexColors;
+          toon.toneMapped = std.toneMapped;
+          cache.set(std, toon);
+        }
+        mesh.userData.origMat = std;
+        mesh.material = toon;
+      } else if (mesh.userData.origMat) {
+        mesh.material = mesh.userData.origMat;
+        delete mesh.userData.origMat;
+      }
+    });
+  }, [theme, scene, gradient, cache]);
+
+  return null;
+}
+
+/** Toma el control del render (useFrame con prioridad): en overworld pinta
+ *  con OutlineEffect (contornos negros estilo cel-shading, inverted hull en
+ *  shader, sin duplicar meshes); en voxel, render normal. Los materiales con
+ *  userData.outlineParameters.visible = false quedan sin contorno. */
+function OutlinedRenderer() {
+  const theme = useWorldTheme();
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+  const effect = useMemo(
+    () =>
+      new OutlineEffect(gl, {
+        defaultThickness: 0.0032,
+        defaultColor: [0.09, 0.08, 0.12],
+      }),
+    [gl],
+  );
+  const themeRef = useRef(theme);
+  themeRef.current = theme;
+
+  useFrame(() => {
+    if (themeRef.current === "overworld") effect.render(scene, camera);
+    else gl.render(scene, camera);
+  }, 1);
+
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -1890,7 +2004,11 @@ function Signboard({
       </Block>
       <mesh position={[0, 0, 0.06]}>
         <planeGeometry args={[width, h]} />
-        <meshBasicMaterial map={tex} toneMapped={false} />
+        <meshBasicMaterial
+          map={tex}
+          toneMapped={false}
+          userData={{ outlineParameters: { visible: false } }}
+        />
       </mesh>
     </group>
   );
@@ -2419,7 +2537,11 @@ function GeekDen({ dict }: { dict: Dictionary }) {
   ) => (
     <mesh position={position} rotation={[0, rotY, 0]}>
       <planeGeometry args={[1.2, 1.62]} />
-      <meshBasicMaterial map={tex} toneMapped={false} />
+      <meshBasicMaterial
+        map={tex}
+        toneMapped={false}
+        userData={{ outlineParameters: { visible: false } }}
+      />
     </mesh>
   );
   return (
@@ -2658,6 +2780,7 @@ function FootballPitch() {
       transparent
       side={THREE.DoubleSide}
       depthWrite={false}
+      userData={{ outlineParameters: { visible: false } }}
     />
   );
   const goal = (end: number) => (
@@ -3812,7 +3935,6 @@ export default function WorldCanvas({
   touch,
   paused,
   casting,
-  style,
   theme,
   onEnter,
   onLibrary,
@@ -3823,7 +3945,6 @@ export default function WorldCanvas({
   touch: boolean;
   paused: boolean;
   casting: boolean;
-  style: WorldStyle;
   theme: WorldTheme;
   onEnter: (project: Project) => void;
   onLibrary: () => void;
@@ -3908,8 +4029,8 @@ export default function WorldCanvas({
         );
       }}
     >
-      {/* En overworld la geometría se fuerza a redonda: nada de aristas voxel */}
-      <StyleContext.Provider value={theme === "overworld" ? "rounded" : style}>
+      {/* El estilo de geometría se deriva del tema: voxel cuadrado, overworld redondo */}
+      <StyleContext.Provider value={theme === "overworld" ? "rounded" : "blocky"}>
       <ThemeContext.Provider value={theme}>
         {/* Cielo, niebla y luz: pastel y cálidos en overworld */}
         <color
@@ -3996,6 +4117,8 @@ export default function WorldCanvas({
           extraColliders={siteColliders}
         />
         <FirstPersonArms casting={casting} />
+        <ToonMaterialSwap />
+        <OutlinedRenderer />
         {process.env.NODE_ENV !== "production" && <DebugProbe />}
       </ThemeContext.Provider>
       </StyleContext.Provider>

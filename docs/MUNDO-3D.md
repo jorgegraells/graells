@@ -14,10 +14,11 @@ Dos archivos en `src/components/world/`:
 
 ## Sistema de estilo (cuadrado ⇄ redondo)
 
-- `WorldStyle = "blocky" | "rounded"` se pasa a `WorldCanvas` como prop `style`
-  (estado en `World.tsx`, toggle en el HUD). Se propaga por **contexto R3F**:
-  `StyleContext.Provider` está DENTRO del `<Canvas>` (obligatorio: R3F usa su
-  propio reconciliador). Los componentes leen con `useWorldStyle()`.
+- `WorldStyle = "blocky" | "rounded"` YA NO tiene toggle en el HUD: se deriva
+  del tema (`voxel` → blocky, `overworld` → rounded) dentro de `WorldCanvas`.
+  Se propaga por **contexto R3F**: `StyleContext.Provider` está DENTRO del
+  `<Canvas>` (obligatorio: R3F usa su propio reconciliador). Los componentes
+  leen con `useWorldStyle()`.
 - Helper **`Block`**: caja que renderiza `boxGeometry` en blocky y `RoundedBox`
   (drei) en rounded. Radio auto-clampado a `min(args)*0.45`. Úsalo para
   estructuras nuevas en vez de `<mesh><boxGeometry/>`.
@@ -65,9 +66,15 @@ Dos archivos en `src/components/world/`:
   `ThemeContext`/`useWorldTheme` (paralelo a `StyleContext`) y afecta a cielo,
   niebla, luces y paletas de hierba; en overworld la geometría se FUERZA a
   "rounded". El voxel es el estado por defecto e intacto.
-  **Fase 2 pendiente**: cel-shading real en overworld con `MeshToonMaterial`
-  y contornos negros (inverted-hull o postprocessing) para que pase de
-  "otros colores" a "otro juego".
+  **Fase 2 (hecha)**: en overworld, `ToonMaterialSwap` recorre la escena y
+  cambia cada `MeshStandardMaterial` por un clon `MeshToonMaterial` cacheado
+  (gradiente de 4 escalones) y `OutlinedRenderer` toma el render con
+  `OutlineEffect` (contornos negros; useFrame con prioridad 1 desactiva el
+  render automático de R3F). Exclusiones: `mesh.userData.noToon` para
+  materiales animados por ref (anillo del holograma, pulsador) y la hierba
+  instanciada (shader de viento), y
+  `material.userData.outlineParameters.visible = false` para planos finos
+  (pósters, carteles, red de portería, holo, cono, motas, briznas).
 
 ## Trampas conocidas (no re-descubrir)
 
