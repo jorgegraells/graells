@@ -31,8 +31,23 @@ export type Dictionary = {
     projects: string;
     skills: string;
     journey: string;
+    training: string;
     blog: string;
     contact: string;
+  };
+  training: {
+    tag: string;
+    title: string;
+    intro: string;
+    authority: string;
+    courses: { name: string; tagline: string; bullets: string[] }[];
+    combinedNote: string;
+    formatsTitle: string;
+    formats: { name: string; detail: string; price: string }[];
+    priceNote: string;
+    cta: string;
+    teaser: string;
+    teaserCta: string;
   };
   blog: {
     title: string;
@@ -117,8 +132,72 @@ const es: Dictionary = {
     projects: "Proyectos",
     skills: "Stack",
     journey: "Trayectoria",
+    training: "Formación",
     blog: "Artículos",
     contact: "Contacto",
+  },
+  training: {
+    tag: "SKILL TREE",
+    title: "Formación para empresas",
+    intro:
+      "Ciberseguridad e inteligencia artificial contadas para que las entienda toda la plantilla, no solo el equipo técnico. Hoy son conocimiento tan básico como saber usar el correo, y la mayoría de incidentes empiezan en una persona, no en un servidor.",
+    authority:
+      "Llevo más de 5 años como responsable de seguridad informática en una empresa industrial, deteniendo ataques reales, y construyo asistentes de IA que trabajan con el conocimiento completo de una empresa. Lo que cuento en estas sesiones es lo que aplico cada día.",
+    courses: [
+      {
+        name: "Ciberseguridad",
+        tagline: "Que nadie de tu equipo sea la puerta de entrada",
+        bullets: [
+          "Phishing y fraudes: reconocerlos antes de hacer clic",
+          "Contraseñas, accesos y doble factor sin dolor",
+          "Buenas prácticas en el día a día: correo, wifi, móvil, teletrabajo",
+          "Qué hacer y qué no hacer cuando algo huele raro",
+          "Casos reales de ataques detectados y frenados",
+        ],
+      },
+      {
+        name: "Inteligencia Artificial",
+        tagline: "Sacarle partido sin meter la pata",
+        bullets: [
+          "Qué puede y qué no puede hacer la IA hoy",
+          "Usarla sin filtrar datos de la empresa",
+          "Prompts útiles para tareas reales de cada puesto",
+          "Riesgos: alucinaciones, privacidad y dependencia",
+          "Oportunidades concretas por departamento",
+        ],
+      },
+    ],
+    combinedNote:
+      "¿Las dos? Hay una modalidad combinada que junta lo esencial de ambas en una sola sesión de 3 horas.",
+    formatsTitle: "Formatos y tarifas orientativas",
+    formats: [
+      {
+        name: "Sesión de 2 horas",
+        detail: "una formación, ciberseguridad o IA",
+        price: "desde 300 €",
+      },
+      {
+        name: "Sesión combinada de 3 horas",
+        detail: "ciberseguridad + IA en un solo bloque",
+        price: "desde 500 €",
+      },
+      {
+        name: "Pack de 3 sesiones",
+        detail: "para plantillas grandes o por departamentos",
+        price: "desde 1.200 €",
+      },
+      {
+        name: "Sesión privada individual",
+        detail: "protección personal frente a riesgos de la IA",
+        price: "desde 200 €",
+      },
+    ],
+    priceNote:
+      "El precio final depende del tamaño de la plantilla, el formato y el número de sesiones. Lo cerramos en una llamada de 10-15 minutos, sin compromiso.",
+    cta: "Reservar una llamada",
+    teaser:
+      "Formación en ciberseguridad e IA para toda la plantilla, no solo para el equipo técnico. Buenas prácticas, riesgos reales y cómo sacarle partido a la IA sin meter la pata.",
+    teaserCta: "Ver formaciones",
   },
   blog: {
     title: "Artículos",
@@ -383,8 +462,72 @@ const en: Dictionary = {
     projects: "Projects",
     skills: "Stack",
     journey: "Journey",
+    training: "Training",
     blog: "Articles",
     contact: "Contact",
+  },
+  training: {
+    tag: "SKILL TREE",
+    title: "Corporate training",
+    intro:
+      "Cybersecurity and artificial intelligence explained so the whole team gets it, not just the technical staff. Today they're as essential as knowing how to use email, and most incidents start with a person, not a server.",
+    authority:
+      "I've spent over 5 years as the IT security lead of an industrial company, detecting and stopping real attacks, and I build AI assistants that work with a company's full knowledge. What I teach in these sessions is what I apply every day.",
+    courses: [
+      {
+        name: "Cybersecurity",
+        tagline: "So nobody on your team becomes the way in",
+        bullets: [
+          "Phishing and scams: spotting them before the click",
+          "Passwords, access and two-factor without the pain",
+          "Good day-to-day habits: email, wifi, phone, remote work",
+          "What to do (and not do) when something feels off",
+          "Real cases of attacks detected and stopped",
+        ],
+      },
+      {
+        name: "Artificial Intelligence",
+        tagline: "Get real value out of it without slipping up",
+        bullets: [
+          "What AI can and can't do today",
+          "Using it without leaking company data",
+          "Useful prompts for real tasks in each role",
+          "Risks: hallucinations, privacy and overreliance",
+          "Concrete opportunities per department",
+        ],
+      },
+    ],
+    combinedNote:
+      "Want both? There's a combined format covering the essentials of the two in a single 3-hour session.",
+    formatsTitle: "Formats and indicative rates",
+    formats: [
+      {
+        name: "2-hour session",
+        detail: "one training, cybersecurity or AI",
+        price: "from €300",
+      },
+      {
+        name: "3-hour combined session",
+        detail: "cybersecurity + AI in one block",
+        price: "from €500",
+      },
+      {
+        name: "3-session pack",
+        detail: "for large teams or per department",
+        price: "from €1,200",
+      },
+      {
+        name: "Private one-to-one session",
+        detail: "personal protection against AI risks",
+        price: "from €200",
+      },
+    ],
+    priceNote:
+      "The final price depends on team size, format and number of sessions. We settle it on a 10-15 minute call, no strings attached.",
+    cta: "Book a call",
+    teaser:
+      "Cybersecurity and AI training for the whole team, not just the technical people. Good practices, real risks and how to get value out of AI without slipping up.",
+    teaserCta: "See the trainings",
   },
   blog: {
     title: "Articles",

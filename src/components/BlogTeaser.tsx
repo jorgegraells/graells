@@ -19,7 +19,7 @@ export default function BlogTeaser({
   return (
     <Section id="blog">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <SectionHead index="05" tag={dict.blog.tag} title={dict.blog.title} />
+        <SectionHead index="06" tag={dict.blog.tag} title={dict.blog.title} />
         <Link
           href={`/${locale}/blog`}
           className="font-mono text-xs uppercase tracking-widest text-neon-cyan hover:underline"

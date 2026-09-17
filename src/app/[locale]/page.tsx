@@ -6,6 +6,7 @@ import About from "@/components/About";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
 import Journey from "@/components/Journey";
+import TrainingTeaser from "@/components/TrainingTeaser";
 import BlogTeaser from "@/components/BlogTeaser";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -27,6 +28,7 @@ export default async function Home({
       <Projects dict={dict} />
       <Skills dict={dict} />
       <Journey dict={dict} />
+      <TrainingTeaser locale={locale} dict={dict} />
       <BlogTeaser locale={locale} dict={dict} />
       <Contact dict={dict} />
       <Footer dict={dict} />

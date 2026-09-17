@@ -41,6 +41,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
+      url: `${SITE}/es/training`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+      alternates: {
+        languages: { es: `${SITE}/es/training`, en: `${SITE}/en/training` },
+      },
+    },
+    {
+      url: `${SITE}/en/training`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+      alternates: {
+        languages: { es: `${SITE}/es/training`, en: `${SITE}/en/training` },
+      },
+    },
+    {
       url: `${SITE}/es/blog`,
       lastModified: now,
       changeFrequency: "weekly",

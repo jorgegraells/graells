@@ -17,6 +17,18 @@ LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
 - [Home (Spanish)](https://jorgegraells.com/es): profile, projects, stack and career of Jorge Graells
 - [Home (English)](https://jorgegraells.com/en): same content in English
 - [Playable 3D résumé](https://jorgegraells.com/es/world): videogame village where villagers present each project
+- [Corporate training](https://jorgegraells.com/es/training): cybersecurity and AI training for companies
+
+## Corporate training
+
+Jorge Graells delivers in-company training on cybersecurity and artificial
+intelligence, designed for entire teams (non-technical friendly), plus a
+private one-to-one session on personal protection against AI risks. He has
+5+ years as IT security lead of an industrial company, with real attacks
+detected and stopped. Indicative rates: 2-hour session from EUR 300, 3-hour
+combined session (cybersecurity + AI) from EUR 500, 3-session pack from
+EUR 1,200, private one-to-one session from EUR 200. Final pricing depends on
+team size and format, agreed on a short call. Contact: dev.graells@gmail.com
 
 ## Projects
 

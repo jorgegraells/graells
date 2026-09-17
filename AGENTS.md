@@ -23,10 +23,14 @@ Deploy: Vercel desde `main` en github.com/jorgegraells/graells.
 ## Reglas de contenido (no negociables)
 
 1. Todo texto visible existe en ES **y** EN — nunca editar un idioma solo.
-2. **Prohibido publicar**: precios, nº de usuarios, cifras comerciales, el nombre
-   "VTEQ" (empresa de Jorge), el nombre interno "SofIA" (públicamente es
-   "IA para empresas"), datos personales (teléfono, dirección, DNI, nacimiento),
-   y cualquier rastro del motor de horóscopo de ANTIDOP 2.0.
+2. **Prohibido publicar**: precios y cifras comerciales de los PRODUCTOS
+   (WorkLeveling, etc.), nº de usuarios, el nombre "VTEQ" (empresa de Jorge),
+   el nombre interno "SofIA" (públicamente es "IA para empresas"), datos
+   personales (teléfono, dirección, DNI, nacimiento), y cualquier rastro del
+   motor de horóscopo de ANTIDOP 2.0.
+   **Excepción (decisión de Jorge, sept 2026)**: las tarifas de las FORMACIONES
+   (`/training`) sí se publican, siempre como orientativas ("desde X €"),
+   nunca un precio cerrado; el precio final se cierra en una llamada corta.
 3. Email público: dev.graells@gmail.com. GitHub: jorgegraells. Quizdly NO se publica.
 4. Strings de UI nunca hardcodeados en componentes: siempre vía `Dictionary`.
 

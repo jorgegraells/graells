@@ -20,6 +20,7 @@ export default function Nav({
     { href: `/${locale}#projects`, label: dict.nav.projects },
     { href: `/${locale}#skills`, label: dict.nav.skills },
     { href: `/${locale}#journey`, label: dict.nav.journey },
+    { href: `/${locale}/training`, label: dict.nav.training },
     { href: `/${locale}/blog`, label: dict.nav.blog },
     { href: `/${locale}#contact`, label: dict.nav.contact },
   ];
@@ -37,8 +38,8 @@ export default function Nav({
           <span className="text-neon-pink">.exe</span>
         </Link>
 
-        {/* Enlaces en escritorio */}
-        <div className="hidden items-center gap-6 font-mono text-xs uppercase tracking-wider text-muted sm:flex">
+        {/* Enlaces en escritorio (con 7 secciones solo caben a partir de lg) */}
+        <div className="hidden items-center gap-5 font-mono text-xs uppercase tracking-wider text-muted lg:flex">
           {links.map((link, i) => (
             <a
               key={link.href}
@@ -69,7 +70,7 @@ export default function Nav({
             onClick={() => setOpen((o) => !o)}
             aria-label="Menú"
             aria-expanded={open}
-            className="grid h-8 w-8 place-items-center rounded-md border border-neon-cyan/40 text-neon-cyan transition-colors hover:bg-neon-cyan/10 sm:hidden"
+            className="grid h-8 w-8 place-items-center rounded-md border border-neon-cyan/40 text-neon-cyan transition-colors hover:bg-neon-cyan/10 lg:hidden"
           >
             {open ? "✕" : "☰"}
           </button>
@@ -84,7 +85,7 @@ export default function Nav({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="glass clip-corner mx-auto mt-2 max-w-5xl overflow-hidden border-neon-cyan/30 px-4 py-2 sm:hidden"
+            className="glass clip-corner mx-auto mt-2 max-w-5xl overflow-hidden border-neon-cyan/30 px-4 py-2 lg:hidden"
           >
             <ul className="divide-y divide-white/10">
               {links.map((link, i) => (
