@@ -16,6 +16,10 @@ Deploy: Vercel desde `main` en github.com/jorgegraells/graells.
 
 - **Todo el contenido visible vive en `src/i18n/dictionaries.ts`** (objetos `es` y `en`).
   El 90% de los cambios que pedirá Jorge se hacen SOLO ahí. Receta: `docs/CONTENIDO.md`.
+- **Artículos del blog: `src/content/articles/*.json`** (uno por artículo,
+  `{date, es, en}`); `articles.ts` solo los carga. Jorge los publica desde el
+  panel privado `/admin` (solo castellano, excepción a la regla ES+EN de la UI;
+  en prod commitea a GitHub vía API). Detalles: `docs/ADMIN.md`.
 - Landing: `src/app/[locale]/page.tsx` + `src/components/*.tsx` (una sección por archivo).
 - Mundo 3D: `src/components/world/` (`WorldCanvas.tsx` escena, `World.tsx` HUD/diálogos).
   Arquitectura y trampas: `docs/MUNDO-3D.md`.

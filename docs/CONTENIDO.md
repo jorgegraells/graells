@@ -42,18 +42,22 @@ Los proyectos son `projects.items[]` (tipo `Project`). Campos:
 
 ## Añadir un artículo al blog
 
-Los artículos viven en `src/content/articles.ts` (arrays `es` y `en`, uno por
-idioma). Para publicar uno nuevo:
+Los artículos viven en **`src/content/articles/*.json`** (un archivo por
+artículo con `{ date, es, en }`); `src/content/articles.ts` solo los carga.
+Dos maneras de publicar:
 
-1. Añade un objeto `Article` a `es` **y** a `en` (mismo tema, cada uno en su
-   idioma). Campos: `slug` (URL, distinto por idioma y sin tildes), `title`,
-   `description` (= respuesta directa/lead y meta description), `date` (ISO),
-   `tags[]`, `body` (Markdown). El tiempo de lectura se calcula solo del cuerpo.
-2. El `body` admite Markdown (encabezados `##`/`###`, listas, tablas, código,
-   citas). Para GEO: respuesta directa en las primeras frases, una idea por
-   sección, y cifras concretas.
-3. Nada más. Ruta, listado, teaser de la home, sitemap y JSON-LD se generan
-   solos. Recuerda: ES **y** EN, sin precios/VTEQ/SofIA.
+- **Panel `/admin`** (la vía normal de Jorge): login con contraseña, editor con
+  pestañas ES/EN y vista previa real. En dev guarda a disco; en producción
+  commitea a GitHub y Vercel despliega. Detalles y setup: `docs/ADMIN.md`.
+- **A mano**: crea `src/content/articles/<slug-es>.json` con `date` (ISO) y un
+  bloque por idioma: `slug` (URL, distinto por idioma y sin tildes), `title`,
+  `description` (= respuesta directa/lead y meta description), `tags[]`,
+  `body` (Markdown). El tiempo de lectura se calcula solo del cuerpo.
+
+El `body` admite Markdown (encabezados `##`/`###`, listas, tablas, código,
+citas). Para GEO: respuesta directa en las primeras frases, una idea por
+sección, y cifras concretas. Ruta, listado, teaser de la home, sitemap y
+JSON-LD se generan solos. Recuerda: ES **y** EN, sin precios/VTEQ/SofIA.
 
 ## SEO / GEO (posicionamiento en buscadores e IAs)
 
