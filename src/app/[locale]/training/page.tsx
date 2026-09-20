@@ -175,8 +175,14 @@ export default async function TrainingPage({
         </div>
 
         {/* Fotos de una sesión real */}
-        <div className="mt-16 grid gap-5 sm:grid-cols-5">
-          <div className="clip-corner relative aspect-[3/4] overflow-hidden sm:col-span-2">
+        <h2 className="mt-16 font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">
+          {t.photosTitle}
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+          {t.photosCaption}
+        </p>
+        <div className="mt-5 grid gap-5 sm:grid-cols-5">
+          <div className="hud-panel clip-corner relative aspect-[3/4] overflow-hidden p-0 sm:col-span-2">
             <Image
               src="/training/formacion-ciberseguridad-1.webp"
               alt={t.photoAlts[0]}
@@ -185,7 +191,7 @@ export default async function TrainingPage({
               className="object-cover"
             />
           </div>
-          <div className="clip-corner relative aspect-[4/3] overflow-hidden sm:col-span-3 sm:aspect-auto">
+          <div className="hud-panel clip-corner relative aspect-[4/3] overflow-hidden p-0 sm:col-span-3 sm:aspect-auto">
             <Image
               src="/training/formacion-ciberseguridad-2.webp"
               alt={t.photoAlts[1]}
