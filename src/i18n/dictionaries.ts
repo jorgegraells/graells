@@ -40,6 +40,7 @@ export type Dictionary = {
     title: string;
     intro: string;
     authority: string;
+    photoAlts: [string, string];
     courses: { name: string; tagline: string; bullets: string[] }[];
     combinedNote: string;
     formatsTitle: string;
@@ -143,6 +144,10 @@ const es: Dictionary = {
       "Ciberseguridad e inteligencia artificial contadas para que las entienda toda la plantilla, no solo el equipo técnico. Hoy son conocimiento tan básico como saber usar el correo, y la mayoría de incidentes empiezan en una persona, no en un servidor.",
     authority:
       "Llevo más de 5 años como responsable de seguridad informática en una empresa industrial, deteniendo ataques reales, y construyo asistentes de IA que trabajan con el conocimiento completo de una empresa. Lo que cuento en estas sesiones es lo que aplico cada día.",
+    photoAlts: [
+      "Jorge Graells impartiendo una formación de ciberseguridad a una plantilla, señalando una diapositiva sobre amenazas comunes: phishing, ransomware e ingeniería social",
+      "Sala de formación llena durante una sesión de ciberseguridad para empresas impartida por Jorge Graells",
+    ],
     courses: [
       {
         name: "Ciberseguridad",
@@ -473,6 +478,10 @@ const en: Dictionary = {
       "Cybersecurity and artificial intelligence explained so the whole team gets it, not just the technical staff. Today they're as essential as knowing how to use email, and most incidents start with a person, not a server.",
     authority:
       "I've spent over 5 years as the IT security lead of an industrial company, detecting and stopping real attacks, and I build AI assistants that work with a company's full knowledge. What I teach in these sessions is what I apply every day.",
+    photoAlts: [
+      "Jorge Graells delivering a cybersecurity training session to a company's staff, pointing at a slide about common threats: phishing, ransomware and social engineering",
+      "Full training room during a corporate cybersecurity session delivered by Jorge Graells",
+    ],
     courses: [
       {
         name: "Cybersecurity",

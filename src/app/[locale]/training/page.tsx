@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import type { Metadata } from "next";
 import {
   getDictionary,
@@ -41,7 +42,7 @@ export async function generateMetadata({
       description,
       url: `${SITE}/${locale}/training`,
       type: "website",
-      images: [`${SITE}/og.jpg`],
+      images: [`${SITE}/training/formacion-ciberseguridad-2.webp`],
     },
   };
 }
@@ -102,6 +103,28 @@ export default async function TrainingPage({
             <span className="mr-2 text-neon-lime">★</span>
             {t.authority}
           </p>
+        </div>
+
+        {/* Fotos de una sesión real */}
+        <div className="mt-10 grid gap-5 sm:grid-cols-5">
+          <div className="clip-corner relative aspect-[3/4] overflow-hidden sm:col-span-2">
+            <Image
+              src="/training/formacion-ciberseguridad-1.webp"
+              alt={t.photoAlts[0]}
+              fill
+              sizes="(min-width: 640px) 40vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="clip-corner relative aspect-[4/3] overflow-hidden sm:col-span-3 sm:aspect-auto">
+            <Image
+              src="/training/formacion-ciberseguridad-2.webp"
+              alt={t.photoAlts[1]}
+              fill
+              sizes="(min-width: 640px) 60vw, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
 
         {/* Las dos formaciones */}

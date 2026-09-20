@@ -35,6 +35,11 @@ Deploy: Vercel desde `main` en github.com/jorgegraells/graells.
    **Excepción (decisión de Jorge, sept 2026)**: las tarifas de las FORMACIONES
    (`/training`) sí se publican, siempre como orientativas ("desde X €"),
    nunca un precio cerrado; el precio final se cierra en una llamada corta.
+   **Excepción 2 (decisión de Jorge, sept 2026)**: las FOTOS de `/training`
+   (`public/training/*.webp`, sesión real de formación) se publican tal cual
+   aunque en ellas se vea el logo de VTEQ y caras de compañeros (tiene su
+   permiso). NO quitarlas ni "arreglarlas". El nombre VTEQ sigue sin
+   escribirse en ningún texto.
 3. Email público: dev.graells@gmail.com. GitHub: jorgegraells. Quizdly NO se publica.
 4. Strings de UI nunca hardcodeados en componentes: siempre vía `Dictionary`.
 
