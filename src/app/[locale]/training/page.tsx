@@ -105,28 +105,6 @@ export default async function TrainingPage({
           </p>
         </div>
 
-        {/* Fotos de una sesión real */}
-        <div className="mt-10 grid gap-5 sm:grid-cols-5">
-          <div className="clip-corner relative aspect-[3/4] overflow-hidden sm:col-span-2">
-            <Image
-              src="/training/formacion-ciberseguridad-1.webp"
-              alt={t.photoAlts[0]}
-              fill
-              sizes="(min-width: 640px) 40vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-          <div className="clip-corner relative aspect-[4/3] overflow-hidden sm:col-span-3 sm:aspect-auto">
-            <Image
-              src="/training/formacion-ciberseguridad-2.webp"
-              alt={t.photoAlts[1]}
-              fill
-              sizes="(min-width: 640px) 60vw, 100vw"
-              className="object-cover"
-            />
-          </div>
-        </div>
-
         {/* Las dos formaciones */}
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {t.courses.map((course, i) => {
@@ -194,6 +172,28 @@ export default async function TrainingPage({
           >
             ▶ {t.cta}
           </a>
+        </div>
+
+        {/* Fotos de una sesión real */}
+        <div className="mt-16 grid gap-5 sm:grid-cols-5">
+          <div className="clip-corner relative aspect-[3/4] overflow-hidden sm:col-span-2">
+            <Image
+              src="/training/formacion-ciberseguridad-1.webp"
+              alt={t.photoAlts[0]}
+              fill
+              sizes="(min-width: 640px) 40vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+          <div className="clip-corner relative aspect-[4/3] overflow-hidden sm:col-span-3 sm:aspect-auto">
+            <Image
+              src="/training/formacion-ciberseguridad-2.webp"
+              alt={t.photoAlts[1]}
+              fill
+              sizes="(min-width: 640px) 60vw, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </section>
       <Footer dict={dict} />
