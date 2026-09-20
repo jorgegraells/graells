@@ -164,18 +164,8 @@ export default async function TrainingPage({
           {t.priceNote}
         </p>
 
-        {/* CTA */}
-        <div className="mt-9">
-          <a
-            href={mailto}
-            className="btn-neon clip-corner inline-block px-9 py-4 font-black uppercase tracking-wide transition-transform hover:scale-[1.04]"
-          >
-            ▶ {t.cta}
-          </a>
-        </div>
-
         {/* Fotos de una sesión real */}
-        <h2 className="mt-16 font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">
+        <h2 className="mt-14 font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">
           {t.photosTitle}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
@@ -200,6 +190,16 @@ export default async function TrainingPage({
               className="object-cover"
             />
           </div>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-12">
+          <a
+            href={mailto}
+            className="btn-neon clip-corner inline-block px-9 py-4 font-black uppercase tracking-wide transition-transform hover:scale-[1.04]"
+          >
+            ▶ {t.cta}
+          </a>
         </div>
       </section>
       <Footer dict={dict} />
