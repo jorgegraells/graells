@@ -43,6 +43,7 @@ export type Dictionary = {
     photosTitle: string;
     photosCaption: string;
     photoAlts: [string, string];
+    testimonials: { quote: string; name: string; role: string }[];
     courses: { name: string; tagline: string; bullets: string[] }[];
     combinedNote: string;
     formatsTitle: string;
@@ -152,6 +153,19 @@ const es: Dictionary = {
     photoAlts: [
       "Jorge Graells impartiendo una formación de ciberseguridad a una plantilla, señalando una diapositiva sobre amenazas comunes: phishing, ransomware e ingeniería social",
       "Sala de formación llena durante una sesión de ciberseguridad para empresas impartida por Jorge Graells",
+    ],
+    testimonials: [
+      {
+        quote:
+          "Se nota que has dedicado mucho tiempo a preparar esta formación tan necesaria en las empresas. ¡Felicidades por la buena labor realizada!",
+        name: "Fernando Casado",
+        role: "Business Development Manager",
+      },
+      {
+        quote: "Una charla muy interesante. ¡Gracias, Jorge!",
+        name: "Marc Pascual",
+        role: "Director de Operaciones",
+      },
     ],
     courses: [
       {
@@ -489,6 +503,19 @@ const en: Dictionary = {
     photoAlts: [
       "Jorge Graells delivering a cybersecurity training session to a company's staff, pointing at a slide about common threats: phishing, ransomware and social engineering",
       "Full training room during a corporate cybersecurity session delivered by Jorge Graells",
+    ],
+    testimonials: [
+      {
+        quote:
+          "You can tell you put a lot of time into preparing this training, and companies really need it. Congratulations on a great job!",
+        name: "Fernando Casado",
+        role: "Business Development Manager",
+      },
+      {
+        quote: "A really interesting talk. Thanks, Jorge!",
+        name: "Marc Pascual",
+        role: "Director of Operations",
+      },
     ],
     courses: [
       {

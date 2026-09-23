@@ -192,6 +192,31 @@ export default async function TrainingPage({
           </div>
         </div>
 
+        {/* Lo que dijeron los asistentes */}
+        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+          {t.testimonials.map((q, i) => (
+            <figure
+              key={q.name}
+              className="hud-panel clip-corner flex flex-col p-6"
+              style={{ borderColor: `${NEON[i % NEON.length]}44` }}
+            >
+              <blockquote className="flex-1 text-base leading-relaxed text-foreground/90">
+                <span
+                  className="mr-1 font-black"
+                  style={{ color: NEON[i % NEON.length] }}
+                >
+                  “
+                </span>
+                {q.quote}
+              </blockquote>
+              <figcaption className="mt-4 font-mono text-xs uppercase tracking-widest">
+                <span className="font-bold text-foreground/90">{q.name}</span>
+                <span className="text-muted"> · {q.role}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
         {/* CTA */}
         <div className="mt-12">
           <a
