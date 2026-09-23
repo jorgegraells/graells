@@ -158,12 +158,12 @@ const es: Dictionary = {
       {
         quote:
           "Se nota que has dedicado mucho tiempo a preparar esta formación tan necesaria en las empresas. ¡Felicidades por la buena labor realizada!",
-        name: "Fernando Casado",
+        name: "F. C.",
         role: "Business Development Manager",
       },
       {
         quote: "Una charla muy interesante. ¡Gracias, Jorge!",
-        name: "Marc Pascual",
+        name: "M. P.",
         role: "Director de Operaciones",
       },
     ],
@@ -508,12 +508,12 @@ const en: Dictionary = {
       {
         quote:
           "You can tell you put a lot of time into preparing this training, and companies really need it. Congratulations on a great job!",
-        name: "Fernando Casado",
+        name: "F. C.",
         role: "Business Development Manager",
       },
       {
         quote: "A really interesting talk. Thanks, Jorge!",
-        name: "Marc Pascual",
+        name: "M. P.",
         role: "Director of Operations",
       },
     ],
