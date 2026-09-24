@@ -208,6 +208,12 @@ export default async function TrainingPage({
                   “
                 </span>
                 {q.quote}
+                <span
+                  className="ml-1 font-black"
+                  style={{ color: NEON[i % NEON.length] }}
+                >
+                  ”
+                </span>
               </blockquote>
               <figcaption className="mt-4 font-mono text-xs uppercase tracking-widest">
                 <span className="font-bold text-foreground/90">{q.name}</span>
