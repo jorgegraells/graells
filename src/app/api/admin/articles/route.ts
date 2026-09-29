@@ -65,9 +65,14 @@ export async function POST(request: Request) {
   if (!/^[a-z0-9-]+\.json$/.test(file)) {
     return Response.json({ error: "Nombre de archivo inválido" }, { status: 400 });
   }
+  // Cada guardado es una edición: alimenta dateModified y el sitemap
+  const updated = new Date().toISOString();
+  const urls = (["es", "en"] as const).map(
+    (l) => `https://jorgegraells.com/${l}/blog/${data[l].slug}`,
+  );
   try {
-    const { committed } = await saveArticleFile(file, data);
-    return Response.json({ ok: true, committed, file });
+    const { committed } = await saveArticleFile(file, { ...data, updated });
+    return Response.json({ ok: true, committed, file, updated, urls });
   } catch (e) {
     return Response.json({ error: String(e) }, { status: 500 });
   }

@@ -60,6 +60,7 @@ export type Dictionary = {
     readMore: string;
     back: string;
     minRead: string;
+    updated: string;
     empty: string;
   };
   hero: {
@@ -230,6 +231,7 @@ const es: Dictionary = {
     readMore: "Leer artículo",
     back: "Volver a artículos",
     minRead: "min de lectura",
+    updated: "Actualizado",
     empty: "Todavía no hay artículos publicados.",
   },
   hero: {
@@ -580,6 +582,7 @@ const en: Dictionary = {
     readMore: "Read article",
     back: "Back to articles",
     minRead: "min read",
+    updated: "Updated",
     empty: "No articles published yet.",
   },
   hero: {

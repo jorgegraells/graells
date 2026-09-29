@@ -19,6 +19,7 @@ export type ArticleLocaleData = {
 
 export type ArticleFile = {
   date: string;
+  updated?: string;
   es: ArticleLocaleData;
   en: ArticleLocaleData;
 };

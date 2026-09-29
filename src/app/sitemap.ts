@@ -77,9 +77,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const articles: MetadataRoute.Sitemap = locales.flatMap((locale) =>
     getArticles(locale).map((a) => ({
       url: `${SITE}/${locale}/blog/${a.slug}`,
-      lastModified: new Date(a.date),
-      changeFrequency: "yearly" as const,
+      lastModified: new Date(a.updated),
+      changeFrequency: "weekly" as const,
       priority: 0.6,
+      alternates: {
+        languages: {
+          es: `${SITE}/es/blog/${a.slugs.es}`,
+          en: `${SITE}/en/blog/${a.slugs.en}`,
+        },
+      },
     })),
   );
 

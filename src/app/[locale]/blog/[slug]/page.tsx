@@ -29,13 +29,20 @@ export async function generateMetadata({
   return {
     title: `${article.title} — Jorge Graells`,
     description: article.description,
-    alternates: { canonical: `/${locale}/blog/${slug}` },
+    alternates: {
+      canonical: `/${locale}/blog/${slug}`,
+      languages: {
+        es: `/es/blog/${article.slugs.es}`,
+        en: `/en/blog/${article.slugs.en}`,
+      },
+    },
     openGraph: {
       title: article.title,
       description: article.description,
       url: `${SITE}/${locale}/blog/${slug}`,
       type: "article",
       publishedTime: article.date,
+      modifiedTime: article.updated,
       authors: ["Jorge Graells"],
       tags: article.tags,
       images: [`${SITE}/og.jpg`],
@@ -61,6 +68,13 @@ export default async function ArticlePage({
   if (!article) notFound();
 
   const fmt = new Intl.DateTimeFormat(locale, { dateStyle: "long" });
+  const fmtUpdated = new Intl.DateTimeFormat(locale, {
+    dateStyle: "long",
+    timeStyle: "short",
+    timeZone: "UTC",
+  });
+  // Solo se muestra si hubo una edición posterior al día de publicación
+  const wasUpdated = article.updated.length > 10;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -68,7 +82,7 @@ export default async function ArticlePage({
     headline: article.title,
     description: article.description,
     datePublished: article.date,
-    dateModified: article.date,
+    dateModified: article.updated,
     inLanguage: locale,
     keywords: article.tags.join(", "),
     author: { "@type": "Person", name: "Jorge Graells", url: SITE },
@@ -110,6 +124,14 @@ export default async function ArticlePage({
           {fmt.format(new Date(article.date))} · {article.readingMinutes}{" "}
           {dict.blog.minRead}
         </p>
+        {wasUpdated && (
+          <p className="mt-1 font-mono text-xs uppercase tracking-widest text-neon-lime">
+            {dict.blog.updated}:{" "}
+            <time dateTime={article.updated}>
+              {fmtUpdated.format(new Date(article.updated))} UTC
+            </time>
+          </p>
+        )}
 
         <p className="mt-8 border-l-2 border-neon-cyan/50 pl-4 text-lg leading-relaxed text-foreground/90">
           {article.description}

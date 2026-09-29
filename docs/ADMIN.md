@@ -15,6 +15,22 @@ y del robots.txt.
   contenidos de GitHub, y Vercel despliega solo (~2 min). El commit sale con
   el mensaje "Publica artículo desde el panel: <título>".
 
+## Fecha de edición e IndexNow
+
+- Cada guardado sella `updated` (ISO con hora) en el JSON. Alimenta el
+  `dateModified` del JSON-LD, `article:modified_time`, el `lastmod` del
+  sitemap y la línea "Actualizado" visible del artículo (solo se muestra si
+  `updated` lleva hora, es decir, si se guardó desde el panel).
+- Al publicar en producción, el panel espera a que el despliegue sirva la
+  versión nueva (busca el `updated` en el HTML) y entonces avisa a Bing vía
+  **IndexNow** (`/api/admin/indexnow` → `src/lib/indexnow.ts`). Bing comparte
+  índice con ChatGPT Search, Copilot y DuckDuckGo. Hay que dejar la pestaña
+  abierta hasta ver "Desplegado y avisado a Bing".
+- La clave de IndexNow es pública por diseño y vive en
+  `public/f8afc2c879870f8ae7ee50a660940e64.txt` (debe coincidir con
+  `INDEXNOW_KEY`). Google no usa IndexNow: allí se pide indexación en
+  Search Console.
+
 ## Piezas
 
 | Archivo | Qué hace |

@@ -15,7 +15,12 @@ type LocaleData = {
   body: string;
 };
 
-type ArticleFile = { date: string; es: LocaleData; en: LocaleData };
+type ArticleFile = {
+  date: string;
+  updated?: string;
+  es: LocaleData;
+  en: LocaleData;
+};
 type Entry = { file: string; data: ArticleFile };
 
 const EMPTY_LOCALE: LocaleData = {
@@ -108,14 +113,54 @@ export default function AdminPage() {
       setMsg({
         ok: true,
         text: j.committed
-          ? "Publicado: commit hecho, Vercel está desplegando (~2 min)"
+          ? "Publicado: commit hecho. Esperando a que Vercel despliegue (~2 min) para avisar a Bing… no cierres esta pestaña"
           : "Guardado en local: recarga el blog del dev server para verlo",
       });
       setEditing((prev) => (prev ? { ...prev, file: j.file } : prev));
       loadArticles();
+      if (j.committed) notifyWhenLive(j.urls, j.updated);
     } else {
       setMsg({ ok: false, text: j.error || "Error al guardar" });
     }
+  };
+
+  /** Espera a que el despliegue sirva la versión recién guardada (su
+   *  `updated` aparece en el HTML como dateModified) y entonces avisa a
+   *  Bing vía IndexNow. Avisar antes haría que rastrease la versión vieja. */
+  const notifyWhenLive = async (urls: string[], updated: string) => {
+    const deadline = Date.now() + 8 * 60_000;
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 15_000));
+      try {
+        const page = await fetch(`${new URL(urls[0]).pathname}?v=${Date.now()}`, {
+          cache: "no-store",
+        });
+        if (!page.ok || !(await page.text()).includes(updated)) continue;
+        const ping = await fetch("/api/admin/indexnow", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ urls }),
+        });
+        setMsg(
+          ping.ok
+            ? {
+                ok: true,
+                text: "Desplegado y avisado a Bing (IndexNow). Para Google, pide la indexación de la URL en Search Console.",
+              }
+            : {
+                ok: false,
+                text: "Desplegado, pero el aviso a Bing (IndexNow) ha fallado. El artículo está publicado igualmente.",
+              },
+        );
+        return;
+      } catch {
+        // red caída puntual: se reintenta en la siguiente vuelta
+      }
+    }
+    setMsg({
+      ok: false,
+      text: "El despliegue está tardando más de lo normal: revisa Vercel. Bing no ha sido avisado.",
+    });
   };
 
   const setLocaleField = (
