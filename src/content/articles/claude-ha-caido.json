@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-29",
+  "es": {
+    "slug": "claude-ha-caido",
+    "title": "CLAUDE HA CAÍDO",
+    "description": "Claude y sus servicios asociados (API, Claude Code, Claude Cowork) están sufriendo una caída con altas tasas de error. Anthropic ha aplicado una mitigación inicial que ha reducido los fallos, pero continúan trabajando en una solución definitiva para los problemas persistentes de inicio de sesión.",
+    "tags": [
+      "claude",
+      "anthropic",
+      "caida",
+      "estado",
+      "ia",
+      "claude api",
+      "claude code",
+      "errores"
+    ],
+    "body": "Anthropic ha confirmado problemas de rendimiento y tasas de error elevadas que afectan a la mayor parte de su ecosistema de productos. Los usuarios han estado experimentando fallos en las peticiones, problemas al cargar o enviar conversaciones y cierres de sesión inesperados.\n\n## Servicios Afectados\n- **Claude.ai** (aplicación web, de escritorio y móvil)\n- **Plataforma y Claude API** (platform.claude.com)\n- **Claude Code**\n- **Claude Cowork**\n\n## Estado de la incidencia (29 de septiembre de 2026)\n- **14:41 UTC - Mitigación aplicada:** Se ha implementado una medida temporal y las tasas de error han disminuido sustancialmente. Algunos intentos de inicio de sesión, acciones de cuenta y sesiones de Claude Code y Cowork siguen fallando. El equipo de Anthropic continúa trabajando en una solución completa.\n- **14:30 UTC - Ampliación del problema:** Se confirmó que la degradación del rendimiento afectaba también a la API de Claude y a la plataforma.\n- **14:21 UTC - Inicio de la investigación:** Anthropic comenzó a investigar las altas tasas de error, indicando que reintentar las peticiones podía funcionar de forma intermitente."
+  },
+  "en": {
+    "slug": "claude-is-down",
+    "title": "CLAUDE IS DOWN",
+    "description": "Claude and its associated services (API, Claude Code, and Cowork) are experiencing an outage. Anthropic has applied an initial mitigation that has reduced errors, but they are working on a full fix for persistent sign-in issues.",
+    "tags": [
+      "claude",
+      "anthropic",
+      "down",
+      "ia",
+      "claude api",
+      "claude code",
+      "errorsstatus"
+    ],
+    "body": "Anthropic has confirmed performance degradation and elevated error rates affecting most of its product ecosystem. Users have been experiencing failed requests, errors loading or sending conversations, and being unexpectedly asked to sign in again.\n\n## Affected Services\n- **Claude.ai** (web, desktop, and mobile apps)\n- **Platform and Claude API** (platform.claude.com)\n- **Claude Code**\n- **Claude Cowork**\n\n## Incident Status (September 29, 2026)\n- **14:41 UTC - Mitigation applied:** A mitigation has been applied and error rates have dropped substantially. Some sign-in attempts, account actions, and Claude Code and Cowork sessions are still failing. The Anthropic team is continuing to work on a full fix.\n- **14:30 UTC - Issue expanded:** Confirmed that the performance degradation was also affecting the Claude API and the developer platform.\n- **14:21 UTC - Investigation started:** Anthropic began investigating the elevated error rates, indicating that retrying requests might succeed intermittently."
+  }
+}
