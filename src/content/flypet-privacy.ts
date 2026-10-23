@@ -20,7 +20,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
     title: "Política de privacidad de Flypet",
     description:
       "Qué datos usa Flypet, la mosca virtual con el cerebro de una mosca real: ninguno sale de tu móvil.",
-    updated: "Última actualización: 22 de octubre de 2026",
+    updated: "Última actualización: 23 de octubre de 2026",
     intro:
       "Flypet es una app de Jorge Graells Garcia, desarrollador independiente con residencia en España. Esta página explica qué datos usa la app. En corto: Flypet no recoge datos tuyos. Todo lo que pasa en el juego se queda en tu móvil.",
     sections: [
@@ -42,6 +42,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
         heading: "El micrófono",
         paragraphs: [
           "Flypet usa el micrófono solo para saber si estás soplando a la mosca (el botón Soplar): mide lo fuerte que suena el aire en los graves. Ese análisis se hace en tu móvil, en el momento: no se graba audio, no se guarda y no se envía a nadie.",
+          "El micrófono solo se abre mientras mantienes pulsado Soplar y se cierra al soltarlo. El permiso se pide la primera vez que lo pulsas, no al abrir la app. Si no lo das, Soplar sigue funcionando con un soplido suave.",
           "Puedes negar el permiso o quitarlo cuando quieras en los ajustes de Android. Todo lo demás sigue funcionando.",
         ],
       },
@@ -101,7 +102,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
     title: "Flypet privacy policy",
     description:
       "What data Flypet, the virtual fly with a real fly's brain, uses: none of it leaves your phone.",
-    updated: "Last updated: 22 October 2026",
+    updated: "Last updated: 23 October 2026",
     intro:
       "Flypet is an app by Jorge Graells Garcia, an independent developer based in Spain. This page explains what data the app uses. Short version: Flypet doesn't collect any of your data. Everything that happens in the game stays on your phone.",
     sections: [
@@ -123,6 +124,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
         heading: "The microphone",
         paragraphs: [
           "Flypet uses the microphone only to tell whether you're blowing on the fly (the Blow button): it measures how loud the low-pitched air noise is. That happens on your phone, in the moment: no audio is recorded, stored or sent to anyone.",
+          "The microphone only opens while you hold Blow and closes when you let go. The permission is requested the first time you press it, not when you open the app. If you don't grant it, Blow still works with a gentle puff.",
           "You can deny the permission or remove it at any time in Android's settings. Everything else keeps working.",
         ],
       },
