@@ -19,10 +19,10 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
   es: {
     title: "Política de privacidad de Flypet",
     description:
-      "Qué datos usa Flypet, la mosca virtual con el cerebro de una mosca real: ninguno sale de tu móvil.",
-    updated: "Última actualización: 23 de octubre de 2026",
+      "Qué datos usa Flypet, la mosca virtual con el cerebro de una mosca real: no recoge ninguno tuyo.",
+    updated: "Última actualización: 26 de octubre de 2026",
     intro:
-      "Flypet es una app de Jorge Graells Garcia, desarrollador independiente con residencia en España. Esta página explica qué datos usa la app. En corto: Flypet no recoge datos tuyos. Todo lo que pasa en el juego se queda en tu móvil.",
+      "Flypet es una app de Jorge Graells Garcia, desarrollador independiente con residencia en España. Esta página explica qué datos usa la app. En corto: Flypet no recoge datos tuyos. Todo lo que pasa en el juego se queda en tu móvil (y en tu copia de seguridad de Android, si la tienes activada).",
     sections: [
       {
         heading: "Lo que no hay",
@@ -35,7 +35,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Tu partida",
         paragraphs: [
-          "La mosca, su sala, tus Flycoins y tus ajustes se guardan en el almacenamiento de la app, en tu móvil, y no salen de él. Si desinstalas la app o borras sus datos, la partida se borra y no la podemos recuperar. Lo que compras con dinero (PRO y el Pack fundador) sí lo puedes recuperar con «Restaurar compras», porque lo guarda Google Play.",
+          "La mosca, su sala, tus Flycoins y tus ajustes se guardan en el almacenamiento de la app, en tu móvil. Nosotros no los recibimos. Si tienes activada la copia de seguridad de Android, Android guarda una copia de la partida y los ajustes en tu cuenta de Google (con su cifrado y bajo la política de privacidad de Google), para devolvértela si instalas Flypet en otro móvil; la puedes desactivar en los ajustes de Android. Sin esa copia, si desinstalas la app o borras sus datos, la partida se borra y no la podemos recuperar. Lo que compras con dinero (PRO y el Pack fundador) sí lo puedes recuperar con «Restaurar compras», porque lo guarda Google Play.",
         ],
       },
       {
@@ -50,12 +50,6 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
         heading: "Tus fotos como pósters (Flypet PRO)",
         paragraphs: [
           "Cuando esté disponible: si eliges una foto para colgarla en la sala, la app copia esa foto, reducida, a su propia carpeta en tu móvil. No sale de él y se borra si quitas el póster o desinstalas la app. La app no tiene acceso al resto de tus fotos, solo a la que eliges.",
-        ],
-      },
-      {
-        heading: "Pósters con enlace",
-        paragraphs: [
-          "Algunos pósters de la sala llevan un enlace. Si tocas uno, se abre esa web en tu navegador. Esa web no forma parte de Flypet y tiene su propia política de privacidad.",
         ],
       },
       {
@@ -101,10 +95,10 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
   en: {
     title: "Flypet privacy policy",
     description:
-      "What data Flypet, the virtual fly with a real fly's brain, uses: none of it leaves your phone.",
-    updated: "Last updated: 23 October 2026",
+      "What data Flypet, the virtual fly with a real fly's brain, uses: it doesn't collect any of yours.",
+    updated: "Last updated: 26 October 2026",
     intro:
-      "Flypet is an app by Jorge Graells Garcia, an independent developer based in Spain. This page explains what data the app uses. Short version: Flypet doesn't collect any of your data. Everything that happens in the game stays on your phone.",
+      "Flypet is an app by Jorge Graells Garcia, an independent developer based in Spain. This page explains what data the app uses. Short version: Flypet doesn't collect any of your data. Everything that happens in the game stays on your phone (and in your Android backup, if you have it turned on).",
     sections: [
       {
         heading: "What isn't there",
@@ -117,7 +111,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Your game",
         paragraphs: [
-          "The fly, its room, your Flycoins and your settings are saved in the app's storage on your phone and don't leave it. If you uninstall the app or clear its data, your game is gone and we can't get it back. What you buy with money (PRO and the Founder pack) you can get back with \"Restore purchases\", because Google Play keeps track of it.",
+          "The fly, its room, your Flycoins and your settings are saved in the app's storage on your phone. We never receive them. If Android backup is turned on, Android keeps a copy of your game and settings in your Google account (encrypted, and under Google's privacy policy) so it can give it back if you install Flypet on another phone; you can turn it off in Android settings. Without that copy, if you uninstall the app or clear its data, your game is gone and we can't get it back. What you buy with money (PRO and the Founder pack) you can get back with \"Restore purchases\", because Google Play keeps track of it.",
         ],
       },
       {
@@ -132,12 +126,6 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
         heading: "Your photos as posters (Flypet PRO)",
         paragraphs: [
           "When available: if you choose a photo to hang in the room, the app copies it, scaled down, to its own folder on your phone. It doesn't leave the phone and is deleted if you take the poster down or uninstall the app. The app has no access to the rest of your photos, only the one you pick.",
-        ],
-      },
-      {
-        heading: "Posters with links",
-        paragraphs: [
-          "Some posters in the room have a link. If you tap one, that website opens in your browser. That website is not part of Flypet and has its own privacy policy.",
         ],
       },
       {
