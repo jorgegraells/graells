@@ -23,6 +23,8 @@ Deploy: Vercel desde `main` en github.com/jorgegraells/graells.
   Los JSON con `"draft": true` son borradores: solo existen en el panel.
   **Para escribir un artículo, sigue `docs/ARTICULOS.md`** (voz de Jorge, temas,
   estructura SEO) y valídalo con `node scripts/check-article.mjs <archivo>`.
+- SEO/GEO automatizado (rutinas en la nube, Search Console, informe semanal):
+  `docs/SEO.md`.
 - Landing: `src/app/[locale]/page.tsx` + `src/components/*.tsx` (una sección por archivo).
 - Mundo 3D: `src/components/world/` (`WorldCanvas.tsx` escena, `World.tsx` HUD/diálogos).
   Arquitectura y trampas: `docs/MUNDO-3D.md`.
