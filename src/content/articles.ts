@@ -66,7 +66,11 @@ function toArticle(file: ArticleFile, locale: Locale): Article {
 export function getArticles(locale: Locale): Article[] {
   return loadFiles()
     .map((f) => toArticle(f, locale))
-    .sort((a, b) => b.date.localeCompare(a.date));
+    // Mismo día: primero el último guardado, que lleva hora
+    .sort(
+      (a, b) =>
+        b.date.localeCompare(a.date) || b.updated.localeCompare(a.updated),
+    );
 }
 
 export function getArticle(locale: Locale, slug: string): Article | undefined {
