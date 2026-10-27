@@ -34,6 +34,14 @@ const AI_TICS = [
   /en el mundo actual/i,
   /sum[eé]rgete/i,
   /\bdelve\b/i,
+  /la buena noticia/i,
+  /regla de oro/i,
+  /reglas del juego/i,
+  /dicho de otro modo/i,
+  /the good news/i,
+  /golden rule/i,
+  /changes? the game|game[- ]changer/i,
+  /in other words/i,
 ];
 
 for (const l of ["es", "en"]) {
@@ -59,6 +67,11 @@ for (const l of ["es", "en"]) {
   if ((text.match(/—/g) ?? []).length) errors.push(`${l}: contiene raya larga (—)`);
   for (const re of BANNED) if (re.test(text)) errors.push(`${l}: contiene término prohibido ${re}`);
   for (const re of AI_TICS) if (re.test(text)) warnings.push(`${l}: posible tic de IA ${re}`);
+  if (/^\s*(?:[-*]|\d+\.)\s+\*\*/m.test(d.body ?? ""))
+    errors.push(`${l}: listas con la primera frase en negrita (marca típica de texto de IA)`);
+  for (const p of (d.body ?? "").split(/\n\s*\n/))
+    if (/\d+ ?%/.test(p) && !p.includes("]("))
+      warnings.push(`${l}: porcentaje sin fuente enlazada en el párrafo: "${p.slice(0, 60)}…"`);
   if (((d.body ?? "").match(/^## /gm) ?? []).length < 4) warnings.push(`${l}: menos de 4 secciones ##`);
 
   // Enlaces internos: deben apuntar a páginas que existen

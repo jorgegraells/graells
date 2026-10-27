@@ -66,7 +66,13 @@ Escoge siempre dentro de estos pilares, con ángulo práctico para empresas:
 - Evita los tics que delatan texto de IA: "no es solo X, es Y", tríos pulidos
   de adjetivos, "en resumen", "en conclusión", "en el mundo actual", "sin
   duda", "cabe destacar", "sumérgete", "desbloquea", "potencia", exceso de
-  negritas, listas para todo, preguntas retóricas en cadena.
+  negritas, listas para todo, preguntas retóricas en cadena, "la buena
+  noticia es que", "la regla de oro", "cambia las reglas del juego",
+  "dicho de otro modo". Nunca listas con la primera frase de cada punto en
+  negrita ("**Haz esto.** Explicación…"): es la marca más reconocible. Como
+  mucho una o dos negritas en todo el artículo.
+- **Toda cifra lleva su fuente enlazada en el mismo párrafo.** Un porcentaje
+  sin fuente resta credibilidad; si no hay fuente, se quita la cifra.
 - Párrafos cortos con ideas concretas. Ejemplos y escenarios realistas, no
   abstracciones.
 - **Nunca inventes anécdotas, clientes, cifras, casos ni citas de Jorge.** Si
