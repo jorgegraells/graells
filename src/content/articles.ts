@@ -19,10 +19,13 @@ export type Article = {
 
 /** Un artículo por archivo JSON en `src/content/articles/`, con los dos
  *  idiomas emparejados. Los crea y edita el panel de administración
- *  (`/admin`), que además sella `updated` en cada guardado. */
+ *  (`/admin`), que además sella `updated` en cada guardado. Los que llevan
+ *  `draft: true` (p. ej. los que escribe el agente diario) se ignoran aquí. */
 type ArticleFile = {
   date: string;
   updated?: string;
+  /** Borrador: solo visible en el panel, nunca en la web ni en el sitemap. */
+  draft?: boolean;
   es: ArticleLocale;
   en: ArticleLocale;
 };
@@ -41,9 +44,10 @@ function loadFiles(): ArticleFile[] {
   return fs
     .readdirSync(ARTICLES_DIR)
     .filter((f) => f.endsWith(".json"))
-    .map((f) =>
+    .map((f): ArticleFile =>
       JSON.parse(fs.readFileSync(path.join(ARTICLES_DIR, f), "utf8")),
-    );
+    )
+    .filter((f) => !f.draft);
 }
 
 function toArticle(file: ArticleFile, locale: Locale): Article {

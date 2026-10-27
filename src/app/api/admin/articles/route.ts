@@ -2,6 +2,7 @@ import { isAuthenticated } from "@/lib/admin-auth";
 import {
   listArticleFiles,
   saveArticleFile,
+  deleteDraftFile,
   type ArticleFile,
   type ArticleLocaleData,
 } from "@/lib/article-store";
@@ -46,6 +47,8 @@ export async function POST(request: Request) {
   const payload = (await request.json().catch(() => null)) as {
     file?: string;
     data?: ArticleFile;
+    /** false = guardar como borrador (no sale en la web). Por defecto publica. */
+    publish?: boolean;
   } | null;
   const data = payload?.data;
   if (!data || !DATE_RE.test(data.date ?? "")) {
@@ -70,10 +73,34 @@ export async function POST(request: Request) {
   const urls = (["es", "en"] as const).map(
     (l) => `https://jorgegraells.com/${l}/blog/${data[l].slug}`,
   );
+  const publish = payload.publish !== false;
+  const record: ArticleFile = {
+    date: data.date,
+    updated,
+    ...(publish ? {} : { draft: true }),
+    es: data.es,
+    en: data.en,
+  };
   try {
-    const { committed } = await saveArticleFile(file, { ...data, updated });
-    return Response.json({ ok: true, committed, file, updated, urls });
+    const { committed } = await saveArticleFile(file, record);
+    return Response.json({ ok: true, committed, file, updated, urls, publish });
   } catch (e) {
     return Response.json({ error: String(e) }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  if (!(await isAuthenticated())) {
+    return Response.json({ error: "No autorizado" }, { status: 401 });
+  }
+  const { file } = (await request.json().catch(() => ({}))) as { file?: string };
+  if (!file || !/^[a-z0-9-]+.json$/.test(file)) {
+    return Response.json({ error: "Nombre de archivo inválido" }, { status: 400 });
+  }
+  try {
+    const { committed } = await deleteDraftFile(file);
+    return Response.json({ ok: true, committed });
+  } catch (e) {
+    return Response.json({ error: String(e) }, { status: 400 });
   }
 }

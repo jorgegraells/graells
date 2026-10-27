@@ -15,6 +15,19 @@ y del robots.txt.
   contenidos de GitHub, y Vercel despliega solo (~2 min). El commit sale con
   el mensaje "Publica artículo desde el panel: <título>".
 
+## Borradores y agente diario
+
+- Un artículo con `"draft": true` en su JSON es un borrador: no sale en la
+  web, ni en el sitemap, ni en los listados. En el panel aparece arriba con la
+  insignia BORRADOR.
+- En el editor de un borrador hay dos botones: **Guardar borrador** (sigue
+  oculto) y **Publicar** (quita `draft`, pone la fecha de hoy, despliega y
+  avisa a Bing). Un artículo ya publicado solo tiene Publicar.
+- Un agente en la nube (rutina de Claude Code, ver claude.ai/code/routines)
+  escribe cada mañana un borrador nuevo siguiendo `docs/ARTICULOS.md`, lo
+  valida con `scripts/check-article.mjs` y lo sube a `main`. Jorge lo revisa
+  en el panel y decide si lo publica, lo edita o lo borra.
+
 ## Fecha de edición e IndexNow
 
 - Cada guardado sella `updated` (ISO con hora) en el JSON. Alimenta el

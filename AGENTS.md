@@ -20,6 +20,9 @@ Deploy: Vercel desde `main` en github.com/jorgegraells/graells.
   `{date, es, en}`); `articles.ts` solo los carga. Jorge los publica desde el
   panel privado `/admin` (solo castellano, excepción a la regla ES+EN de la UI;
   en prod commitea a GitHub vía API). Detalles: `docs/ADMIN.md`.
+  Los JSON con `"draft": true` son borradores: solo existen en el panel.
+  **Para escribir un artículo, sigue `docs/ARTICULOS.md`** (voz de Jorge, temas,
+  estructura SEO) y valídalo con `node scripts/check-article.mjs <archivo>`.
 - Landing: `src/app/[locale]/page.tsx` + `src/components/*.tsx` (una sección por archivo).
 - Mundo 3D: `src/components/world/` (`WorldCanvas.tsx` escena, `World.tsx` HUD/diálogos).
   Arquitectura y trampas: `docs/MUNDO-3D.md`.

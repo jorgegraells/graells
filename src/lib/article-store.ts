@@ -20,6 +20,7 @@ export type ArticleLocaleData = {
 export type ArticleFile = {
   date: string;
   updated?: string;
+  draft?: boolean;
   es: ArticleLocaleData;
   en: ArticleLocaleData;
 };
@@ -109,7 +110,7 @@ export async function saveArticleFile(
     method: "PUT",
     headers: ghHeaders(),
     body: JSON.stringify({
-      message: `Publica artículo desde el panel: ${data.es.title}`,
+      message: `${data.draft ? "Guarda borrador" : "Publica artículo"} desde el panel: ${data.es.title}`,
       content: Buffer.from(json, "utf8").toString("base64"),
       branch: BRANCH,
       ...(sha ? { sha } : {}),
@@ -118,6 +119,48 @@ export async function saveArticleFile(
   if (!res.ok) {
     const detail = await res.text();
     throw new Error(`GitHub ${res.status} al guardar: ${detail.slice(0, 200)}`);
+  }
+  return { committed: true };
+}
+
+/** Borra un borrador. Se niega si el archivo no es un borrador: los artículos
+ *  publicados no se borran desde el panel. */
+export async function deleteDraftFile(file: string): Promise<{ committed: boolean }> {
+  if (useLocalFs()) {
+    const full = path.join(LOCAL_DIR, file);
+    const current = JSON.parse(fs.readFileSync(full, "utf8")) as ArticleFile;
+    if (!current.draft) throw new Error("Solo se pueden descartar borradores");
+    fs.unlinkSync(full);
+    return { committed: false };
+  }
+  if (!githubToken()) {
+    throw new Error("Falta GITHUB_TOKEN en el entorno");
+  }
+
+  const filePath = `${GH}/${DIR}/${file}`;
+  const existing = await fetch(`${filePath}?ref=${BRANCH}`, {
+    headers: ghHeaders(),
+    cache: "no-store",
+  });
+  if (!existing.ok) throw new Error(`GitHub ${existing.status} al leer ${file}`);
+  const meta: { sha: string; content: string } = await existing.json();
+  const current = JSON.parse(
+    Buffer.from(meta.content, "base64").toString("utf8"),
+  ) as ArticleFile;
+  if (!current.draft) throw new Error("Solo se pueden descartar borradores");
+
+  const res = await fetch(filePath, {
+    method: "DELETE",
+    headers: ghHeaders(),
+    body: JSON.stringify({
+      message: `Descarta borrador desde el panel: ${current.es.title}`,
+      sha: meta.sha,
+      branch: BRANCH,
+    }),
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`GitHub ${res.status} al borrar: ${detail.slice(0, 200)}`);
   }
   return { committed: true };
 }

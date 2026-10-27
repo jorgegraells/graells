@@ -18,6 +18,7 @@ type LocaleData = {
 type ArticleFile = {
   date: string;
   updated?: string;
+  draft?: boolean;
   es: LocaleData;
   en: LocaleData;
 };
@@ -53,7 +54,15 @@ export default function AdminPage() {
 
   const loadArticles = useCallback(async () => {
     const res = await fetch("/api/admin/articles");
-    if (res.ok) setEntries((await res.json()).articles);
+    if (res.ok) {
+      const list: Entry[] = (await res.json()).articles;
+      list.sort(
+        (a, b) =>
+          Number(!!b.data.draft) - Number(!!a.data.draft) ||
+          b.data.date.localeCompare(a.data.date),
+      );
+      setEntries(list);
+    }
     else setMsg({ ok: false, text: (await res.json()).error || "Error al cargar" });
   }, []);
 
@@ -98,29 +107,69 @@ export default function AdminPage() {
     setMsg(null);
   };
 
-  const publish = async () => {
+  const save = async (asDraft: boolean) => {
     if (!editing) return;
     setBusy(true);
     setMsg(null);
+    // Un borrador que se publica sale con la fecha del día en que se publica
+    const data =
+      !asDraft && editing.data.draft
+        ? { ...editing.data, date: new Date().toISOString().slice(0, 10) }
+        : editing.data;
     const res = await fetch("/api/admin/articles", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ file: editing.file || undefined, data: editing.data }),
+      body: JSON.stringify({
+        file: editing.file || undefined,
+        data,
+        publish: !asDraft,
+      }),
     });
     const j = await res.json();
     setBusy(false);
     if (res.ok) {
       setMsg({
         ok: true,
-        text: j.committed
-          ? "Publicado: commit hecho. Esperando a que Vercel despliegue (~2 min) para avisar a Bing… no cierres esta pestaña"
-          : "Guardado en local: recarga el blog del dev server para verlo",
+        text: asDraft
+          ? "Borrador guardado. No sale en la web hasta que lo publiques."
+          : j.committed
+            ? "Publicado: commit hecho. Esperando a que Vercel despliegue (~2 min) para avisar a Bing… no cierres esta pestaña"
+            : "Guardado en local: recarga el blog del dev server para verlo",
       });
-      setEditing((prev) => (prev ? { ...prev, file: j.file } : prev));
+      setEditing((prev) =>
+        prev
+          ? {
+              ...prev,
+              file: j.file,
+              data: { ...data, updated: j.updated, draft: asDraft || undefined },
+            }
+          : prev,
+      );
       loadArticles();
-      if (j.committed) notifyWhenLive(j.urls, j.updated);
+      if (!asDraft && j.committed) notifyWhenLive(j.urls, j.updated);
     } else {
       setMsg({ ok: false, text: j.error || "Error al guardar" });
+    }
+  };
+
+  const discardDraft = async () => {
+    if (!editing?.file || !editing.data.draft) return;
+    if (!window.confirm(`¿Descartar el borrador "${editing.data.es.title}"? No se puede deshacer.`))
+      return;
+    setBusy(true);
+    const res = await fetch("/api/admin/articles", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file: editing.file }),
+    });
+    const j = await res.json();
+    setBusy(false);
+    if (res.ok) {
+      setEditing(null);
+      setMsg(null);
+      loadArticles();
+    } else {
+      setMsg({ ok: false, text: j.error || "Error al descartar" });
     }
   };
 
@@ -244,13 +293,33 @@ export default function AdminPage() {
                 className="ml-1 rounded-md border border-white/15 bg-black/30 px-2 py-1 text-xs text-foreground"
               />
             </label>
+            {editing.file && editing.data.draft && (
+              <button
+                type="button"
+                onClick={discardDraft}
+                disabled={busy}
+                className="font-mono text-xs uppercase tracking-widest text-muted hover:text-neon-pink disabled:opacity-50"
+              >
+                Descartar
+              </button>
+            )}
+            {(!editing.file || editing.data.draft) && (
+              <button
+                type="button"
+                onClick={() => save(true)}
+                disabled={busy}
+                className="clip-corner border border-white/20 px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-muted hover:text-foreground disabled:opacity-50"
+              >
+                Guardar borrador
+              </button>
+            )}
             <button
               type="button"
-              onClick={publish}
+              onClick={() => save(false)}
               disabled={busy}
               className="btn-neon clip-corner px-6 py-2.5 text-sm font-black uppercase tracking-wide disabled:opacity-50"
             >
-              {busy ? "Publicando…" : "▶ Publicar"}
+              {busy ? "Guardando…" : "▶ Publicar"}
             </button>
           </div>
         </div>
@@ -410,7 +479,14 @@ export default function AdminPage() {
             }}
             className="hud-panel clip-corner flex flex-wrap items-baseline justify-between gap-3 p-5 text-left transition-transform hover:-translate-y-0.5"
           >
-            <span className="font-bold text-foreground/90">{e.data.es.title}</span>
+            <span className="font-bold text-foreground/90">
+              {e.data.draft && (
+                <span className="mr-3 rounded-full border border-neon-lime/60 px-2 py-0.5 align-middle font-mono text-[10px] uppercase tracking-wider text-neon-lime">
+                  Borrador
+                </span>
+              )}
+              {e.data.es.title}
+            </span>
             <span className="font-mono text-xs text-muted">
               {e.data.date} · {e.file}
             </span>
