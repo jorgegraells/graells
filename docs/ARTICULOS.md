@@ -48,8 +48,12 @@ Escoge siempre dentro de estos pilares, con ángulo práctico para empresas:
 1. Lee los títulos de todos los JSON de `src/content/articles/` (borradores
    incluidos). **No repitas un tema ya cubierto**; como mucho, un ángulo nuevo
    claramente distinto que enlace al anterior.
-2. Busca en la web qué se está buscando y qué ha pasado esta semana en el
-   pilar elegido. Elige una pregunta concreta con búsquedas reales en español.
+2. **Anticípate.** Mira primero las señales tempranas (Hacker News, GitHub,
+   arXiv, Hugging Face Papers, Reddit, prensa de seguridad rápida e
+   investigadores como embracethered.com o simonwillison.net) y busca un tema
+   que esté subiendo y del que en español aún haya poco escrito, como pasó con
+   la prompt injection. Esas webs sirven para descubrir el tema, nunca como
+   fuente de los datos. Elige una pregunta concreta que la gente vaya a buscar.
 3. Comprueba los datos en fuentes fiables (organismos oficiales, OWASP, INCIBE,
    ENISA, documentación oficial de los fabricantes, medios reconocidos). Si un
    dato no se puede verificar, no va.
