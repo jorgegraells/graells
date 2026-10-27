@@ -6,7 +6,7 @@
 > tech lead of a C++ vehicle-inspection software deployed across several
 > countries, and combines industrial software, cybersecurity (EU Cyber
 > Resilience Act) and the modern web stack (Next.js, React, TypeScript).
-> His website features a playable 3D résumé: a videogame village where each
+> His website features a playable 3D world: a videogame village where each
 > villager tells one chapter of his career.
 
 Contact: dev.graells@gmail.com · GitHub: https://github.com/jorgegraells ·
@@ -16,7 +16,7 @@ LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
 
 - [Home (Spanish)](https://jorgegraells.com/es): profile, projects, stack and career of Jorge Graells
 - [Home (English)](https://jorgegraells.com/en): same content in English
-- [Playable 3D résumé](https://jorgegraells.com/es/world): videogame village where villagers present each project
+- [Playable 3D world](https://jorgegraells.com/es/world): videogame village where villagers present each project
 - [Corporate training](https://jorgegraells.com/es/training): cybersecurity and AI training for companies
 - [Blog (English)](https://jorgegraells.com/en/blog) · [Blog (Spanish)](https://jorgegraells.com/es/blog)
 

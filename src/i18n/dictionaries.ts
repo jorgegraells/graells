@@ -242,7 +242,7 @@ const es: Dictionary = {
     role: "AI Engineer & Full-Stack Developer",
     tagline:
       "Pongo la inteligencia artificial a resolver problemas reales de empresa, sobre todo en industria y software regulado.",
-    playable: "Un currículum que se juega",
+    playable: "Mi trayectoria, en un videojuego",
     ctaProjects: "Ver proyectos",
     ctaContact: "Hablemos",
     ctaWorld: "Entrar en el mundo virtual de Graells",
@@ -265,7 +265,7 @@ const es: Dictionary = {
     intro: {
       eyebrow: "Mundo virtual · un pequeño videojuego",
       title: "Bienvenido al pueblo de Graells",
-      body: "Hola, soy Jorge Graells y he desarrollado un videojuego para presentar mi currículum. Cada casa es un proyecto y cada vecino te cuenta un capítulo de mi carrera como desarrollador e ingeniero de IA. Acércate a un vecino y deja que te cuente su historia.",
+      body: "Hola, soy Jorge Graells y he desarrollado un videojuego para contar mi trayectoria. Cada casa es un proyecto y cada vecino te cuenta un capítulo de mi carrera como desarrollador e ingeniero de IA. Acércate a un vecino y deja que te cuente su historia.",
       cta: "Entrar al pueblo",
       controls: [
         "Moverte: WASD o flechas",
@@ -594,7 +594,7 @@ const en: Dictionary = {
     role: "AI Engineer & Full-Stack Developer",
     tagline:
       "I put artificial intelligence to work on real business problems, mostly in industry and regulated software.",
-    playable: "A résumé you can play",
+    playable: "My career, as a videogame",
     ctaProjects: "View projects",
     ctaContact: "Let's talk",
     ctaWorld: "Enter Graells' virtual world",
@@ -617,7 +617,7 @@ const en: Dictionary = {
     intro: {
       eyebrow: "Virtual world · a little videogame",
       title: "Welcome to Graells' village",
-      body: "Hi, I'm Jorge Graells and I built a videogame to present my résumé. Every house is a project and every villager tells you a chapter of my career as a developer and AI engineer. Walk up to a villager and let them tell you their story.",
+      body: "Hi, I'm Jorge Graells and I built a videogame to tell the story of my career. Every house is a project and every villager tells you a chapter of my career as a developer and AI engineer. Walk up to a villager and let them tell you their story.",
       cta: "Enter the village",
       controls: [
         "Move: WASD or arrows",
