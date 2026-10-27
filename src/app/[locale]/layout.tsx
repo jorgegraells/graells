@@ -90,7 +90,8 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: `/${locale}`,
-      languages: { es: "/es", en: "/en" },
+      // La raíz redirige según el idioma del navegador: es la versión por defecto
+      languages: { es: "/es", en: "/en", "x-default": "/" },
     },
     openGraph: {
       title,

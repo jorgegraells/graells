@@ -13,14 +13,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 1,
-      alternates: { languages: { es: `${SITE}/es`, en: `${SITE}/en` } },
+      alternates: {
+        languages: { es: `${SITE}/es`, en: `${SITE}/en`, "x-default": `${SITE}/` },
+      },
     },
     {
       url: `${SITE}/en`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 1,
-      alternates: { languages: { es: `${SITE}/es`, en: `${SITE}/en` } },
+      alternates: {
+        languages: { es: `${SITE}/es`, en: `${SITE}/en`, "x-default": `${SITE}/` },
+      },
     },
     {
       url: `${SITE}/es/world`,

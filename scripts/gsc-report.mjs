@@ -190,6 +190,7 @@ async function inspect(url) {
     indexed: idx.verdict === "PASS",
     coverage: COVERAGE_ES[idx.coverageState] ?? idx.coverageState ?? "Sin datos",
     lastCrawl: idx.lastCrawlTime ? idx.lastCrawlTime.slice(0, 10) : "nunca",
+    googleCanonical: idx.googleCanonical,
     link: r.inspectionResultLink,
   };
 }
@@ -262,7 +263,10 @@ const lines = [
         "Sin indexar (abre el enlace y pulsa \"Solicitar indexación\"):",
         "",
         ...notIndexed.map(
-          (r) => `- ${short(r.url)}: ${r.coverage}, último rastreo ${r.lastCrawl}. [Abrir en Search Console](${r.link})`,
+          (r) =>
+            `- ${short(r.url)}: ${r.coverage}, último rastreo ${r.lastCrawl}` +
+            (r.googleCanonical && r.googleCanonical !== r.url ? ` (Google prefiere ${r.googleCanonical})` : "") +
+            `. [Abrir en Search Console](${r.link})`,
         ),
       ].join("\n")
     : "Todas las páginas públicas están indexadas.",
