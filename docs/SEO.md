@@ -20,7 +20,10 @@ https://claude.ai/code/routines.
 
 `scripts/gsc-report.mjs` lee los últimos 28 días (comparados con los 28
 anteriores): consultas, páginas, oportunidades en posición 4-20 y páginas que
-se ven pero no se pulsan. Usa una **cuenta de servicio** de Google con
+se ven pero no se pulsan. Además inspecciona cada página pública (URL Inspection API,
+solo lectura) y lista las que Google aún no ha indexado, con el enlace
+directo para pulsar "Solicitar indexación" (eso Google no deja
+automatizarlo). Usa una **cuenta de servicio** de Google con
 permiso de solo lectura.
 
 ### Configuración (una vez)

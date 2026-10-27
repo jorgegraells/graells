@@ -145,8 +145,65 @@ const lowCtr = byPage
   .filter((r) => r.impressions >= 20 && r.clicks / r.impressions < 0.01)
   .sort((a, b) => b.impressions - a.impressions);
 
+// ---- Indexación: estado de cada página pública en el índice de Google ----
+// URL Inspection API: funciona con el permiso de solo lectura (2.000/día).
+
+const ORIGIN = "https://jorgegraells.com";
+const ARTICLES_DIR = new URL("../src/content/articles/", import.meta.url);
+
+function publicUrls() {
+  const urls = ["es", "en"].flatMap((l) =>
+    ["", "/training", "/blog", "/world"].map((p) => `${ORIGIN}/${l}${p}`),
+  );
+  for (const f of fs.readdirSync(ARTICLES_DIR)) {
+    if (!f.endsWith(".json")) continue;
+    const a = JSON.parse(fs.readFileSync(new URL(f, ARTICLES_DIR), "utf8"));
+    if (a.draft) continue;
+    for (const l of ["es", "en"]) urls.push(`${ORIGIN}/${l}/blog/${a[l].slug}`);
+  }
+  return urls;
+}
+
+const COVERAGE_ES = {
+  "Submitted and indexed": "Indexada",
+  "Indexed, not submitted in sitemap": "Indexada (fuera del sitemap)",
+  "Discovered - currently not indexed": "Descubierta, sin indexar todavía",
+  "Crawled - currently not indexed": "Rastreada pero no indexada",
+  "URL is unknown to Google": "Google aún no la conoce",
+  "Duplicate, Google chose different canonical than user": "Duplicada: Google eligió otra canónica",
+  "Alternate page with proper canonical tag": "Página alternativa con canónica correcta",
+  "Page with redirect": "Página con redirección",
+};
+
+async function inspect(url) {
+  const res = await fetch("https://searchconsole.googleapis.com/v1/urlInspection/index:inspect", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ inspectionUrl: url, siteUrl: site, languageCode: "es-ES" }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) return { url, error: `${res.status} ${json.error?.message ?? ""}`.trim() };
+  const r = json.inspectionResult ?? {};
+  const idx = r.indexStatusResult ?? {};
+  return {
+    url,
+    indexed: idx.verdict === "PASS",
+    coverage: COVERAGE_ES[idx.coverageState] ?? idx.coverageState ?? "Sin datos",
+    lastCrawl: idx.lastCrawlTime ? idx.lastCrawlTime.slice(0, 10) : "nunca",
+    link: r.inspectionResultLink,
+  };
+}
+
+const indexing = [];
+const pending = publicUrls();
+while (pending.length) indexing.push(...(await Promise.all(pending.splice(0, 5).map(inspect))));
+const notIndexed = indexing.filter((r) => !r.error && !r.indexed);
+const inspectErrors = indexing.filter((r) => r.error);
+
 if (process.argv.includes("--json")) {
-  console.log(JSON.stringify({ site, range, now, before, byQuery, byPage, opportunities, lowCtr }, null, 2));
+  console.log(
+    JSON.stringify({ site, range, now, before, byQuery, byPage, opportunities, lowCtr, indexing }, null, 2),
+  );
   process.exit(0);
 }
 
@@ -195,5 +252,22 @@ const lines = [
   lowCtr.length
     ? lowCtr.map((r) => `- ${short(r.keys[0])}: ${r.impressions} impresiones, ${r.clicks} clics`).join("\n")
     : "Ninguna.",
+  "",
+  "## Indexación en Google",
+  "",
+  `${indexing.length - notIndexed.length - inspectErrors.length} de ${indexing.length} páginas indexadas.`,
+  "",
+  notIndexed.length
+    ? [
+        "Sin indexar (abre el enlace y pulsa \"Solicitar indexación\"):",
+        "",
+        ...notIndexed.map(
+          (r) => `- ${short(r.url)}: ${r.coverage}, último rastreo ${r.lastCrawl}. [Abrir en Search Console](${r.link})`,
+        ),
+      ].join("\n")
+    : "Todas las páginas públicas están indexadas.",
+  ...(inspectErrors.length
+    ? ["", "No se pudieron inspeccionar:", "", ...inspectErrors.map((r) => `- ${short(r.url)}: ${r.error}`)]
+    : []),
 ];
 console.log(lines.join("\n"));
