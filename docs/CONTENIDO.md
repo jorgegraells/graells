@@ -65,9 +65,13 @@ JSON-LD se generan solos. Recuerda: ES **y** EN, sin precios/VTEQ/SofIA.
   genera en `src/app/[locale]/layout.tsx` **desde el diccionario** — al editar
   proyectos se actualiza solo. Si cambias el titular de Jorge, revisa
   `jobTitle` y las descriptions de `generateMetadata` ahí mismo.
-- **`public/llms.txt`**: índice del sitio para LLMs (estándar llms.txt). Al
-  añadir/quitar un proyecto, actualízalo a mano (una línea por proyecto,
-  mismas reglas de contenido: sin precios/VTEQ/SofIA).
+- **llms.txt** (índice del sitio para LLMs): lo genera `src/app/llms.txt/route.ts`
+  en el build. Los artículos se añaden solos; el resto del texto vive en
+  `src/content/llms-base.md`. Al añadir/quitar un proyecto, actualiza ese
+  archivo (una línea por proyecto, sin precios/VTEQ/SofIA).
+- Cada artículo tiene imagen social propia generada en el build
+  (`src/app/[locale]/blog/[slug]/opengraph-image.tsx`) y una descripción
+  corta opcional para Google (`seoDescription`, ≤ 155 caracteres).
 - `src/app/sitemap.ts` y `src/app/robots.ts`: el robots permite explícitamente
   los crawlers de IA (GPTBot, PerplexityBot, ClaudeBot…) — NO bloquearlos.
 - Imagen social: `public/og.jpg` (se regenera con `node scripts/og-image.mjs`).

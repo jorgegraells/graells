@@ -7,6 +7,8 @@ export type Article = {
   title: string;
   /** Respuesta directa / lead — también se usa como meta description y subtítulo. */
   description: string;
+  /** Meta description corta para Google (≤ 155). Si falta, se usa `description`. */
+  seoDescription?: string;
   date: string; // ISO
   /** Última edición (ISO con hora). Si el archivo no la trae, igual a `date`. */
   updated: string;

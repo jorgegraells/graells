@@ -21,6 +21,11 @@ function invalidLocale(d: unknown): string | null {
     return "título demasiado corto";
   if (typeof a.description !== "string" || a.description.trim().length < 20)
     return "descripción demasiado corta";
+  if (
+    a.seoDescription !== undefined &&
+    (typeof a.seoDescription !== "string" || a.seoDescription.length > 170)
+  )
+    return "descripción para Google de más de 170 caracteres";
   if (!Array.isArray(a.tags) || a.tags.some((t) => typeof t !== "string"))
     return "tags inválidos";
   if (typeof a.body !== "string" || a.body.trim().length < 100)

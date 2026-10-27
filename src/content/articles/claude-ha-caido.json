@@ -5,6 +5,7 @@
     "slug": "claude-ha-caido",
     "title": "Claude caído: qué está fallando y qué puedes hacer",
     "description": "Claude, su API, Claude Code y Cowork sufrieron una caída el 29 de septiembre de 2026 entre las 14:00 y las 14:59 UTC. El servicio ya funciona con normalidad. Aquí tienes qué pasó, cómo comprobar si Claude está caído y qué hacer la próxima vez.",
+    "seoDescription": "¿Claude caído? Cómo saber si Claude, Claude Code o la API están fallando, qué pasó en la caída del 29 de septiembre y qué hacer.",
     "tags": [
       "claude",
       "anthropic",
@@ -19,6 +20,7 @@
     "slug": "claude-is-down",
     "title": "Claude is down: what's failing and what you can do",
     "description": "Claude, its API, Claude Code and Cowork went down on September 29, 2026 between 14:00 and 14:59 UTC. Service is back to normal. Here's what happened, how to check whether Claude is down and what to do next time.",
+    "seoDescription": "Is Claude down? How to check if Claude, Claude Code or the API are failing, what happened in the September 29 outage and what to do.",
     "tags": [
       "claude",
       "anthropic",

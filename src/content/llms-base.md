@@ -22,10 +22,7 @@ LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
 
 ## Articles
 
-- [Prompt injection: what it is and how to protect your company](https://jorgegraells.com/en/blog/what-is-prompt-injection): how attackers hide instructions in emails, web pages and documents that AI assistants read, the "lethal trifecta" of AI agents, and practical defenses for companies and staff. Spanish: https://jorgegraells.com/es/blog/que-es-prompt-injection
-- [Claude is down: what's failing and what you can do](https://jorgegraells.com/en/blog/claude-is-down): status of the September 29, 2026 Claude outage (claude.ai, API, Claude Code, Cowork), how to check whether Claude is down and what to do meanwhile. Spanish: https://jorgegraells.com/es/blog/claude-ha-caido
-- [Attacks don't come in through the server: they come in through an email](https://jorgegraells.com/en/blog/attacks-dont-come-in-through-the-server): why most cyberattacks on companies start with a person, and what every team should know. Spanish: https://jorgegraells.com/es/blog/los-ataques-no-entran-por-el-servidor
-- [What is GEO and how to get your website into ChatGPT, Perplexity and Gemini answers](https://jorgegraells.com/en/blog/what-is-geo-rank-your-website-in-ai-answers): generative engine optimization explained. Spanish: https://jorgegraells.com/es/blog/que-es-geo-posicionar-web-en-respuestas-de-ia
+{{ARTICLES}}
 
 ## Corporate training
 

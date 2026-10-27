@@ -48,6 +48,10 @@ for (const l of ["es", "en"]) {
   if (d.title && d.title === d.title.toUpperCase()) errors.push(`${l}: título en mayúsculas`);
   if ((d.description ?? "").trim().length < 20) errors.push(`${l}: descripción demasiado corta`);
   if ((d.description ?? "").length > 320) warnings.push(`${l}: descripción de ${d.description.length} caracteres (ideal ≤ 300)`);
+  if (d.seoDescription !== undefined && d.seoDescription.length > 155)
+    errors.push(`${l}: seoDescription de ${d.seoDescription.length} caracteres (máx. 155)`);
+  if ((d.description ?? "").length > 160 && !d.seoDescription)
+    warnings.push(`${l}: falta seoDescription (la description es larga y Google la cortará)`);
   if (!Array.isArray(d.tags) || d.tags.length < 3 || d.tags.some((t) => typeof t !== "string"))
     errors.push(`${l}: tags debe ser una lista de 3+ textos`);
   const words = (d.body ?? "").trim().split(/\s+/).length;

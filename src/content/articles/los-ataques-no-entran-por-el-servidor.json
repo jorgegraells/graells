@@ -4,6 +4,7 @@
     "slug": "los-ataques-no-entran-por-el-servidor",
     "title": "Los ataques no entran por el servidor: entran por un correo",
     "description": "Llevo años parando ataques reales en una empresa industrial y casi ninguno empezó en una máquina: empezaron en una persona. Esto es lo que cualquier plantilla debería saber para no ser la puerta de entrada.",
+    "seoDescription": "Casi todos los ciberataques a empresas empiezan con un correo. Cómo es el phishing actual y qué debe saber tu plantilla para no abrirle la puerta.",
     "tags": [
       "Ciberseguridad",
       "Phishing",
@@ -15,6 +16,7 @@
     "slug": "attacks-dont-come-in-through-the-server",
     "title": "Attacks don't come in through the server: they come in through an email",
     "description": "I've spent years stopping real attacks at an industrial company and almost none of them started on a machine: they started with a person. This is what every team should know so nobody becomes the way in.",
+    "seoDescription": "Most cyberattacks on companies start with an email. What modern phishing looks like and what your team needs to know to keep the door shut.",
     "tags": [
       "Cybersecurity",
       "Phishing",

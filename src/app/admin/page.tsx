@@ -11,6 +11,7 @@ type LocaleData = {
   slug: string;
   title: string;
   description: string;
+  seoDescription?: string;
   tags: string[];
   body: string;
 };
@@ -409,6 +410,33 @@ export default function AdminPage() {
               rows={3}
               className="w-full resize-y rounded-md border border-white/15 bg-black/30 px-4 py-3 text-sm leading-relaxed outline-none focus:border-neon-cyan/60"
             />
+            <label className="block">
+              <span className="mb-1 flex justify-between font-mono text-[11px] uppercase tracking-widest text-muted">
+                <span>
+                  {tab === "es"
+                    ? "Descripción para Google (opcional)"
+                    : "Description for Google (optional)"}
+                </span>
+                <span
+                  className={
+                    (d.seoDescription ?? "").length > 155 ? "text-neon-pink" : ""
+                  }
+                >
+                  {(d.seoDescription ?? "").length}/155
+                </span>
+              </span>
+              <input
+                value={d.seoDescription ?? ""}
+                onChange={(e) => setLocaleField(tab, "seoDescription", e.target.value)}
+                maxLength={170}
+                placeholder={
+                  tab === "es"
+                    ? "Versión corta con gancho para el resultado de Google. Si la dejas vacía se usa la descripción."
+                    : "Short, catchy version for the Google result. If empty, the description is used."
+                }
+                className="w-full rounded-md border border-white/15 bg-black/30 px-4 py-2.5 text-sm outline-none focus:border-neon-cyan/60"
+              />
+            </label>
             <textarea
               value={d.body}
               onChange={(e) => setLocaleField(tab, "body", e.target.value)}

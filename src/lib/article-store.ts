@@ -13,6 +13,7 @@ export type ArticleLocaleData = {
   slug: string;
   title: string;
   description: string;
+  seoDescription?: string;
   tags: string[];
   body: string;
 };
@@ -50,6 +51,20 @@ function ghHeaders(): HeadersInit {
 
 const GH = `https://api.github.com/repos/${OWNER}/${REPO}/contents`;
 
+/** Error legible para el panel; los 401/403 casi siempre son el token. */
+function githubError(status: number, action: string, detail = ""): Error {
+  if (status === 401)
+    return new Error(
+      `GitHub rechaza el token (401) al ${action}. El GITHUB_TOKEN de Vercel ha caducado o no es válido: genera uno nuevo (solo repo graells, Contents: Read and write), actualízalo en Vercel y redespliega.`,
+    );
+  if (status === 403 || status === 404)
+    return new Error(
+      `GitHub ${status} al ${action}. El token no tiene permiso sobre el repo graells (Contents: Read and write).`,
+    );
+  return new Error(`GitHub ${status} al ${action}${detail ? `: ${detail.slice(0, 200)}` : ""}`);
+}
+
+
 export async function listArticleFiles(): Promise<
   { file: string; data: ArticleFile }[]
 > {
@@ -70,13 +85,13 @@ export async function listArticleFiles(): Promise<
     headers: ghHeaders(),
     cache: "no-store",
   });
-  if (!res.ok) throw new Error(`GitHub ${res.status} al listar artículos`);
+  if (!res.ok) throw githubError(res.status, "listar artículos");
   const entries: { name: string; download_url: string }[] = await res.json();
   const files = entries.filter((e) => e.name.endsWith(".json"));
   return Promise.all(
     files.map(async (e) => {
       const raw = await fetch(e.download_url, { cache: "no-store" });
-      if (!raw.ok) throw new Error(`GitHub ${raw.status} al leer ${e.name}`);
+      if (!raw.ok) throw githubError(raw.status, `leer ${e.name}`);
       return { file: e.name, data: (await raw.json()) as ArticleFile };
     }),
   );
@@ -118,7 +133,7 @@ export async function saveArticleFile(
   });
   if (!res.ok) {
     const detail = await res.text();
-    throw new Error(`GitHub ${res.status} al guardar: ${detail.slice(0, 200)}`);
+    throw githubError(res.status, "guardar", detail);
   }
   return { committed: true };
 }
@@ -142,7 +157,7 @@ export async function deleteDraftFile(file: string): Promise<{ committed: boolea
     headers: ghHeaders(),
     cache: "no-store",
   });
-  if (!existing.ok) throw new Error(`GitHub ${existing.status} al leer ${file}`);
+  if (!existing.ok) throw githubError(existing.status, `leer ${file}`);
   const meta: { sha: string; content: string } = await existing.json();
   const current = JSON.parse(
     Buffer.from(meta.content, "base64").toString("utf8"),
@@ -160,7 +175,7 @@ export async function deleteDraftFile(file: string): Promise<{ committed: boolea
   });
   if (!res.ok) {
     const detail = await res.text();
-    throw new Error(`GitHub ${res.status} al borrar: ${detail.slice(0, 200)}`);
+    throw githubError(res.status, "borrar", detail);
   }
   return { committed: true };
 }

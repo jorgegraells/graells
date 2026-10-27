@@ -80,9 +80,12 @@ Escoge siempre dentro de estos pilares, con ángulo práctico para empresas:
 - **title**: con la palabra clave principal al principio, sin mayúsculas
   enteras, 45-70 caracteres. Ej.: "Prompt injection: qué es y cómo proteger a
   tu empresa".
-- **description**: es la entradilla y la meta description. Responde
-  directamente a la pregunta en 2-3 frases (máx. ~300 caracteres). Es lo que
-  citan Google y las IAs: tiene que entenderse sola.
+- **description**: es la entradilla. Responde directamente a la pregunta en
+  2-3 frases (máx. ~300 caracteres). Es lo que citan las IAs: tiene que
+  entenderse sola.
+- **seoDescription**: lo que sale en el resultado de Google. Máximo 155
+  caracteres, con la palabra clave al principio y un gancho para hacer clic.
+  Obligatoria si la description pasa de 160 caracteres.
 - **body** (Markdown): 900-1.400 palabras.
   - Primer párrafo: engancha con el problema real del lector.
   - 5-8 secciones `##`. Varias en forma de pregunta tal como se busca ("¿Qué
@@ -106,8 +109,8 @@ Escoge siempre dentro de estos pilares, con ángulo práctico para empresas:
 {
   "date": "AAAA-MM-DD",
   "draft": true,
-  "es": { "slug": "...", "title": "...", "description": "...", "tags": ["..."], "body": "..." },
-  "en": { "slug": "...", "title": "...", "description": "...", "tags": ["..."], "body": "..." }
+  "es": { "slug": "...", "title": "...", "description": "...", "seoDescription": "...", "tags": ["..."], "body": "..." },
+  "en": { "slug": "...", "title": "...", "description": "...", "seoDescription": "...", "tags": ["..."], "body": "..." }
 }
 ```
 

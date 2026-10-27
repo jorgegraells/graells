@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
+import {
+  getDictionary,
+  isLocale,
+  siteLinks,
+  type Locale,
+} from "@/i18n/dictionaries";
 import {
   getArticle,
   getArticles,
@@ -26,9 +31,10 @@ export async function generateMetadata({
   if (!isLocale(locale)) return {};
   const article = getArticle(locale, slug);
   if (!article) return {};
+  const metaDescription = article.seoDescription || article.description;
   return {
     title: `${article.title} — Jorge Graells`,
-    description: article.description,
+    description: metaDescription,
     alternates: {
       canonical: `/${locale}/blog/${slug}`,
       languages: {
@@ -38,20 +44,18 @@ export async function generateMetadata({
     },
     openGraph: {
       title: article.title,
-      description: article.description,
+      description: metaDescription,
       url: `${SITE}/${locale}/blog/${slug}`,
       type: "article",
       publishedTime: article.date,
       modifiedTime: article.updated,
       authors: ["Jorge Graells"],
       tags: article.tags,
-      images: [`${SITE}/og.jpg`],
     },
     twitter: {
       card: "summary_large_image",
       title: article.title,
-      description: article.description,
-      images: [`${SITE}/og.jpg`],
+      description: metaDescription,
     },
   };
 }
@@ -85,7 +89,13 @@ export default async function ArticlePage({
     dateModified: article.updated,
     inLanguage: locale,
     keywords: article.tags.join(", "),
-    author: { "@type": "Person", name: "Jorge Graells", url: SITE },
+    author: {
+      "@type": "Person",
+      name: "Jorge Graells",
+      url: SITE,
+      jobTitle: "AI Engineer & Full-Stack Developer",
+      sameAs: [siteLinks.linkedin, siteLinks.github],
+    },
     publisher: { "@type": "Person", name: "Jorge Graells", url: SITE },
     image: `${SITE}/og.jpg`,
     mainEntityOfPage: `${SITE}/${locale}/blog/${slug}`,

@@ -9,6 +9,8 @@ import {
 } from "@/i18n/dictionaries";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Link from "next/link";
+import { getArticles } from "@/content/articles";
 
 const SITE = "https://jorgegraells.com";
 
@@ -220,6 +222,25 @@ export default async function TrainingPage({
                 <span className="text-muted"> · {q.role}</span>
               </figcaption>
             </figure>
+          ))}
+        </div>
+
+        {/* Artículos del blog: enlazan la formación con el contenido */}
+        <h2 className="mt-14 font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">
+          {t.articlesTitle}
+        </h2>
+        <div className="mt-5 grid gap-4 sm:grid-cols-3">
+          {getArticles(locale).slice(0, 3).map((a) => (
+            <Link
+              key={a.slug}
+              href={`/${locale}/blog/${a.slug}`}
+              className="hud-panel clip-corner p-5 transition-transform hover:-translate-y-1"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-widest text-neon-pink">
+                {dict.blog.readMore}
+              </p>
+              <p className="mt-1 font-bold leading-tight text-foreground">{a.title}</p>
+            </Link>
           ))}
         </div>
 
