@@ -27,11 +27,11 @@ export async function generateMetadata({
   const { locale } = await params;
   const isEs = locale === "es";
   const title = isEs
-    ? "Formación en ciberseguridad e IA para empresas — Jorge Graells"
-    : "Cybersecurity & AI corporate training — Jorge Graells";
+    ? "Formación en ciberseguridad e IA para empresas | Jorge Graells"
+    : "Cybersecurity & AI corporate training | Jorge Graells";
   const description = isEs
-    ? "Sesiones de formación en ciberseguridad e inteligencia artificial para toda la plantilla: buenas prácticas, riesgos reales y uso productivo de la IA. Impartidas por Jorge Graells."
-    : "Cybersecurity and artificial intelligence training sessions for the whole team: good practices, real risks and productive AI use. Delivered by Jorge Graells.";
+    ? "Formación en ciberseguridad e IA para toda la plantilla: buenas prácticas, riesgos reales y uso productivo de la IA. Tarifas orientativas desde 300 €."
+    : "Cybersecurity and AI training for your whole team: good practices, real risks and productive AI use. Indicative rates from €300.";
   return {
     title,
     description,

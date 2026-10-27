@@ -34,11 +34,11 @@ export async function generateMetadata({
   const { locale } = await params;
   const isEs = locale === "es";
   const title = isEs
-    ? "Jorge Graells — Ingeniero de IA y Desarrollador Full-Stack"
-    : "Jorge Graells — AI Engineer & Full-Stack Developer";
+    ? "Jorge Graells | Ingeniero de IA y Desarrollador Full-Stack"
+    : "Jorge Graells | AI Engineer & Full-Stack Developer";
   const description = isEs
-    ? "Jorge Graells, ingeniero de IA y desarrollador full-stack con 8 años de experiencia. IA aplicada para industria y software regulado: RAG, agentes y LLMs en producción. Disponible para proyectos y colaboraciones. Incluye un currículum jugable en 3D."
-    : "Jorge Graells, AI engineer and full-stack developer with 8 years of experience. Applied AI for industry and regulated software: RAG, agents and LLMs in production. Available for projects and collaborations. Featuring a playable 3D résumé.";
+    ? "Ingeniero de IA y desarrollador full-stack. IA aplicada a empresas (RAG, agentes, LLMs), formación en ciberseguridad e IA y un mundo 3D jugable."
+    : "AI engineer and full-stack developer. Applied AI for businesses (RAG, agents, LLMs), cybersecurity and AI training, and a playable 3D world.";
 
   return {
     metadataBase: new URL(SITE),

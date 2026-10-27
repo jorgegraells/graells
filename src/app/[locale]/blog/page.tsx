@@ -17,11 +17,11 @@ export async function generateMetadata({
   const { locale } = await params;
   const isEs = locale === "es";
   const title = isEs
-    ? "Artículos — Jorge Graells"
-    : "Articles — Jorge Graells";
+    ? "Artículos sobre IA y ciberseguridad | Jorge Graells"
+    : "Articles on AI and cybersecurity | Jorge Graells";
   const description = isEs
-    ? "Artículos de Jorge Graells sobre inteligencia artificial, desarrollo full-stack y posicionamiento en buscadores e IAs (GEO)."
-    : "Articles by Jorge Graells on artificial intelligence, full-stack development and visibility in search engines and AI answers (GEO).";
+    ? "Artículos de Jorge Graells sobre inteligencia artificial, ciberseguridad para empresas y posicionamiento en buscadores e IAs (GEO)."
+    : "Articles by Jorge Graells on artificial intelligence, cybersecurity for businesses and visibility in search engines and AI answers (GEO).";
   return {
     title,
     description,

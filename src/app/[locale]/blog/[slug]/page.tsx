@@ -33,7 +33,11 @@ export async function generateMetadata({
   if (!article) return {};
   const metaDescription = article.seoDescription || article.description;
   return {
-    title: `${article.title} — Jorge Graells`,
+    // El sufijo solo si cabe: Google corta los títulos a partir de ~65 caracteres
+    title:
+      article.title.length + 16 <= 65
+        ? `${article.title} | Jorge Graells`
+        : article.title,
     description: metaDescription,
     alternates: {
       canonical: `/${locale}/blog/${slug}`,
