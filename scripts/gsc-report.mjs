@@ -118,33 +118,6 @@ if (!site)
     `la cuenta ${sa.client_email} no tiene acceso a jorgegraells.com. Añádela en Search Console → Configuración → Usuarios y permisos (permiso Restringido).`,
   );
 
-// Search Console va unos 3 días por detrás
-const end = addDays(new Date(), -3);
-const start = addDays(end, -27);
-const prevEnd = addDays(start, -1);
-const prevStart = addDays(prevEnd, -27);
-const range = [day(start), day(end)];
-
-const [byDate, prevByDate, byQuery, byPage, byPageQuery] = await Promise.all([
-  query(token, site, ...range, ["date"]),
-  query(token, site, day(prevStart), day(prevEnd), ["date"]),
-  query(token, site, ...range, ["query"]),
-  query(token, site, ...range, ["page"]),
-  query(token, site, ...range, ["page", "query"], 1000),
-]);
-
-const now = totals(byDate);
-const before = totals(prevByDate);
-// Casi en la primera página: posición 4-20 con algo de visibilidad
-const opportunities = byPageQuery
-  .filter((r) => r.position >= 4 && r.position <= 20 && r.impressions >= 3)
-  .sort((a, b) => b.impressions - a.impressions)
-  .slice(0, 20);
-// Se ven pero no se pulsan: título o descripción a revisar
-const lowCtr = byPage
-  .filter((r) => r.impressions >= 20 && r.clicks / r.impressions < 0.01)
-  .sort((a, b) => b.impressions - a.impressions);
-
 // ---- Indexación: estado de cada página pública en el índice de Google ----
 // URL Inspection API: funciona con el permiso de solo lectura (2.000/día).
 
@@ -194,6 +167,57 @@ async function inspect(url) {
     link: r.inspectionResultLink,
   };
 }
+
+// Modo rápido para el aviso diario: solo artículos publicados, sin estadísticas
+if (process.argv.includes("--pending")) {
+  const out = [];
+  for (const f of fs.readdirSync(ARTICLES_DIR)) {
+    if (!f.endsWith(".json")) continue;
+    const a = JSON.parse(fs.readFileSync(new URL(f, ARTICLES_DIR), "utf8"));
+    if (a.draft) continue;
+    const checks = await Promise.all(
+      ["es", "en"].map((l) => inspect(`${ORIGIN}/${l}/blog/${a[l].slug}`)),
+    );
+    const missing = checks.filter((r) => r.error || !r.indexed);
+    if (!missing.length) continue;
+    const lines = [`${a.es.title} (publicado el ${a.date})`];
+    for (const r of missing)
+      lines.push(
+        `- ${r.url}`,
+        r.error ? `  Error: ${r.error}` : `  ${r.coverage}. Solicitar indexación: ${r.link}`,
+      );
+    out.push(lines.join("\n"));
+  }
+  console.log(out.length ? out.join("\n\n") : "Todos los artículos publicados están indexados.");
+  process.exit(0);
+}
+
+// Search Console va unos 3 días por detrás
+const end = addDays(new Date(), -3);
+const start = addDays(end, -27);
+const prevEnd = addDays(start, -1);
+const prevStart = addDays(prevEnd, -27);
+const range = [day(start), day(end)];
+
+const [byDate, prevByDate, byQuery, byPage, byPageQuery] = await Promise.all([
+  query(token, site, ...range, ["date"]),
+  query(token, site, day(prevStart), day(prevEnd), ["date"]),
+  query(token, site, ...range, ["query"]),
+  query(token, site, ...range, ["page"]),
+  query(token, site, ...range, ["page", "query"], 1000),
+]);
+
+const now = totals(byDate);
+const before = totals(prevByDate);
+// Casi en la primera página: posición 4-20 con algo de visibilidad
+const opportunities = byPageQuery
+  .filter((r) => r.position >= 4 && r.position <= 20 && r.impressions >= 3)
+  .sort((a, b) => b.impressions - a.impressions)
+  .slice(0, 20);
+// Se ven pero no se pulsan: título o descripción a revisar
+const lowCtr = byPage
+  .filter((r) => r.impressions >= 20 && r.clicks / r.impressions < 0.01)
+  .sort((a, b) => b.impressions - a.impressions);
 
 const indexing = [];
 const pending = publicUrls();

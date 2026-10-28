@@ -47,6 +47,13 @@ permiso de solo lectura.
    - Dominios permitidos: `oauth2.googleapis.com`,
      `searchconsole.googleapis.com`, `www.googleapis.com`, `jorgegraells.com`.
 
+### Aviso diario de indexación
+
+`node scripts/gsc-report.mjs --pending` revisa solo los artículos publicados y
+lista los que Google aún no ha indexado, con el enlace de Search Console para
+solicitarlo. El redactor diario lo ejecuta cada mañana y, si hay alguno, manda
+una notificación al móvil de Jorge con esos enlaces.
+
 ### Uso en local
 
 ```bash
