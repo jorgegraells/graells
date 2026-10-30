@@ -124,10 +124,19 @@ if (!site)
 const ORIGIN = "https://jorgegraells.com";
 const ARTICLES_DIR = new URL("../src/content/articles/", import.meta.url);
 
+// Páginas fijas (sin artículos). Las que cambian de nombre por idioma van aparte.
+const PAGES = [
+  ...["es", "en"].flatMap((l) => ["", "/training", "/blog", "/world"].map((p) => `/${l}${p}`)),
+  "/es/sobre-mi",
+  "/en/about",
+  "/es/noticias",
+  "/en/news",
+  "/es/politica-editorial",
+  "/en/editorial-policy",
+].map((p) => ORIGIN + p);
+
 function publicUrls() {
-  const urls = ["es", "en"].flatMap((l) =>
-    ["", "/training", "/blog", "/world"].map((p) => `${ORIGIN}/${l}${p}`),
-  );
+  const urls = [...PAGES];
   for (const f of fs.readdirSync(ARTICLES_DIR)) {
     if (!f.endsWith(".json")) continue;
     const a = JSON.parse(fs.readFileSync(new URL(f, ARTICLES_DIR), "utf8"));
@@ -168,9 +177,21 @@ async function inspect(url) {
   };
 }
 
-// Modo rápido para el aviso diario: solo artículos publicados, sin estadísticas
+// Modo rápido para el aviso diario: páginas y artículos publicados sin indexar, sin estadísticas
 if (process.argv.includes("--pending")) {
   const out = [];
+  const pages = [];
+  for (let i = 0; i < PAGES.length; i += 5) pages.push(...(await Promise.all(PAGES.slice(i, i + 5).map(inspect))));
+  const missingPages = pages.filter((r) => r.error || !r.indexed);
+  if (missingPages.length) {
+    const lines = ["Páginas de la web"];
+    for (const r of missingPages)
+      lines.push(
+        `- ${r.url}`,
+        r.error ? `  Error: ${r.error}` : `  ${r.coverage}. Solicitar indexación: ${r.link}`,
+      );
+    out.push(lines.join("\n"));
+  }
   for (const f of fs.readdirSync(ARTICLES_DIR)) {
     if (!f.endsWith(".json")) continue;
     const a = JSON.parse(fs.readFileSync(new URL(f, ARTICLES_DIR), "utf8"));
