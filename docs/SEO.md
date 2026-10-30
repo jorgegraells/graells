@@ -60,8 +60,8 @@ cómo aparece.
 anteriores): consultas, páginas, oportunidades en posición 4-20 y páginas que
 se ven pero no se pulsan. Además inspecciona cada página pública (URL Inspection API,
 solo lectura) y lista las que Google aún no ha indexado, con el enlace
-directo para pulsar "Solicitar indexación" (eso Google no deja
-automatizarlo). Usa una **cuenta de servicio** de Google con
+directo para pulsar "Solicitar indexación" (la API no lo permite; lo pulsa el
+bot del PC de Jorge, ver abajo). Usa una **cuenta de servicio** de Google con
 permiso de solo lectura.
 
 ### Configuración (una vez)
@@ -91,6 +91,36 @@ permiso de solo lectura.
 lista los que Google aún no ha indexado, con el enlace de Search Console para
 solicitarlo. El redactor diario lo ejecuta cada mañana y, si hay alguno, manda
 una notificación al móvil de Jorge con esos enlaces.
+
+### Bot de indexación (PC de Jorge)
+
+`scripts/index-bot.mjs` pulsa "Solicitar indexación" por Jorge. Abre Search
+Console en un Chrome propio (perfil aparte en
+`%LOCALAPPDATA%\jorgegraells-indexbot`, con la sesión de Google de Jorge),
+inspecciona cada página pública (los artículos más nuevos primero) y, si Google
+no la tiene, pide la indexación. No usa la cuenta de servicio ni dependencias:
+habla con Chrome por CDP.
+
+```bash
+node scripts/index-bot.mjs             # pasada completa, con ventana
+node scripts/index-bot.mjs --hidden    # sin ventana (tarea programada)
+node scripts/index-bot.mjs --dry-run   # solo mira, no pulsa
+node scripts/index-bot.mjs https://jorgegraells.com/es/blog/x   # solo esa URL
+```
+
+- Corre cada día en el PC de Jorge con la tarea programada de Windows
+  "jorgegraells - indexacion" (09:00, o al encender si estaba apagado).
+- Máximo 10 solicitudes por pasada (Google da unas 10-12 al día). Recuerda lo
+  hecho en `state.json`: no vuelve a mirar una página indexada en 7 días ni a
+  pedir una ya solicitada en 3.
+- Si sale un captcha o se agota la cuota, **para** (sale con código 2) y deja
+  el resto para el día siguiente. No intenta saltarse el captcha.
+- Registro en `log.txt` y capturas de pantalla de cada fallo en esa carpeta.
+- Search Console de Jorge está en **catalán** (lo decide la cuenta de Google,
+  no el navegador): el bot reconoce los textos en catalán, castellano e inglés.
+  Si Google cambia los textos, es lo primero que hay que revisar.
+- Si caduca la sesión de Google, la tarea falla con "no hay sesión": ejecuta
+  `node scripts/index-bot.mjs` con ventana e inicia sesión otra vez.
 
 ### Uso en local
 
