@@ -63,6 +63,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
+      url: `${SITE}/es/noticias`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.7,
+      alternates: { languages: { es: `${SITE}/es/noticias`, en: `${SITE}/en/news` } },
+    },
+    {
+      url: `${SITE}/en/news`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.7,
+      alternates: { languages: { es: `${SITE}/es/noticias`, en: `${SITE}/en/news` } },
+    },
+    {
       url: `${SITE}/es/blog`,
       lastModified: now,
       changeFrequency: "weekly",

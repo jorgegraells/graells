@@ -33,6 +33,7 @@ export type Dictionary = {
     journey: string;
     training: string;
     blog: string;
+    news: string;
     contact: string;
   };
   training: {
@@ -63,6 +64,16 @@ export type Dictionary = {
     minRead: string;
     updated: string;
     by: string;
+    newsBadge: string;
+    latestNews: string;
+    allNews: string;
+    guides: string;
+    empty: string;
+  };
+  news: {
+    tag: string;
+    title: string;
+    subtitle: string;
     empty: string;
   };
   hero: {
@@ -141,6 +152,7 @@ const es: Dictionary = {
     journey: "Trayectoria",
     training: "Formación",
     blog: "Artículos",
+    news: "Noticias",
     contact: "Contacto",
   },
   training: {
@@ -236,7 +248,17 @@ const es: Dictionary = {
     minRead: "min de lectura",
     updated: "Actualizado",
     by: "Por",
+    newsBadge: "Noticia",
+    latestNews: "Últimas noticias",
+    allNews: "Ver todas las noticias",
+    guides: "Guías y artículos",
     empty: "Todavía no hay artículos publicados.",
+  },
+  news: {
+    tag: "ÚLTIMA HORA",
+    title: "Noticias",
+    subtitle: "Ciberseguridad e IA de actualidad: qué ha pasado, con fuentes, y qué hacer",
+    empty: "Todavía no hay noticias publicadas.",
   },
   hero: {
     greeting: "Hola, soy",
@@ -494,6 +516,7 @@ const en: Dictionary = {
     journey: "Journey",
     training: "Training",
     blog: "Articles",
+    news: "News",
     contact: "Contact",
   },
   training: {
@@ -589,7 +612,17 @@ const en: Dictionary = {
     minRead: "min read",
     updated: "Updated",
     by: "By",
+    newsBadge: "News",
+    latestNews: "Latest news",
+    allNews: "See all news",
+    guides: "Guides and articles",
     empty: "No articles published yet.",
+  },
+  news: {
+    tag: "BREAKING",
+    title: "News",
+    subtitle: "Cybersecurity and AI news: what happened, with sources, and what to do",
+    empty: "No news published yet.",
   },
   hero: {
     greeting: "Hi, I'm",

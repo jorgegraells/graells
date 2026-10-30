@@ -22,12 +22,13 @@ export default function Nav({
     { href: `/${locale}#journey`, label: dict.nav.journey },
     { href: `/${locale}/training`, label: dict.nav.training },
     { href: `/${locale}/blog`, label: dict.nav.blog },
+    { href: locale === "es" ? "/es/noticias" : "/en/news", label: dict.nav.news },
     { href: `/${locale}#contact`, label: dict.nav.contact },
   ];
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <nav className="glass hud-corners clip-corner mx-auto mt-4 flex max-w-5xl items-center justify-between border-neon-cyan/30 px-6 py-3">
+      <nav className="glass hud-corners clip-corner mx-auto mt-4 flex max-w-5xl items-center xl:max-w-6xl justify-between border-neon-cyan/30 px-6 py-3">
         <Link
           href={`/${locale}`}
           onClick={() => setOpen(false)}
@@ -38,13 +39,13 @@ export default function Nav({
           <span className="text-neon-pink">.exe</span>
         </Link>
 
-        {/* Enlaces en escritorio (con 7 secciones solo caben a partir de lg) */}
-        <div className="hidden items-center gap-5 font-mono text-xs uppercase tracking-wider text-muted lg:flex">
+        {/* Enlaces en escritorio (con 8 secciones solo caben a partir de xl) */}
+        <div className="hidden items-center gap-4 font-mono text-xs uppercase tracking-wider text-muted xl:flex">
           {links.map((link, i) => (
             <a
               key={link.href}
               href={link.href}
-              className="transition-colors hover:text-neon-cyan"
+              className="whitespace-nowrap transition-colors hover:text-neon-cyan"
             >
               <span className="text-neon-violet/70">
                 {String(i + 1).padStart(2, "0")}
@@ -70,7 +71,7 @@ export default function Nav({
             onClick={() => setOpen((o) => !o)}
             aria-label="Menú"
             aria-expanded={open}
-            className="grid h-8 w-8 place-items-center rounded-md border border-neon-cyan/40 text-neon-cyan transition-colors hover:bg-neon-cyan/10 lg:hidden"
+            className="grid h-8 w-8 place-items-center rounded-md border border-neon-cyan/40 text-neon-cyan transition-colors hover:bg-neon-cyan/10 xl:hidden"
           >
             {open ? "✕" : "☰"}
           </button>
@@ -85,7 +86,7 @@ export default function Nav({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18 }}
-            className="glass clip-corner mx-auto mt-2 max-w-5xl overflow-hidden border-neon-cyan/30 px-4 py-2 lg:hidden"
+            className="glass clip-corner mx-auto mt-2 max-w-5xl overflow-hidden border-neon-cyan/30 px-4 py-2 xl:hidden"
           >
             <ul className="divide-y divide-white/10">
               {links.map((link, i) => (

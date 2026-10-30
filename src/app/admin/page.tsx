@@ -326,6 +326,23 @@ export default function AdminPage() {
                 Descartar
               </button>
             )}
+            {editing.file && !editing.data.draft && (
+              <button
+                type="button"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `¿Despublicar "${editing.data.es.title}"? Dejará de verse en la web y volverá a ser un borrador.`,
+                    )
+                  )
+                    save(true);
+                }}
+                disabled={busy}
+                className="font-mono text-xs uppercase tracking-widest text-muted hover:text-neon-pink disabled:opacity-50"
+              >
+                Despublicar
+              </button>
+            )}
             {(!editing.file || editing.data.draft) && (
               <button
                 type="button"

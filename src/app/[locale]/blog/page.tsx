@@ -5,6 +5,7 @@ import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import ArticleCard from "@/components/blog/ArticleCard";
 
 const SITE = "https://jorgegraells.com";
 const NEON = ["#22d3ee", "#a855f7", "#ff3d9a", "#c6ff2e"];
@@ -48,7 +49,9 @@ export default async function BlogIndex({
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
   const articles = getArticles(locale);
-  const fmt = new Intl.DateTimeFormat(locale, { dateStyle: "long" });
+  const news = articles.filter((a) => a.type === "news");
+  const guides = articles.filter((a) => a.type !== "news");
+  const newsHref = locale === "es" ? "/es/noticias" : "/en/news";
 
   return (
     <main className="flex-1">
@@ -67,52 +70,36 @@ export default async function BlogIndex({
         {articles.length === 0 ? (
           <p className="mt-12 text-muted">{dict.blog.empty}</p>
         ) : (
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
-            {articles.map((a, i) => {
-              const c = NEON[i % NEON.length];
-              return (
-                <Link
-                  key={a.slug}
-                  href={`/${locale}/blog/${a.slug}`}
-                  className="hud-panel clip-corner group flex flex-col p-7 transition-transform duration-300 hover:-translate-y-1.5"
-                  style={{ borderColor: `${c}55` }}
-                >
-                  <div className="flex flex-wrap gap-2">
-                    {a.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
-                        style={{ borderColor: `${c}88`, color: c }}
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                  <h2
-                    className="mt-4 text-xl font-black leading-tight tracking-tight"
-                    style={{ color: c, textShadow: `0 0 20px ${c}44` }}
-                  >
-                    {a.title}
+          <>
+            {news.length > 0 && (
+              <>
+                <div className="mt-12 flex flex-wrap items-end justify-between gap-3">
+                  <h2 className="font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-pink">
+                    ● {dict.blog.latestNews}
                   </h2>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">
-                    {a.description}
-                  </p>
-                  <div className="mt-5 flex items-center justify-between font-mono text-xs text-muted">
-                    <span>
-                      {fmt.format(new Date(a.date))} · {a.readingMinutes}{" "}
-                      {dict.blog.minRead}
-                    </span>
-                    <span
-                      className="font-bold transition-transform group-hover:translate-x-1"
-                      style={{ color: c }}
-                    >
-                      {dict.blog.readMore} →
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+                  <Link
+                    href={newsHref}
+                    className="font-mono text-xs uppercase tracking-widest text-neon-cyan hover:underline"
+                  >
+                    {dict.blog.allNews} →
+                  </Link>
+                </div>
+                <div className="mt-5 grid gap-6 md:grid-cols-2">
+                  {news.slice(0, 2).map((a, i) => (
+                    <ArticleCard key={a.slug} article={a} locale={locale} dict={dict} color={NEON[(i + 2) % NEON.length]} />
+                  ))}
+                </div>
+                <h2 className="mt-14 font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">
+                  {dict.blog.guides}
+                </h2>
+              </>
+            )}
+            <div className={`grid gap-6 md:grid-cols-2 ${news.length > 0 ? "mt-5" : "mt-12"}`}>
+              {guides.map((a, i) => (
+                <ArticleCard key={a.slug} article={a} locale={locale} dict={dict} color={NEON[i % NEON.length]} />
+              ))}
+            </div>
+          </>
         )}
       </section>
       <Footer dict={dict} />

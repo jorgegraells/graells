@@ -35,6 +35,25 @@ Opcional: dar de alta la publicación en Google Publisher Center
 (publishercenter.google.com) con el nombre "Jorge Graells" para gestionar
 cómo aparece.
 
+## Apartado de noticias y radar de última hora
+
+- Las noticias siguen en `/blog/<slug>`, y además se reúnen en `/es/noticias`
+  y `/en/news` (componente `src/components/blog/NewsIndex.tsx`). El blog
+  muestra arriba las dos últimas noticias y debajo las guías; las tarjetas
+  (`ArticleCard`) y el artículo llevan la etiqueta "Noticia".
+- `node scripts/news-radar.mjs --hours 3` lee feeds RSS de INCIBE, CISA,
+  BleepingComputer, The Hacker News, The Record, Krebs, las páginas de
+  estado de Claude y OpenAI, los blogs de OpenAI y Google IA y Hacker News, y
+  ordena lo de las últimas horas por relevancia.
+- La rutina "Radar de noticias" lo ejecuta cada 2 horas (8:00-22:00 Madrid).
+  Si algo merece noticia, escribe el artículo. **Solo lo publica sola si
+  cumple todas las condiciones** de su prompt (impacto alto, fuente oficial
+  leída entera más un medio fiable, cada dato con fuente, sin acusaciones sin
+  respaldo oficial, validador OK, revisión de editor escéptico, máximo una
+  automática al día). Si no, lo deja como borrador. Siempre avisa al móvil.
+- Para retirar una noticia publicada: panel → abrir el artículo →
+  **Despublicar** (vuelve a ser borrador).
+
 ## Search Console (datos reales de Google)
 
 `scripts/gsc-report.mjs` lee los últimos 28 días (comparados con los 28

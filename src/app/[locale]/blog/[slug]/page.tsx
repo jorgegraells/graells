@@ -128,6 +128,14 @@ export default async function ArticlePage({
         </Link>
 
         <div className="mt-6 flex flex-wrap gap-2">
+          {article.type === "news" && (
+            <Link
+              href={locale === "es" ? "/es/noticias" : "/en/news"}
+              className="rounded-full bg-neon-pink/15 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neon-pink"
+            >
+              ● {dict.blog.newsBadge}
+            </Link>
+          )}
           {article.tags.map((t) => (
             <span
               key={t}
