@@ -16,7 +16,7 @@ export default function Nav({
   const [open, setOpen] = useState(false);
 
   const links = [
-    { href: `/${locale}#about`, label: dict.nav.about },
+    { href: dict.aboutPage.href, label: dict.nav.about },
     { href: `/${locale}#projects`, label: dict.nav.projects },
     { href: `/${locale}#skills`, label: dict.nav.skills },
     { href: `/${locale}#journey`, label: dict.nav.journey },

@@ -16,6 +16,9 @@ LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
 
 - [Home (Spanish)](https://jorgegraells.com/es): profile, projects, stack and career of Jorge Graells
 - [Home (English)](https://jorgegraells.com/en): same content in English
+- [About Jorge Graells](https://jorgegraells.com/en/about): bio, career, training delivered and profiles (Spanish: https://jorgegraells.com/es/sobre-mi)
+- [News](https://jorgegraells.com/en/news): cybersecurity and AI news with sources (Spanish: https://jorgegraells.com/es/noticias)
+- [Editorial policy](https://jorgegraells.com/en/editorial-policy): sources, corrections and how content is prepared
 - [Playable 3D world](https://jorgegraells.com/es/world): videogame village where villagers present each project
 - [Corporate training](https://jorgegraells.com/es/training): cybersecurity and AI training for companies
 - [Blog (English)](https://jorgegraells.com/en/blog) · [Blog (Spanish)](https://jorgegraells.com/es/blog)

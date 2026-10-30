@@ -7,7 +7,13 @@ export default function Footer({ dict }: { dict: Dictionary }) {
         <span className="text-neon-cyan">◆</span> © {new Date().getFullYear()}{" "}
         Jorge Graells · {dict.footer.rights}
       </p>
-      <p className="mt-2 flex items-center justify-center gap-4">
+      <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+        <a href={dict.aboutPage.href} className="transition-colors hover:text-neon-cyan">
+          {dict.aboutPage.title}
+        </a>
+        <a href={dict.editorial.href} className="transition-colors hover:text-neon-cyan">
+          {dict.editorial.title}
+        </a>
         <a
           href={siteLinks.github}
           target="_blank"

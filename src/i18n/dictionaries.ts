@@ -70,6 +70,28 @@ export type Dictionary = {
     guides: string;
     empty: string;
   };
+  aboutPage: {
+    href: string;
+    tag: string;
+    title: string;
+    headline: string;
+    journeyTitle: string;
+    trainingTitle: string;
+    trainingItems: string[];
+    trainingCta: string;
+    writingTitle: string;
+    writingText: string;
+    editorialLink: string;
+    elsewhereTitle: string;
+  };
+  editorial: {
+    href: string;
+    tag: string;
+    title: string;
+    intro: string;
+    sections: { title: string; text: string }[];
+    contact: string;
+  };
   news: {
     tag: string;
     title: string;
@@ -253,6 +275,52 @@ const es: Dictionary = {
     allNews: "Ver todas las noticias",
     guides: "Guías y artículos",
     empty: "Todavía no hay artículos publicados.",
+  },
+  aboutPage: {
+    href: "/es/sobre-mi",
+    tag: "PERFIL",
+    title: "Sobre mí",
+    headline: "Ingeniero de IA, desarrollador full-stack y formador en ciberseguridad e IA para empresas.",
+    journeyTitle: "Trayectoria",
+    trainingTitle: "Formaciones impartidas",
+    trainingItems: [
+      "Ciberseguridad para la plantilla completa de una empresa industrial.",
+      "Inteligencia artificial y ciberseguridad para la plantilla de Rodmu.",
+    ],
+    trainingCta: "Ver las formaciones",
+    writingTitle: "Lo que escribo",
+    writingText: "En el blog escribo guías y noticias sobre ciberseguridad e inteligencia artificial, pensadas para empresas y para cualquier persona que use la tecnología a diario. Cada dato lleva su fuente.",
+    editorialLink: "Cómo trabajo: política editorial",
+    elsewhereTitle: "Dónde encontrarme",
+  },
+  editorial: {
+    href: "/es/politica-editorial",
+    tag: "TRANSPARENCIA",
+    title: "Política editorial",
+    intro: "Los artículos y noticias de esta web los firma Jorge Graells. Aquí explico cómo se preparan, de dónde salen los datos y qué hacer si ves un error.",
+    sections: [
+      {
+        title: "Quién escribe",
+        text: "Todo lo que se publica aquí sale bajo mi nombre y mi responsabilidad. Escribo sobre lo que conozco de primera mano: ciberseguridad, inteligencia artificial aplicada y desarrollo de software.",
+      },
+      {
+        title: "De dónde salen los datos",
+        text: "Cada dato, cifra o cita sale de una fuente que se puede consultar, y la enlazo en el propio texto. Siempre que existe uso la fuente original: el comunicado de la empresa afectada, el aviso de la autoridad (INCIBE, CISA, FBI...) o el documento oficial. Si algo no se puede verificar, no se publica.",
+      },
+      {
+        title: "Cómo se tratan las noticias",
+        text: "En las noticias separo lo confirmado de lo que todavía no se sabe, y no atribuyo un ataque a ninguna persona, grupo o país si no lo ha hecho antes una fuente oficial. Cuando hay novedades, actualizo la noticia y la fecha de actualización aparece al principio.",
+      },
+      {
+        title: "Herramientas",
+        text: "Uso herramientas digitales, incluida la inteligencia artificial, para vigilar fuentes, detectar sucesos y preparar borradores. Ninguna sustituye la comprobación: los datos se contrastan con la fuente original antes de publicarse.",
+      },
+      {
+        title: "Independencia",
+        text: "No publico contenido patrocinado ni cobro por aparecer en un artículo. Cuando un texto menciona mis formaciones es porque el tema está relacionado, y queda claro que son mías.",
+      },
+    ],
+    contact: "Si encuentras un error o una información que haya cambiado, escríbeme. Lo reviso y, si procede, lo corrijo cuanto antes y queda reflejada la fecha de actualización:",
   },
   news: {
     tag: "ÚLTIMA HORA",
@@ -617,6 +685,52 @@ const en: Dictionary = {
     allNews: "See all news",
     guides: "Guides and articles",
     empty: "No articles published yet.",
+  },
+  aboutPage: {
+    href: "/en/about",
+    tag: "PROFILE",
+    title: "About me",
+    headline: "AI engineer, full-stack developer and cybersecurity and AI trainer for companies.",
+    journeyTitle: "Career",
+    trainingTitle: "Training delivered",
+    trainingItems: [
+      "Cybersecurity for the full staff of an industrial company.",
+      "Artificial intelligence and cybersecurity for the staff of Rodmu.",
+    ],
+    trainingCta: "See the training",
+    writingTitle: "What I write",
+    writingText: "On the blog I write guides and news about cybersecurity and artificial intelligence, for companies and for anyone who uses technology every day. Every fact comes with its source.",
+    editorialLink: "How I work: editorial policy",
+    elsewhereTitle: "Find me",
+  },
+  editorial: {
+    href: "/en/editorial-policy",
+    tag: "TRANSPARENCY",
+    title: "Editorial policy",
+    intro: "The articles and news on this site are written by Jorge Graells. Here I explain how they are prepared, where the facts come from and what to do if you spot a mistake.",
+    sections: [
+      {
+        title: "Who writes",
+        text: "Everything published here goes out under my name and my responsibility. I write about what I know first-hand: cybersecurity, applied artificial intelligence and software development.",
+      },
+      {
+        title: "Where the facts come from",
+        text: "Every fact, figure or quote comes from a source you can check, and I link it in the text itself. Whenever it exists, I use the original source: the affected company's statement, the authority's advisory (INCIBE, CISA, FBI...) or the official document. If something can't be verified, it isn't published.",
+      },
+      {
+        title: "How news is handled",
+        text: "In news pieces I separate what's confirmed from what isn't known yet, and I don't attribute an attack to any person, group or country unless an official source has done so first. When there's news, I update the piece and the update date appears at the top.",
+      },
+      {
+        title: "Tools",
+        text: "I use digital tools, including artificial intelligence, to monitor sources, spot events and prepare drafts. None of them replaces checking: facts are verified against the original source before publishing.",
+      },
+      {
+        title: "Independence",
+        text: "I don't publish sponsored content or charge to appear in an article. When a piece mentions my training it's because the topic is related, and it's clear they're mine.",
+      },
+    ],
+    contact: "If you find a mistake or something that has changed, write to me. I'll review it and, where appropriate, correct it as soon as possible, and the update date will reflect it:",
   },
   news: {
     tag: "BREAKING",

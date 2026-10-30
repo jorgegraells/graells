@@ -103,7 +103,7 @@ export default async function ArticlePage({
     author: {
       "@type": "Person",
       name: "Jorge Graells",
-      url: SITE,
+      url: `${SITE}${dict.aboutPage.href}`,
       jobTitle: "AI Engineer & Full-Stack Developer",
       sameAs: [siteLinks.linkedin, siteLinks.github],
     },
@@ -151,7 +151,7 @@ export default async function ArticlePage({
         </h1>
         <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
           {dict.blog.by}{" "}
-          <Link href={`/${locale}#about`} rel="author" className="text-foreground/80 hover:text-neon-cyan">
+          <Link href={dict.aboutPage.href} rel="author" className="text-foreground/80 hover:text-neon-cyan">
             Jorge Graells
           </Link>{" "}
           · {shownDate} · {article.readingMinutes}{" "}

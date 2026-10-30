@@ -128,12 +128,14 @@ function buildJsonLd(locale: Locale) {
     "@type": "Person",
     "@id": `${SITE}/#jorge`,
     name: "Jorge Graells",
+    alternateName: "Graells",
     jobTitle: isEs
       ? "Ingeniero de IA y Desarrollador Full-Stack"
       : "AI Engineer & Full-Stack Developer",
     description: dict.about.paragraphs[0],
     url: SITE,
-    image: `${SITE}/og.jpg`,
+    mainEntityOfPage: `${SITE}${dict.aboutPage.href}`,
+    image: `${SITE}/jorge-graells.webp`,
     email: `mailto:${siteLinks.email}`,
     sameAs: [siteLinks.github, siteLinks.linkedin],
     nationality: { "@type": "Country", name: isEs ? "España" : "Spain" },
