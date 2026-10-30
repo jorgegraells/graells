@@ -20,6 +20,8 @@ type ArticleFile = {
   date: string;
   updated?: string;
   draft?: boolean;
+  published?: string;
+  type?: "news";
   es: LocaleData;
   en: LocaleData;
 };
@@ -293,6 +295,26 @@ export default function AdminPage() {
                 }
                 className="ml-1 rounded-md border border-white/15 bg-black/30 px-2 py-1 text-xs text-foreground"
               />
+            </label>
+            <label
+              className="flex items-center gap-1.5 font-mono text-xs uppercase text-muted"
+              title="Noticia de actualidad: se marca como NewsArticle y entra en el sitemap de Google Noticias"
+            >
+              <input
+                type="checkbox"
+                checked={editing.data.type === "news"}
+                onChange={(e) =>
+                  setEditing((p) =>
+                    p
+                      ? {
+                          ...p,
+                          data: { ...p.data, type: e.target.checked ? "news" : undefined },
+                        }
+                      : p,
+                  )
+                }
+              />
+              Noticia
             </label>
             {editing.file && editing.data.draft && (
               <button

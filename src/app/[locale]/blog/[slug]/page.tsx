@@ -82,14 +82,21 @@ export default async function ArticlePage({
     timeZone: "UTC",
   });
   // Solo se muestra si hubo una edición posterior al día de publicación
-  const wasUpdated = article.updated.length > 10;
+  const wasUpdated =
+    article.updated.length > 10 &&
+    Date.parse(article.updated) - Date.parse(article.published) > 10 * 60_000;
+  // Las noticias muestran la hora de publicación, como cualquier medio
+  const shownDate =
+    article.type === "news" && article.published.length > 10
+      ? `${fmtUpdated.format(new Date(article.published))} UTC`
+      : fmt.format(new Date(article.date));
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": article.type === "news" ? "NewsArticle" : "BlogPosting",
     headline: article.title,
     description: article.description,
-    datePublished: article.date,
+    datePublished: article.published,
     dateModified: article.updated,
     inLanguage: locale,
     keywords: article.tags.join(", "),
@@ -101,7 +108,7 @@ export default async function ArticlePage({
       sameAs: [siteLinks.linkedin, siteLinks.github],
     },
     publisher: { "@type": "Person", name: "Jorge Graells", url: SITE },
-    image: `${SITE}/og.jpg`,
+    image: `${SITE}/${locale}/blog/${slug}/opengraph-image`,
     mainEntityOfPage: `${SITE}/${locale}/blog/${slug}`,
   };
 
@@ -135,7 +142,11 @@ export default async function ArticlePage({
           {article.title}
         </h1>
         <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
-          {fmt.format(new Date(article.date))} · {article.readingMinutes}{" "}
+          {dict.blog.by}{" "}
+          <Link href={`/${locale}#about`} rel="author" className="text-foreground/80 hover:text-neon-cyan">
+            Jorge Graells
+          </Link>{" "}
+          · {shownDate} · {article.readingMinutes}{" "}
           {dict.blog.minRead}
         </p>
         {wasUpdated && (

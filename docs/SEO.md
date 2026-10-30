@@ -16,6 +16,25 @@ Las dos rutinas corren en el entorno de la nube "Blog - fuentes oficiale",
 que solo deja salir a una lista blanca de dominios. Se gestionan en
 https://claude.ai/code/routines.
 
+## Google Noticias
+
+Lo que la web ya hace para poder salir en Google Noticias, Discover y el
+carrusel de noticias destacadas:
+
+- Artículos con `"type": "news"` → JSON-LD `NewsArticle` con hora exacta de
+  publicación (`published`, la sella el panel al publicar) y hora visible.
+- `/news-sitemap.xml` con lo publicado en los dos últimos días, declarado en
+  robots.txt.
+- Firma visible "Por Jorge Graells" enlazada a la sección Sobre mí, autor con
+  sameAs (LinkedIn, GitHub), imagen propia de 1200 px por artículo y
+  `max-image-preview:large`.
+
+La inclusión la decide Google de forma automática; no hay que solicitarla.
+Lo que más pesa es publicar noticias con regularidad, rápido y con fuentes.
+Opcional: dar de alta la publicación en Google Publisher Center
+(publishercenter.google.com) con el nombre "Jorge Graells" para gestionar
+cómo aparece.
+
 ## Search Console (datos reales de Google)
 
 `scripts/gsc-report.mjs` lee los últimos 28 días (comparados con los 28

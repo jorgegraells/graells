@@ -22,6 +22,8 @@ export type ArticleFile = {
   date: string;
   updated?: string;
   draft?: boolean;
+  published?: string;
+  type?: "news";
   es: ArticleLocaleData;
   en: ArticleLocaleData;
 };

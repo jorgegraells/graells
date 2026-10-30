@@ -82,6 +82,13 @@ export async function POST(request: Request) {
   const record: ArticleFile = {
     date: data.date,
     updated,
+    // Al publicar un borrador queda sellada la hora exacta de publicación
+    ...(publish && (data.draft || !payload.file)
+      ? { published: updated }
+      : data.published
+        ? { published: data.published }
+        : {}),
+    ...(data.type === "news" ? { type: "news" as const } : {}),
     ...(publish ? {} : { draft: true }),
     es: data.es,
     en: data.en,

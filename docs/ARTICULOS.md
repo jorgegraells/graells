@@ -107,6 +107,24 @@ Escoge siempre dentro de estos pilares, con ángulo práctico para empresas:
   (`que-es-x` / `what-is-x`). El archivo se llama `<slug-es>.json`.
 - **tags**: 4-6, en minúsculas, por idioma.
 
+## Noticias de actualidad (Google Noticias)
+
+Cuando el tema es un suceso de las últimas 24-48 horas (un ataque, una caída,
+un lanzamiento importante), el artículo se marca como noticia con
+`"type": "news"` en el JSON (o la casilla "Noticia" del panel). Eso lo
+publica como NewsArticle, con hora exacta, y lo mete en el sitemap de Google
+Noticias durante dos días.
+
+- Título con el hecho y las palabras con las que se busca ("Hackeo a Binance:
+  qué se sabe del robo de 6.300 millones"), sin sensacionalismo.
+- Primer párrafo: qué ha pasado, cuándo, a quién y cuánto, con la fuente
+  oficial enlazada (comunicado de la empresa, aviso de la autoridad).
+- Separar lo confirmado de lo que no se sabe. Nunca atribuir un ataque a un
+  grupo o país si no lo ha hecho una fuente oficial.
+- Añadir lo que aporta Jorge: qué debe hacer el lector y qué aprender.
+- Avisar de que la noticia se actualizará y actualizarla cuando haya datos
+  nuevos (el panel renueva la fecha de modificación).
+
 ## Formato del archivo
 
 `src/content/articles/<slug-es>.json`:

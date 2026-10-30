@@ -12,6 +12,10 @@ export type Article = {
   date: string; // ISO
   /** Última edición (ISO con hora). Si el archivo no la trae, igual a `date`. */
   updated: string;
+  /** Momento exacto de publicación (ISO con hora). Si falta, igual a `date`. */
+  published: string;
+  /** "news": noticia de actualidad (NewsArticle, sitemap de Google Noticias). */
+  type?: "news";
   readingMinutes: number;
   tags: string[];
   body: string; // Markdown
@@ -26,13 +30,18 @@ export type Article = {
 type ArticleFile = {
   date: string;
   updated?: string;
+  published?: string;
+  type?: "news";
   /** Borrador: solo visible en el panel, nunca en la web ni en el sitemap. */
   draft?: boolean;
   es: ArticleLocale;
   en: ArticleLocale;
 };
 
-type ArticleLocale = Omit<Article, "readingMinutes" | "date" | "updated" | "slugs">;
+type ArticleLocale = Omit<
+  Article,
+  "readingMinutes" | "date" | "updated" | "published" | "type" | "slugs"
+>;
 
 const ARTICLES_DIR = path.join(process.cwd(), "src", "content", "articles");
 
@@ -58,6 +67,8 @@ function toArticle(file: ArticleFile, locale: Locale): Article {
     ...data,
     date: file.date,
     updated: file.updated ?? file.date,
+    published: file.published ?? file.date,
+    type: file.type,
     readingMinutes: readingMinutes(data.body),
     slugs: { es: file.es.slug, en: file.en.slug },
   };
