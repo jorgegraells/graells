@@ -128,7 +128,9 @@ async function startChrome() {
     "--disable-renderer-backgrounding",
     "--disable-background-timer-throttling",
   ];
-  if (HIDDEN) flags.push("--headless=new", "--window-size=1400,1000");
+  // Sin ventana visible pero con un Chrome normal fuera de la pantalla: el modo
+  // headless hace que Google desconfíe y cierre la sesión del perfil
+  if (HIDDEN) flags.push("--window-position=-3000,0", "--window-size=1400,1000");
   spawn(exe, [...flags, "about:blank"], { detached: true, stdio: "ignore" }).unref();
   for (let i = 0; i < 75; i++) {
     if (await debuggerInfo()) return true;
@@ -173,14 +175,9 @@ async function openPage() {
     await page.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "normal" } });
     await page.send("Browser.setWindowBounds", { windowId, bounds: { width: 1400, height: 1000 } });
   } catch {
-    // sin ventana (headless) ya va con --window-size
+    // si la ventana no deja cambiar de tamaño, se queda con --window-size
   }
   await page.send("Emulation.setFocusEmulationEnabled", { enabled: true });
-  if (HIDDEN) {
-    // Sin ventana Chrome se anuncia como "HeadlessChrome"; Google lo mira con lupa
-    const { userAgent } = await page.send("Browser.getVersion");
-    await page.send("Network.setUserAgentOverride", { userAgent: userAgent.replace("HeadlessChrome", "Chrome") });
-  }
   return page;
 }
 

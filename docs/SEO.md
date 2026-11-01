@@ -119,6 +119,8 @@ node scripts/index-bot.mjs https://jorgegraells.com/es/blog/x   # solo esa URL
 - Search Console de Jorge está en **catalán** (lo decide la cuenta de Google,
   no el navegador): el bot reconoce los textos en catalán, castellano e inglés.
   Si Google cambia los textos, es lo primero que hay que revisar.
+- `--hidden` abre un Chrome normal fuera de la pantalla, no headless: con
+  headless Google cerró la sesión del perfil (1 nov 2026).
 - Si caduca la sesión de Google, la tarea falla con "no hay sesión": ejecuta
   `node scripts/index-bot.mjs` con ventana e inicia sesión otra vez.
 
