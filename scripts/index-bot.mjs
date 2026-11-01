@@ -154,6 +154,11 @@ async function connect(wsUrl) {
     waiting.delete(m.id);
     m.error ? ko(new Error(m.error.message)) : ok(m.result);
   };
+  // Si se cierra la pestaña o Chrome, que falle con un mensaje en vez de quedarse colgado
+  ws.onclose = () => {
+    for (const { ko } of waiting.values()) ko(new Error("se ha cerrado la ventana de Chrome del bot"));
+    waiting.clear();
+  };
   const send = (method, params = {}) =>
     new Promise((ok, ko) => {
       const id = ++seq;
