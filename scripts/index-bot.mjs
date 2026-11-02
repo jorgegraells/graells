@@ -60,9 +60,18 @@ function log(msg) {
   fs.appendFileSync(LOG_FILE, `${new Date().toISOString()} ${msg}\n`);
 }
 
+// Lanza en vez de salir, para que la pasada cierre el Chrome que abrió (si no,
+// queda vivo fuera de la pantalla y la siguiente ejecución con ventana lo reutiliza)
+class BotExit extends Error {
+  constructor(msg, code) {
+    super(msg);
+    this.code = code;
+  }
+}
+
 function fail(msg, code = 1) {
   log(`ERROR: ${msg}`);
-  process.exit(code);
+  throw new BotExit(msg, code);
 }
 
 // ---- Qué URLs mirar: artículos (los más nuevos primero) y páginas fijas ----
@@ -279,6 +288,12 @@ async function loadInspector() {
 
 async function ensureLoggedIn() {
   let box = await loadInspector();
+  // Recién abierto Chrome, Google a veces manda a la portada pública mientras
+  // renueva las cookies de sesión: se reintenta antes de dar la sesión por perdida
+  for (let i = 0; i < 3 && (!box || box === "login"); i++) {
+    await sleep(10000);
+    box = await loadInspector();
+  }
   if (box && box !== "login") return;
   if (HIDDEN)
     fail("no hay sesión de Google en el perfil del bot. Ejecuta `node scripts/index-bot.mjs` con ventana e inicia sesión", 2);
@@ -424,6 +439,9 @@ try {
     `Hecho: ${summary.requested.length} solicitadas, ${summary.indexed} ya indexadas, ` +
       `${summary.missing.length} pendientes, ${summary.skipped} saltadas, ${summary.errors.length} con error.`,
   );
+} catch (e) {
+  if (!(e instanceof BotExit)) throw e;
+  exitCode = e.code;
 } finally {
   saveState();
   if (startedChrome) {
