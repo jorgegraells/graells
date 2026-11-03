@@ -2,10 +2,9 @@ import Link from "next/link";
 import { siteLinks, socialProfiles, type Dictionary, type Locale } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
 import DossierTabs from "./DossierTabs";
-import ProofDemo from "./ProofDemo";
 import Withheld from "./Withheld";
 
-const FOLIOS = 6;
+const FOLIOS = 5;
 const LETTERS = "ABCDEFGHIJ";
 // Una etapa con año de fin está cerrada: se imprime como copia de copia
 const CLOSED = /\d{4}\s*-\s*\d{4}/;
@@ -66,7 +65,6 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
         dict={dict}
         tabs={[
           { href: "#dx-top", label: t.tabs.subject, current: true },
-          { href: "#dx-proof", label: t.tabs.proof },
           { href: "#dx-annexes", label: t.tabs.annexes },
           { href: "#dx-record", label: t.tabs.record },
           { href: "#dx-close", label: t.tabs.contact },
@@ -159,14 +157,8 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
         </div>
       </Folio>
 
-      <Folio n={3} section={t.proof.section} anchor="proof" id="dx-proof" footer={t.proof.footer} dict={dict}>
-        <h2>{t.proof.title}</h2>
-        <p>{t.proof.intro}</p>
-        <ProofDemo dict={dict} />
-      </Folio>
-
       <Folio
-        n={4}
+        n={3}
         section={t.annexes.section}
         anchor="projects"
         id="dx-annexes"
@@ -198,7 +190,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
         </p>
       </Folio>
 
-      <Folio n={5} section={t.background.section} anchor="journey" footer={t.background.footer} dict={dict}>
+      <Folio n={4} section={t.background.section} anchor="journey" footer={t.background.footer} dict={dict}>
         <div className="dx-cols">
           <div>
             <h2>{t.background.title}</h2>
@@ -232,7 +224,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
         </p>
       </Folio>
 
-      <Folio n={6} section={t.record.section} anchor="blog" id="dx-record" footer={t.close.footer} dict={dict}>
+      <Folio n={5} section={t.record.section} anchor="blog" id="dx-record" footer={t.close.footer} dict={dict}>
         {latest && (
           <div className="dx-open">
             <span className="dx-lab dx-graph">

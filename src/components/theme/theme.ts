@@ -24,7 +24,6 @@ const ANCHOR_MAP: Record<Theme, Record<string, string>> = {
   arcade: {
     top: "top",
     about: "about",
-    proof: "skills",
     projects: "projects",
     journey: "journey",
     blog: "blog",
