@@ -676,8 +676,8 @@ const es: Dictionary = {
       stamp: "Desclasificado",
       stampSub: "Uso público · 2026",
       greeting: "Hola, soy",
-      photoCaption: "Fotografía 1. Una red neuronal, en un bit. Pesa unos pocos KB y no necesita WebGL.",
-      photoAlt: "Red neuronal dibujada en un bit con tramado de puntos",
+      photoCaption: "Fotografía 1. El sujeto, tramado a un bit.",
+      photoAlt: "Retrato de Jorge Graells en blanco y negro, tramado a un bit",
       fields: {
         name: "Nombre",
         occupation: "Ocupación",
@@ -1216,8 +1216,8 @@ const en: Dictionary = {
       stamp: "Declassified",
       stampSub: "Public use · 2026",
       greeting: "Hi, I'm",
-      photoCaption: "Photograph 1. A neural network, in one bit. A few KB, no WebGL needed.",
-      photoAlt: "Neural network drawn in one bit with dithering",
+      photoCaption: "Photograph 1. The subject, dithered to one bit.",
+      photoAlt: "Black and white portrait of Jorge Graells, dithered to one bit",
       fields: {
         name: "Name",
         occupation: "Occupation",

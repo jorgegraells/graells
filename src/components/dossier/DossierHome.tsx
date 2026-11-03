@@ -2,7 +2,6 @@ import Link from "next/link";
 import { siteLinks, socialProfiles, type Dictionary, type Locale } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
 import ThemeToggle from "@/components/theme/ThemeToggle";
-import DitherPhoto from "./DitherPhoto";
 import ProofDemo from "./ProofDemo";
 import Withheld from "./Withheld";
 
@@ -90,7 +89,8 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
         </h1>
         <div className="dx-subject">
           <figure className="dx-photo">
-            <DitherPhoto alt={t.subject.photoAlt} />
+            {/* eslint-disable-next-line @next/next/no-img-element -- PNG de 2 colores ya optimizado (scripts/dither-photo.mjs) */}
+            <img src="/jorge-expediente.png" width={240} height={300} alt={t.subject.photoAlt} />
             <figcaption className="dx-lab">{t.subject.photoCaption}</figcaption>
           </figure>
           <div>

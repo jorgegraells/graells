@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Foto original del retrato del expediente (solo se publica la versión a 1 bit)
+/scripts/jorge-dossier-src.jpg

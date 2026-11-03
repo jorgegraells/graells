@@ -162,7 +162,7 @@
 /* --- Ficha del sujeto ----------------------------------------------------- */
 .dx-subject {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: 258px minmax(0, 1fr); /* foto a 240 px exactos + marco */
   gap: 36px;
   align-items: start;
 }
@@ -173,7 +173,7 @@
   background: var(--dx-paper);
   transform: rotate(-1.2deg);
 }
-.dx-photo canvas {
+.dx-photo img {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -630,7 +630,7 @@ html.dx-stamping .dx-stamp {
     grid-template-columns: 1fr;
   }
   .dx-photo {
-    max-width: 240px;
+    max-width: 258px;
   }
   .dx-annex li {
     grid-template-columns: 48px minmax(0, 1fr);
