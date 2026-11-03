@@ -9,6 +9,7 @@ import {
 } from "@/i18n/dictionaries";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import DossierTraining from "@/components/dossier/DossierTraining";
 import Link from "next/link";
 import { getArticles } from "@/content/articles";
 
@@ -82,7 +83,8 @@ export default async function TrainingPage({
 
   return (
     <main className="flex-1">
-      <Nav locale={locale as Locale} dict={dict} />
+      <div className="theme-arcade">
+      <Nav locale={locale as Locale} dict={dict} themeToggle />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -255,6 +257,10 @@ export default async function TrainingPage({
         </div>
       </section>
       <Footer dict={dict} />
+      </div>
+      <div className="theme-dossier">
+        <DossierTraining locale={locale as Locale} dict={dict} />
+      </div>
     </main>
   );
 }

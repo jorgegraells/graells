@@ -44,7 +44,7 @@ export default function DossierTabs({
 }
 
 /** Pestañas de las páginas interiores (blog, noticias, artículos…) */
-export function innerTabs(locale: Locale, dict: Dictionary, current: "blog" | "news" | "training"): DossierTab[] {
+export function innerTabs(locale: Locale, dict: Dictionary, current?: "blog" | "news" | "training"): DossierTab[] {
   const p = dict.dossier.pages;
   return [
     { href: `/${locale}`, label: p.home },

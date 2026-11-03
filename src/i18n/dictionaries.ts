@@ -262,6 +262,17 @@ export type Dictionary = {
       back: string;
       end: string;
     };
+    trainingPage: {
+      section: string;
+      credentials: string;
+      program: string;
+      photos: string;
+      photoLabel: string;
+      statements: string;
+      footer: string;
+    };
+    aboutPage: { section: string; report: string; channels: string };
+    editorialPage: { section: string; clause: string; footer: string };
   };
 };
 
@@ -828,6 +839,17 @@ const es: Dictionary = {
       back: "Volver al registro",
       end: "Fin del documento",
     },
+    trainingPage: {
+      section: "Formación para empresas",
+      credentials: "Quién la imparte",
+      program: "Programa",
+      photos: "Fotografías de una sesión",
+      photoLabel: "Fotografía",
+      statements: "Declaraciones de asistentes",
+      footer: "El precio final se cierra en una llamada corta",
+    },
+    aboutPage: { section: "Ficha completa del sujeto", report: "Informe", channels: "Canales autorizados" },
+    editorialPage: { section: "Normas del registro", clause: "Cláusula", footer: "Fin de las normas" },
   },
 };
 
@@ -1394,6 +1416,17 @@ const en: Dictionary = {
       back: "Back to the log",
       end: "End of document",
     },
+    trainingPage: {
+      section: "Corporate training",
+      credentials: "Who runs it",
+      program: "Programme",
+      photos: "Photos from a session",
+      photoLabel: "Photograph",
+      statements: "What attendees said",
+      footer: "The final price is agreed in a short call",
+    },
+    aboutPage: { section: "Full subject sheet", report: "Report", channels: "Authorized channels" },
+    editorialPage: { section: "House rules", clause: "Clause", footer: "End of rules" },
   },
 };
 

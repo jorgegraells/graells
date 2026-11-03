@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getDictionary, sameAsProfiles, siteLinks, socialProfiles, type Locale } from "@/i18n/dictionaries";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import DossierAbout from "@/components/dossier/DossierAbout";
 
 /** Página "Sobre mí" (/es/sobre-mi, /en/about): la ficha de autor que Google
  *  usa para reconocer a Jorge como persona (panel de conocimiento) y que
@@ -72,7 +73,8 @@ export default function AboutPage({ locale }: { locale: Locale }) {
 
   return (
     <main className="flex-1">
-      <Nav locale={locale} dict={dict} />
+      <div className="theme-arcade">
+      <Nav locale={locale} dict={dict} themeToggle />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -163,6 +165,10 @@ export default function AboutPage({ locale }: { locale: Locale }) {
         </ul>
       </article>
       <Footer dict={dict} />
+      </div>
+      <div className="theme-dossier">
+        <DossierAbout locale={locale} dict={dict} />
+      </div>
     </main>
   );
 }

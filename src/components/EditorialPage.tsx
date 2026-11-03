@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getDictionary, siteLinks, type Locale } from "@/i18n/dictionaries";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import DossierEditorial from "@/components/dossier/DossierEditorial";
 
 /** Política editorial (/es/politica-editorial, /en/editorial-policy):
  *  transparencia sobre fuentes, noticias y correcciones, que Google Noticias
@@ -30,7 +31,8 @@ export default function EditorialPage({ locale }: { locale: Locale }) {
   const t = dict.editorial;
   return (
     <main className="flex-1">
-      <Nav locale={locale} dict={dict} />
+      <div className="theme-arcade">
+      <Nav locale={locale} dict={dict} themeToggle />
       <article className="mx-auto w-full max-w-3xl px-6 pb-24 pt-32">
         <p className="font-mono text-xs font-semibold uppercase tracking-[0.35em] text-neon-cyan">
           <span className="text-neon-pink">◢</span> {t.tag}
@@ -61,6 +63,10 @@ export default function EditorialPage({ locale }: { locale: Locale }) {
         </Link>
       </article>
       <Footer dict={dict} />
+      </div>
+      <div className="theme-dossier">
+        <DossierEditorial locale={locale} dict={dict} />
+      </div>
     </main>
   );
 }
