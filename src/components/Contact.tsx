@@ -1,4 +1,4 @@
-import { siteLinks, type Dictionary } from "@/i18n/dictionaries";
+import { siteLinks, socialProfiles, type Dictionary } from "@/i18n/dictionaries";
 import Section from "@/components/Section";
 
 export default function Contact({ dict }: { dict: Dictionary }) {
@@ -22,22 +22,17 @@ export default function Contact({ dict }: { dict: Dictionary }) {
           ▶ {dict.contact.cta}
         </a>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-6 font-mono text-sm text-muted">
-          <a
-            href={siteLinks.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-neon-cyan"
-          >
-            GitHub ↗
-          </a>
-          <a
-            href={siteLinks.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors hover:text-neon-cyan"
-          >
-            LinkedIn ↗
-          </a>
+          {socialProfiles.map((p) => (
+            <a
+              key={p.href}
+              href={p.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-neon-cyan"
+            >
+              {p.label} ↗
+            </a>
+          ))}
           <a
             href={`mailto:${siteLinks.email}`}
             className="transition-colors hover:text-neon-cyan"

@@ -11,6 +11,8 @@
 
 Contact: dev.graells@gmail.com · GitHub: https://github.com/jorgegraells ·
 LinkedIn: https://www.linkedin.com/in/jorge-graells-4a2911117/
+Social (@DevGraells): https://www.youtube.com/@DevGraells · https://x.com/DevGraells ·
+https://www.tiktok.com/@devgraells · https://www.instagram.com/devgraells/
 
 ## Main pages
 

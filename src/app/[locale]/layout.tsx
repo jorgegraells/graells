@@ -5,6 +5,7 @@ import {
   locales,
   isLocale,
   getDictionary,
+  sameAsProfiles,
   siteLinks,
   type Locale,
 } from "@/i18n/dictionaries";
@@ -136,7 +137,7 @@ function buildJsonLd(locale: Locale) {
     mainEntityOfPage: `${SITE}${dict.aboutPage.href}`,
     image: `${SITE}/jorge-graells.webp`,
     email: `mailto:${siteLinks.email}`,
-    sameAs: [siteLinks.github, siteLinks.linkedin],
+    sameAs: sameAsProfiles,
     nationality: { "@type": "Country", name: isEs ? "España" : "Spain" },
     knowsAbout: [
       "Artificial Intelligence",

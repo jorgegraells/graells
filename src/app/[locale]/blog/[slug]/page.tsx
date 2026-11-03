@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import {
   getDictionary,
   isLocale,
-  siteLinks,
+  sameAsProfiles,
   type Locale,
 } from "@/i18n/dictionaries";
 import {
@@ -105,7 +105,7 @@ export default async function ArticlePage({
       name: "Jorge Graells",
       url: `${SITE}${dict.aboutPage.href}`,
       jobTitle: "AI Engineer & Full-Stack Developer",
-      sameAs: [siteLinks.linkedin, siteLinks.github],
+      sameAs: sameAsProfiles,
     },
     publisher: { "@type": "Person", name: "Jorge Graells", url: SITE },
     image: `${SITE}/${locale}/blog/${slug}/opengraph-image`,

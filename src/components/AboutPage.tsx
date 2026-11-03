@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getDictionary, siteLinks, type Locale } from "@/i18n/dictionaries";
+import { getDictionary, sameAsProfiles, siteLinks, socialProfiles, type Locale } from "@/i18n/dictionaries";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
@@ -44,8 +44,7 @@ export default function AboutPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const t = dict.aboutPage;
   const profiles = [
-    { label: "LinkedIn", href: siteLinks.linkedin },
-    { label: "GitHub", href: siteLinks.github },
+    ...socialProfiles,
     { label: siteLinks.email, href: `mailto:${siteLinks.email}` },
   ];
 
@@ -67,7 +66,7 @@ export default function AboutPage({ locale }: { locale: Locale }) {
       image: `${SITE}${PHOTO}`,
       url: SITE,
       email: `mailto:${siteLinks.email}`,
-      sameAs: [siteLinks.linkedin, siteLinks.github],
+      sameAs: sameAsProfiles,
     },
   };
 

@@ -10,8 +10,24 @@ export function isLocale(value: string): value is Locale {
 export const siteLinks = {
   github: "https://github.com/jorgegraells",
   linkedin: "https://www.linkedin.com/in/jorge-graells-4a2911117/",
+  youtube: "https://www.youtube.com/@DevGraells",
+  x: "https://x.com/DevGraells",
+  tiktok: "https://www.tiktok.com/@devgraells",
+  instagram: "https://www.instagram.com/devgraells/",
   email: "dev.graells@gmail.com",
 } as const;
+
+// Perfiles públicos: enlaces del pie, contacto y Sobre mí, y `sameAs` del JSON-LD
+export const socialProfiles = [
+  { label: "LinkedIn", href: siteLinks.linkedin },
+  { label: "GitHub", href: siteLinks.github },
+  { label: "YouTube", href: siteLinks.youtube },
+  { label: "X", href: siteLinks.x },
+  { label: "TikTok", href: siteLinks.tiktok },
+  { label: "Instagram", href: siteLinks.instagram },
+] as const;
+
+export const sameAsProfiles = socialProfiles.map((p) => p.href);
 
 export type Project = {
   slug: string;

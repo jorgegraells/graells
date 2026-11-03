@@ -1,4 +1,4 @@
-import { siteLinks, type Dictionary } from "@/i18n/dictionaries";
+import { socialProfiles, type Dictionary } from "@/i18n/dictionaries";
 
 export default function Footer({ dict }: { dict: Dictionary }) {
   return (
@@ -14,22 +14,17 @@ export default function Footer({ dict }: { dict: Dictionary }) {
         <a href={dict.editorial.href} className="transition-colors hover:text-neon-cyan">
           {dict.editorial.title}
         </a>
-        <a
-          href={siteLinks.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="transition-colors hover:text-neon-cyan"
-        >
-          GitHub
-        </a>
-        <a
-          href={siteLinks.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="transition-colors hover:text-neon-pink"
-        >
-          LinkedIn
-        </a>
+        {socialProfiles.map((p) => (
+          <a
+            key={p.href}
+            href={p.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-neon-cyan"
+          >
+            {p.label}
+          </a>
+        ))}
       </p>
     </footer>
   );
