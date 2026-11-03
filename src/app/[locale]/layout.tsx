@@ -78,15 +78,14 @@ export async function generateMetadata({
     verification: {
       google: "XEnp1fS5vMfANKqkk72g2EPt0XwEGjZdiIZbrPpBtdY",
     },
+    // En la etiqueta genérica (no solo en googlebot) para que Bing y los demás
+    // también usen la imagen grande y el fragmento completo
     robots: {
       index: true,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
     },
     alternates: {
       canonical: `/${locale}`,
