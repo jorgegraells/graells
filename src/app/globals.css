@@ -58,10 +58,10 @@ body {
   color: transparent;
 }
 
+/* Sin resplandor en el texto: el brillo de neón se reserva para lo que se puede
+   pulsar (botones, enlaces del HUD). El degradado de los títulos se mantiene. */
 .neon-text {
-  text-shadow:
-    0 0 8px rgba(34, 211, 238, 0.6),
-    0 0 24px rgba(168, 85, 247, 0.4);
+  text-shadow: none;
 }
 
 /* ---------------------------------------------------------------------------
