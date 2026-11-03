@@ -14,6 +14,7 @@ export default function Section({
   return (
     <motion.section
       id={id}
+      data-anchor={id}
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}

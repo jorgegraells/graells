@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Science_Gothic } from "next/font/google";
+import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import {
   locales,
@@ -9,7 +10,9 @@ import {
   siteLinks,
   type Locale,
 } from "@/i18n/dictionaries";
+import { THEME_SCRIPT } from "@/components/theme/theme";
 import "../globals.css";
+import "../dossier.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,6 +22,34 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+// Tipografías del modo claro (expediente). Redaction aún no está en next/font/google:
+// se sirve desde @fontsource (OFL). El grado 35 imita una copia de varias generaciones.
+const redaction = localFont({
+  variable: "--font-redaction",
+  src: [
+    { path: "../../../node_modules/@fontsource/redaction/files/redaction-latin-400-normal.woff2", weight: "400" },
+    { path: "../../../node_modules/@fontsource/redaction/files/redaction-latin-700-normal.woff2", weight: "700" },
+  ],
+  preload: false,
+  adjustFontFallback: "Times New Roman",
+});
+
+const redaction35 = localFont({
+  variable: "--font-redaction-35",
+  src: [{ path: "../../../node_modules/@fontsource/redaction-35/files/redaction-35-latin-400-normal.woff2", weight: "400" }],
+  preload: false,
+  adjustFontFallback: "Times New Roman",
+});
+
+const scienceGothic = Science_Gothic({
+  variable: "--font-science",
+  subsets: ["latin"],
+  axes: ["wdth"],
+  preload: false,
+  // next/font no tiene métricas de Science Gothic para generar el fallback
+  adjustFontFallback: false,
 });
 
 const SITE = "https://jorgegraells.com";
@@ -207,8 +238,13 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale satisfies Locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${redaction.variable} ${redaction35.variable} ${scienceGothic.variable} h-full antialiased`}
+      // THEME_SCRIPT fija data-theme antes de hidratar
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <script
           type="application/ld+json"

@@ -10,6 +10,7 @@ import TrainingTeaser from "@/components/TrainingTeaser";
 import BlogTeaser from "@/components/BlogTeaser";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import DossierHome from "@/components/dossier/DossierHome";
 
 export default async function Home({
   params,
@@ -20,18 +21,25 @@ export default async function Home({
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
 
+  // Dos temáticas con el mismo contenido: arcade (oscuro) y expediente (claro).
+  // Se pintan las dos y el CSS muestra la de <html data-theme>, sin parpadeo.
   return (
     <main className="flex-1">
-      <Nav locale={locale} dict={dict} />
-      <Hero locale={locale} dict={dict} />
-      <About dict={dict} />
-      <Projects dict={dict} />
-      <Skills dict={dict} />
-      <Journey dict={dict} />
-      <TrainingTeaser locale={locale} dict={dict} />
-      <BlogTeaser locale={locale} dict={dict} />
-      <Contact dict={dict} />
-      <Footer dict={dict} />
+      <div className="theme-arcade">
+        <Nav locale={locale} dict={dict} themeToggle />
+        <Hero locale={locale} dict={dict} />
+        <About dict={dict} />
+        <Projects dict={dict} />
+        <Skills dict={dict} />
+        <Journey dict={dict} />
+        <TrainingTeaser locale={locale} dict={dict} />
+        <BlogTeaser locale={locale} dict={dict} />
+        <Contact dict={dict} />
+        <Footer dict={dict} />
+      </div>
+      <div className="theme-dossier">
+        <DossierHome locale={locale} dict={dict} />
+      </div>
     </main>
   );
 }

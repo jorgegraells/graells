@@ -1,0 +1,694 @@
+/* ===========================================================================
+   Modo claro "Expediente": la web como un expediente desclasificado.
+   Todo va acotado bajo .dx para no tocar el modo oscuro (arcade).
+   Regla de diseño: un sello por página y tachones solo donde falta un dato
+   de verdad (lo que no se publica). Ver docs/diseno/propuestas-modo-claro.html
+   =========================================================================== */
+
+.dx {
+  --dx-desk: #d6d6d0;
+  --dx-paper: #edede8;
+  --dx-toner: #1b1b19;
+  --dx-black: #0a0a0a;
+  --dx-graph: #5a5b57;
+  --dx-rule: #b9b9b2;
+  --dx-stamp: #b0141e;
+  --dx-blue: #24408e;
+  --dx-serif: var(--font-redaction), Georgia, serif;
+  --dx-serif-35: var(--font-redaction-35), var(--font-redaction), Georgia, serif;
+  --dx-label: var(--font-science), system-ui, sans-serif;
+  background: var(--dx-desk);
+  color: var(--dx-toner);
+  font: 400 18px/1.55 var(--dx-serif);
+  padding: 0 16px 48px;
+  min-height: 100vh;
+  /* los avisos de los tachones (ocultos) no deben crear scroll lateral;
+     clip y no hidden para no romper la barra de pestañas sticky */
+  overflow-x: clip;
+}
+.dx ::selection {
+  background: var(--dx-stamp);
+  color: #fff;
+}
+.dx a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+.dx-lab {
+  font-family: var(--dx-label);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.3;
+  font-variation-settings: "wdth" 80;
+}
+.dx-graph {
+  color: var(--dx-graph);
+}
+
+/* --- Pestañas de carpeta (navegación fija) ------------------------------- */
+.dx-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--dx-desk);
+  max-width: 980px;
+  margin: 0 auto;
+  padding-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px;
+}
+.dx-tabs a {
+  text-decoration: none;
+  background: #e2e2dc;
+  padding: 9px 14px 7px;
+  border: 1px solid var(--dx-rule);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+}
+.dx-tabs a:first-child {
+  background: var(--dx-paper);
+  padding-top: 12px;
+}
+.dx-tabs a:hover {
+  background: var(--dx-paper);
+}
+.dx-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 2px 7px;
+}
+.dx-tools .dx-cls {
+  color: var(--dx-graph);
+}
+.dx-tool {
+  font: 700 13px/1 var(--dx-label);
+  font-variation-settings: "wdth" 80;
+  border: 1.5px solid var(--dx-toner);
+  background: transparent;
+  color: var(--dx-toner);
+  padding: 6px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.dx-tool:hover {
+  background: var(--dx-toner);
+  color: var(--dx-paper);
+}
+.dx-tool--play::before {
+  content: "▶ ";
+}
+.dx-tool:focus-visible,
+.dx-tabs a:focus-visible {
+  outline: 2px solid var(--dx-stamp);
+  outline-offset: 2px;
+}
+
+/* --- Folios --------------------------------------------------------------- */
+.dx-folio {
+  max-width: 980px;
+  margin: 0 auto 18px;
+  background: var(--dx-paper);
+  position: relative;
+  padding: 40px 48px 30px;
+  border: 1px solid var(--dx-rule);
+  scroll-margin-top: 64px;
+  /* grano de fotocopia: ruido SVG muy tenue, sin imágenes */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  box-shadow:
+    0 1px 0 var(--dx-rule),
+    0 12px 28px rgba(0, 0, 0, 0.07);
+}
+.dx-folio:first-of-type {
+  border-top-left-radius: 0;
+}
+.dx-fh {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  border-bottom: 2px solid var(--dx-toner);
+  padding-bottom: 8px;
+  margin-bottom: 26px;
+}
+.dx-ff {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  border-top: 1px solid var(--dx-rule);
+  padding-top: 10px;
+  margin-top: 28px;
+  color: var(--dx-graph);
+}
+.dx h1 {
+  font: 700 clamp(40px, 6.2vw, 72px)/1 var(--dx-serif);
+  margin: 0 0 18px;
+  letter-spacing: -0.01em;
+}
+.dx h2 {
+  font: 700 30px/1.15 var(--dx-serif);
+  margin: 0 0 14px;
+}
+.dx p {
+  margin: 0 0 14px;
+  max-width: 64ch;
+}
+
+/* --- Ficha del sujeto ----------------------------------------------------- */
+.dx-subject {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.dx-photo {
+  margin: 0;
+  border: 1px solid var(--dx-toner);
+  padding: 8px;
+  background: var(--dx-paper);
+  transform: rotate(-1.2deg);
+}
+.dx-photo canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #8a8a86;
+}
+.dx-photo figcaption {
+  margin-top: 8px;
+  color: var(--dx-graph);
+}
+.dx-fields {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin: 0 0 20px;
+  border-top: 1px solid var(--dx-toner);
+}
+.dx-fields dt,
+.dx-fields dd {
+  border-bottom: 1px solid var(--dx-rule);
+  padding: 7px 0;
+  margin: 0;
+}
+.dx-fields dt {
+  padding-right: 18px;
+  color: var(--dx-graph);
+  padding-top: 10px;
+}
+.dx-fields dd {
+  font-size: 18px;
+}
+
+/* Tachón: solo para datos que de verdad no se publican */
+.dx-red {
+  display: inline-block;
+  background: var(--dx-black);
+  color: transparent;
+  min-width: 7em;
+  height: 1.05em;
+  vertical-align: -0.12em;
+  position: relative;
+  cursor: help;
+  user-select: none;
+  border-radius: 1px;
+}
+.dx-red:focus {
+  outline: 2px solid var(--dx-stamp);
+  outline-offset: 2px;
+}
+.dx-red::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: 5;
+  width: max-content;
+  max-width: min(240px, 70vw);
+  background: var(--dx-toner);
+  color: var(--dx-paper);
+  font: 600 12.5px/1.35 var(--dx-label);
+  padding: 7px 9px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-3px);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+.dx-red:hover::after,
+.dx-red:focus::after {
+  opacity: 1;
+  transform: none;
+}
+.dx-red--co {
+  min-width: 4.5em;
+  margin-left: 0.3em;
+}
+
+.dx-resumen {
+  font-size: 21px;
+  line-height: 1.5;
+}
+.dx-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin-top: 22px;
+}
+.dx-btn {
+  font-family: var(--dx-label);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 10px 14px;
+  border: 2px solid var(--dx-toner);
+  display: inline-block;
+  line-height: 1.1;
+}
+.dx-btn--solid {
+  background: var(--dx-toner);
+  color: var(--dx-paper) !important;
+}
+.dx-btn:hover {
+  background: var(--dx-stamp);
+  border-color: var(--dx-stamp);
+  color: #fff !important;
+}
+.dx-btn:focus-visible,
+.dx-link:focus-visible {
+  outline: 2px solid var(--dx-stamp);
+  outline-offset: 3px;
+}
+.dx-link {
+  font-size: 16px;
+  text-decoration: underline;
+}
+
+/* Sello: uno por página */
+.dx-stamp {
+  position: absolute;
+  right: 42px;
+  top: 78px;
+  transform: rotate(-9deg);
+  color: var(--dx-stamp);
+  border: 3px double var(--dx-stamp);
+  padding: 6px 12px 4px;
+  font: 700 22px/1 var(--dx-label);
+  text-transform: uppercase;
+  opacity: 0.82;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  text-align: center;
+}
+.dx-stamp small {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  text-transform: none;
+}
+/* Golpe del sello justo después de "imprimir" el expediente */
+html.dx-stamping .dx-stamp {
+  animation: dx-stamp-hit 0.42s cubic-bezier(0.55, 0, 1, 0.45) both;
+}
+@keyframes dx-stamp-hit {
+  0% {
+    opacity: 0;
+    transform: rotate(-9deg) scale(1.9);
+  }
+  80% {
+    opacity: 0.9;
+    transform: rotate(-9deg) scale(0.98);
+  }
+  100% {
+    opacity: 0.82;
+    transform: rotate(-9deg) scale(1);
+  }
+}
+
+/* --- Informe y capacidades ------------------------------------------------ */
+.dx-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 40px;
+}
+.dx-margin {
+  border-left: 2px solid var(--dx-stamp);
+  padding-left: 14px;
+  color: var(--dx-stamp);
+  font: 600 14px/1.45 var(--dx-label);
+  align-self: start;
+}
+.dx-check {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dx-check li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--dx-rule);
+  font-size: 16.5px;
+  line-height: 1.4;
+}
+.dx-check li::before {
+  content: "X";
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--dx-toner);
+  font: 700 14px/16px var(--dx-label);
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* --- Prueba 1: lo que ve cada nivel -------------------------------------- */
+.dx-lv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  align-items: center;
+  margin: 4px 0 18px;
+}
+.dx-lv fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.dx-lv legend {
+  float: left;
+  margin-right: 10px;
+  padding: 0;
+  color: var(--dx-graph);
+}
+.dx-lv label {
+  cursor: pointer;
+}
+.dx-lv input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.dx-lv label span {
+  display: inline-block;
+  border: 1.5px solid var(--dx-toner);
+  padding: 6px 10px;
+  font: 700 13px/1 var(--dx-label);
+}
+.dx-lv input:checked + span {
+  background: var(--dx-toner);
+  color: var(--dx-paper);
+}
+.dx-lv input:focus-visible + span {
+  outline: 2px solid var(--dx-stamp);
+  outline-offset: 2px;
+}
+.dx-demo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 28px;
+  border: 1px solid var(--dx-toner);
+  background: #f4f4f0;
+  padding: 20px 22px;
+}
+.dx-qa {
+  font-size: 17px;
+}
+.dx-qa > .dx-lab {
+  display: block;
+  color: var(--dx-graph);
+  margin-bottom: 4px;
+}
+.dx-qa p {
+  margin: 0 0 12px;
+}
+.dx-ans {
+  min-height: 150px;
+}
+.dx-ans .dx-red {
+  min-width: 5.5em;
+}
+.dx-leak {
+  background: rgba(176, 20, 30, 0.1);
+  box-shadow: inset 0 -2px 0 var(--dx-stamp);
+}
+.dx-leaknote {
+  color: var(--dx-stamp);
+  font: 600 13px/1.4 var(--dx-label);
+  margin-top: 6px;
+}
+.dx-noacc {
+  color: var(--dx-graph);
+  font-style: italic;
+}
+.dx-frags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dx-frags li {
+  border: 1px solid var(--dx-rule);
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.35;
+  background: var(--dx-paper);
+  transition: opacity 0.2s;
+}
+.dx-frags li.is-out {
+  opacity: 0.38;
+  text-decoration: line-through;
+  text-decoration-color: var(--dx-graph);
+}
+.dx-frags .dx-lab {
+  display: block;
+  color: var(--dx-graph);
+  margin-bottom: 2px;
+}
+
+/* --- Anexos (proyectos) --------------------------------------------------- */
+.dx-annex {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 2px solid var(--dx-toner);
+}
+.dx-annex li {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dx-rule);
+}
+.dx-tab {
+  font: 700 30px/1 var(--dx-serif);
+  border: 1.5px solid var(--dx-toner);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+.dx-annex h3 {
+  font: 700 22px/1.2 var(--dx-serif);
+  margin: 0 0 4px;
+}
+.dx-annex p {
+  margin: 0;
+  font-size: 16.5px;
+}
+.dx-annex .dx-lab {
+  color: var(--dx-graph);
+  display: block;
+  margin-bottom: 3px;
+}
+.dx-st {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* --- Antecedentes y formación -------------------------------------------- */
+.dx-hist {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+}
+.dx-hist li {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--dx-rule);
+  font-size: 19px;
+}
+.dx-hist .dx-lab {
+  padding-top: 5px;
+}
+/* Etapa cerrada: copia de varias generaciones */
+.dx-g35 {
+  font-family: var(--dx-serif-35);
+}
+.dx-train {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 8px;
+}
+.dx-train > div {
+  border: 1.5px solid var(--dx-toner);
+  padding: 16px 18px;
+}
+.dx-train h3 {
+  font: 700 22px/1.2 var(--dx-serif);
+  margin: 4px 0 6px;
+}
+.dx-train p {
+  font-size: 16.5px;
+  margin: 0;
+}
+
+/* --- Registro de entradas (blog) y cierre -------------------------------- */
+.dx-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dx-log li {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--dx-rule);
+}
+.dx-log .dx-lab {
+  color: var(--dx-graph);
+  padding-top: 4px;
+}
+.dx-log a {
+  text-decoration: none;
+  font-size: 18px;
+  line-height: 1.35;
+}
+.dx-log a:hover {
+  text-decoration: underline;
+}
+.dx-open {
+  border: 1.5px solid var(--dx-toner);
+  padding: 20px 22px;
+  margin-bottom: 22px;
+  background: #f4f4f0;
+}
+.dx-open h3 {
+  font: 700 26px/1.2 var(--dx-serif);
+  margin: 4px 0 12px;
+}
+.dx-open h3 a {
+  text-decoration: none;
+}
+.dx-open h3 a:hover {
+  text-decoration: underline;
+}
+.dx-recv {
+  display: inline-block;
+  color: var(--dx-blue);
+  border: 2px solid var(--dx-blue);
+  padding: 3px 8px;
+  font: 700 12px/1.1 var(--dx-label);
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  margin-left: 8px;
+  vertical-align: 3px;
+}
+.dx-mail {
+  font: 700 clamp(24px, 4vw, 36px)/1.2 var(--dx-serif);
+  word-break: break-word;
+}
+.dx-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  color: var(--dx-graph);
+}
+
+@media (max-width: 820px) {
+  .dx-subject,
+  .dx-cols,
+  .dx-demo {
+    grid-template-columns: 1fr;
+  }
+  .dx-photo {
+    max-width: 240px;
+  }
+  .dx-annex li {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  .dx-annex li > div:last-child {
+    grid-column: 2;
+  }
+}
+@media (max-width: 600px) {
+  .dx {
+    padding: 0 8px 28px;
+    font-size: 17px;
+  }
+  .dx-folio {
+    padding: 26px 18px 20px;
+  }
+  .dx-stamp {
+    position: relative;
+    right: auto;
+    top: auto;
+    display: inline-block;
+    font-size: 15px;
+    margin: 0 0 14px 4px;
+    transform: rotate(-4deg);
+  }
+  html.dx-stamping .dx-stamp {
+    animation: none;
+  }
+  .dx-tabs a:nth-child(n + 3) {
+    display: none;
+  }
+  .dx-tools .dx-cls {
+    display: none;
+  }
+  .dx-hist li,
+  .dx-log li {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .dx-train {
+    grid-template-columns: 1fr;
+  }
+  .dx-resumen {
+    font-size: 19px;
+  }
+  .dx-fields {
+    grid-template-columns: 1fr;
+  }
+  .dx-fields dt {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dx * {
+    transition: none !important;
+  }
+  html.dx-stamping .dx-stamp {
+    animation: none;
+  }
+}

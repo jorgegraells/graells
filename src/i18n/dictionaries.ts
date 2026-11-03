@@ -180,6 +180,74 @@ export type Dictionary = {
   };
   contact: { title: string; text: string; cta: string };
   footer: { rights: string };
+  /** Botón de cambio de modo: oscuro = "jugar" (arcade), claro = "leer" (expediente) */
+  theme: { toRead: string; toPlay: string; toReadLabel: string; toPlayLabel: string };
+  /** Textos del modo claro "Expediente" */
+  dossier: {
+    file: string;
+    classification: string;
+    tabs: { subject: string; proof: string; annexes: string; record: string; contact: string };
+    folio: string;
+    of: string;
+    switchLocale: string;
+    subject: {
+      section: string;
+      stamp: string;
+      stampSub: string;
+      greeting: string;
+      photoCaption: string;
+      photoAlt: string;
+      fields: { name: string; occupation: string; specialty: string; phone: string; address: string; contact: string };
+      specialtyValue: string;
+      withheld: string;
+      withheldLabel: string;
+      phoneTip: string;
+      addressTip: string;
+      summary: string;
+      footer: string;
+    };
+    report: {
+      section: string;
+      title: string;
+      beforeCompany: string;
+      afterCompany: string;
+      second: string;
+      companyLabel: string;
+      companyTip: string;
+      capabilities: string;
+      capabilityItems: { label: string; text: string }[];
+      footer: string;
+    };
+    proof: {
+      section: string;
+      title: string;
+      intro: string;
+      levelLegend: string;
+      levels: [string, string, string];
+      modeLegend: string;
+      modeRedact: string;
+      modeFilter: string;
+      questionLabel: string;
+      question: string;
+      answerLabel: string;
+      fragmentsLabel: string;
+      inContext: string;
+      outContext: string;
+      reserved: string;
+      fragments: [{ name: string; text: string }, { name: string; text: string }, { name: string; text: string }];
+      answer: {
+        a1: string; date: string; a2: string; who: string; a3: string; tolerance: string; a4: string; manual: string; a5: string;
+        catDate: string; catWho: string; catTolerance: string; redactedLabel: string;
+        leak: string; leakNote: string;
+        noAccess: string; publicOnly: string; noLeak: string;
+      };
+      footer: string;
+    };
+    annexes: { section: string; title: string; mediaLabel: string; note: string; footer: string };
+    background: { section: string; title: string; margin: string; training: string; sessionLabel: string; trainingCta: string; footer: string };
+    record: { section: string; title: string; received: string; news: string; guide: string; all: string };
+    close: { title: string; text: string; social: string; footer: string };
+  };
 };
 
 const es: Dictionary = {
@@ -590,6 +658,136 @@ const es: Dictionary = {
     cta: "Escríbeme",
   },
   footer: { rights: "Hecho con Next.js y Three.js" },
+  theme: {
+    toRead: "Leer",
+    toPlay: "Jugar",
+    toReadLabel: "Cambiar al modo lectura (claro)",
+    toPlayLabel: "Cambiar al modo juego (oscuro)",
+  },
+  dossier: {
+    file: "Expediente JG",
+    classification: "Clasificación: público",
+    tabs: { subject: "Sujeto", proof: "Prueba", annexes: "Anexos", record: "Registro", contact: "Contacto" },
+    folio: "Folio",
+    of: "de",
+    switchLocale: "Switch to English",
+    subject: {
+      section: "Ficha del sujeto",
+      stamp: "Desclasificado",
+      stampSub: "Uso público · 2026",
+      greeting: "Hola, soy",
+      photoCaption: "Fotografía 1. Una red neuronal, en un bit. Pesa unos pocos KB y no necesita WebGL.",
+      photoAlt: "Red neuronal dibujada en un bit con tramado de puntos",
+      fields: {
+        name: "Nombre",
+        occupation: "Ocupación",
+        specialty: "Especialidad",
+        phone: "Teléfono",
+        address: "Domicilio",
+        contact: "Contacto autorizado",
+      },
+      specialtyValue: "IA aplicada a industria y software regulado",
+      withheld: "retirado",
+      withheldLabel: "Dato retirado: no se publica",
+      phoneTip: "Retirado. Los datos personales no se publican.",
+      addressTip: "Retirado. Basta con saber que es España.",
+      summary: "Resumen",
+      footer: "Redactado por el propio sujeto",
+    },
+    report: {
+      section: "Informe",
+      title: "Informe",
+      beforeCompany:
+        "Soy desarrollador full-stack e ingeniero de IA, y llevo ocho años dedicándome a esto. Dirijo el software de inspección de vehículos de una empresa",
+      afterCompany: ", escrito en C++ y funcionando en talleres y estaciones de varios países.",
+      second: "Me muevo entre tres mundos que no suelen ir juntos: el software industrial, la ciberseguridad y la web moderna.",
+      companyLabel: "Nombre de la empresa retirado",
+      companyTip: "El nombre de la empresa no se publica.",
+      capabilities: "Capacidades acreditadas",
+      capabilityItems: [
+        { label: "IA.", text: "LLMs (Gemini, Claude, OpenAI), RAG y context caching, agentes, embeddings y fine-tuning." },
+        { label: "Web y móvil.", text: "Next.js, React Native, Node, Prisma, Supabase." },
+        { label: "Industrial.", text: "C++ Builder, protocolos serie RS-232, equipos de inspección de vehículos." },
+        { label: "Seguridad.", text: "Más de 5 años como responsable de seguridad informática en una empresa industrial." },
+      ],
+      footer: "Revisado",
+    },
+    proof: {
+      section: "Prueba 1",
+      title: "Lo que ve cada nivel",
+      intro:
+        "Un asistente de IA responde con los documentos de la empresa (RAG). La pregunta es la misma; cambia quién la hace y dónde se aplica el permiso. Datos ficticios.",
+      levelLegend: "Nivel de quien pregunta",
+      levels: ["Público", "Interno", "Confidencial"],
+      modeLegend: "El permiso se aplica",
+      modeRedact: "Tachando la respuesta",
+      modeFilter: "Filtrando la búsqueda",
+      questionLabel: "Pregunta",
+      question: "¿Quién firmó la última revisión del frenómetro de la línea 2 y con qué tolerancia está calibrado?",
+      answerLabel: "Respuesta del asistente",
+      fragmentsLabel: "Fragmentos que lee el modelo",
+      inContext: "dentro del contexto",
+      outContext: "fuera, filtrado",
+      reserved: "Contenido reservado a nivel",
+      fragments: [
+        { name: "Manual MT-23, cap. 4", text: "Procedimiento de calibración del frenómetro." },
+        { name: "Registro de revisiones", text: "Línea 2 · 14 de octubre · tolerancia ±2 %." },
+        { name: "Hoja de firmas", text: "Firma: técnico B., turno de noche." },
+      ],
+      answer: {
+        a1: "La última revisión del frenómetro de la línea 2 es del ",
+        date: "14 de octubre",
+        a2: ". La firmó ",
+        who: "el técnico B.",
+        a3: " Está calibrado con una tolerancia de ",
+        tolerance: "±2 %",
+        a4: ", según el manual ",
+        manual: "MT-23",
+        a5: ", capítulo 4.",
+        catDate: "Fecha · nivel interno",
+        catWho: "Persona · nivel confidencial",
+        catTolerance: "Dato técnico · nivel interno",
+        redactedLabel: "Tachado",
+        leak: "Por si te sirve: es el mismo compañero del turno de noche que abrió la incidencia de septiembre.",
+        leakNote:
+          "Fuga por paráfrasis. El nombre está tachado, pero el fragmento estaba en el contexto y el modelo lo describe con otras palabras.",
+        noAccess: "No encuentro registros de revisión entre los documentos a los que tienes acceso.",
+        publicOnly: "El procedimiento de calibración está en el manual MT-23, capítulo 4.",
+        noLeak: "Sin fuga posible: los fragmentos de nivel superior nunca llegaron al modelo.",
+      },
+      footer: "Conclusión: si un fragmento entra en el contexto, el modelo puede contarlo con otras palabras",
+    },
+    annexes: {
+      section: "Anexos",
+      title: "Anexos: proyectos",
+      mediaLabel: "Estado y medios",
+      note: "Cada anexo es también una casa en el mundo virtual de Graells.",
+      footer: "Anexos",
+    },
+    background: {
+      section: "Antecedentes",
+      title: "Antecedentes",
+      margin: "Nota: las etapas cerradas se imprimen como una copia de varias generaciones. Lo que sigue abierto se lee limpio.",
+      training: "Sesiones de formación",
+      sessionLabel: "Sesión",
+      trainingCta: "Ver las formaciones",
+      footer: "Para plantillas sin base técnica",
+    },
+    record: {
+      section: "Registro de entradas",
+      title: "Registro de entradas",
+      received: "Recibido",
+      news: "Noticia",
+      guide: "Guía",
+      all: "Ver todo el registro",
+    },
+    close: {
+      title: "Cierre del expediente",
+      text: "Si algo de esto se parece a un problema de tu empresa, escríbeme y lo vemos en una llamada corta.",
+      social: "En redes: @DevGraells",
+      footer: "Fin del expediente",
+    },
+  },
 };
 
 const en: Dictionary = {
@@ -1000,6 +1198,136 @@ const en: Dictionary = {
     cta: "Get in touch",
   },
   footer: { rights: "Built with Next.js and Three.js" },
+  theme: {
+    toRead: "Read",
+    toPlay: "Play",
+    toReadLabel: "Switch to reading mode (light)",
+    toPlayLabel: "Switch to play mode (dark)",
+  },
+  dossier: {
+    file: "File JG",
+    classification: "Classification: public",
+    tabs: { subject: "Subject", proof: "Exhibit", annexes: "Annexes", record: "Log", contact: "Contact" },
+    folio: "Page",
+    of: "of",
+    switchLocale: "Cambiar a español",
+    subject: {
+      section: "Subject sheet",
+      stamp: "Declassified",
+      stampSub: "Public use · 2026",
+      greeting: "Hi, I'm",
+      photoCaption: "Photograph 1. A neural network, in one bit. A few KB, no WebGL needed.",
+      photoAlt: "Neural network drawn in one bit with dithering",
+      fields: {
+        name: "Name",
+        occupation: "Occupation",
+        specialty: "Specialty",
+        phone: "Phone",
+        address: "Address",
+        contact: "Authorized contact",
+      },
+      specialtyValue: "AI applied to industry and regulated software",
+      withheld: "withheld",
+      withheldLabel: "Withheld: not published",
+      phoneTip: "Withheld. Personal details are not published.",
+      addressTip: "Withheld. Spain is all you need to know.",
+      summary: "Summary",
+      footer: "Written by the subject",
+    },
+    report: {
+      section: "Report",
+      title: "Report",
+      beforeCompany:
+        "I'm a full-stack developer and AI engineer, and I've been doing this for eight years. I lead the vehicle inspection software at a company",
+      afterCompany: ", written in C++ and running in workshops and test stations across several countries.",
+      second: "I move between three worlds that don't usually meet: industrial software, cybersecurity and the modern web.",
+      companyLabel: "Company name withheld",
+      companyTip: "The company name is not published.",
+      capabilities: "Verified capabilities",
+      capabilityItems: [
+        { label: "AI.", text: "LLMs (Gemini, Claude, OpenAI), RAG and context caching, agents, embeddings and fine-tuning." },
+        { label: "Web and mobile.", text: "Next.js, React Native, Node, Prisma, Supabase." },
+        { label: "Industrial.", text: "C++ Builder, RS-232 serial protocols, vehicle inspection equipment." },
+        { label: "Security.", text: "Over 5 years as head of IT security at an industrial company." },
+      ],
+      footer: "Reviewed",
+    },
+    proof: {
+      section: "Exhibit 1",
+      title: "What each level sees",
+      intro:
+        "An AI assistant answers from the company's documents (RAG). The question is the same; what changes is who asks and where the permission is applied. Fictional data.",
+      levelLegend: "Who is asking",
+      levels: ["Public", "Internal", "Confidential"],
+      modeLegend: "Permission applied by",
+      modeRedact: "Redacting the answer",
+      modeFilter: "Filtering the search",
+      questionLabel: "Question",
+      question: "Who signed off the last check of the line 2 brake tester, and what tolerance is it calibrated to?",
+      answerLabel: "Assistant's answer",
+      fragmentsLabel: "Fragments the model reads",
+      inContext: "in the context",
+      outContext: "left out, filtered",
+      reserved: "Content restricted to level",
+      fragments: [
+        { name: "Manual MT-23, ch. 4", text: "Brake tester calibration procedure." },
+        { name: "Inspection log", text: "Line 2 · October 14 · tolerance ±2%." },
+        { name: "Sign-off sheet", text: "Signed: technician B., night shift." },
+      ],
+      answer: {
+        a1: "The last check of the line 2 brake tester was on ",
+        date: "October 14",
+        a2: ". It was signed off by ",
+        who: "technician B.",
+        a3: " It's calibrated to a tolerance of ",
+        tolerance: "±2%",
+        a4: ", according to manual ",
+        manual: "MT-23",
+        a5: ", chapter 4.",
+        catDate: "Date · internal level",
+        catWho: "Person · confidential level",
+        catTolerance: "Technical data · internal level",
+        redactedLabel: "Redacted",
+        leak: "In case it helps: it's the same night-shift colleague who opened the September incident.",
+        leakNote:
+          "Leak by paraphrase. The name is redacted, but the fragment was in the context and the model describes it in other words.",
+        noAccess: "I can't find any inspection records among the documents you have access to.",
+        publicOnly: "The calibration procedure is in manual MT-23, chapter 4.",
+        noLeak: "No leak possible: the higher-level fragments never reached the model.",
+      },
+      footer: "Finding: if a fragment gets into the context, the model can tell it in other words",
+    },
+    annexes: {
+      section: "Annexes",
+      title: "Annexes: projects",
+      mediaLabel: "Status and stack",
+      note: "Each annex is also a house in Graells' virtual world.",
+      footer: "Annexes",
+    },
+    background: {
+      section: "Background",
+      title: "Background",
+      margin: "Note: closed chapters are printed like a copy of a copy. What's still open reads clean.",
+      training: "Training sessions",
+      sessionLabel: "Session",
+      trainingCta: "See the training",
+      footer: "For teams with no technical background",
+    },
+    record: {
+      section: "Entry log",
+      title: "Entry log",
+      received: "Received",
+      news: "News",
+      guide: "Guide",
+      all: "See the full log",
+    },
+    close: {
+      title: "Closing the file",
+      text: "If any of this sounds like a problem at your company, write to me and we'll talk it through in a short call.",
+      social: "On social: @DevGraells",
+      footer: "End of file",
+    },
+  },
 };
 
 const dictionaries: Record<Locale, Dictionary> = { es, en };
