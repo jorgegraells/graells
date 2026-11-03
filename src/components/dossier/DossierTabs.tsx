@@ -21,17 +21,19 @@ export default function DossierTabs({
   const otherLocale: Locale = locale === "es" ? "en" : "es";
   return (
     <nav className="dx-tabs dx-lab" aria-label={t.file}>
-      {tabs.map((tab) =>
-        tab.href.startsWith("#") ? (
-          <a key={tab.href} href={tab.href} aria-current={tab.current ? "page" : undefined}>
-            {tab.label}
-          </a>
-        ) : (
-          <Link key={tab.href} href={tab.href} aria-current={tab.current ? "page" : undefined}>
-            {tab.label}
-          </Link>
-        ),
-      )}
+      <div className="dx-tablist">
+        {tabs.map((tab) =>
+          tab.href.startsWith("#") ? (
+            <a key={tab.href} href={tab.href} aria-current={tab.current ? "page" : undefined}>
+              {tab.label}
+            </a>
+          ) : (
+            <Link key={tab.href} href={tab.href} aria-current={tab.current ? "page" : undefined}>
+              {tab.label}
+            </Link>
+          ),
+        )}
+      </div>
       <div className="dx-tools">
         <span className="dx-cls">{t.classification}</span>
         <Link href={localeHref ?? `/${otherLocale}`} className="dx-tool" aria-label={t.switchLocale}>
@@ -44,10 +46,14 @@ export default function DossierTabs({
 }
 
 /** Pestañas de las páginas interiores (blog, noticias, artículos…) */
-export function innerTabs(locale: Locale, dict: Dictionary, current?: "blog" | "news" | "training"): DossierTab[] {
+export function innerTabs(
+  locale: Locale,
+  dict: Dictionary,
+  current?: "home" | "blog" | "news" | "training",
+): DossierTab[] {
   const p = dict.dossier.pages;
   return [
-    { href: `/${locale}`, label: p.home },
+    { href: `/${locale}`, label: p.home, current: current === "home" },
     { href: `/${locale}/blog`, label: p.blog, current: current === "blog" },
     { href: locale === "es" ? "/es/noticias" : "/en/news", label: p.news, current: current === "news" },
     { href: `/${locale}/training`, label: p.training, current: current === "training" },

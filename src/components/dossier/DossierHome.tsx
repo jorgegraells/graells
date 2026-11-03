@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { siteLinks, socialProfiles, type Dictionary, type Locale } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
-import DossierTabs from "./DossierTabs";
+import DossierTabs, { innerTabs } from "./DossierTabs";
 import Withheld from "./Withheld";
 
 const FOLIOS = 5;
@@ -60,16 +60,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
 
   return (
     <div className="dx" id="dx-top">
-      <DossierTabs
-        locale={locale}
-        dict={dict}
-        tabs={[
-          { href: "#dx-top", label: t.tabs.subject, current: true },
-          { href: "#dx-annexes", label: t.tabs.annexes },
-          { href: "#dx-record", label: t.tabs.record },
-          { href: "#dx-close", label: t.tabs.contact },
-        ]}
-      />
+      <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict, "home")} />
 
       <Folio n={1} section={t.subject.section} anchor="top" footer={t.subject.footer} dict={dict}>
         <div className="dx-stamp" aria-hidden="true">
@@ -112,20 +103,22 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
                 <a href={`mailto:${siteLinks.email}`}>{siteLinks.email}</a>
               </dd>
             </dl>
-            <p className="dx-lab dx-graph" style={{ margin: "0 0 4px" }}>
-              {t.subject.summary}
-            </p>
-            <p className="dx-resumen">{dict.hero.tagline}</p>
-            <div className="dx-ctas">
+            <div className="dx-lead">
+              <p className="dx-lab dx-graph" style={{ margin: "0 0 4px" }}>
+                {t.subject.summary}
+              </p>
+              <p className="dx-resumen">{dict.hero.tagline}</p>
+              <div className="dx-ctas">
               <a className="dx-btn dx-btn--solid" href="#dx-annexes">
                 {dict.hero.ctaProjects}
               </a>
               <a className="dx-btn" href="#dx-close">
                 {dict.hero.ctaContact}
               </a>
-              <Link className="dx-link" href={`/${locale}/world`}>
-                {dict.hero.ctaWorld}
-              </Link>
+                <Link className="dx-link" href={`/${locale}/world`}>
+                  {dict.hero.ctaWorld}
+                </Link>
+              </div>
             </div>
           </div>
         </div>

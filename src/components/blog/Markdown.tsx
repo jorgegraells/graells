@@ -33,7 +33,14 @@ function host(href: string) {
  * recoge el modo expediente (dossier.css). En el expediente, cada fuente
  * externa se numera en el texto y se anota al margen, como lápiz rojo.
  */
-export default function Markdown({ children }: { children: string }) {
+export default function Markdown({
+  children,
+  figures = {},
+}: {
+  children: string;
+  /** Figuras interactivas por id (ver figures.tsx); sin ellas, se deja una marca */
+  figures?: Record<string, React.ReactNode>;
+}) {
   // Numeración de fuentes por artículo: el bloque que cita una fuente por
   // primera vez la numera y la anota; las repeticiones reutilizan el número.
   const refs = new Map<string, number>();
@@ -138,11 +145,23 @@ export default function Markdown({ children }: { children: string }) {
             </code>
           );
         },
-        pre: ({ children }) => (
-          <pre className="md-pre hud-panel clip-corner mt-6 overflow-x-auto p-4 font-mono text-sm leading-relaxed text-foreground/90">
-            {children}
-          </pre>
-        ),
+        pre: ({ node, children }) => {
+          const code = node?.children[0];
+          const lang = code?.type === "element" ? code.properties?.className : undefined;
+          if (code && Array.isArray(lang) && lang.includes("language-figura")) {
+            const id = textOf(code).trim();
+            return figures[id] ? (
+              <figure className="md-figure">{figures[id]}</figure>
+            ) : (
+              <p className="md-p mt-4 font-mono text-sm text-muted">[figura: {id}]</p>
+            );
+          }
+          return (
+            <pre className="md-pre hud-panel clip-corner mt-6 overflow-x-auto p-4 font-mono text-sm leading-relaxed text-foreground/90">
+              {children}
+            </pre>
+          );
+        },
         table: ({ node, children }) => {
           const notes = notesFor(node);
           return withNotes(

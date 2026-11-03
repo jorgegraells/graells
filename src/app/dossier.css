@@ -59,7 +59,14 @@
   align-items: flex-end;
   gap: 4px;
 }
+.dx-tablist {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 0;
+}
 .dx-tabs a {
+  white-space: nowrap;
   text-decoration: none;
   background: #e2e2dc;
   padding: 9px 14px 7px;
@@ -675,8 +682,42 @@ html.dx-stamping .dx-folio:first-of-type {
   html.dx-stamping .dx-stamp {
     animation: none;
   }
-  .dx-tabs a:nth-child(n + 3) {
+  /* Arriba idioma y modo; debajo todas las pestañas, deslizables si no caben */
+  .dx-tools {
+    order: -1;
+    width: 100%;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+  }
+  .dx-tablist {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .dx-tablist::-webkit-scrollbar {
     display: none;
+  }
+  .dx-tabs a {
+    padding: 8px 8px 6px;
+  }
+  .dx-tabs a[aria-current="page"] {
+    padding-top: 10px;
+  }
+  /* En el móvil, primero quién es y qué hace; la foto y la ficha después */
+  .dx-subject {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .dx-subject > div {
+    display: contents;
+  }
+  .dx-lead {
+    order: -1;
+  }
+  .dx-photo {
+    width: 258px;
+    max-width: 100%;
   }
   .dx-tools .dx-cls {
     display: none;
@@ -1127,5 +1168,63 @@ html[data-theme="dossier"] .theme-dossier:has(> .dx-strip) {
   }
   .dx-print--b {
     margin-top: 0;
+  }
+}
+
+/* --- Figuras interactivas dentro de un artículo -------------------------- */
+/* La misma pieza en los dos modos: en el expediente hereda las variables del
+   documento; en arcade se redefinen con la paleta neón. */
+.md-figure {
+  margin: 32px 0;
+  padding: 16px 20px 14px;
+  border: 1px solid var(--dx-toner);
+  background: var(--dx-paper);
+  color: var(--dx-toner);
+  font: 400 17px/1.5 var(--dx-serif);
+}
+html:not([data-theme="dossier"]) .md-figure {
+  --dx-paper: rgba(255, 255, 255, 0.025);
+  --dx-toner: var(--foreground);
+  --dx-black: #3b3654;
+  --dx-graph: var(--muted);
+  --dx-rule: rgba(255, 255, 255, 0.14);
+  --dx-stamp: var(--neon-pink);
+  --dx-serif: var(--font-geist-sans), system-ui, sans-serif;
+  --dx-label: var(--font-geist-mono), ui-monospace, monospace;
+  border-color: rgba(34, 211, 238, 0.35);
+}
+html:not([data-theme="dossier"]) .md-figure .dx-demo {
+  background: rgba(0, 0, 0, 0.25);
+}
+html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
+  background: var(--neon-cyan);
+  border-color: var(--neon-cyan);
+  color: var(--background);
+}
+.md-figure-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px solid var(--dx-toner);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.md-figure-intro {
+  margin: 0 0 14px !important;
+  font-size: 16px;
+}
+.md-figure-cap {
+  display: block;
+  margin-top: 12px;
+  color: var(--dx-graph);
+}
+@media (max-width: 600px) {
+  .md-figure {
+    padding: 14px 12px 12px;
+    margin: 24px -6px;
+  }
+  .md-figure-head {
+    flex-direction: column;
+    gap: 2px;
   }
 }

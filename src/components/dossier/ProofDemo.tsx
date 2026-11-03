@@ -4,14 +4,13 @@ import { useState } from "react";
 import type { Dictionary } from "@/i18n/dictionaries";
 import Withheld from "./Withheld";
 
-// Prueba 1: el mismo asistente RAG a tres niveles de acceso. Tachar la
+// Figura interactiva de artículo: el mismo asistente RAG a tres niveles de acceso. Tachar la
 // respuesta llega tarde (el modelo ya leyó el dato y lo parafrasea); filtrar
 // la búsqueda impide que el fragmento entre en el contexto.
 type Mode = "redact" | "filter";
 const FRAGMENT_LEVEL = [0, 1, 2];
 
-export default function ProofDemo({ dict }: { dict: Dictionary }) {
-  const t = dict.dossier.proof;
+export default function ProofDemo({ t }: { t: Dictionary["dossier"]["proof"] }) {
   const a = t.answer;
   const [level, setLevel] = useState(0);
   const [mode, setMode] = useState<Mode>("redact");

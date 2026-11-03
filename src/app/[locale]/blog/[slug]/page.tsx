@@ -15,6 +15,7 @@ import {
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Markdown from "@/components/blog/Markdown";
+import { articleFigures } from "@/components/blog/figures";
 import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierLedger from "@/components/dossier/DossierLedger";
 
@@ -250,7 +251,7 @@ export default async function ArticlePage({
           </div>
 
           <div className="md mt-6">
-            <Markdown>{article.body}</Markdown>
+            <Markdown figures={articleFigures(dict)}>{article.body}</Markdown>
           </div>
 
           <div className="theme-arcade">

@@ -186,7 +186,6 @@ export type Dictionary = {
   dossier: {
     file: string;
     classification: string;
-    tabs: { subject: string; proof: string; annexes: string; record: string; contact: string };
     folio: string;
     of: string;
     switchLocale: string;
@@ -284,7 +283,7 @@ const es: Dictionary = {
     journey: "Trayectoria",
     training: "Formación",
     blog: "Artículos",
-    news: "Noticias",
+    news: "News",
     contact: "Contacto",
   },
   training: {
@@ -380,7 +379,7 @@ const es: Dictionary = {
     minRead: "min de lectura",
     updated: "Actualizado",
     by: "Por",
-    newsBadge: "Noticia",
+    newsBadge: "News",
     latestNews: "Últimas noticias",
     allNews: "Ver todas las noticias",
     guides: "Guías y artículos",
@@ -434,7 +433,7 @@ const es: Dictionary = {
   },
   news: {
     tag: "ÚLTIMA HORA",
-    title: "Noticias",
+    title: "News",
     subtitle: "Ciberseguridad e IA de actualidad: qué ha pasado, con fuentes, y qué hacer",
     empty: "Todavía no hay noticias publicadas.",
   },
@@ -693,7 +692,6 @@ const es: Dictionary = {
   dossier: {
     file: "Expediente JG",
     classification: "Clasificación: público",
-    tabs: { subject: "Sujeto", proof: "Prueba", annexes: "Anexos", record: "Registro", contact: "Contacto" },
     folio: "Folio",
     of: "de",
     switchLocale: "Switch to English",
@@ -739,7 +737,7 @@ const es: Dictionary = {
       footer: "Revisado",
     },
     proof: {
-      section: "Prueba 1",
+      section: "Prueba interactiva",
       title: "Lo que ve cada nivel",
       intro:
         "Un asistente de IA responde con los documentos de la empresa (RAG). La pregunta es la misma; cambia quién la hace y dónde se aplica el permiso. Datos ficticios.",
@@ -800,12 +798,12 @@ const es: Dictionary = {
       footer: "Para plantillas sin base técnica",
     },
     record: {
-      section: "Registro de entradas",
-      title: "Registro de entradas",
+      section: "Artículos y news",
+      title: "Artículos y news",
       received: "Recibido",
-      news: "Noticia",
-      guide: "Guía",
-      all: "Ver todo el registro",
+      news: "News",
+      guide: "Artículo",
+      all: "Ver todos los artículos",
     },
     close: {
       title: "Cierre del expediente",
@@ -813,17 +811,17 @@ const es: Dictionary = {
       social: "En redes: @DevGraells",
       footer: "Fin del expediente",
     },
-    pages: { home: "Expediente", blog: "Registro", news: "Noticias", training: "Formación", contact: "Contacto" },
+    pages: { home: "Expediente", blog: "Artículos", news: "News", training: "Formación", contact: "Contacto" },
     ledger: {
-      blogSection: "Registro de entradas",
-      newsSection: "Registro de noticias",
+      blogSection: "Artículos",
+      newsSection: "News",
       entries: "entradas",
       footer: "Ordenado de más reciente a más antiguo",
     },
     article: {
       section: "Documento",
-      news: "Noticia",
-      guide: "Guía",
+      news: "News",
+      guide: "Artículo",
       fields: {
         type: "Tipo",
         author: "Autor",
@@ -1270,7 +1268,6 @@ const en: Dictionary = {
   dossier: {
     file: "File JG",
     classification: "Classification: public",
-    tabs: { subject: "Subject", proof: "Exhibit", annexes: "Annexes", record: "Log", contact: "Contact" },
     folio: "Page",
     of: "of",
     switchLocale: "Cambiar a español",
@@ -1316,7 +1313,7 @@ const en: Dictionary = {
       footer: "Reviewed",
     },
     proof: {
-      section: "Exhibit 1",
+      section: "Interactive exhibit",
       title: "What each level sees",
       intro:
         "An AI assistant answers from the company's documents (RAG). The question is the same; what changes is who asks and where the permission is applied. Fictional data.",
@@ -1377,12 +1374,12 @@ const en: Dictionary = {
       footer: "For teams with no technical background",
     },
     record: {
-      section: "Entry log",
-      title: "Entry log",
+      section: "Articles and news",
+      title: "Articles and news",
       received: "Received",
       news: "News",
-      guide: "Guide",
-      all: "See the full log",
+      guide: "Article",
+      all: "See all articles",
     },
     close: {
       title: "Closing the file",
@@ -1390,17 +1387,17 @@ const en: Dictionary = {
       social: "On social: @DevGraells",
       footer: "End of file",
     },
-    pages: { home: "File", blog: "Log", news: "News", training: "Training", contact: "Contact" },
+    pages: { home: "File", blog: "Articles", news: "News", training: "Training", contact: "Contact" },
     ledger: {
-      blogSection: "Entry log",
-      newsSection: "News log",
+      blogSection: "Articles",
+      newsSection: "News",
       entries: "entries",
       footer: "Newest first",
     },
     article: {
       section: "Document",
       news: "News",
-      guide: "Guide",
+      guide: "Article",
       fields: {
         type: "Type",
         author: "Author",
