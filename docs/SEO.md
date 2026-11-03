@@ -96,7 +96,7 @@ una notificación al móvil de Jorge con esos enlaces.
 
 `scripts/index-bot.mjs` pulsa "Solicitar indexación" por Jorge. Abre Search
 Console en un Chrome propio (perfil aparte en
-`%LOCALAPPDATA%\jorgegraells-indexbot`, con la sesión de Google de Jorge),
+`%USERPROFILE%\.jorgegraells-indexbot`, con la sesión de Google de Jorge),
 inspecciona cada página pública (los artículos más nuevos primero) y, si Google
 no la tiene, pide la indexación. No usa la cuenta de servicio ni dependencias:
 habla con Chrome por CDP.
@@ -121,6 +121,9 @@ node scripts/index-bot.mjs https://jorgegraells.com/es/blog/x   # solo esa URL
   Si Google cambia los textos, es lo primero que hay que revisar.
 - `--hidden` abre un Chrome normal fuera de la pantalla, no headless: con
   headless Google cerró la sesión del perfil (1 nov 2026).
+- La carpeta está en el perfil de usuario y no en AppData a propósito: una
+  sesión de Claude Code ve una copia aislada de AppData, así que la sesión
+  iniciada desde ahí no la veía la tarea programada (3 nov 2026).
 - Si caduca la sesión de Google, la tarea falla con "no hay sesión": ejecuta
   `node scripts/index-bot.mjs` con ventana e inicia sesión otra vez.
 

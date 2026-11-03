@@ -9,7 +9,7 @@
 //
 // La primera vez abre la ventana para que Jorge inicie sesión en Google a mano.
 // Si sale un captcha o se acaba la cuota, para y lo dice: no intenta saltárselo.
-// Perfil, estado y registro viven en %LOCALAPPDATA%\jorgegraells-indexbot.
+// Perfil, estado y registro viven en %USERPROFILE%\.jorgegraells-indexbot.
 
 import fs from "node:fs";
 import os from "node:os";
@@ -21,7 +21,9 @@ const ORIGIN = "https://jorgegraells.com";
 // (La ruta /inspect sin id redirige aquí y, si escribes durante la redirección, se pierde el texto.)
 const CONSOLE = `https://search.google.com/search-console?resource_id=${encodeURIComponent(`${ORIGIN}/`)}`;
 const PORT = 9333;
-const HOME = path.join(process.env.LOCALAPPDATA ?? os.homedir(), "jorgegraells-indexbot");
+// En la carpeta de usuario y no en AppData: las sesiones de Claude Code ven una
+// copia aislada de AppData, y la tarea programada no veía el perfil con la sesión
+const HOME = path.join(os.homedir(), ".jorgegraells-indexbot");
 const PROFILE = path.join(HOME, "chrome");
 const STATE_FILE = path.join(HOME, "state.json");
 const LOG_FILE = path.join(HOME, "log.txt");
@@ -54,6 +56,14 @@ const DISMISS_BUTTON = "^(ignorar|ignora|entendido|d.acord|cerrar|tanca|aceptar|
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 fs.mkdirSync(HOME, { recursive: true });
+// Desde la tarea programada no se ve la consola: cualquier salida inesperada queda en el registro
+process.on("uncaughtException", (e) => {
+  fs.appendFileSync(LOG_FILE, `${new Date().toISOString()} ERROR inesperado: ${e?.stack ?? e}\n`);
+  process.exit(1);
+});
+process.on("exit", (code) => {
+  if (code) fs.appendFileSync(LOG_FILE, `${new Date().toISOString()} salida con código ${code}\n`);
+});
 
 function log(msg) {
   console.log(msg);
