@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { siteLinks, socialProfiles, type Dictionary, type Locale } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
-import ThemeToggle from "@/components/theme/ThemeToggle";
+import DossierTabs from "./DossierTabs";
 import ProofDemo from "./ProofDemo";
 import Withheld from "./Withheld";
 
@@ -51,7 +51,6 @@ function Folio({
 
 export default function DossierHome({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const t = dict.dossier;
-  const otherLocale: Locale = locale === "es" ? "en" : "es";
   const [latest, ...rest] = getArticles(locale);
   const dateFmt = new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", {
     day: "numeric",
@@ -62,20 +61,17 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
 
   return (
     <div className="dx" id="dx-top">
-      <nav className="dx-tabs dx-lab" aria-label={t.file}>
-        <a href="#dx-top">{t.tabs.subject}</a>
-        <a href="#dx-proof">{t.tabs.proof}</a>
-        <a href="#dx-annexes">{t.tabs.annexes}</a>
-        <a href="#dx-record">{t.tabs.record}</a>
-        <a href="#dx-close">{t.tabs.contact}</a>
-        <div className="dx-tools">
-          <span className="dx-cls">{t.classification}</span>
-          <Link href={`/${otherLocale}`} className="dx-tool" aria-label={t.switchLocale}>
-            {otherLocale}
-          </Link>
-          <ThemeToggle to="arcade" dict={dict} className="dx-tool" />
-        </div>
-      </nav>
+      <DossierTabs
+        locale={locale}
+        dict={dict}
+        tabs={[
+          { href: "#dx-top", label: t.tabs.subject, current: true },
+          { href: "#dx-proof", label: t.tabs.proof },
+          { href: "#dx-annexes", label: t.tabs.annexes },
+          { href: "#dx-record", label: t.tabs.record },
+          { href: "#dx-close", label: t.tabs.contact },
+        ]}
+      />
 
       <Folio n={1} section={t.subject.section} anchor="top" footer={t.subject.footer} dict={dict}>
         <div className="dx-stamp" aria-hidden="true">

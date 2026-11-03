@@ -15,6 +15,8 @@ import {
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Markdown from "@/components/blog/Markdown";
+import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
+import DossierLedger from "@/components/dossier/DossierLedger";
 
 const SITE = "https://jorgegraells.com";
 
@@ -112,100 +114,188 @@ export default async function ArticlePage({
     mainEntityOfPage: `${SITE}/${locale}/blog/${slug}`,
   };
 
+  const others = getArticles(locale).filter((a) => a.slug !== slug);
+  const d = dict.dossier.article;
+  const otherLocale: Locale = locale === "es" ? "en" : "es";
+  const fmtShort = new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
+  // Dos cabeceras y dos pies (arcade y expediente) alrededor de un único
+  // cuerpo: el texto del artículo no se duplica en el HTML.
   return (
     <main className="flex-1">
-      <Nav locale={locale as Locale} dict={dict} />
+      <div className="theme-arcade">
+        <Nav locale={locale as Locale} dict={dict} themeToggle />
+      </div>
+      <div className="theme-dossier">
+        <div className="dx dx-strip">
+          <DossierTabs
+            locale={locale}
+            dict={dict}
+            tabs={innerTabs(locale, dict, article.type === "news" ? "news" : "blog")}
+            localeHref={`/${otherLocale}/blog/${article.slugs[otherLocale]}`}
+          />
+        </div>
+      </div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <article className="mx-auto w-full max-w-3xl px-6 pb-24 pt-32">
-        <Link
-          href={`/${locale}/blog`}
-          className="font-mono text-xs uppercase tracking-widest text-muted transition-colors hover:text-neon-cyan"
-        >
-          ← {dict.blog.back}
-        </Link>
-
-        <div className="mt-6 flex flex-wrap gap-2">
-          {article.type === "news" && (
+      <div className="doc-shell">
+        <article className="doc mx-auto w-full max-w-3xl px-6 pb-24 pt-32">
+          <div className="theme-arcade">
             <Link
-              href={locale === "es" ? "/es/noticias" : "/en/news"}
-              className="rounded-full bg-neon-pink/15 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neon-pink"
+              href={`/${locale}/blog`}
+              className="font-mono text-xs uppercase tracking-widest text-muted transition-colors hover:text-neon-cyan"
             >
-              ● {dict.blog.newsBadge}
+              ← {dict.blog.back}
             </Link>
-          )}
-          {article.tags.map((t) => (
-            <span
-              key={t}
-              className="rounded-full border border-neon-cyan/50 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neon-cyan"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
 
-        <h1 className="text-gradient neon-text mt-4 text-3xl font-black uppercase leading-tight tracking-tight sm:text-4xl">
-          {article.title}
-        </h1>
-        <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
-          {dict.blog.by}{" "}
-          <Link href={dict.aboutPage.href} rel="author" className="text-foreground/80 hover:text-neon-cyan">
-            Jorge Graells
-          </Link>{" "}
-          · {shownDate} · {article.readingMinutes}{" "}
-          {dict.blog.minRead}
-        </p>
-        {wasUpdated && (
-          <p className="mt-1 font-mono text-xs uppercase tracking-widest text-neon-lime">
-            {dict.blog.updated}:{" "}
-            <time dateTime={article.updated}>
-              {fmtUpdated.format(new Date(article.updated))} UTC
-            </time>
-          </p>
-        )}
-
-        <p className="mt-8 border-l-2 border-neon-cyan/50 pl-4 text-lg leading-relaxed text-foreground/90">
-          {article.description}
-        </p>
-
-        <div className="mt-6">
-          <Markdown>{article.body}</Markdown>
-        </div>
-
-        <hr className="mt-14 border-white/10" />
-        <Link
-          href={`/${locale}/blog`}
-          className="mt-8 inline-block font-mono text-xs uppercase tracking-widest text-neon-cyan hover:underline"
-        >
-          ← {dict.blog.back}
-        </Link>
-
-        {/* Otros artículos */}
-        {getArticles(locale).filter((a) => a.slug !== slug).length > 0 && (
-          <div className="mt-14 grid gap-4 sm:grid-cols-2">
-            {getArticles(locale)
-              .filter((a) => a.slug !== slug)
-              .slice(0, 2)
-              .map((a) => (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {article.type === "news" && (
                 <Link
-                  key={a.slug}
-                  href={`/${locale}/blog/${a.slug}`}
-                  className="hud-panel clip-corner p-5 transition-transform hover:-translate-y-1"
+                  href={locale === "es" ? "/es/noticias" : "/en/news"}
+                  className="rounded-full bg-neon-pink/15 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neon-pink"
                 >
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-neon-pink">
-                    {dict.blog.readMore}
-                  </p>
-                  <p className="mt-1 font-bold leading-tight text-foreground">
-                    {a.title}
-                  </p>
+                  ● {dict.blog.newsBadge}
                 </Link>
+              )}
+              {article.tags.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-full border border-neon-cyan/50 px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-neon-cyan"
+                >
+                  {t}
+                </span>
               ))}
+            </div>
+
+            <h1 className="text-gradient neon-text mt-4 text-3xl font-black uppercase leading-tight tracking-tight sm:text-4xl">
+              {article.title}
+            </h1>
+            <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
+              {dict.blog.by}{" "}
+              <Link href={dict.aboutPage.href} rel="author" className="text-foreground/80 hover:text-neon-cyan">
+                Jorge Graells
+              </Link>{" "}
+              · {shownDate} · {article.readingMinutes} {dict.blog.minRead}
+            </p>
+            {wasUpdated && (
+              <p className="mt-1 font-mono text-xs uppercase tracking-widest text-neon-lime">
+                {dict.blog.updated}:{" "}
+                <time dateTime={article.updated}>{fmtUpdated.format(new Date(article.updated))} UTC</time>
+              </p>
+            )}
+
+            <p className="mt-8 border-l-2 border-neon-cyan/50 pl-4 text-lg leading-relaxed text-foreground/90">
+              {article.description}
+            </p>
           </div>
-        )}
-      </article>
-      <Footer dict={dict} />
+
+          <div className="theme-dossier">
+            <div className="dx-fh dx-lab">
+              <span>
+                {dict.dossier.file} · {d.section}
+              </span>
+              <Link href={`/${locale}/blog`}>{d.back}</Link>
+            </div>
+            {article.type === "news" && (
+              <div className="dx-stamp dx-stamp--recv" aria-hidden="true">
+                {d.received}
+                <small>{fmtShort.format(new Date(article.published))}</small>
+              </div>
+            )}
+            <h1 className="dx-doc-title">{article.title}</h1>
+            <dl className="dx-fields dx-doc-fields">
+              <dt className="dx-lab">{d.fields.type}</dt>
+              <dd>
+                {article.type === "news" ? (
+                  <Link href={locale === "es" ? "/es/noticias" : "/en/news"}>{d.news}</Link>
+                ) : (
+                  d.guide
+                )}
+              </dd>
+              <dt className="dx-lab">{d.fields.author}</dt>
+              <dd>
+                <Link href={dict.aboutPage.href} rel="author">
+                  Jorge Graells
+                </Link>
+              </dd>
+              <dt className="dx-lab">{d.fields.date}</dt>
+              <dd>
+                <time dateTime={article.published}>{shownDate}</time>
+              </dd>
+              {wasUpdated && (
+                <>
+                  <dt className="dx-lab">{d.fields.updated}</dt>
+                  <dd>
+                    <time dateTime={article.updated}>{fmtUpdated.format(new Date(article.updated))} UTC</time>
+                  </dd>
+                </>
+              )}
+              <dt className="dx-lab">{d.fields.reading}</dt>
+              <dd>
+                {article.readingMinutes} {dict.blog.minRead}
+              </dd>
+              <dt className="dx-lab">{d.fields.subjects}</dt>
+              <dd>{article.tags.join(" · ")}</dd>
+            </dl>
+            <p className="dx-lab dx-graph" style={{ margin: "0 0 4px" }}>
+              {d.summary}
+            </p>
+            <p className="dx-resumen">{article.description}</p>
+          </div>
+
+          <div className="md mt-6">
+            <Markdown>{article.body}</Markdown>
+          </div>
+
+          <div className="theme-arcade">
+            <hr className="mt-14 border-white/10" />
+            <Link
+              href={`/${locale}/blog`}
+              className="mt-8 inline-block font-mono text-xs uppercase tracking-widest text-neon-cyan hover:underline"
+            >
+              ← {dict.blog.back}
+            </Link>
+
+            {/* Otros artículos */}
+            {others.length > 0 && (
+              <div className="mt-14 grid gap-4 sm:grid-cols-2">
+                {others.slice(0, 2).map((a) => (
+                  <Link
+                    key={a.slug}
+                    href={`/${locale}/blog/${a.slug}`}
+                    className="hud-panel clip-corner p-5 transition-transform hover:-translate-y-1"
+                  >
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-neon-pink">{dict.blog.readMore}</p>
+                    <p className="mt-1 font-bold leading-tight text-foreground">{a.title}</p>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="theme-dossier">
+            {others.length > 0 && (
+              <>
+                <h2 className="dx-ledger-h">{d.related}</h2>
+                <DossierLedger articles={others.slice(0, 3)} locale={locale} dict={dict} />
+              </>
+            )}
+            <div className="dx-ff dx-lab">
+              <span>{d.end}</span>
+              <Link href={`/${locale}/blog`}>{d.back}</Link>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div className="theme-arcade">
+        <Footer dict={dict} />
+      </div>
     </main>
   );
 }

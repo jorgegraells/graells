@@ -4,6 +4,9 @@ import { getArticles } from "@/content/articles";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/blog/ArticleCard";
+import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
+import DossierFolio from "@/components/dossier/DossierFolio";
+import DossierLedger from "@/components/dossier/DossierLedger";
 
 /** Página "Noticias": solo los artículos marcados como noticia, del más
  *  reciente al más antiguo. Vive en /es/noticias y /en/news (la URL de cada
@@ -40,7 +43,8 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
 
   return (
     <main className="flex-1">
-      <Nav locale={locale} dict={dict} />
+      <div className="theme-arcade">
+        <Nav locale={locale} dict={dict} themeToggle />
       <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-32">
         <p className="font-mono text-xs font-semibold uppercase tracking-[0.35em] text-neon-pink">
           ● {dict.news.tag}
@@ -61,7 +65,28 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
           </div>
         )}
       </section>
-      <Footer dict={dict} />
+        <Footer dict={dict} />
+      </div>
+
+      <div className="theme-dossier">
+        <div className="dx">
+          <DossierTabs
+            locale={locale}
+            dict={dict}
+            tabs={innerTabs(locale, dict, "news")}
+            localeHref={NEWS_PATH[locale === "es" ? "en" : "es"]}
+          />
+          <DossierFolio
+            head={`${dict.dossier.file} · ${dict.dossier.ledger.newsSection}`}
+            folio={`${news.length} ${dict.dossier.ledger.entries}`}
+            foot={dict.dossier.ledger.footer}
+          >
+            <h1>{dict.news.title}</h1>
+            <p className="dx-resumen">{dict.news.subtitle}</p>
+            {news.length === 0 ? <p>{dict.news.empty}</p> : <DossierLedger articles={news} locale={locale} dict={dict} />}
+          </DossierFolio>
+        </div>
+      </div>
     </main>
   );
 }

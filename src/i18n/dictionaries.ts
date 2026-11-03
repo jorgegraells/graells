@@ -247,6 +247,21 @@ export type Dictionary = {
     background: { section: string; title: string; margin: string; training: string; sessionLabel: string; trainingCta: string; footer: string };
     record: { section: string; title: string; received: string; news: string; guide: string; all: string };
     close: { title: string; text: string; social: string; footer: string };
+    /** Pestañas en las páginas interiores */
+    pages: { home: string; blog: string; news: string; training: string; contact: string };
+    ledger: { blogSection: string; newsSection: string; entries: string; footer: string };
+    article: {
+      section: string;
+      news: string;
+      guide: string;
+      fields: { type: string; author: string; date: string; updated: string; reading: string; subjects: string };
+      summary: string;
+      received: string;
+      sources: string;
+      related: string;
+      back: string;
+      end: string;
+    };
   };
 };
 
@@ -787,6 +802,32 @@ const es: Dictionary = {
       social: "En redes: @DevGraells",
       footer: "Fin del expediente",
     },
+    pages: { home: "Expediente", blog: "Registro", news: "Noticias", training: "Formación", contact: "Contacto" },
+    ledger: {
+      blogSection: "Registro de entradas",
+      newsSection: "Registro de noticias",
+      entries: "entradas",
+      footer: "Ordenado de más reciente a más antiguo",
+    },
+    article: {
+      section: "Documento",
+      news: "Noticia",
+      guide: "Guía",
+      fields: {
+        type: "Tipo",
+        author: "Autor",
+        date: "Fecha",
+        updated: "Actualizado",
+        reading: "Lectura",
+        subjects: "Materias",
+      },
+      summary: "Resumen",
+      received: "Recibido",
+      sources: "Fuente",
+      related: "Documentos relacionados",
+      back: "Volver al registro",
+      end: "Fin del documento",
+    },
   },
 };
 
@@ -1326,6 +1367,32 @@ const en: Dictionary = {
       text: "If any of this sounds like a problem at your company, write to me and we'll talk it through in a short call.",
       social: "On social: @DevGraells",
       footer: "End of file",
+    },
+    pages: { home: "File", blog: "Log", news: "News", training: "Training", contact: "Contact" },
+    ledger: {
+      blogSection: "Entry log",
+      newsSection: "News log",
+      entries: "entries",
+      footer: "Newest first",
+    },
+    article: {
+      section: "Document",
+      news: "News",
+      guide: "Guide",
+      fields: {
+        type: "Type",
+        author: "Author",
+        date: "Date",
+        updated: "Updated",
+        reading: "Reading time",
+        subjects: "Subjects",
+      },
+      summary: "Summary",
+      received: "Received",
+      sources: "Source",
+      related: "Related documents",
+      back: "Back to the log",
+      end: "End of document",
     },
   },
 };
