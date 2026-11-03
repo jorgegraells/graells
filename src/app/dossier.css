@@ -99,9 +99,6 @@
   background: var(--dx-toner);
   color: var(--dx-paper);
 }
-.dx-tool--play::before {
-  content: "▶ ";
-}
 .dx-tool:focus-visible,
 .dx-tabs a:focus-visible {
   outline: 2px solid var(--dx-stamp);
@@ -318,6 +315,25 @@
 /* Golpe del sello justo después de "imprimir" el expediente */
 html.dx-stamping .dx-stamp {
   animation: dx-stamp-hit 0.42s cubic-bezier(0.55, 0, 1, 0.45) both;
+}
+/* El folio acusa el golpe del sello */
+html.dx-stamping .dx-folio:first-of-type {
+  animation: dx-thud 0.3s linear 0.34s both;
+}
+@keyframes dx-thud {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translate(2px, 3px);
+  }
+  50% {
+    transform: translate(-2px, 1px);
+  }
+  75% {
+    transform: translate(1px, -1px);
+  }
 }
 @keyframes dx-stamp-hit {
   0% {
@@ -688,7 +704,8 @@ html.dx-stamping .dx-stamp {
   .dx * {
     transition: none !important;
   }
-  html.dx-stamping .dx-stamp {
+  html.dx-stamping .dx-stamp,
+  html.dx-stamping .dx-folio:first-of-type {
     animation: none;
   }
 }

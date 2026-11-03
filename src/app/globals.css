@@ -407,17 +407,42 @@ html[data-theme="dossier"]:has(.theme-dossier) body {
   color: #1b1b19;
 }
 
-/* Cambio de modo (View Transitions). Al expediente: el folio se imprime de
-   arriba abajo por bandas, como un fax, y luego cae el sello. Al arcade: el
-   papel sale y la pantalla se enciende como un CRT desde una línea. */
-html.vt-print::view-transition {
-  background: #070510;
+/* Cambio de modo (View Transitions).
+   A claro: el arcade se apaga como un tubo de rayos catódicos (línea, punto,
+   negro) y un cabezal de luz imprime el expediente por bandas, como un fax;
+   al final cae el sello y el papel acusa el golpe (ver dossier.css).
+   A oscuro: el papel sale arrancado hacia arriba y el arcade se enciende como
+   un CRT: punto, línea, destello con desfase de color y parpadeo. */
+html.vt-print::view-transition,
+html.vt-crt::view-transition {
+  background: #000;
 }
+
+/* --- a claro ------------------------------------------------------------- */
 html.vt-print::view-transition-old(root) {
-  animation: vt-dim 1.1s ease-in both;
+  animation: vt-crt-off 0.55s cubic-bezier(0.55, 0, 0.9, 0.4) both;
 }
 html.vt-print::view-transition-new(root) {
-  animation: vt-print 1.1s steps(22, end) both;
+  animation: vt-print 1.25s steps(26, end) 0.5s both;
+}
+@keyframes vt-crt-off {
+  0% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+  }
+  55% {
+    transform: scale(1, 0.005);
+    filter: brightness(3) saturate(0);
+  }
+  85% {
+    transform: scale(0.004, 0.005);
+    filter: brightness(6) saturate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0, 0);
+    opacity: 0;
+  }
 }
 @keyframes vt-print {
   from {
@@ -427,42 +452,93 @@ html.vt-print::view-transition-new(root) {
     clip-path: inset(0 0 0 0);
   }
 }
-@keyframes vt-dim {
+
+/* Cabezal de impresión: solo existe durante la transición */
+.vt-head {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 2147483647;
+  pointer-events: none;
+  background: #fff;
+  box-shadow:
+    0 0 10px 3px rgba(255, 255, 255, 0.9),
+    0 0 36px 10px rgba(120, 150, 255, 0.45),
+    0 -60px 50px -20px rgba(255, 255, 255, 0.35);
+  view-transition-name: vt-head;
+}
+html.vt-print::view-transition-group(vt-head) {
+  animation: vt-head 1.25s steps(26, end) 0.5s both;
+}
+html.vt-print::view-transition-new(vt-head) {
+  animation: vt-head-fade 1.25s linear 0.5s both;
+}
+@keyframes vt-head {
+  from {
+    transform: translateY(0);
+  }
   to {
-    filter: brightness(0.3) saturate(0);
+    transform: translateY(100vh);
+  }
+}
+@keyframes vt-head-fade {
+  0% {
+    opacity: 0;
+  }
+  3%,
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
-html.vt-crt::view-transition {
-  background: #000;
-}
+/* --- a oscuro ------------------------------------------------------------ */
 html.vt-crt::view-transition-old(root) {
-  animation: vt-feed 0.55s cubic-bezier(0.7, 0, 0.84, 0) both;
+  animation: vt-paper-out 0.5s cubic-bezier(0.6, 0, 0.9, 0.3) both;
+  transform-origin: 50% 0;
 }
 html.vt-crt::view-transition-new(root) {
-  animation: vt-crt-on 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+  animation: vt-crt-on 1.15s linear 0.4s both;
 }
-@keyframes vt-feed {
+@keyframes vt-paper-out {
   to {
-    transform: translateY(-14%);
-    opacity: 0;
+    transform: translateY(-105%) rotate(-3deg);
+    filter: blur(1.5px);
   }
 }
 @keyframes vt-crt-on {
   0% {
-    clip-path: inset(50% 0 50% 0);
-    filter: brightness(5) saturate(0);
+    clip-path: inset(49.85% 49.85% 49.85% 49.85%);
+    filter: brightness(8) saturate(0);
   }
-  30% {
-    clip-path: inset(49.6% 0 49.6% 0);
-    filter: brightness(5) saturate(0);
+  12% {
+    clip-path: inset(49.85% 0 49.85% 0);
+    filter: brightness(7) saturate(0);
   }
-  65% {
+  38% {
     clip-path: inset(0 0 0 0);
-    filter: brightness(1.6) saturate(0.6);
+    filter: brightness(2.6) saturate(0.4) drop-shadow(6px 0 0 rgba(255, 40, 120, 0.7))
+      drop-shadow(-6px 0 0 rgba(0, 230, 255, 0.7));
+  }
+  55% {
+    clip-path: inset(0 0 0 0);
+    filter: brightness(1.3) drop-shadow(3px 0 0 rgba(255, 40, 120, 0.5)) drop-shadow(-3px 0 0 rgba(0, 230, 255, 0.5));
+    opacity: 1;
+  }
+  64% {
+    opacity: 0.55;
+  }
+  70% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0.8;
   }
   100% {
     clip-path: inset(0 0 0 0);
     filter: none;
+    opacity: 1;
   }
 }

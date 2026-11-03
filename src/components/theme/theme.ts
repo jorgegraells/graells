@@ -59,26 +59,37 @@ export function switchTheme(next: Theme) {
   } catch {}
 
   const anchor = currentAnchor(from);
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!document.startViewTransition || reduced) {
+    root.dataset.theme = next;
+    scrollToAnchor(next, anchor);
+    return;
+  }
+
+  // Al expediente, un cabezal de luz recorre la pantalla mientras "imprime".
+  // Solo existe en el estado nuevo: la transición lo anima con su propio nombre.
+  let head: HTMLDivElement | null = null;
   const apply = () => {
     root.dataset.theme = next;
     scrollToAnchor(next, anchor);
+    if (next === "dossier") {
+      head = document.createElement("div");
+      head.className = "vt-head";
+      head.setAttribute("aria-hidden", "true");
+      document.body.appendChild(head);
+    }
   };
-
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!document.startViewTransition || reduced) {
-    apply();
-    return;
-  }
 
   const cls = next === "dossier" ? "vt-print" : "vt-crt";
   root.classList.add(cls);
   const transition = document.startViewTransition(apply);
   transition.finished.finally(() => {
+    head?.remove();
     root.classList.remove(cls);
     if (next === "dossier") {
-      // El sello cae cuando el folio ya está impreso
+      // El sello cae cuando el folio ya está impreso, y el papel acusa el golpe
       root.classList.add("dx-stamping");
-      window.setTimeout(() => root.classList.remove("dx-stamping"), 600);
+      window.setTimeout(() => root.classList.remove("dx-stamping"), 700);
     }
   });
 }

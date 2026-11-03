@@ -73,7 +73,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
           <Link href={`/${otherLocale}`} className="dx-tool" aria-label={t.switchLocale}>
             {otherLocale}
           </Link>
-          <ThemeToggle to="arcade" dict={dict} className="dx-tool dx-tool--play" />
+          <ThemeToggle to="arcade" dict={dict} className="dx-tool" />
         </div>
       </nav>
 

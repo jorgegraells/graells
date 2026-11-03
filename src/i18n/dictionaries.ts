@@ -180,8 +180,8 @@ export type Dictionary = {
   };
   contact: { title: string; text: string; cta: string };
   footer: { rights: string };
-  /** Botón de cambio de modo: oscuro = "jugar" (arcade), claro = "leer" (expediente) */
-  theme: { toRead: string; toPlay: string; toReadLabel: string; toPlayLabel: string };
+  /** Botón de cambio de modo: oscuro (arcade) y claro (expediente) */
+  theme: { toLight: string; toDark: string; toLightLabel: string; toDarkLabel: string };
   /** Textos del modo claro "Expediente" */
   dossier: {
     file: string;
@@ -659,10 +659,10 @@ const es: Dictionary = {
   },
   footer: { rights: "Hecho con Next.js y Three.js" },
   theme: {
-    toRead: "Leer",
-    toPlay: "Jugar",
-    toReadLabel: "Cambiar al modo lectura (claro)",
-    toPlayLabel: "Cambiar al modo juego (oscuro)",
+    toLight: "Claro",
+    toDark: "Oscuro",
+    toLightLabel: "Cambiar a modo claro",
+    toDarkLabel: "Cambiar a modo oscuro",
   },
   dossier: {
     file: "Expediente JG",
@@ -1199,10 +1199,10 @@ const en: Dictionary = {
   },
   footer: { rights: "Built with Next.js and Three.js" },
   theme: {
-    toRead: "Read",
-    toPlay: "Play",
-    toReadLabel: "Switch to reading mode (light)",
-    toPlayLabel: "Switch to play mode (dark)",
+    toLight: "Light",
+    toDark: "Dark",
+    toLightLabel: "Switch to light mode",
+    toDarkLabel: "Switch to dark mode",
   },
   dossier: {
     file: "File JG",
