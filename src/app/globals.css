@@ -214,6 +214,23 @@ body {
   animation: float-slow 6s ease-in-out infinite;
 }
 
+/* Entrada de la portada solo con CSS: lo primero que se ve no espera a que cargue
+   el JavaScript. Sin relleno final para que el giro con el ratón siga funcionando. */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--hero-y, 0), 0) scale(var(--hero-scale, 1));
+  }
+}
+.hero-in {
+  animation: hero-in var(--hero-dur, 0.6s) cubic-bezier(0.22, 1, 0.36, 1) var(--hero-delay, 0s) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-in {
+    animation: none;
+  }
+}
+
 /* Resplandor cian sobre la silueta real (sin distorsión: la cara no se deforma) */
 .holo-live {
   filter: drop-shadow(0 0 26px rgba(34, 211, 238, 0.5))
@@ -223,8 +240,8 @@ body {
 /* Capa de efectos ceñida a la silueta: usa la propia imagen como máscara,
    así el barrido y el parpadeo solo pintan sobre el holograma. */
 .holo-sil {
-  -webkit-mask: url("/jorge-holo-cut.webp") center / 100% 100% no-repeat;
-  mask: url("/jorge-holo-cut.webp") center / 100% 100% no-repeat;
+  -webkit-mask: url("/jorge-holo-hero.webp") center / 100% 100% no-repeat;
+  mask: url("/jorge-holo-hero.webp") center / 100% 100% no-repeat;
   overflow: hidden;
 }
 

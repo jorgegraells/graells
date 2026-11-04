@@ -25,6 +25,7 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // admin queda fuera: el panel vive sin prefijo de idioma
-  matcher: ["/((?!_next|api|admin|favicon.ico|.*\\..*).*)"],
+  // admin queda fuera: el panel vive sin prefijo de idioma.
+  // _vercel: los envíos de la analítica no llevan extensión y no deben redirigirse.
+  matcher: ["/((?!_next|_vercel|api|admin|favicon.ico|.*\\..*).*)"],
 };

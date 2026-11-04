@@ -6,8 +6,9 @@ export type Theme = "arcade" | "dossier";
 
 const STORAGE_KEY = "jg-theme";
 
-/** Se ejecuta en <head> antes del primer pintado: elección guardada o, si no, la del sistema */
-export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}");if(t!=="arcade"&&t!=="dossier"){t=matchMedia("(prefers-color-scheme: light)").matches?"dossier":"arcade"}document.documentElement.dataset.theme=t}catch(e){document.documentElement.dataset.theme="arcade"}})()`;
+/** Se ejecuta en <head> antes del primer pintado: elección guardada o, si no, la del sistema.
+ *  En la portada oscura precarga el holograma, que en modo claro no se llega a descargar. */
+export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}");if(t!=="arcade"&&t!=="dossier"){t=matchMedia("(prefers-color-scheme: light)").matches?"dossier":"arcade"}document.documentElement.dataset.theme=t;if(t==="arcade"&&/^\\/(es|en)\\/?$/.test(location.pathname)){var l=document.createElement("link");l.rel="preload";l.as="image";l.href="/jorge-holo-hero.webp";l.fetchPriority="high";document.head.appendChild(l)}}catch(e){document.documentElement.dataset.theme="arcade"}})()`;
 
 // Secciones equivalentes en los dos modos, para no perder el sitio al cambiar
 const ANCHOR_MAP: Record<Theme, Record<string, string>> = {

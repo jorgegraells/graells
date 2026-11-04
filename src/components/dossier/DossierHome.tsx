@@ -75,7 +75,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
         <div className="dx-subject">
           <figure className="dx-photo">
             {/* eslint-disable-next-line @next/next/no-img-element -- PNG de 2 colores ya optimizado (scripts/dither-photo.mjs) */}
-            <img src="/jorge-expediente.png" width={240} height={300} alt={t.subject.photoAlt} />
+            <img src="/jorge-expediente.png" width={240} height={300} fetchPriority="high" alt={t.subject.photoAlt} />
             <figcaption className="dx-lab">{t.subject.photoCaption}</figcaption>
           </figure>
           <div>

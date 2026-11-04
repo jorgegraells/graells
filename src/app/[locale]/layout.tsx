@@ -11,6 +11,7 @@ import {
   type Locale,
 } from "@/i18n/dictionaries";
 import { THEME_SCRIPT } from "@/components/theme/theme";
+import SiteAnalytics from "@/components/SiteAnalytics";
 import "../globals.css";
 import "../dossier.css";
 
@@ -253,6 +254,7 @@ export default async function LocaleLayout({
           }}
         />
         {children}
+        <SiteAnalytics />
       </body>
     </html>
   );

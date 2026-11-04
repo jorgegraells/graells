@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import type { Dictionary, Locale } from "@/i18n/dictionaries";
 
 const MOTES = [
@@ -53,29 +52,28 @@ export default function Hero({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(7,5,16,0.65)_100%)]" />
 
       <div className="relative z-10 flex w-full max-w-3xl flex-col items-center px-6 text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="inline-block rounded-full border border-neon-pink/60 bg-[#0a0618]/85 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.35em] text-neon-pink backdrop-blur-sm"
+        <p
+          className="hero-in [--hero-delay:0.1s] [--hero-dur:0.5s] [--hero-y:10px] inline-block rounded-full border border-neon-pink/60 bg-[#0a0618]/85 px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.35em] text-neon-pink backdrop-blur-sm"
         >
           ★ {dict.hero.playable}
-        </motion.p>
+        </p>
 
         {/* Holograma vivo */}
-        <motion.div
+        <div
           ref={holoRef}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="relative mt-2 h-[42vh] max-h-[460px] min-h-[280px]"
+          className="hero-in [--hero-delay:0.2s] [--hero-dur:0.9s] [--hero-scale:0.9] relative mt-2 h-[42vh] max-h-[460px] min-h-[280px]"
           style={{ transition: "transform 0.16s ease-out" }}
         >
           <div className="animate-float-slow relative mx-auto h-full w-fit">
             <div className="holo-idle relative h-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
+              {/* lazy: en modo claro está oculta y así no se descarga. En oscuro la
+                  precarga THEME_SCRIPT, de modo que no llega tarde */}
               <img
-                src="/jorge-holo-cut.webp"
+                src="/jorge-holo-hero.webp"
+                width={698}
+                height={800}
+                loading="lazy"
                 alt="Jorge Graells en holograma"
                 className="holo-live holo-flicker h-full w-auto object-contain"
               />
@@ -97,32 +95,23 @@ export default function Hero({
               ))}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Nombre */}
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-          className="neon-text -mt-4 text-6xl font-black uppercase leading-[0.85] tracking-tight sm:text-7xl md:text-8xl"
+        <h1
+          className="hero-in [--hero-delay:0.45s] [--hero-y:16px] neon-text -mt-4 text-6xl font-black uppercase leading-[0.85] tracking-tight sm:text-7xl md:text-8xl"
         >
           <span className="text-gradient">Jorge Graells</span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.55 }}
-          className="mt-4 font-mono text-sm uppercase tracking-[0.25em] text-neon-cyan sm:text-base"
+        <p
+          className="hero-in [--hero-delay:0.55s] [--hero-y:12px] mt-4 font-mono text-sm uppercase tracking-[0.25em] text-neon-cyan sm:text-base"
         >
           {dict.hero.role}
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.65 }}
-          className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted"
+        <div
+          className="hero-in [--hero-delay:0.65s] mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted"
         >
           <span>
             <span className="text-neon-lime">8</span> años XP
@@ -135,14 +124,11 @@ export default function Hero({
           <span>
             IA · <span className="text-neon-lime">Full-Stack</span> · Cyber
           </span>
-        </motion.div>
+        </div>
 
         {/* Botón protagonista */}
-        <motion.div
-          initial={{ opacity: 0, y: 18, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.8, type: "spring", stiffness: 200 }}
-          className="relative mt-9 flex justify-center"
+        <div
+          className="hero-in [--hero-delay:0.8s] [--hero-y:18px] [--hero-scale:0.96] relative mt-9 flex justify-center"
         >
           <span className="absolute inset-0 mx-auto h-full w-[min(90%,26rem)] animate-ping rounded-full bg-neon-violet/20" />
           <Link
@@ -153,13 +139,10 @@ export default function Hero({
             {dict.hero.ctaWorld}
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1 }}
-          className="mt-6 flex items-center justify-center gap-5 font-mono text-xs uppercase tracking-widest text-white/55"
+        <div
+          className="hero-in [--hero-delay:1s] mt-6 flex items-center justify-center gap-5 font-mono text-xs uppercase tracking-widest text-white/55"
         >
           <a href="#projects" className="transition-colors hover:text-neon-cyan">
             {dict.hero.ctaProjects}
@@ -168,7 +151,7 @@ export default function Hero({
           <a href="#contact" className="transition-colors hover:text-neon-cyan">
             {dict.hero.ctaContact}
           </a>
-        </motion.div>
+        </div>
       </div>
 
       <a

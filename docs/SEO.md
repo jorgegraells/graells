@@ -16,6 +16,22 @@ Las dos rutinas corren en el entorno de la nube "Blog - fuentes oficiale",
 que solo deja salir a una lista blanca de dominios. Se gestionan en
 https://claude.ai/code/routines.
 
+## Analítica de visitas
+
+Vercel Web Analytics (`src/components/SiteAnalytics.tsx`): visitas agregadas y
+sin cookies, también las que no vienen de Google. Se consulta en el panel de
+Vercel, pestaña Analytics. Las páginas de Flypet quedan fuera porque su política
+de privacidad presume de no medir nada. `/admin` tampoco la carga.
+
+## Velocidad de la portada
+
+En PageSpeed manda el modo claro, que es el que simula. La portada pinta los dos
+modos a la vez, así que una imagen pesada del modo oculto penaliza al otro.
+El holograma (`jorge-holo-hero.webp`, derivado de `jorge-holo-cut.webp`) va con
+`loading="lazy"` para no descargarse en claro, y `THEME_SCRIPT` lo precarga en
+oscuro. La entrada de la portada es CSS (`.hero-in`), no framer-motion, para no
+esperar a la hidratación.
+
 ## Google Noticias
 
 Lo que la web ya hace para poder salir en Google Noticias, Discover y el
