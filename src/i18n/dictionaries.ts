@@ -380,9 +380,9 @@ const es: Dictionary = {
     updated: "Actualizado",
     by: "Por",
     newsBadge: "News",
-    latestNews: "Últimas noticias",
-    allNews: "Ver todas las noticias",
-    guides: "Guías y artículos",
+    latestNews: "Últimas news",
+    allNews: "Ver todas las news",
+    guides: "Artículos",
     empty: "Todavía no hay artículos publicados.",
   },
   aboutPage: {
@@ -834,7 +834,7 @@ const es: Dictionary = {
       received: "Recibido",
       sources: "Fuente",
       related: "Documentos relacionados",
-      back: "Volver al registro",
+      back: "Volver a artículos",
       end: "Fin del documento",
     },
     trainingPage: {
@@ -847,7 +847,7 @@ const es: Dictionary = {
       footer: "El precio final se cierra en una llamada corta",
     },
     aboutPage: { section: "Ficha completa del sujeto", report: "Informe", channels: "Canales autorizados" },
-    editorialPage: { section: "Normas del registro", clause: "Cláusula", footer: "Fin de las normas" },
+    editorialPage: { section: "Normas de publicación", clause: "Cláusula", footer: "Fin de las normas" },
   },
 };
 
@@ -958,7 +958,7 @@ const en: Dictionary = {
     newsBadge: "News",
     latestNews: "Latest news",
     allNews: "See all news",
-    guides: "Guides and articles",
+    guides: "Articles",
     empty: "No articles published yet.",
   },
   aboutPage: {
@@ -1410,7 +1410,7 @@ const en: Dictionary = {
       received: "Received",
       sources: "Source",
       related: "Related documents",
-      back: "Back to the log",
+      back: "Back to articles",
       end: "End of document",
     },
     trainingPage: {

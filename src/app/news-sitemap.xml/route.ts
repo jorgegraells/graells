@@ -1,7 +1,7 @@
 import { locales } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
 
-/** Sitemap de Google Noticias: solo artículos de los dos últimos días, que es
+/** Sitemap de Google Noticias: solo noticias (type "news") de los dos últimos días, que es
  *  lo que Google lee de este tipo de sitemap. Se genera en cada despliegue,
  *  y cada publicación desde el panel provoca uno. */
 
@@ -17,7 +17,7 @@ export function GET() {
   const now = Date.now();
   const entries = locales.flatMap((locale) =>
     getArticles(locale)
-      .filter((a) => now - Date.parse(a.published) < TWO_DAYS)
+      .filter((a) => a.type === "news" && now - Date.parse(a.published) < TWO_DAYS)
       .map(
         (a) => `  <url>
     <loc>${SITE}/${locale}/blog/${a.slug}</loc>

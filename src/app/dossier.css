@@ -697,8 +697,13 @@ html.dx-stamping .dx-folio:first-of-type {
   .dx-tablist::-webkit-scrollbar {
     display: none;
   }
+  .dx-tablist {
+    gap: 2px;
+  }
+  /* Las cinco pestañas caben enteras en un móvil de 360 px */
   .dx-tabs a {
-    padding: 8px 8px 6px;
+    padding: 8px clamp(4px, 1.3vw, 8px) 6px;
+    font-size: clamp(10.5px, 3.2vw, 13px);
   }
   .dx-tabs a[aria-current="page"] {
     padding-top: 10px;
