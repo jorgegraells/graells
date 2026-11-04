@@ -1,6 +1,6 @@
 {
   "date": "2026-10-28",
-  "updated": "2026-10-28T07:58:56.235Z",
+  "updated": "2026-11-04T14:13:04.268Z",
   "es": {
     "slug": "ransomware-safepay-como-proteger-tu-empresa",
     "title": "Ransomware SafePay: cómo ataca y cómo proteger tu empresa",
@@ -17,7 +17,7 @@
   },
   "en": {
     "slug": "safepay-ransomware-how-to-protect-your-company",
-    "title": "SafePay ransomware: how it attacks and how to protect your company",
+    "title": "SafePay ransomware: how it works and how to protect your company",
     "description": "SafePay is a ransomware group that, according to a joint FBI and CISA advisory, has hit at least 600 organisations. It gets in through stolen credentials, VPN access and exposed devices, and wipes backups before encrypting. Here is how to defend yourself.",
     "seoDescription": "SafePay ransomware: how it gets in, why it goes after your backups and what the FBI and CISA recommend to protect your company.",
     "tags": [

@@ -22,7 +22,7 @@ export function editorialMetadata(locale: Locale): Metadata {
       canonical: dict.editorial.href,
       languages: { [locale]: dict.editorial.href, [locale === "es" ? "en" : "es"]: other.editorial.href },
     },
-    openGraph: { title, description: dict.editorial.intro, url: `${SITE}${dict.editorial.href}`, type: "website" },
+    openGraph: { title, description: dict.editorial.intro, url: `${SITE}${dict.editorial.href}`, type: "website", images: [`${SITE}/og.jpg`] },
   };
 }
 

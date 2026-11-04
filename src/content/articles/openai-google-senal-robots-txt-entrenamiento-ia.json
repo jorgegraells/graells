@@ -1,6 +1,6 @@
 {
   "date": "2026-10-31",
-  "updated": "2026-10-31T10:20:24.381Z",
+  "updated": "2026-11-04T14:13:04.268Z",
   "published": "2026-10-31T10:20:24.381Z",
   "type": "news",
   "es": {
@@ -19,7 +19,7 @@
   },
   "en": {
     "slug": "openai-google-shared-robots-txt-ai-training-signal",
-    "title": "OpenAI and Google back one rule to opt your site out of AI training",
+    "title": "OpenAI and Google back one rule to opt out of AI training",
     "description": "On October 30, OpenAI and Google said they will honor a shared robots.txt signal that lets any website say, with a single rule, whether its content can be used to train AI models. It isn't live yet: OpenAI plans to roll it out in the coming months and Google in 2027.",
     "seoDescription": "OpenAI and Google will honor a shared robots.txt rule to opt out of AI training. What it is, when it arrives and whether you should use it.",
     "tags": [

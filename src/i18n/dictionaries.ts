@@ -982,7 +982,7 @@ const en: Dictionary = {
     href: "/en/editorial-policy",
     tag: "TRANSPARENCY",
     title: "Editorial policy",
-    intro: "The articles and news on this site are written by Jorge Graells. Here I explain how they are prepared, where the facts come from and what to do if you spot a mistake.",
+    intro: "The articles and news here are written by Jorge Graells. This is how they're prepared, where the facts come from and what to do if you spot a mistake.",
     sections: [
       {
         title: "Who writes",
