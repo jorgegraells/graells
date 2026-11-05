@@ -64,9 +64,9 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       "Gratis, sin anuncios. Compras opcionales: Flypet PRO (un solo pago, sin suscripción), el Pack fundador, para quien quiera apoyar el proyecto, y paquetes de Flycoins, la moneda del juego, que también se gana jugando. La placa conmemorativa de fundador, de 2026, es un regalo para quien juegue en los primeros seis meses tras la salida, sin comprar nada.",
     makersHeading: "Quién la hace",
     makers:
-      "Flypet lo crea Jorge Graells. El código lo escribe Claude Code, la IA de Anthropic, siguiendo el diseño, las decisiones y las pruebas de Jorge. El cerebro de la mosca es el conectoma real MaleCNS (Janelia, CC-BY).",
+      "Flypet lo crea Jorge Graells. El cerebro de la mosca es el conectoma real MaleCNS (Janelia, CC-BY).",
     credits:
-      "Datos del conectoma: MaleCNS v1.0, Janelia Research Campus (FlyEM) y colaboradores, licencia CC BY 4.0. Janelia no participa en esta app ni la respalda. Anthropic tampoco patrocina ni respalda Flypet.",
+      "Datos del conectoma: MaleCNS v1.0, Janelia Research Campus (FlyEM) y colaboradores, licencia CC BY 4.0. Janelia no participa en esta app ni la respalda.",
     privacyHeading: "Privacidad y contacto",
     privacyLink: "Política de privacidad de Flypet",
     contactLabel: "Contacto:",
@@ -105,9 +105,9 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       "Free, with no ads. Optional purchases: Flypet PRO (one payment, no subscription), the Founder pack, for anyone who wants to support the project, and Flycoin packs, the in-game currency, which you also earn by playing. The commemorative 2026 founder plaque is a gift for anyone who plays in the first six months after launch, with nothing to buy.",
     makersHeading: "Who makes it",
     makers:
-      "Flypet is created by Jorge Graells. The code is written by Claude Code, Anthropic's AI, following Jorge's design, decisions and testing. The fly's brain is the real MaleCNS connectome (Janelia, CC-BY).",
+      "Flypet is created by Jorge Graells. The fly's brain is the real MaleCNS connectome (Janelia, CC-BY).",
     credits:
-      "Connectome data: MaleCNS v1.0, Janelia Research Campus (FlyEM) and collaborators, CC BY 4.0 licence. Janelia isn't involved in this app and doesn't endorse it. Anthropic doesn't sponsor or endorse Flypet either.",
+      "Connectome data: MaleCNS v1.0, Janelia Research Campus (FlyEM) and collaborators, CC BY 4.0 licence. Janelia isn't involved in this app and doesn't endorse it.",
     privacyHeading: "Privacy and contact",
     privacyLink: "Flypet privacy policy",
     contactLabel: "Contact:",
