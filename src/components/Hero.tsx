@@ -74,7 +74,7 @@ export default function Hero({
                 width={698}
                 height={800}
                 loading="lazy"
-                alt="Jorge Graells en holograma"
+                alt={dict.hero.holoAlt}
                 className="holo-live holo-flicker h-full w-auto object-contain"
               />
               {/* Efectos ceñidos a la silueta (la imagen hace de máscara) */}
@@ -114,11 +114,11 @@ export default function Hero({
           className="hero-in [--hero-delay:0.65s] mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-[11px] uppercase tracking-widest text-muted"
         >
           <span>
-            <span className="text-neon-lime">8</span> años XP
+            <span className="text-neon-lime">8</span> {dict.hero.statYears}
           </span>
           <span className="text-white/20">/</span>
           <span>
-            <span className="text-neon-lime">5</span> proyectos
+            <span className="text-neon-lime">5</span> {dict.hero.statProjects}
           </span>
           <span className="text-white/20">/</span>
           <span>

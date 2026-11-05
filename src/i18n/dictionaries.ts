@@ -120,6 +120,9 @@ export type Dictionary = {
     role: string;
     tagline: string;
     playable: string;
+    statYears: string;
+    statProjects: string;
+    holoAlt: string;
     ctaProjects: string;
     ctaContact: string;
     ctaWorld: string;
@@ -444,6 +447,9 @@ const es: Dictionary = {
     tagline:
       "Pongo la inteligencia artificial a resolver problemas reales de empresa, sobre todo en industria y software regulado.",
     playable: "Mi trayectoria, en un videojuego",
+    statYears: "años XP",
+    statProjects: "proyectos",
+    holoAlt: "Jorge Graells en holograma",
     ctaProjects: "Ver proyectos",
     ctaContact: "Hablemos",
     ctaWorld: "Entrar en el mundo virtual de Graells",
@@ -1020,6 +1026,9 @@ const en: Dictionary = {
     tagline:
       "I put artificial intelligence to work on real business problems, mostly in industry and regulated software.",
     playable: "My career, as a videogame",
+    statYears: "years XP",
+    statProjects: "projects",
+    holoAlt: "Jorge Graells as a hologram",
     ctaProjects: "View projects",
     ctaContact: "Let's talk",
     ctaWorld: "Enter Graells' virtual world",
