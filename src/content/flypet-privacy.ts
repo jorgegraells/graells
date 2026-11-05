@@ -20,9 +20,9 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
     title: "Política de privacidad de Flypet",
     description:
       "Qué datos usa Flypet, la mosca virtual con el cerebro de una mosca real: no recoge ninguno tuyo.",
-    updated: "Última actualización: 26 de octubre de 2026",
+    updated: "Última actualización: 5 de noviembre de 2026",
     intro:
-      "Flypet es una app de Jorge Graells Garcia, desarrollador independiente con residencia en España. Esta página explica qué datos usa la app. En corto: Flypet no recoge datos tuyos. Todo lo que pasa en el juego se queda en tu móvil (y en tu copia de seguridad de Android, si la tienes activada).",
+      "Flypet es una app de Jorge Graells Garcia, desarrollador independiente con residencia en España. Esta página explica qué datos usa la app. En corto: Flypet no recoge datos tuyos. Lo que pasa en el juego se queda en tu móvil y en la copia de seguridad de Android de tu cuenta de Google, si la tienes activada. Solo sale de ahí lo que tú decidas compartir.",
     sections: [
       {
         heading: "Lo que no hay",
@@ -35,7 +35,9 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Tu partida",
         paragraphs: [
-          "La mosca, su sala, tus Flycoins y tus ajustes se guardan en el almacenamiento de la app, en tu móvil. Nosotros no los recibimos. Si tienes activada la copia de seguridad de Android, Android guarda una copia de la partida y los ajustes en tu cuenta de Google (con su cifrado y bajo la política de privacidad de Google), para devolvértela si instalas Flypet en otro móvil; la puedes desactivar en los ajustes de Android. Sin esa copia, si desinstalas la app o borras sus datos, la partida se borra y no la podemos recuperar. Lo que compras con dinero (PRO y el Pack fundador) sí lo puedes recuperar con «Restaurar compras», porque lo guarda Google Play.",
+          "La mosca, su sala, tus Flycoins y tus ajustes se guardan en el almacenamiento de la app, en tu móvil. Nosotros no los recibimos.",
+          "Flypet usa la copia de seguridad automática de Android. Si la tienes activada, Android guarda la partida y los ajustes en tu cuenta de Google, para devolvértelos si instalas Flypet en otro móvil. Esa copia la guarda Google, no nosotros, con su cifrado y bajo su política de privacidad. Los datos del cerebro de la mosca no entran en ella. La puedes desactivar en los ajustes de Android.",
+          "Sin esa copia, si desinstalas la app o borras sus datos, la partida se borra y no la podemos recuperar. Lo que compras con dinero (PRO y el Pack fundador) sí lo puedes recuperar con «Restaurar compras», porque lo guarda Google Play.",
         ],
       },
       {
@@ -49,7 +51,19 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Tus fotos como pósters (Flypet PRO)",
         paragraphs: [
-          "Cuando esté disponible: si eliges una foto para colgarla en la sala, la app copia esa foto, reducida, a su propia carpeta en tu móvil. No sale de él y se borra si quitas el póster o desinstalas la app. La app no tiene acceso al resto de tus fotos, solo a la que eliges.",
+          "Si tienes Flypet PRO y eliges una foto para colgarla en la sala, la app copia esa foto, reducida, a su propia carpeta en tu móvil. La foto no sale del móvil, con una excepción: si traspasas tus datos directamente de un móvil a otro con la herramienta de Android, pasa al móvil nuevo. Nunca entra en la copia de seguridad en la nube. Se borra si quitas el póster o desinstalas la app. La app no tiene acceso al resto de tus fotos, solo a la que eliges.",
+        ],
+      },
+      {
+        heading: "Compartir una foto",
+        paragraphs: [
+          "Si compartes una foto de tu mosca, la app genera la imagen en tu móvil y abre la hoja de compartir de Android. Solo se envía a donde tú elijas y no pasa por ningún servidor nuestro.",
+        ],
+      },
+      {
+        heading: "Los avisos",
+        paragraphs: [
+          "Los avisos son opcionales y locales: los programa el propio móvil, como mucho uno al día. Android te pide el permiso de notificaciones y los puedes apagar en los ajustes. No hay servidor de avisos ni ningún identificador.",
         ],
       },
       {
@@ -80,13 +94,13 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Seguridad y conservación",
         paragraphs: [
-          "Como los datos no salen del móvil, quedan protegidos por la seguridad de tu propio dispositivo. Se conservan mientras tengas la app instalada y se borran al desinstalarla. Nosotros no guardamos nada, así que no hay nada que tengamos que borrar ni conservar.",
+          "Salvo la copia de seguridad de Android y lo que tú compartas, los datos no salen del móvil y quedan protegidos por la seguridad de tu dispositivo. Se conservan mientras tengas la app instalada y se borran al desinstalarla. La copia de Android la gestiona Google en tu cuenta. Nosotros no guardamos nada, así que no hay nada que tengamos que borrar ni conservar.",
         ],
       },
       {
         heading: "Cambios",
         paragraphs: [
-          "Si la app cambia (por ejemplo, si un día hay copia en la nube), cambiaremos esta página antes y lo diremos en las novedades de la versión.",
+          "Si la app cambia (por ejemplo, si un día hay una copia en un servidor nuestro), cambiaremos esta página antes y lo diremos en las novedades de la versión.",
         ],
       },
     ],
@@ -96,9 +110,9 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
     title: "Flypet privacy policy",
     description:
       "What data Flypet, the virtual fly with a real fly's brain, uses: it doesn't collect any of yours.",
-    updated: "Last updated: 26 October 2026",
+    updated: "Last updated: 5 November 2026",
     intro:
-      "Flypet is an app by Jorge Graells Garcia, an independent developer based in Spain. This page explains what data the app uses. Short version: Flypet doesn't collect any of your data. Everything that happens in the game stays on your phone (and in your Android backup, if you have it turned on).",
+      "Flypet is an app by Jorge Graells Garcia, an independent developer based in Spain. This page explains what data the app uses. Short version: Flypet doesn't collect any of your data. What happens in the game stays on your phone and in the Android backup in your Google account, if you have it turned on. Only what you choose to share goes anywhere else.",
     sections: [
       {
         heading: "What isn't there",
@@ -111,7 +125,9 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Your game",
         paragraphs: [
-          "The fly, its room, your Flycoins and your settings are saved in the app's storage on your phone. We never receive them. If Android backup is turned on, Android keeps a copy of your game and settings in your Google account (encrypted, and under Google's privacy policy) so it can give it back if you install Flypet on another phone; you can turn it off in Android settings. Without that copy, if you uninstall the app or clear its data, your game is gone and we can't get it back. What you buy with money (PRO and the Founder pack) you can get back with \"Restore purchases\", because Google Play keeps track of it.",
+          "The fly, its room, your Flycoins and your settings are saved in the app's storage on your phone. We never receive them.",
+          "Flypet uses Android's automatic backup. If it's turned on, Android keeps your game and settings in your Google account so it can give them back if you install Flypet on another phone. Google keeps that copy, not us, encrypted and under its own privacy policy. The data for the fly's brain isn't included. You can turn it off in Android settings.",
+          "Without that copy, if you uninstall the app or clear its data, your game is gone and we can't get it back. What you buy with money (PRO and the Founder pack) you can get back with \"Restore purchases\", because Google Play keeps track of it.",
         ],
       },
       {
@@ -125,7 +141,19 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Your photos as posters (Flypet PRO)",
         paragraphs: [
-          "When available: if you choose a photo to hang in the room, the app copies it, scaled down, to its own folder on your phone. It doesn't leave the phone and is deleted if you take the poster down or uninstall the app. The app has no access to the rest of your photos, only the one you pick.",
+          "If you have Flypet PRO and choose a photo to hang in the room, the app copies it, scaled down, to its own folder on your phone. The photo doesn't leave the phone, with one exception: if you transfer your data directly from one phone to another with Android's tool, it moves to the new phone. It never goes into the cloud backup. It's deleted if you take the poster down or uninstall the app. The app has no access to the rest of your photos, only the one you pick.",
+        ],
+      },
+      {
+        heading: "Sharing a photo",
+        paragraphs: [
+          "If you share a photo of your fly, the app creates the image on your phone and opens Android's share sheet. It only goes where you choose and doesn't pass through any server of ours.",
+        ],
+      },
+      {
+        heading: "Notifications",
+        paragraphs: [
+          "Notifications are optional and local: the phone itself schedules them, at most one a day. Android asks for the notifications permission, and you can turn them off in settings. There's no notification server and no identifier.",
         ],
       },
       {
@@ -156,13 +184,13 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Security and retention",
         paragraphs: [
-          "Since the data never leaves your phone, it's protected by your own device's security. It's kept while the app is installed and deleted when you uninstall it. We keep nothing, so there's nothing for us to delete or retain.",
+          "Apart from the Android backup and what you choose to share, the data doesn't leave your phone and is protected by your own device's security. It's kept while the app is installed and deleted when you uninstall it. Google manages the Android backup in your account. We keep nothing, so there's nothing for us to delete or retain.",
         ],
       },
       {
         heading: "Changes",
         paragraphs: [
-          "If the app changes (for example, if one day there's a cloud backup), we'll update this page first and say so in the release notes.",
+          "If the app changes (for example, if one day there's a backup on a server of ours), we'll update this page first and say so in the release notes.",
         ],
       },
     ],

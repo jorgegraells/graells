@@ -105,6 +105,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${SITE}/es/noticias`, en: `${SITE}/en/news` } },
     },
     {
+      url: `${SITE}/es/flypet`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: { languages: { es: `${SITE}/es/flypet`, en: `${SITE}/en/flypet` } },
+    },
+    {
+      url: `${SITE}/en/flypet`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: { languages: { es: `${SITE}/es/flypet`, en: `${SITE}/en/flypet` } },
+    },
+    {
       url: `${SITE}/es/blog`,
       lastModified: now,
       changeFrequency: "weekly",
