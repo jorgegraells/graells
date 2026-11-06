@@ -554,7 +554,7 @@ const es: Dictionary = {
       {
         slug: "flypet",
         name: "Flypet",
-        tagline: "Esta mosca no tiene guion",
+        tagline: "Esta mascota tiene cerebro. En serio.",
         description:
           "App para Android con una mosca de la fruta de mascota. Qué hace en cada momento lo decide una simulación, en tu propio móvil, de las 165.122 neuronas del sistema nervioso de una mosca macho real. Anda, se acicala, come de la fruta que le pones y duerme de noche. Si le acercas el dedo y lo ve venir, huye. Un botón te enseña por qué ha hecho lo que ha hecho: qué notó y qué neuronas se activaron. Puedes ver su cerebro en directo, con cada neurona encendiéndose al disparar, y en el laboratorio apagar familias de neuronas y hacer experimentos guiados.",
         role: "Creador",
@@ -1135,7 +1135,7 @@ const en: Dictionary = {
       {
         slug: "flypet",
         name: "Flypet",
-        tagline: "This fly has no script",
+        tagline: "This pet actually has a brain",
         description:
           "Android app with a fruit fly as a pet. What it does at any moment is decided by a simulation, on your own phone, of the 165,122 neurons in the nervous system of a real male fly. It walks, grooms, eats the fruit you give it and sleeps at night. Bring your finger close and, if it sees it coming, it flees. One button shows you why it did what it did: what it noticed and which neurons fired. You can watch its brain live, each neuron lighting up as it fires, and in the lab switch off families of neurons and run guided experiments.",
         role: "Creator",

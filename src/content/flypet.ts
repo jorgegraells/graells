@@ -105,7 +105,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "01_como_funciona",
           label: "Cómo funciona",
           title: "El cableado es real. Y ella decide.",
-          text: "El cableado es real, sacado del microscopio electrónico. Tu móvil lo pone en marcha, con un modelo sencillo para cada neurona. Y según cuáles disparen, ella huye, come, se limpia o echa a andar. Lo que no sale de ahí lo ponemos nosotros, y aquí lo ves separado.",
+          text: "Sale del microscopio electrónico. Tu móvil lo pone en marcha, con un modelo sencillo para cada neurona. Y según cuáles disparen, ella huye, come, se limpia o echa a andar. Lo que no sale de ahí lo ponemos nosotros, y aquí lo ves separado.",
           alt: "Esquema en tres pasos: un cableado de verdad, con 165.122 neuronas de una mosca macho; tu móvil lo pone en marcha, con un modelo sencillo de cada neurona; y ella decide. Debajo, dos listas. Lo decide su cerebro: huir, sacar la trompa y comer, limpiarse y andar, si manda su cerebro. Lo ponemos nosotros: sentidos, cuerpo y marcha; hambre, sueño y digestión; buscar comida por el olor; echar a andar sin motivo.",
           credit: true,
         },
@@ -182,7 +182,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       ],
     },
     photosLabel: "Aspectos",
-    photosTitle: "En esto se te van las Flycoins.",
+    photosTitle: "Cámbiale la pinta.",
     photosText:
       "Cambia su pinta y sigue siendo ella: el aspecto no toca nada de la simulación.",
     photos: [
@@ -212,7 +212,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       label: "Flydex",
       title: "Que no se te escape ni una.",
       text: "La Flydex tiene 11 moscas: Dorada, Neón, Robot, Anime... Unas se pagan con Flycoins y otras hay que sudarlas: la Leyenda pide todos los logros; la Científica, todo el laboratorio, y la Espectro, tres moscas que lleguen a viejas contigo. Con las 11, te llevas la Coleccionista, un premio que no se compra.",
-      alt: "La Flydex del libro: 7 de 11 moscas, cada una con su aspecto y lo que pide (la Espectro, 3 vidas; la Científica, el laboratorio; la Leyenda, los logros) y, abajo, la Coleccionista en sombra, el premio por completarla.",
+      alt: "La Flydex del libro y, al lado, los aspectos de premio: 7 de 11 moscas, cada una con su aspecto y lo que pide (la Espectro, 3 vidas; la Científica, el laboratorio; la Leyenda, los logros) y, abajo, la Coleccionista en sombra, el premio por completarla.",
     },
     truthTag: "SIN TRUCOS",
     truthTitle: "Lo que es y lo que no",
@@ -223,7 +223,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     ],
     sampleNote:
       "Las pantallas son del juego. Los datos de partida que se ven en ellas (días, monedas, historial, colección) son de ejemplo.",
-    getTag: "PRUÉBALA",
+    getTag: "DÓNDE",
     getTitle: "¿Qué hará ahora?",
     availabilityHeading: "Dónde conseguirla",
     testing:
@@ -269,7 +269,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "01_como_funciona",
           label: "How it works",
           title: "The wiring is real. Then it decides.",
-          text: "The wiring is real, mapped with an electron microscope. Your phone switches it on, with a simple model for each neuron. And depending on which ones fire, it flees, eats, grooms or sets off walking. Whatever doesn't come from there, we built, and you can see the split right here.",
+          text: "It was mapped with an electron microscope. Your phone switches it on, with a simple model for each neuron. And depending on which ones fire, it flees, eats, grooms or sets off walking. Whatever doesn't come from there, we built, and you can see the split right here.",
           alt: "Diagram in three steps: real wiring, with 165,122 neurons from a male fly; your phone switches it on, with a simple model of each neuron; then it decides. Below, two lists. Its brain decides: fleeing, extending its proboscis, grooming, and walking if its brain says so. We built these: senses, body and gait; hunger, sleep and digestion; finding food by smell; setting off for no reason.",
           credit: true,
         },
@@ -346,7 +346,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       ],
     },
     photosLabel: "Looks",
-    photosTitle: "This is where your Flycoins go.",
+    photosTitle: "Change its look.",
     photosText:
       "Change how it looks and it's still the same fly: its looks don't touch the simulation.",
     photos: [
@@ -376,7 +376,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       label: "Flydex",
       title: "Don't let a single fly get away.",
       text: "The Flydex has 11 flies: Golden, Neon, Robot, Anime and more. Some cost Flycoins and some you have to really earn: the Legend needs every achievement, the Scientist the whole lab, and the Specter three flies that reach old age with you. Get all 11 and the Collector is yours, a reward you can't buy.",
-      alt: "The Flydex in the book: 7 of 11 flies, each with its look and what it takes (the Specter, 3 lives; the Scientist, the lab; the Legend, achievements) and, at the bottom, the Collector in shadow, the reward for completing it.",
+      alt: "The Flydex in the book and, next to it, the reward looks: 7 of 11 flies, each with its look and what it takes (the Specter, 3 lives; the Scientist, the lab; the Legend, achievements) and, at the bottom, the Collector in shadow, the reward for completing it.",
     },
     truthTag: "NO TRICKS",
     truthTitle: "What this is and isn't",
@@ -387,7 +387,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     ],
     sampleNote:
       "The screens are from the game. The save data you can see in them (days, coins, history, collection) is sample data.",
-    getTag: "TRY IT",
+    getTag: "WHERE",
     getTitle: "What will it do next?",
     availabilityHeading: "Where to get it",
     testing:
