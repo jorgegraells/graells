@@ -47,9 +47,12 @@ team size and format, agreed on a short call. Contact: dev.graells@gmail.com
   that gamifies work with RPG mechanics (levels, XP, quests) to boost team
   motivation. Founded and built solo with Next.js 15, React 19, Prisma,
   Supabase and Clerk. In pilot.
-- Enterprise AI ("IA para empresas"): RAG assistant over ~50 technical manuals
-  giving staff precise answers, multi-language (6), with full auth and an admin
-  panel. Built with PHP, Gemini API and Stripe. In production.
+- Flypet (https://jorgegraells.com/en/flypet): Android app with a fruit fly as
+  a pet. What it does at any moment is decided by a simulation, on the phone
+  itself, of the 165,122 neurons in the nervous system of a real male fly. Uses
+  the MaleCNS v1.0 connectome (Janelia Research Campus and collaborators,
+  CC BY 4.0); Janelia isn't involved in the app and doesn't endorse it. In
+  closed testing.
 - EchoGEO: measures brand visibility inside AI answers (ChatGPT, Perplexity,
   Gemini) and returns a score with concrete actions to get cited. Proprietary
   deterministic scoring engine. In development.
@@ -57,9 +60,10 @@ team size and format, agreed on a short call. Contact: dev.graells@gmail.com
   with a personal full-screen prompt, dopamine score and daily routine. React
   Native + Expo, TypeScript and Kotlin. Radical privacy: zero telemetry. In
   development.
-- AI in industry: integration of AI, cybersecurity and EU compliance inside an
-  industrial company running in daily production (Entra ID, FortiGate,
-  ThreatLocker, C++ Builder).
+- Yaiwell (https://www.yaiwell.app): web marketplace to find and book beauty,
+  wellness and sport services near you, with availability for right now or the
+  next few hours. Built for a client with Next.js 16, Prisma, Supabase + PostGIS,
+  Clerk and Stripe Connect. Not launched yet.
 
 ## Expertise
 

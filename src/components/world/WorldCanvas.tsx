@@ -316,14 +316,14 @@ type Persona = {
 const VILLAGER_PERSONAS: Persona[] = [
   // WorkLeveling — gamer con cascos y cresta
   { skin: "#e8b98d", hair: "#3a2a1a", head: "tuft", hat: "none", accessory: "headphones", build: 1.0 },
-  // IA para empresas — analista con gafas
+  // Flypet — científico con gafas
   { skin: "#f0c9a0", hair: "#1f1f26", head: "short", hat: "none", accessory: "glasses", build: 0.97 },
   // EchoGEO — melena
   { skin: "#c8925a", hair: "#6b4423", head: "long", hat: "none", accessory: "none", build: 1.02 },
   // ANTIDOP — gorrito
   { skin: "#9c6b43", hair: "#caa24b", head: "short", hat: "beanie", accessory: "none", build: 0.99 },
-  // IA en la industria — casco de obra y bigote
-  { skin: "#e8b98d", hair: "#2b2b2b", head: "short", hat: "hardhat", accessory: "mustache", build: 1.05 },
+  // Yaiwell — melena cobriza
+  { skin: "#e8b98d", hair: "#8a4b2d", head: "long", hat: "none", accessory: "none", build: 0.97 },
   // extra — calvo con barba
   { skin: "#7a4f30", hair: "#2c2c34", head: "bald", hat: "none", accessory: "beard", build: 1.03 },
 ];
