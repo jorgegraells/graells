@@ -123,7 +123,9 @@ if (PUBLISH) {
     if (/flypet|antidop|workleveling|hor[oó]scop|horoscope/i.test(text))
       errors.push(`${l}: habla de un proyecto de Jorge: se queda en borrador`);
     const links = new Set([...(d.body ?? "").matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)].map((m) => new URL(m[1]).hostname));
-    if (isNew && links.size < 2) errors.push(`${l}: necesita enlaces a al menos 2 fuentes externas distintas`);
+    // Una noticia se contrasta en dos sitios; una guía puede explicar una sola fuente oficial
+    const minLinks = a.type === "news" ? 2 : 1;
+    if (isNew && links.size < minLinks) errors.push(`${l}: necesita enlaces a al menos ${minLinks} fuente(s) externa(s) distinta(s)`);
   }
   errors.push(...warnings);
   warnings.length = 0;
