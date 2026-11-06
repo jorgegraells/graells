@@ -10,6 +10,20 @@ const STORAGE_KEY = "jg-theme";
  *  En la portada oscura precarga el holograma, que en modo claro no se llega a descargar. */
 export const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}");if(t!=="arcade"&&t!=="dossier"){t=matchMedia("(prefers-color-scheme: light)").matches?"dossier":"arcade"}document.documentElement.dataset.theme=t;if(t==="arcade"&&/^\\/(es|en)\\/?$/.test(location.pathname)){var l=document.createElement("link");l.rel="preload";l.as="image";l.href="/jorge-holo-hero.webp";l.fetchPriority="high";document.head.appendChild(l)}}catch(e){document.documentElement.dataset.theme="arcade"}})()`;
 
+/** La misma elección que hace THEME_SCRIPT, para cuando ese script no vuelve a correr */
+export function applyStoredTheme() {
+  let theme: string | null = null;
+  try {
+    theme = localStorage.getItem(STORAGE_KEY);
+  } catch {
+    // sin acceso al almacenamiento, manda el sistema
+  }
+  if (theme !== "arcade" && theme !== "dossier") {
+    theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "dossier" : "arcade";
+  }
+  document.documentElement.dataset.theme = theme;
+}
+
 // Secciones equivalentes en los dos modos, para no perder el sitio al cambiar
 const ANCHOR_MAP: Record<Theme, Record<string, string>> = {
   dossier: {
