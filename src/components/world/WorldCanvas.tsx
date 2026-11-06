@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  createContext,
-  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -11,13 +9,38 @@ import {
   type ReactNode,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Html, RoundedBox } from "@react-three/drei";
+import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect.js";
 import type { Dictionary, Project } from "@/i18n/dictionaries";
+import { VILLAGE_COLORS, type MoveInput, type WorldTheme } from "./constants";
+import {
+  Block,
+  InteractContext,
+  QualityContext,
+  StyleContext,
+  ThemeContext,
+  useInteractable,
+  usePlayerWithin,
+  useQuality,
+  useWorldStyle,
+  useWorldTheme,
+  type NearAction,
+} from "./kit";
+import {
+  Elder,
+  HOUSE_PROP_COLLIDERS,
+  HouseProps,
+  Mailbox,
+  Noticeboard,
+  PLAZA_COLLIDERS,
+  SoccerBall,
+} from "./extras";
 
 const HOUSE_RADIUS = 22;
 const NEAR_DISTANCE = 5;
+/** Un clic en una casa o un vecino solo cuenta si está a una distancia razonable. */
+const MAX_CLICK_DISTANCE = 18;
 const MOVE_SPEED = 8;
 const WORLD_BOUND = 45;
 const EYE_HEIGHT = 1.8;
@@ -30,51 +53,6 @@ const PATH_OUTER = 19;
 const PATH_HALF_WIDTH = 1.2;
 const UP = new THREE.Vector3(0, 1, 0);
 const SKIN = "#e0ad82";
-
-// ---------------------------------------------------------------------------
-// Sistema de estilo: "blocky" (Minecraft) o "rounded" (redondeado)
-// ---------------------------------------------------------------------------
-
-export type WorldStyle = "blocky" | "rounded";
-const StyleContext = createContext<WorldStyle>("blocky");
-const useWorldStyle = () => useContext(StyleContext);
-
-/** Tema visual del mundo: "voxel" (el pueblo Minecraft de siempre) u
- *  "overworld" (pastel, luz cálida y formas redondeadas, aire de RPG japonés).
- *  Se alterna con el botón arcade de la plaza. */
-export type WorldTheme = "voxel" | "overworld";
-const ThemeContext = createContext<WorldTheme>("voxel");
-const useWorldTheme = () => useContext(ThemeContext);
-
-type BlockProps = {
-  args: [number, number, number];
-  radius?: number;
-  children?: ReactNode;
-  position?: [number, number, number];
-  rotation?: [number, number, number];
-  scale?: number | [number, number, number];
-  castShadow?: boolean;
-  receiveShadow?: boolean;
-};
-
-/** Caja que se redondea automáticamente en modo "rounded". El material va como hijo. */
-function Block({ args, radius = 0.14, children, ...props }: BlockProps) {
-  const style = useWorldStyle();
-  if (style === "rounded") {
-    const r = Math.min(radius, Math.min(...args) * 0.45);
-    return (
-      <RoundedBox args={args} radius={r} smoothness={3} {...props}>
-        {children}
-      </RoundedBox>
-    );
-  }
-  return (
-    <mesh {...props}>
-      <boxGeometry args={args} />
-      {children}
-    </mesh>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Disposición del pueblo y RNG determinista
@@ -117,6 +95,7 @@ const GEEK_POS = { x: 40, z: -2, rotY: -Math.PI / 2 };
 const PITCH_POS = { x: 32, z: -23 };
 const PITCH_W = 9;
 const PITCH_L = 14;
+const GOAL_HW = 1.7; // media anchura de portería
 const DOOR_W = 2; // hueco de puerta de los edificios visitables
 
 /** ¿Cae este punto dentro de la zona personal? (para despejar árboles,
@@ -222,10 +201,11 @@ const ROCK_SPOTS = (() => {
   }).filter((r) => !inPersonalZone(r.x, r.z));
 })();
 
-const LAMP_SPOTS = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((a) => ({
-  x: Math.sin(a) * 7.6,
-  z: Math.cos(a) * 7.6,
-}));
+/** Farolas en los huecos entre caminos (los caminos salen a 45° + 72° × n). */
+const LAMP_SPOTS = [9, 81, 153, 225, 297].map((deg) => {
+  const a = (deg * Math.PI) / 180;
+  return { x: Math.sin(a) * 7.6, z: Math.cos(a) * 7.6 };
+});
 
 const BENCH_SPOTS = [1.5, 3.7, 5.3].map((a) => ({
   x: Math.sin(a) * 5,
@@ -280,6 +260,7 @@ const DECOR_COLLIDERS = [
   ...TREE_SPOTS.map((t) => ({ x: t.x, z: t.z, r: 0.7 * t.scale })),
   ...LAMP_SPOTS.map((l) => ({ x: l.x, z: l.z, r: 0.3 })),
   ...BENCH_SPOTS.map((b) => ({ x: b.x, z: b.z, r: 0.9 })),
+  ...PLAZA_COLLIDERS,
   // Zona personal: postes de las porterías (edificios y gradas van por cajas)
   ...[-1, 1].flatMap((end) =>
     [-1, 1].map((s) => ({
@@ -288,16 +269,6 @@ const DECOR_COLLIDERS = [
       r: 0.2,
     })),
   ),
-];
-
-/** Color de tejado y camiseta del aldeano de cada proyecto. */
-export const VILLAGE_COLORS = [
-  "#0ea5b7",
-  "#7c5cd6",
-  "#d6558e",
-  "#e0912f",
-  "#2f9e57",
-  "#c94f4f",
 ];
 
 /** Proyecto cuya casa está en obras (grúas, vallas, obreros). */
@@ -360,14 +331,15 @@ function makeGroundClear(layout: VillageLayout) {
   };
 }
 
-export type MoveInput = { x: number; y: number; jump: boolean };
-
 /** Estado mutable compartido para distinguir arrastre (mirar) de clic (hablar). */
 type DragState = { dist: number };
 
 // ---------------------------------------------------------------------------
 // Jugador
 // ---------------------------------------------------------------------------
+
+const scratchLocal = new THREE.Vector3();
+const scratchTarget = new THREE.Vector3();
 
 function PlayerRig({
   paused,
@@ -438,12 +410,19 @@ function PlayerRig({
   useEffect(() => {
     camera.rotation.order = "YXZ";
     camera.position.set(0, 22, 42);
+    // Sin la cinemática de bajada si se ha pedido reducir el movimiento
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      intro.current = 1;
+      camera.position.set(0, EYE_HEIGHT, 26);
+    }
   }, [camera]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      intro.current = 1; // cualquier tecla salta la intro
-      if (e.code === "Space") e.preventDefault(); // sin scroll de página
+      if (!pausedRef.current) intro.current = 1; // cualquier tecla salta la intro
+      // Sin scroll de página, pero sin robarle el espacio a un botón con foco
+      const target = e.target as HTMLElement | null;
+      if (e.code === "Space" && !target?.closest?.("a,button")) e.preventDefault();
       keys.current.add(e.code);
     };
     const up = (e: KeyboardEvent) => keys.current.delete(e.code);
@@ -473,9 +452,11 @@ function PlayerRig({
     const pitchSensitivity = touch ? 0.006 : 0.003;
 
     const onDown = (e: PointerEvent) => {
-      intro.current = 1; // un clic/toque también salta la intro
+      if (!pausedRef.current) intro.current = 1; // un clic/toque también salta la intro
       // En escritorio, un clic captura el ratón: se mira moviéndolo, sin arrastrar
-      if (!touch && !pausedRef.current && document.pointerLockElement !== el) {
+      const relocking =
+        !touch && !pausedRef.current && document.pointerLockElement !== el;
+      if (relocking) {
         try {
           const req = (
             el.requestPointerLock as () => Promise<void> | void
@@ -489,7 +470,8 @@ function PlayerRig({
       }
       if (lookPointerId !== null) return; // ya hay un dedo mirando
       lookPointerId = e.pointerId;
-      drag.dist = 0;
+      // El clic que recaptura el ratón no cuenta como pulsar lo que hay debajo
+      drag.dist = relocking ? 1000 : 0;
       lastX = e.clientX;
       lastY = e.clientY;
     };
@@ -545,6 +527,14 @@ function PlayerRig({
 
     // Intro: descenso desde el cielo hasta la plaza del pueblo
     if (intro.current < 1) {
+      // No empieza hasta entrar al pueblo: detrás de la bienvenida espera arriba
+      if (pausedRef.current) {
+        if (intro.current === 0) {
+          camera.position.set(0, 22, 42);
+          camera.rotation.set(-0.5, yaw.current, 0);
+        }
+        return;
+      }
       intro.current = Math.min(1, intro.current + delta / 3);
       const eased = 1 - Math.pow(1 - intro.current, 3);
       camera.position.set(
@@ -586,7 +576,7 @@ function PlayerRig({
       1,
     );
 
-    const target = new THREE.Vector3(right, 0, back);
+    const target = scratchTarget.set(right, 0, back);
     if (target.lengthSq() > 1) target.normalize();
     target.applyAxisAngle(UP, yaw.current).multiplyScalar(MOVE_SPEED);
 
@@ -616,11 +606,9 @@ function PlayerRig({
       }
     }
     for (const b of colliders.boxes) {
-      const local = new THREE.Vector3(
-        camera.position.x - b.x,
-        0,
-        camera.position.z - b.z,
-      ).applyAxisAngle(UP, -b.rotY);
+      const local = scratchLocal
+        .set(camera.position.x - b.x, 0, camera.position.z - b.z)
+        .applyAxisAngle(UP, -b.rotY);
       if (Math.abs(local.x) < b.halfW && Math.abs(local.z) < b.halfD) {
         const penX = b.halfW - Math.abs(local.x);
         const penZ = b.halfD - Math.abs(local.z);
@@ -875,6 +863,7 @@ function useStoneTexture() {
 
 function GrassFloor() {
   const texture = useGrassTexture();
+  useEffect(() => () => texture.dispose(), [texture]);
   return (
     // Lo bastante grande para que las faldas de las montañas no lo desborden
     <mesh rotation-x={-Math.PI / 2} receiveShadow>
@@ -939,15 +928,17 @@ function makeBladeTuft(theme: WorldTheme) {
 /** Hierba alta: matojos de briznas instanciados, con viento suave por shader. */
 function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
   const theme = useWorldTheme();
+  const { low } = useQuality();
   const ref = useRef<THREE.InstancedMesh>(null);
   const uTime = useRef({ value: 0 }).current;
+  const tuftCount = low ? 500 : 1500;
 
   const tufts = useMemo(() => {
     const rand = mulberry32(4242);
     const list: { x: number; z: number; s: number; rot: number; c: number }[] =
       [];
     let attempts = 0;
-    while (list.length < 1500 && attempts < 12000) {
+    while (list.length < tuftCount && attempts < 12000) {
       attempts++;
       const angle = rand() * Math.PI * 2;
       const radius = 8 + rand() * 40;
@@ -963,9 +954,10 @@ function TallGrass({ clear }: { clear: (x: number, z: number) => boolean }) {
       });
     }
     return list;
-  }, [clear]);
+  }, [clear, tuftCount]);
 
   const geometry = useMemo(() => makeBladeTuft(theme), [theme]);
+  useEffect(() => () => geometry.dispose(), [geometry]);
   const material = useMemo(() => {
     const mat = new THREE.MeshStandardMaterial({
       vertexColors: true,
@@ -1238,11 +1230,12 @@ function DecorTrees() {
 }
 
 /** Rocas grises (cantos rodados en modo redondo). */
-function Rocks() {
+function Rocks({ clear }: { clear: (x: number, z: number) => boolean }) {
   const style = useWorldStyle();
+  const rocks = useMemo(() => ROCK_SPOTS.filter((r) => clear(r.x, r.z)), [clear]);
   return (
     <>
-      {ROCK_SPOTS.map((r, i) => (
+      {rocks.map((r, i) => (
         <Block
           key={i}
           args={[1, 1, 1]}
@@ -1283,20 +1276,45 @@ function Flowers({ clear }: { clear: (x: number, z: number) => boolean }) {
     return list;
   }, [clear]);
 
+  const style = useWorldStyle();
+  const stems = useRef<THREE.InstancedMesh>(null);
+  const heads = useRef<THREE.InstancedMesh>(null);
+  const noOutline = useMemo(() => ({ outlineParameters: { visible: false } }), []);
+
+  useLayoutEffect(() => {
+    if (!stems.current || !heads.current) return;
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+    flowers.forEach((f, i) => {
+      dummy.scale.setScalar(f.scale);
+      dummy.position.set(f.x, 0.15 * f.scale, f.z);
+      dummy.updateMatrix();
+      stems.current!.setMatrixAt(i, dummy.matrix);
+      dummy.position.set(f.x, 0.35 * f.scale, f.z);
+      dummy.updateMatrix();
+      heads.current!.setMatrixAt(i, dummy.matrix);
+      heads.current!.setColorAt(i, color.set(f.color));
+    });
+    stems.current.instanceMatrix.needsUpdate = true;
+    heads.current.instanceMatrix.needsUpdate = true;
+    if (heads.current.instanceColor) heads.current.instanceColor.needsUpdate = true;
+  }, [flowers, style]);
+
   return (
-    <>
-      {flowers.map((f, i) => (
-        <group key={i} position={[f.x, 0, f.z]} scale={f.scale}>
-          <mesh position={[0, 0.15, 0]}>
-            <boxGeometry args={[0.06, 0.3, 0.06]} />
-            <meshStandardMaterial color="#3e8e2f" />
-          </mesh>
-          <Block args={[0.16, 0.14, 0.16]} radius={0.06} position={[0, 0.35, 0]}>
-            <meshStandardMaterial color={f.color} />
-          </Block>
-        </group>
-      ))}
-    </>
+    <group key={style}>
+      <instancedMesh ref={stems} args={[undefined, undefined, flowers.length]}>
+        <boxGeometry args={[0.06, 0.3, 0.06]} />
+        <meshStandardMaterial color="#3e8e2f" userData={noOutline} />
+      </instancedMesh>
+      <instancedMesh ref={heads} args={[undefined, undefined, flowers.length]}>
+        {style === "blocky" ? (
+          <boxGeometry args={[0.16, 0.14, 0.16]} />
+        ) : (
+          <sphereGeometry args={[0.09, 8, 6]} />
+        )}
+        <meshStandardMaterial color="#ffffff" userData={noOutline} />
+      </instancedMesh>
+    </group>
   );
 }
 
@@ -1686,54 +1704,38 @@ function ThemeButton({
   dict,
   touch,
   paused,
+  drag,
   onPress,
 }: {
   dict: Dictionary;
   touch: boolean;
   paused: boolean;
+  drag: DragState;
   onPress: () => void;
 }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
   const theme = useWorldTheme();
-  const { camera } = useThree();
-  const [near, setNear] = useState(false);
-  const nearRef = useRef(false);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
   const domeMat = useRef<THREE.MeshStandardMaterial>(null);
+  const near = useInteractable({
+    id: "theme",
+    x: THEME_BUTTON_POS.x,
+    z: THEME_BUTTON_POS.z,
+    radius: 3,
+    verb: dict.world.actions.use,
+    onUse: onPress,
+  });
 
   useFrame(({ clock }) => {
-    const d = Math.hypot(
-      camera.position.x - THEME_BUTTON_POS.x,
-      camera.position.z - THEME_BUTTON_POS.z,
-    );
-    const isNear = d < 3;
-    if (isNear !== nearRef.current) {
-      nearRef.current = isNear;
-      setNear(isNear);
-    }
     // El pulsador "respira"; late más deprisa cuando estás al lado
     if (domeMat.current) {
       const t = clock.elapsedTime;
       domeMat.current.emissiveIntensity =
-        (isNear ? 0.85 : 0.4) + Math.sin(t * (isNear ? 6 : 2.2)) * 0.22;
+        (near ? 0.85 : 0.4) + Math.sin(t * (near ? 6 : 2.2)) * 0.22;
     }
   });
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (
-        (e.code === "KeyE" || e.code === "Enter") &&
-        nearRef.current &&
-        !pausedRef.current
-      ) {
-        onPress();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onPress]);
 
   // La etiqueta anuncia el modo al que se va a cambiar
   const label =
@@ -1744,7 +1746,7 @@ function ThemeButton({
       position={[THEME_BUTTON_POS.x, 0.2, THEME_BUTTON_POS.z]}
       onClick={(e) => {
         e.stopPropagation();
-        if (nearRef.current && !pausedRef.current) onPress();
+        if (near && !pausedRef.current && drag.dist < 8) onPress();
       }}
       onPointerOver={() => (document.body.style.cursor = "pointer")}
       onPointerOut={() => (document.body.style.cursor = "default")}
@@ -1780,7 +1782,7 @@ function ThemeButton({
       {/* A qué modo cambia */}
       <Html
         center
-        distanceFactor={9}
+        distanceFactor={near ? undefined : 9}
         zIndexRange={[15, 0]}
         position={[0, 1.35, 0]}
         style={{ pointerEvents: "none" }}
@@ -1792,13 +1794,12 @@ function ThemeButton({
       {near && (
         <Html
           center
-          distanceFactor={9}
           zIndexRange={[15, 0]}
           position={[0, 1.85, 0]}
           style={{ pointerEvents: "none" }}
         >
           <div className="animate-pulse whitespace-nowrap rounded-full bg-[#e23c3c] px-4 py-1.5 font-mono text-xs font-semibold uppercase tracking-widest text-white shadow-lg">
-            {touch ? dict.world.hintNearTouch : dict.world.hintNear}
+            {touch ? dict.world.hintUseTouch : dict.world.hintUse}
           </div>
         </Html>
       )}
@@ -1836,9 +1837,17 @@ function ToonMaterialSwap() {
     new WeakMap<THREE.MeshStandardMaterial, THREE.MeshToonMaterial>(),
   ).current;
 
+  const swap = useRef(() => {});
+  const ticks = useRef(0);
+  // Los interiores se montan al acercarse: hay que pasarlos a toon también
+  useFrame(() => {
+    ticks.current = (ticks.current + 1) % 45;
+    if (ticks.current === 0 && theme === "overworld") swap.current();
+  });
+
   useEffect(() => {
     const toToon = theme === "overworld";
-    scene.traverse((obj) => {
+    swap.current = () => scene.traverse((obj) => {
       const mesh = obj as THREE.Mesh & {
         userData: { noToon?: boolean; origMat?: THREE.Material };
       };
@@ -1861,6 +1870,7 @@ function ToonMaterialSwap() {
           });
           toon.vertexColors = std.vertexColors;
           toon.toneMapped = std.toneMapped;
+          toon.userData = std.userData;
           cache.set(std, toon);
         }
         mesh.userData.origMat = std;
@@ -1870,6 +1880,7 @@ function ToonMaterialSwap() {
         delete mesh.userData.origMat;
       }
     });
+    swap.current();
   }, [theme, scene, gradient, cache]);
 
   return null;
@@ -1894,9 +1905,35 @@ function OutlinedRenderer() {
   );
   const themeRef = useRef(theme);
   themeRef.current = theme;
+  const { low } = useQuality();
+  const frame = useRef(0);
+  const outlines = useRef(!low);
+  const slow = useRef({ time: 0, frames: 0, warmup: 6 });
 
-  useFrame(() => {
-    if (themeRef.current === "overworld") effect.render(scene, camera);
+  useEffect(() => {
+    // La sombra casi no cambia: redibujarla cada fotograma duplica el trabajo
+    gl.shadowMap.autoUpdate = false;
+    gl.shadowMap.needsUpdate = true;
+    slow.current = { time: 0, frames: 0, warmup: 6 };
+  }, [gl, theme]);
+
+  useFrame((_, delta) => {
+    frame.current = (frame.current + 1) % 3;
+    if (frame.current === 0) gl.shadowMap.needsUpdate = true;
+    // Por debajo de unos 24 fps durante 3 s, fuera contornos: es lo que más pesa
+    if (outlines.current && themeRef.current === "overworld" && delta < 0.5) {
+      if (slow.current.warmup > 0) {
+        slow.current.warmup -= delta;
+      } else {
+        slow.current.time += delta;
+        slow.current.frames += 1;
+        if (slow.current.time > 3) {
+          if (slow.current.frames / slow.current.time < 24) outlines.current = false;
+          slow.current = { time: 0, frames: 0, warmup: 0 };
+        }
+      }
+    }
+    if (themeRef.current === "overworld" && outlines.current) effect.render(scene, camera);
     else gl.render(scene, camera);
   }, 1);
 
@@ -2090,6 +2127,7 @@ function BuildingShell({
 }) {
   const style = useWorldStyle();
   const theme = useWorldTheme();
+  const { low } = useQuality();
   const flat = style === "blocky";
   const wallT = 0.25;
   const postT = 0.44;
@@ -2189,7 +2227,7 @@ function BuildingShell({
       {/* Puerta automática, empotrada en el plano de fachada */}
       <AutoDoor position={[0, 0.3, d / 2 - wallT / 2]} />
       {/* Luz interior cálida */}
-      <pointLight position={[0, h - 0.9, 0]} color="#ffe0b3" intensity={1.6} distance={11} />
+      {!low && <pointLight position={[0, h - 0.9, 0]} color="#ffe0b3" intensity={1.6} distance={11} />}
       {children}
     </group>
   );
@@ -2235,6 +2273,27 @@ function Bookcase({
       return { baseY, books };
     });
   }, [seed]);
+  const spines = useRef<THREE.InstancedMesh>(null);
+  const spineCount = rows.reduce((n, r) => n + r.books.length, 0);
+  useLayoutEffect(() => {
+    const mesh = spines.current;
+    if (!mesh) return;
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+    let i = 0;
+    for (const row of rows) {
+      for (const b of row.books) {
+        dummy.position.set(b.x, row.baseY + b.h / 2, 0.02);
+        dummy.scale.set(b.w, b.h, 0.34);
+        dummy.updateMatrix();
+        mesh.setMatrixAt(i, dummy.matrix);
+        mesh.setColorAt(i, color.set(b.color));
+        i++;
+      }
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  }, [rows]);
 
   return (
     <group position={position}>
@@ -2253,14 +2312,14 @@ function Bookcase({
         <meshStandardMaterial color="#33241a" flatShading={flat} />
       </Block>
       {/* Lomos */}
-      {rows.map((row) =>
-        row.books.map((b, i) => (
-          <mesh key={`${row.baseY}-${i}`} position={[b.x, row.baseY + b.h / 2, 0.02]}>
-            <boxGeometry args={[b.w, b.h, 0.34]} />
-            <meshStandardMaterial color={b.color} flatShading={flat} />
-          </mesh>
-        )),
-      )}
+      <instancedMesh ref={spines} args={[undefined, undefined, spineCount]}>
+        <boxGeometry args={[1, 1, 1]} />
+        <meshStandardMaterial
+          color="#ffffff"
+          flatShading={flat}
+          userData={{ outlineParameters: { visible: false } }}
+        />
+      </instancedMesh>
     </group>
   );
 }
@@ -2273,51 +2332,40 @@ function RecommendedLibrary({
   dict,
   touch,
   paused,
+  drag,
   onLibrary,
 }: {
   dict: Dictionary;
   touch: boolean;
   paused: boolean;
+  drag: DragState;
   onLibrary: () => void;
 }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
-  const { camera } = useThree();
-  const [near, setNear] = useState(false);
-  const nearRef = useRef(false);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
+  const showInterior = usePlayerWithin(LIBRARY_POS.x, LIBRARY_POS.z, 22);
 
-  // Punto de interacción: las estanterías del fondo, en coords de mundo
-  const focus = useMemo(() => {
-    const cos = Math.cos(LIBRARY_POS.rotY);
-    const sin = Math.sin(LIBRARY_POS.rotY);
-    const cx = 0;
-    const cz = -1.6;
-    return {
-      x: LIBRARY_POS.x + cx * cos + cz * sin,
-      z: LIBRARY_POS.z - cx * sin + cz * cos,
-    };
-  }, []);
-
-  useFrame(() => {
-    const d = Math.hypot(camera.position.x - focus.x, camera.position.z - focus.z);
-    const isNear = d < 3.4;
-    if (isNear !== nearRef.current) {
-      nearRef.current = isNear;
-      setNear(isNear);
-    }
+  // Se lee desde dentro del edificio, delante de las estanterías: nunca
+  // a través de la pared del fondo
+  const near = useInteractable({
+    id: "library",
+    x: LIBRARY_POS.x,
+    z: LIBRARY_POS.z,
+    radius: 0,
+    verb: dict.world.actions.read,
+    onUse: onLibrary,
+    inRange: (camera) => {
+      const dx = camera.position.x - LIBRARY_POS.x;
+      const dz = camera.position.z - LIBRARY_POS.z;
+      const cos = Math.cos(LIBRARY_POS.rotY);
+      const sin = Math.sin(LIBRARY_POS.rotY);
+      const lx = dx * cos - dz * sin;
+      const lz = dx * sin + dz * cos;
+      return Math.abs(lx) < 3.7 && lz > -2.8 && lz < 1.4;
+    },
   });
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.code === "KeyE" || e.code === "Enter") && nearRef.current && !pausedRef.current) {
-        onLibrary();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onLibrary]);
 
   return (
     <group
@@ -2331,8 +2379,10 @@ function RecommendedLibrary({
         <WindowPane position={[-3.9, 1.7, -0.4]} rotY={Math.PI / 2} />
         <WindowPane position={[3.9, 1.7, -0.4]} rotY={Math.PI / 2} />
 
+        {showInterior && (
+        <>
         {/* Estanterías del fondo (interactuables) */}
-        <group onClick={() => nearRef.current && !pausedRef.current && onLibrary()}>
+        <group onClick={() => near && !pausedRef.current && drag.dist < 8 && onLibrary()}>
           <Bookcase seed={101} position={[-1.75, 0.35, -2.5]} />
           <Bookcase seed={202} position={[1.75, 0.35, -2.5]} />
         </group>
@@ -2394,6 +2444,8 @@ function RecommendedLibrary({
           <circleGeometry args={[1.3, 24]} />
           <meshStandardMaterial color="#b08968" roughness={1} />
         </mesh>
+        </>
+        )}
 
         {/* Cartel exterior sobre la puerta */}
         <Signboard text={dict.world.personal.library} emoji="📚" bg="#3f6212" position={[0, 2.95, 3.0]} width={2.4} />
@@ -2402,13 +2454,12 @@ function RecommendedLibrary({
         {near && (
           <Html
             center
-            distanceFactor={9}
             zIndexRange={[15, 0]}
             position={[0, 2.6, -1.9]}
             style={{ pointerEvents: "none" }}
           >
             <div className="animate-pulse whitespace-nowrap rounded-full bg-[#e0a82f] px-4 py-1.5 font-mono text-xs font-semibold uppercase tracking-widest text-white shadow-lg">
-              {touch ? dict.world.hintNearTouch : dict.world.hintNear}
+              {touch ? dict.world.hintReadTouch : dict.world.hintRead}
             </div>
           </Html>
         )}
@@ -2600,6 +2651,7 @@ function GeekDen({ dict }: { dict: Dictionary }) {
   const style = useWorldStyle();
   const flat = style === "blocky";
   const posters = usePosterTextures();
+  const showInterior = usePlayerWithin(GEEK_POS.x, GEEK_POS.z, 22);
   const poster = (
     tex: THREE.Texture,
     position: [number, number, number],
@@ -2622,6 +2674,8 @@ function GeekDen({ dict }: { dict: Dictionary }) {
         {/* Cartel exterior sobre la puerta */}
         <Signboard text={dict.world.personal.geek} emoji="🕹️" bg="#6d28d9" position={[0, 3.05, 3.5]} width={2.4} />
 
+        {showInterior && (
+        <>
         {/* Pósters: tres al fondo, dos en la pared izquierda */}
         {poster(posters.spiderman, [-2.6, 2.35, -3.18])}
         {poster(posters.pokemon, [0, 2.35, -3.18])}
@@ -2779,6 +2833,8 @@ function GeekDen({ dict }: { dict: Dictionary }) {
         <Block args={[0.9, 0.42, 0.9]} radius={0.18} castShadow position={[-0.3, 0.56, -2.6]}>
           <meshStandardMaterial color="#22c55e" flatShading={flat} />
         </Block>
+        </>
+        )}
       </BuildingShell>
       <Html
         center
@@ -2841,7 +2897,6 @@ function FootballPitch() {
     return tex;
   }, []);
 
-  const GOAL_HW = 1.7; // media anchura de portería
   const GOAL_H = 1.5; // alto
   const NET_D = 1.1; // fondo de la red (hacia atrás)
   const netMat = () => (
@@ -2970,11 +3025,6 @@ function FootballPitch() {
           </group>
         )),
       )}
-      {/* Balón */}
-      <mesh castShadow position={[1.0, 0.26, 2.0]}>
-        <sphereGeometry args={[0.24, 12, 12]} />
-        <meshStandardMaterial color="#f5f5f5" flatShading={flat} />
-      </mesh>
     </group>
   );
 }
@@ -3678,7 +3728,8 @@ function Villager({
   color,
   persona,
   position,
-  near,
+  visited,
+  verb,
   nearLabel,
   drag,
   onEnter,
@@ -3687,11 +3738,20 @@ function Villager({
   color: string;
   persona: Persona;
   position: THREE.Vector3;
-  near: boolean;
+  visited: boolean;
+  verb: string;
   nearLabel: string;
   drag: DragState;
   onEnter: (project: Project) => void;
 }) {
+  const near = useInteractable({
+    id: project.slug,
+    x: position.x,
+    z: position.z,
+    radius: NEAR_DISTANCE,
+    verb,
+    onUse: () => onEnter(project),
+  });
   const style = useWorldStyle();
   const theme = useWorldTheme();
   const flat = style === "blocky";
@@ -3729,7 +3789,7 @@ function Villager({
       position={position}
       onClick={(e) => {
         e.stopPropagation();
-        if (drag.dist < 8) onEnter(project);
+        if (drag.dist < 8 && e.distance < MAX_CLICK_DISTANCE) onEnter(project);
       }}
       onPointerOver={() => (document.body.style.cursor = "pointer")}
       onPointerOut={() => (document.body.style.cursor = "default")}
@@ -3954,6 +4014,11 @@ function Villager({
             className="rounded-lg px-3 py-1 text-sm font-bold text-white"
             style={{ background: "rgba(15,18,30,0.75)", border: `2px solid ${color}` }}
           >
+            {visited ? (
+              <span className="mr-1.5 text-emerald-300">✓</span>
+            ) : (
+              <span className="mr-1.5 text-amber-300">!</span>
+            )}
             {project.name}
           </p>
           <p
@@ -3968,7 +4033,6 @@ function Villager({
       {near && (
         <Html
           center
-          distanceFactor={9}
           zIndexRange={[15, 0]}
           position={[0, 3.55, 0]}
           style={{ pointerEvents: "none" }}
@@ -3989,7 +4053,7 @@ function Village({
   projects,
   dict,
   touch,
-  paused,
+  visited,
   drag,
   onEnter,
   layout,
@@ -3997,46 +4061,11 @@ function Village({
   projects: Project[];
   dict: Dictionary;
   touch: boolean;
-  paused: boolean;
+  visited: string[];
   drag: DragState;
   onEnter: (project: Project) => void;
   layout: VillageLayout;
 }) {
-  const [nearIndex, setNearIndex] = useState(-1);
-  const nearRef = useRef(-1);
-  const pausedRef = useRef(paused);
-  pausedRef.current = paused;
-
-  useFrame(({ camera }) => {
-    let idx = -1;
-    let best = NEAR_DISTANCE;
-    layout.forEach(({ npcPos }, i) => {
-      const d = Math.hypot(
-        camera.position.x - npcPos.x,
-        camera.position.z - npcPos.z,
-      );
-      if (d < best) {
-        best = d;
-        idx = i;
-      }
-    });
-    if (idx !== nearRef.current) {
-      nearRef.current = idx;
-      setNearIndex(idx);
-    }
-  });
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (pausedRef.current || nearRef.current < 0) return;
-      if (e.code === "KeyE" || e.code === "Enter") {
-        onEnter(projects[nearRef.current]);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [projects, onEnter]);
-
   return (
     <>
       {projects.map((project, i) => (
@@ -4046,20 +4075,22 @@ function Village({
             rotation={[0, layout[i].angle + Math.PI, 0]}
             onClick={(e) => {
               e.stopPropagation();
-              if (drag.dist < 8) onEnter(project);
+              if (drag.dist < 8 && e.distance < MAX_CLICK_DISTANCE) onEnter(project);
             }}
           >
             <House
               color={VILLAGE_COLORS[i % VILLAGE_COLORS.length]}
               construction={project.slug === CONSTRUCTION_SLUG}
             />
+            <HouseProps slug={project.slug} />
           </group>
           <Villager
             project={project}
             color={VILLAGE_COLORS[i % VILLAGE_COLORS.length]}
             persona={VILLAGER_PERSONAS[i % VILLAGER_PERSONAS.length]}
             position={layout[i].npcPos}
-            near={i === nearIndex}
+            visited={visited.includes(project.slug)}
+            verb={dict.world.actions.talk}
             nearLabel={touch ? dict.world.hintNearTouch : dict.world.hintNear}
             drag={drag}
             onEnter={onEnter}
@@ -4091,24 +4122,39 @@ function DebugProbe() {
 export default function WorldCanvas({
   dict,
   touch,
+  low,
   paused,
   casting,
   theme,
+  visited,
   onEnter,
   onLibrary,
+  onElder,
+  onMailbox,
+  onBoard,
+  onGoal,
   onThemeButton,
+  reportNear,
   externalMove,
 }: {
   dict: Dictionary;
   touch: boolean;
+  low: boolean;
   paused: boolean;
   casting: boolean;
   theme: WorldTheme;
+  visited: string[];
   onEnter: (project: Project) => void;
   onLibrary: () => void;
+  onElder: () => void;
+  onMailbox: () => void;
+  onBoard: () => void;
+  onGoal: () => void;
   onThemeButton: () => void;
+  reportNear: (id: string, action: NearAction | null) => void;
   externalMove: MoveInput;
 }) {
+  const quality = useMemo(() => ({ low }), [low]);
   const drag = useRef<DragState>({ dist: 0 }).current;
   const layout = useMemo(
     () => buildLayout(dict.projects.items.length),
@@ -4163,31 +4209,61 @@ export default function WorldCanvas({
     };
   }, [dict.projects.items, layout]);
   const buildLabel = `${dict.world.building} EchoGEO`;
-  // Grúas y obreros son sólidos: no se atraviesan
-  const siteColliders = useMemo(
-    () =>
-      echo
+  // Grúas, obreros y objetos de cada casa son sólidos: no se atraviesan
+  const siteColliders = useMemo(() => {
+    const props = dict.projects.items.flatMap((p, i) => {
+      const rotY = layout[i].angle + Math.PI;
+      const cos = Math.cos(rotY);
+      const sin = Math.sin(rotY);
+      return (HOUSE_PROP_COLLIDERS[p.slug] ?? []).map((c) => ({
+        x: layout[i].housePos.x + c.lx * cos + c.lz * sin,
+        z: layout[i].housePos.z - c.lx * sin + c.lz * cos,
+        r: c.r,
+      }));
+    });
+    return [
+      ...props,
+      ...(echo
         ? [
             ...echo.cranes.map((c) => ({ x: c.x, z: c.z, r: 1.0 })),
             ...echo.workers.map((w) => ({ x: w.x, z: w.z, r: 0.35 })),
           ]
-        : [],
-    [echo],
-  );
+        : []),
+    ];
+  }, [dict.projects.items, layout, echo]);
 
   return (
     <Canvas
-      shadows
+      shadows={low ? false : "percentage"}
+      gl={{ antialias: !low, powerPreference: "high-performance" }}
       camera={{ fov: touch ? 74 : 65, near: 0.1, far: 300 }}
-      dpr={[1, 1.75]}
-      onCreated={({ gl }) => {
+      dpr={low ? [1, 1.25] : [1, 1.75]}
+      // Con un panel abierto, un móvil no tiene por qué seguir pintando el pueblo
+      frameloop={low && paused && !casting ? "demand" : "always"}
+      onCreated={({ gl, setEvents }) => {
         // Permitir que el navegador restaure el contexto WebGL si se pierde
         gl.domElement.addEventListener("webglcontextlost", (e) =>
           e.preventDefault(),
         );
+        // Con el ratón capturado, se apunta con la mira y no con su última posición
+        setEvents({
+          compute: (event, state) => {
+            if (document.pointerLockElement === state.gl.domElement) {
+              state.pointer.set(0, 0);
+            } else {
+              state.pointer.set(
+                (event.offsetX / state.size.width) * 2 - 1,
+                -(event.offsetY / state.size.height) * 2 + 1,
+              );
+            }
+            state.raycaster.setFromCamera(state.pointer, state.camera);
+          },
+        });
       }}
     >
       {/* El estilo de geometría se deriva del tema: voxel cuadrado, overworld redondo */}
+      <QualityContext.Provider value={quality}>
+      <InteractContext.Provider value={reportNear}>
       <StyleContext.Provider value={theme === "overworld" ? "rounded" : "blocky"}>
       <ThemeContext.Provider value={theme}>
         {/* Cielo, niebla y luz: pastel y cálidos en overworld */}
@@ -4224,19 +4300,32 @@ export default function WorldCanvas({
         <PlazaHologram />
         <Flowers clear={clear} />
         <DecorTrees />
-        <Rocks />
+        <Rocks clear={clear} />
         <Plaza layout={layout} />
         <LampPosts />
         <ThemeButton
           dict={dict}
           touch={touch}
           paused={paused}
+          drag={drag}
           onPress={onThemeButton}
         />
         <Windmill />
-        <RecommendedLibrary dict={dict} touch={touch} paused={paused} onLibrary={onLibrary} />
+        <RecommendedLibrary dict={dict} touch={touch} paused={paused} drag={drag} onLibrary={onLibrary} />
         <GeekDen dict={dict} />
         <FootballPitch />
+        <SoccerBall
+          pitch={PITCH_POS}
+          width={PITCH_W}
+          length={PITCH_L}
+          goalHalf={GOAL_HW}
+          hint={dict.world.ball.hint}
+          paused={paused}
+          onGoal={onGoal}
+        />
+        <Elder dict={dict} touch={touch} drag={drag} onUse={onElder} />
+        <Mailbox dict={dict} touch={touch} drag={drag} onUse={onMailbox} />
+        <Noticeboard dict={dict} touch={touch} drag={drag} onUse={onBoard} />
         {echo && (
           <ConstructionSite
             position={[echo.house.x, 0, echo.house.z]}
@@ -4261,7 +4350,7 @@ export default function WorldCanvas({
           projects={dict.projects.items}
           dict={dict}
           touch={touch}
-          paused={paused}
+          visited={visited}
           drag={drag}
           onEnter={onEnter}
           layout={layout}
@@ -4280,6 +4369,8 @@ export default function WorldCanvas({
         {process.env.NODE_ENV !== "production" && <DebugProbe />}
       </ThemeContext.Provider>
       </StyleContext.Provider>
+      </InteractContext.Provider>
+      </QualityContext.Provider>
     </Canvas>
   );
 }

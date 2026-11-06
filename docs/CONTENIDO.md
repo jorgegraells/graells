@@ -21,18 +21,21 @@ Los proyectos son `projects.items[]` (tipo `Project`). Campos:
 
 - **Añadir/quitar proyecto**: solo tocar el array (en ambos idiomas). El pueblo 3D
   se reajusta solo: nº de casas, ángulos y colliders derivan de `items.length`.
-- Colores de casa/aldeano: `VILLAGE_COLORS` en `WorldCanvas.tsx` (por índice, cíclico).
+- Colores de casa/aldeano: `VILLAGE_COLORS` en `src/components/world/constants.ts` (por índice, cíclico).
 - El diálogo del aldeano se genera solo: saludo (`world.greet` con `{name}`) →
-  `description` → `tech — role`. No hay nada más que tocar.
+  `description` → `highlight` → `tech · role`, por páginas. No hay nada más que tocar.
+  Si un proyecto nuevo cambia el orden, revisa `VILLAGER_PERSONAS` (van por posición)
+  y los objetos propios de su casa (`HouseProps` y `HOUSE_PROP_COLLIDERS` en `extras.tsx`).
 
 ## Editar textos de secciones
 
 - Hero: `hero.*` (el titular es `role`, el botón del mundo es `ctaWorld`).
 - Sobre mí: `about.paragraphs[]` (3 párrafos).
-- Stack: `skills.groups[]` (4 grupos; también se muestran en la ventana STATUS).
+- Stack: `skills.groups[]`.
 - Trayectoria: `journey.items[]` (`period`, `title`, `description`).
-- Mundo 3D (HUD, diálogos, STATUS): `world.*` — los atributos RPG de la ventana
-  STATUS están en `world.status.attributes` (nombre + valor 0-100).
+- Mundo 3D (HUD, diálogos, STATUS, anciano, buzón, tablón, misión): `world.*`. Los
+  atributos de STATUS están en `world.status.attributes` (nombre + valor 0-100). El
+  anciano cuenta `journey.items`, y el tablón sale solo de lo último publicado.
 - SEO (título/description/OG): `generateMetadata` en `src/app/[locale]/layout.tsx`
   (único texto visible fuera del diccionario).
 

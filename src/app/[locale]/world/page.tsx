@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDictionary, isLocale } from "@/i18n/dictionaries";
+import { getArticles } from "@/content/articles";
 import World from "@/components/world/World";
+import PlainWorld, { type BoardItem } from "@/components/world/PlainWorld";
 
 const SITE = "https://jorgegraells.com";
 
@@ -44,10 +46,30 @@ export default async function WorldPage({
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
 
+  // Lo último de la web para el tablón de la plaza
+  const articles = getArticles(locale);
+  const toItem = (a: (typeof articles)[number]): BoardItem => ({
+    title: a.title,
+    href: `/${locale}/blog/${a.slug}`,
+    kind: a.type === "news" ? "news" : "guide",
+    date: a.published,
+  });
+  const newest = (type: "news" | "guide") =>
+    articles
+      .filter((a) => (a.type === "news" ? "news" : "guide") === type)
+      .sort((a, b) => b.published.localeCompare(a.published))
+      .slice(0, 3)
+      .map(toItem);
+  const board = [...newest("news"), ...newest("guide")];
+
   return (
     <>
       <h1 className="sr-only">{dict.world.title}</h1>
-      <World locale={locale} dict={dict} />
+      {/* Lo mismo en texto: para lectores de pantalla, buscadores y teclado */}
+      <div id="world-plain-copy" className="sr-only focus-within:not-sr-only focus-within:fixed focus-within:inset-0 focus-within:z-50 focus-within:overflow-y-auto focus-within:bg-[#0b0d18]">
+        <PlainWorld dict={dict} locale={locale} board={board} />
+      </div>
+      <World locale={locale} dict={dict} board={board} />
     </>
   );
 }

@@ -1,16 +1,49 @@
 # Mundo 3D (`/[locale]/world`) — arquitectura y trampas
 
-Dos archivos en `src/components/world/`:
+Archivos en `src/components/world/`:
 
 - **`World.tsx`** (cliente): monta el canvas (dynamic, ssr:false) + capa DOM:
-  HUD, joystick táctil, botón/ventana STATUS, `Dialogue` del aldeano (máquina de
-  escribir, avanza con E/Enter/Espacio/clic). Estado: `active` (proyecto en diálogo)
-  y `skillsOpen` (STATUS). Ambos pausan el movimiento (`paused`).
-- **`WorldCanvas.tsx`**: toda la escena R3F. Componentes: `PlayerRig` (movimiento),
-  `FirstPersonArms` (manos Minecraft, pose "cast" cuando STATUS abierto),
-  `Village` (casas+aldeanos), `House`, `Villager`, decoración (`Mountains`,
-  `DecorTrees`, `Plaza`, `Well`, `Windmill`, `LampPosts`, `Butterflies`, `Rocks`,
-  `Clouds`, `Flowers`, `GrassFloor`) y `DebugProbe` (solo dev).
+  HUD, joystick y botón de acción táctiles, `Welcome`, `TalkPanel` (diálogo de
+  aldeanos, anciano y biblioteca: máquina de escribir, E/Enter/Espacio/clic),
+  `LinksPanel` (buzón, tablón, recompensa) y `StatusPanel`. Estado único `panel`:
+  cualquier panel abierto pausa el movimiento (`paused`). También decide `env`
+  (táctil, equipo modesto, WebGL) antes de montar el 3D.
+- **`WorldCanvas.tsx`**: la escena R3F: `PlayerRig`, `FirstPersonArms`, `Village`
+  (casas+aldeanos), `House`, `Villager`, decoración (`Mountains`, `DecorTrees`,
+  `Plaza`, `Windmill`, `LampPosts`, `Butterflies`, `Rocks`, `Clouds`, `Flowers`,
+  `GrassFloor`) y `DebugProbe` (solo dev).
+- **`extras.tsx`**: `Elder`, `Mailbox`, `Noticeboard`, `SoccerBall` y `HouseProps`
+  (objetos propios de cada casa, por slug).
+- **`kit.tsx`**: contextos, `Block` y `useInteractable`. **`constants.ts`**: lo que
+  necesita la interfaz, sin Three, para no meter el motor en la carga inicial.
+  No importes nada con valor de `WorldCanvas` en `World.tsx`, solo `dynamic`.
+- **`PlainWorld.tsx`**: el pueblo en texto. Es "Saltar el juego", la alternativa
+  sin WebGL y lo que leen buscadores y lectores de pantalla.
+
+## Interacción
+
+Todo lo que se usa con E pasa por `useInteractable`: la tecla E y el botón táctil
+viven solo en `World.tsx`. Para añadir un objeto: `useInteractable({ id, x, z,
+radius, verb, onUse })`, su collider en `PLAZA_COLLIDERS` y un `Panel` nuevo si hace
+falta. Tras cerrar un panel, E se ignora 500 ms para que no se reabra.
+
+## Misión, tablón y balón
+
+- **Misión**: hablar con todos los vecinos. Se guarda en `localStorage`
+  (`jg-world-quest`) y cuenta al llegar a la última línea de cada uno. Al completarla
+  se abre la tarjeta de contacto, una sola vez.
+- **Tablón**: `page.tsx` le pasa las 3 últimas noticias y los 3 últimos artículos.
+  Se actualiza con cada despliegue.
+- **Balón**: empuja al andar contra él; marca al cruzar la línea de gol por la boca
+  de cualquier portería. Los goles no se guardan.
+
+## Rendimiento
+
+`low` (táctil, 4 GB o menos, o 4 núcleos o menos): sin sombras, DPR 1.25, 500 matas,
+sin contornos, sin desenfoque, sin luces interiores, y no pinta con un panel abierto.
+En todos los equipos: sombra cada 3 fotogramas, interiores solo a menos de 22 m,
+flores y lomos instanciados, y si el overworld baja de 24 fps durante 3 s se quitan
+los contornos. El modo de entrada es `DEFAULT_THEME` en `World.tsx`.
 
 ## Sistema de estilo (cuadrado ⇄ redondo)
 
@@ -42,17 +75,19 @@ Dos archivos en `src/components/world/`:
 - **Decoración determinista**: posiciones vía `mulberry32(semilla)` en constantes de
   módulo (`TREE_SPOTS`, `MOUNTAIN_SPOTS`…). Nada de `Math.random()` en posiciones
   persistentes — el mundo debe ser idéntico en cada visita.
-- **Controles**: WASD/flechas + arrastre (sentido INVERTIDO adrede — petición de
-  Jorge), Espacio salta (gravedad simple), E habla, C abre STATUS, ESC cierra.
-  Móvil (`pointer: coarse`): joystick + botón salto + textos `hintTouch`.
+- **Controles**: WASD/flechas + ratón capturado en escritorio (al cerrar un panel se
+  recaptura; si el navegador no deja, un aviso pide el clic) + arrastre como respaldo
+  (sentido INVERTIDO adrede: petición de Jorge), Espacio salta, E usa lo cercano,
+  C abre STATUS, ESC cierra. Con el ratón capturado, se apunta con la mira.
+  Móvil (`pointer: coarse`): joystick, salto, botón de acción y textos `hintTouch`.
 - **Zona personal** (este/sureste, repartida y lejos del pueblo):
   `LIBRARY_POS`/`GEEK_POS`/`PITCH_POS` + `inPersonalZone()` (despeja árboles,
   rocas, hierba y flores). Los edificios son VISITABLES: `BuildingShell` monta
   paredes con hueco de puerta + `AutoDoor` (se abre sola por proximidad) y las
   colisiones van por segmentos de pared (`shellSegs` + `wallColliders` →
   `PERSONAL_BOX_COLLIDERS`, cajas como las casas). Biblioteca: `BOOKS` (ranking),
-  estanterías `Bookcase` (lomos deterministas) e interacción E/toque que muestra
-  la recomendación (`dict.world.personal.libraryQuote`). Zona friki: pósters
+  estanterías `Bookcase` (lomos deterministas) e interacción E/toque, solo desde
+  dentro, que muestra la recomendación (`dict.world.personal.libraryLines`). Zona friki: pósters
   procedurales (`usePosterTextures`), LED, sofá, PC, funkos, consolas. Campo:
   césped a franjas, gradas con collider, porterías con red; el campo se pisa.
 - **Holograma de la plaza** (`PlazaHologram`): usa `public/jorge-holo-head.webp`
@@ -65,7 +100,7 @@ Dos archivos en `src/components/world/`:
   ~350 ms abrir) y cambia el tema en el punto más blanco. El tema viaja por
   `ThemeContext`/`useWorldTheme` (paralelo a `StyleContext`) y afecta a cielo,
   niebla, luces y paletas de hierba; en overworld la geometría se FUERZA a
-  "rounded". El voxel es el estado por defecto e intacto.
+  "rounded". Overworld es el estado por defecto desde nov 2026.
   **Fase 2 (hecha)**: en overworld, `ToonMaterialSwap` recorre la escena y
   cambia cada `MeshStandardMaterial` por un clon `MeshToonMaterial` cacheado
   (gradiente de 4 escalones) y `OutlinedRenderer` toma el render con
@@ -93,10 +128,10 @@ Dos archivos en `src/components/world/`:
    El canvas lleva `touch-action: none` (si no, el navegador roba el gesto).
 3. **drei `<Html>`**: usar `zIndexRange={[15, 0]}` para que los carteles queden BAJO
    los overlays DOM (z-20). Sin `transform` — tamaño fijo de pantalla, siempre nítido.
-4. **Clic vs arrastre**: `drag.dist < 8` distingue tocar un aldeano de mirar.
+4. **Clic vs arrastre**: `drag.dist < 8` distingue pulsar algo de mirar, y el clic que recaptura el ratón (`drag.dist = 1000`) no activa nada. Todo objeto con `onClick` debe comprobarlo.
 5. **Contexto WebGL**: `onCreated` registra `webglcontextlost` + `preventDefault`
    para permitir restauración. DPR capado a 1.75.
-6. **Intro**: cinemática de 3 s saltable con cualquier tecla/clic (`intro.current = 1`).
+6. **Intro**: cinemática de 3 s al entrar al pueblo, saltable con cualquier tecla/clic. Espera detrás de la bienvenida.
 7. **HMR resetea la cámara** al spawn — no es un bug de producción.
 8. Nubes y linternas usan `emissive` — sin él se ven grises (sin luz por debajo).
 

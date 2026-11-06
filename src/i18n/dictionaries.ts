@@ -139,6 +139,23 @@ export type Dictionary = {
     building: string;
     greet: string;
     next: string;
+    hintUse: string;
+    hintUseTouch: string;
+    hintRead: string;
+    hintReadTouch: string;
+    hintOpen: string;
+    hintOpenTouch: string;
+    clickToLook: string;
+    jump: string;
+    closeLabel: string;
+    goalToast: string;
+    actions: { talk: string; use: string; read: string; open: string };
+    elder: { name: string; title: string; intro: string; outro: string };
+    mailbox: { name: string; title: string };
+    board: { name: string; title: string; news: string; articles: string; more: string; training: string; allNews: string; allArticles: string };
+    quest: { pill: string; title: string; objective: string; done: string; reward: string };
+    ball: { hint: string };
+    plain: { open: string; title: string; intro: string; projects: string; noWebgl: string; back: string };
     intro: {
       eyebrow: string;
       title: string;
@@ -465,10 +482,54 @@ const es: Dictionary = {
     building: "Construyendo",
     greet: "¡Hola, viajero! Bienvenido a {name}. Deja que te lo cuente…",
     next: "Siguiente",
+    hintUse: "Pulsa E para usar",
+    hintUseTouch: "Toca para usar",
+    hintRead: "Pulsa E para leer",
+    hintReadTouch: "Toca para leer",
+    hintOpen: "Pulsa E para abrir",
+    hintOpenTouch: "Toca para abrir",
+    clickToLook: "Haz clic para mirar con el ratón",
+    jump: "Saltar",
+    closeLabel: "Cerrar",
+    goalToast: "¡Gol!",
+    actions: { talk: "Hablar", use: "Usar", read: "Leer", open: "Abrir" },
+    elder: {
+      name: "El anciano",
+      title: "El anciano del pueblo",
+      intro: "Llevo aquí desde antes de la primera casa. Si quieres saber de dónde viene Jorge, escucha.",
+      outro: "Eso es lo que hay hasta hoy. Si quieres hablar con él, el buzón de la plaza le llega.",
+    },
+    mailbox: { name: "Buzón", title: "Escríbeme" },
+    board: {
+      name: "Tablón",
+      title: "Tablón del pueblo",
+      news: "Últimas noticias",
+      articles: "Últimos artículos",
+      more: "Más cosas",
+      training: "Formación para empresas",
+      allNews: "Todas las noticias",
+      allArticles: "Todos los artículos",
+    },
+    quest: {
+      pill: "Vecinos",
+      title: "Misión del pueblo",
+      objective: "Habla con todos los vecinos para saber qué hace cada proyecto.",
+      done: "Has hablado con todos los vecinos. Esta es la tarjeta de Jorge, por si quieres seguir la conversación fuera del juego.",
+      reward: "Tarjeta de Jorge",
+    },
+    ball: { hint: "Anda hacia el balón para chutar" },
+    plain: {
+      open: "Saltar el juego",
+      title: "Jorge Graells, sin videojuego",
+      intro: "Lo mismo que cuenta el pueblo, en texto: proyectos, trayectoria, novedades y contacto.",
+      projects: "Proyectos",
+      noWebgl: "Tu navegador no puede mostrar el mundo 3D, así que aquí tienes lo mismo en texto.",
+      back: "Volver al pueblo",
+    },
     intro: {
       eyebrow: "Mundo virtual · un pequeño videojuego",
       title: "Bienvenido al pueblo de Graells",
-      body: "Hola, soy Jorge Graells y he desarrollado un videojuego para contar mi trayectoria. Cada casa es un proyecto y cada vecino te cuenta un capítulo de mi carrera como desarrollador e ingeniero de IA. Acércate a un vecino y deja que te cuente su historia.",
+      body: "Hola, soy Jorge Graells y he desarrollado un videojuego para contar mi trayectoria. Cada casa es un proyecto y su vecino te lo cuenta. El anciano de la plaza conoce mi trayectoria, en el tablón está lo último que he publicado y el buzón me llega a mí.",
       cta: "Entrar al pueblo",
       controls: [
         "Moverte: WASD o flechas",
@@ -1046,10 +1107,54 @@ const en: Dictionary = {
     building: "Building",
     greet: "Hi, traveler! Welcome to {name}. Let me tell you about it…",
     next: "Next",
+    hintUse: "Press E to use",
+    hintUseTouch: "Tap to use",
+    hintRead: "Press E to read",
+    hintReadTouch: "Tap to read",
+    hintOpen: "Press E to open",
+    hintOpenTouch: "Tap to open",
+    clickToLook: "Click to look around with the mouse",
+    jump: "Jump",
+    closeLabel: "Close",
+    goalToast: "Goal!",
+    actions: { talk: "Talk", use: "Use", read: "Read", open: "Open" },
+    elder: {
+      name: "The elder",
+      title: "The village elder",
+      intro: "I've been here since before the first house. If you want to know where Jorge comes from, listen.",
+      outro: "That's all so far. If you want to talk to him, the mailbox in the square reaches him.",
+    },
+    mailbox: { name: "Mailbox", title: "Write to me" },
+    board: {
+      name: "Noticeboard",
+      title: "Village noticeboard",
+      news: "Latest news",
+      articles: "Latest articles",
+      more: "More",
+      training: "Training for companies",
+      allNews: "All news",
+      allArticles: "All articles",
+    },
+    quest: {
+      pill: "Villagers",
+      title: "Village quest",
+      objective: "Talk to every villager to find out what each project does.",
+      done: "You've talked to every villager. Here's Jorge's card, in case you want to carry on the conversation outside the game.",
+      reward: "Jorge's card",
+    },
+    ball: { hint: "Walk into the ball to kick it" },
+    plain: {
+      open: "Skip the game",
+      title: "Jorge Graells, without the videogame",
+      intro: "Everything the village tells you, as text: projects, career, what's new and how to get in touch.",
+      projects: "Projects",
+      noWebgl: "Your browser can't display the 3D world, so here's the same thing as text.",
+      back: "Back to the village",
+    },
     intro: {
       eyebrow: "Virtual world · a little videogame",
       title: "Welcome to Graells' village",
-      body: "Hi, I'm Jorge Graells and I built a videogame to tell the story of my career. Every house is a project and every villager tells you a chapter of my career as a developer and AI engineer. Walk up to a villager and let them tell you their story.",
+      body: "Hi, I'm Jorge Graells and I built a videogame to tell the story of my career. Every house is a project and its villager tells you about it. The elder in the square knows my career, the noticeboard has my latest posts and the mailbox reaches me directly.",
       cta: "Enter the village",
       controls: [
         "Move: WASD or arrows",

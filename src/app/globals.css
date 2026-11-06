@@ -73,6 +73,12 @@ body {
   border: 1px solid rgba(168, 85, 247, 0.22);
 }
 
+/* El desenfoque sobre un 3D en movimiento pesa mucho en un móvil */
+.world-low .glass {
+  backdrop-filter: none;
+  background: rgba(20, 16, 40, 0.86);
+}
+
 .clip-corner {
   clip-path: polygon(
     0 14px,
