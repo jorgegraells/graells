@@ -15,7 +15,7 @@ export default function DossierAbout({ locale, dict }: { locale: Locale; dict: D
 
   return (
     <div className="dx">
-      <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict)} localeHref={other.aboutPage.href} />
+      <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict, "home")} localeHref={other.aboutPage.href} />
 
       <DossierFolio head={head} folio={`${d.folio} 1 ${d.of} 2`} foot={d.subject.footer}>
         <h1>{dict.hero.name}</h1>

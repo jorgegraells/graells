@@ -11,8 +11,8 @@ const W = 240;
 const H = 300;
 const GAMMA = Number(process.env.GAMMA ?? 0.55);
 const CONTRAST = Number(process.env.CONTRAST ?? 1.35);
-const DARK = [27, 27, 25]; // tóner
-const LIGHT = [237, 237, 232]; // folio
+const DARK = [42, 35, 24]; // tóner
+const LIGHT = [240, 230, 207]; // folio
 
 const { data } = await sharp(SRC)
   .extract({ left: 640, top: 110, width: 800, height: 1000 }) // cara y hombros, 4:5

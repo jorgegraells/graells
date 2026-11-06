@@ -212,7 +212,7 @@ export default async function ArticlePage({
             <h1 className="dx-doc-title">{article.title}</h1>
             <dl className="dx-fields dx-doc-fields">
               <dt className="dx-lab">{d.fields.type}</dt>
-              <dd>
+              <dd className="dx-f-sep">
                 {article.type === "news" ? (
                   <Link href={locale === "es" ? "/es/noticias" : "/en/news"}>{d.news}</Link>
                 ) : (
@@ -226,23 +226,29 @@ export default async function ArticlePage({
                 </Link>
               </dd>
               <dt className="dx-lab">{d.fields.date}</dt>
-              <dd>
-                <time dateTime={article.published}>{shownDate}</time>
+              <dd className="dx-f-date dx-f-sep">
+                <time dateTime={article.published}>
+                  <span className="dx-f-long">{shownDate}</span>
+                  <span className="dx-f-short">{fmtShort.format(new Date(article.published))}</span>
+                </time>
               </dd>
               {wasUpdated && (
                 <>
-                  <dt className="dx-lab">{d.fields.updated}</dt>
-                  <dd>
-                    <time dateTime={article.updated}>{fmtUpdated.format(new Date(article.updated))} UTC</time>
+                  <dt className="dx-lab dx-f-updated">{d.fields.updated}</dt>
+                  <dd className="dx-f-updated">
+                    <time dateTime={article.updated}>
+                      <span className="dx-f-long">{fmtUpdated.format(new Date(article.updated))} UTC</span>
+                      <span className="dx-f-short">{fmtShort.format(new Date(article.updated))}</span>
+                    </time>
                   </dd>
                 </>
               )}
               <dt className="dx-lab">{d.fields.reading}</dt>
-              <dd>
+              <dd className="dx-f-read">
                 {article.readingMinutes} {dict.blog.minRead}
               </dd>
               <dt className="dx-lab">{d.fields.subjects}</dt>
-              <dd>{article.tags.join(" · ")}</dd>
+              <dd className="dx-f-tags">{article.tags.join(", ")}</dd>
             </dl>
             <p className="dx-lab dx-graph" style={{ margin: "0 0 4px" }}>
               {d.summary}

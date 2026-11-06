@@ -32,20 +32,25 @@ const ANCHOR_MAP: Record<Theme, Record<string, string>> = {
   },
 };
 
-function currentAnchor(from: Theme): string {
+function currentAnchor(from: Theme): string | null {
   const tree = document.querySelector(from === "dossier" ? ".theme-dossier" : ".theme-arcade");
+  const marks = tree?.querySelectorAll<HTMLElement>("[data-anchor]");
+  // Sin secciones equivalentes (un artículo tiene un solo cuerpo): no se mueve
+  if (!marks?.length) return null;
   let anchor = "top";
-  tree?.querySelectorAll<HTMLElement>("[data-anchor]").forEach((el) => {
+  marks.forEach((el) => {
     if (el.getBoundingClientRect().top < window.innerHeight * 0.4) anchor = el.dataset.anchor ?? anchor;
   });
   return anchor;
 }
 
-function scrollToAnchor(to: Theme, anchor: string) {
+function scrollToAnchor(to: Theme, anchor: string | null) {
+  if (anchor === null) return;
   const target = ANCHOR_MAP[to][anchor] ?? "top";
   const tree = document.querySelector(to === "dossier" ? ".theme-dossier" : ".theme-arcade");
   const el = target === "top" ? null : tree?.querySelector<HTMLElement>(`[data-anchor="${target}"]`);
-  const top = el ? el.getBoundingClientRect().top + window.scrollY - 70 : 0;
+  const bar = to === "dossier" ? (window.innerWidth <= 640 ? 96 : 56) : 70;
+  const top = el ? el.getBoundingClientRect().top + window.scrollY - bar : 0;
   window.scrollTo({ top, behavior: "instant" });
 }
 

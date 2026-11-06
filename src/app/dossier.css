@@ -6,17 +6,26 @@
    =========================================================================== */
 
 :is(.dx, html[data-theme="dossier"] .doc-shell) {
-  --dx-desk: #d6d6d0;
-  --dx-paper: #edede8;
-  --dx-toner: #1b1b19;
-  --dx-black: #0a0a0a;
-  --dx-graph: #5a5b57;
-  --dx-rule: #b9b9b2;
-  --dx-stamp: #b0141e;
-  --dx-blue: #24408e;
+  --dx-desk: #3a3128;
+  --dx-desk-ink: #eadfc4; /* lo que va directamente sobre la mesa */
+  --dx-desk-soft: #b8aa8c;
+  --dx-paper: #f0e6cf;
+  --dx-paper-hi: #f7f0de; /* copias y recuadros sobre el folio */
+  --dx-tab: #d9c9a3; /* pestañas de carpeta */
+  --dx-tab-hi: #e6d9ba;
+  --dx-toner: #2a2318;
+  --dx-toner-soft: #463b2c;
+  --dx-black: #14100a;
+  --dx-graph: #6a5d49;
+  --dx-rule: #c9b994;
+  --dx-stamp: #a3201f;
+  --dx-blue: #2a3f7c;
   --dx-serif: var(--font-redaction), Georgia, serif;
   --dx-serif-35: var(--font-redaction-35), var(--font-redaction), Georgia, serif;
-  --dx-label: var(--font-science), system-ui, sans-serif;
+  --dx-label: var(--font-typewriter), "Courier New", ui-monospace, monospace;
+  --dx-stamp-font: var(--font-science), system-ui, sans-serif; /* goma de sello */
+  --dx-bar: 56px; /* alto de la barra fija: el folio llega justo hasta ella */
+  --dx-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background: var(--dx-desk);
   color: var(--dx-toner);
   font: 400 18px/1.55 var(--dx-serif);
@@ -28,7 +37,12 @@
 }
 :is(.dx, html[data-theme="dossier"] .doc-shell) ::selection {
   background: var(--dx-stamp);
-  color: #fff;
+  color: var(--dx-paper);
+}
+/* :where para que pestañas, botones y títulos puedan quitarlo con una sola clase */
+:where(.dx, html[data-theme="dossier"] .doc-shell) a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 :is(.dx, html[data-theme="dossier"] .doc-shell) a {
   color: inherit;
@@ -39,7 +53,6 @@
   font-weight: 600;
   font-size: 13px;
   line-height: 1.3;
-  font-variation-settings: "wdth" 80;
 }
 .dx-graph {
   color: var(--dx-graph);
@@ -51,6 +64,8 @@
   top: 0;
   z-index: 40;
   background: var(--dx-desk);
+  box-shadow: 0 0 0 100vmax var(--dx-desk);
+  clip-path: inset(0 -100vmax);
   max-width: 980px;
   margin: 0 auto;
   padding-top: 14px;
@@ -59,27 +74,61 @@
   align-items: flex-end;
   gap: 4px;
 }
+/* Las pestañas suben dentro de un alto reservado: animarlas no mueve la página.
+   Se anima el relleno superior y no un transform, para que sigan pegadas al folio. */
 .dx-tablist {
+  --dx-tab-rest: 9px;
+  --dx-tab-hover: 12px;
+  --dx-tab-open: 13px;
+  --dx-tab-peak: 16px;
   display: flex;
   align-items: flex-end;
   gap: 4px;
   min-width: 0;
+  min-height: 42px;
 }
-.dx-tabs a {
+.dx-tablist a {
   white-space: nowrap;
   text-decoration: none;
-  background: #e2e2dc;
-  padding: 9px 14px 7px;
-  border: 1px solid var(--dx-rule);
-  border-bottom: 0;
+  background: var(--dx-tab);
+  padding: var(--dx-tab-rest) 14px 7px;
   border-radius: 6px 6px 0 0;
+  /* la sombra de abajo la mete detrás del folio */
+  box-shadow: inset 0 -5px 5px -5px rgba(42, 35, 24, 0.45);
+  transition:
+    padding-top 0.2s cubic-bezier(0.3, 1.4, 0.6, 1),
+    background-color 0.15s;
 }
-.dx-tabs a[aria-current="page"] {
-  background: var(--dx-paper);
-  padding-top: 12px;
+.dx-tablist a[aria-current="page"] {
+  background: var(--dx-paper) var(--dx-grain);
+  padding-top: var(--dx-tab-open);
+  box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.3);
+  /* al entrar en la sección, su pestaña sale de la carpeta */
+  animation: dx-tab-pull 0.42s cubic-bezier(0.3, 1.2, 0.5, 1) both;
 }
-.dx-tabs a:hover {
-  background: var(--dx-paper);
+@media (hover: hover) {
+  .dx-tablist a:hover {
+    background: var(--dx-tab-hi);
+    padding-top: var(--dx-tab-hover);
+  }
+  .dx-tablist a[aria-current="page"]:hover {
+    background: var(--dx-paper) var(--dx-grain);
+    padding-top: var(--dx-tab-open);
+  }
+}
+.dx-tablist a:active {
+  padding-top: var(--dx-tab-rest);
+}
+@keyframes dx-tab-pull {
+  0% {
+    padding-top: var(--dx-tab-rest);
+  }
+  60% {
+    padding-top: var(--dx-tab-peak);
+  }
+  100% {
+    padding-top: var(--dx-tab-open);
+  }
 }
 .dx-tools {
   margin-left: auto;
@@ -89,26 +138,31 @@
   padding: 0 2px 7px;
 }
 .dx-tools .dx-cls {
-  color: var(--dx-graph);
+  color: var(--dx-desk-soft);
 }
+/* Idioma y modo van sobre la mesa, no sobre el papel: tinta clara */
 .dx-tool {
   font: 700 13px/1 var(--dx-label);
-  font-variation-settings: "wdth" 80;
-  border: 1.5px solid var(--dx-toner);
+  border: 1.5px solid var(--dx-desk-ink);
   background: transparent;
-  color: var(--dx-toner);
+  color: var(--dx-desk-ink) !important;
   padding: 6px 10px;
   cursor: pointer;
   text-decoration: none;
   text-transform: uppercase;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
-.dx-tool:hover {
-  background: var(--dx-toner);
-  color: var(--dx-paper);
+@media (hover: hover) {
+  .dx-tool:hover {
+    background: var(--dx-desk-ink);
+    color: var(--dx-desk) !important;
+  }
 }
 .dx-tool:focus-visible,
-.dx-tabs a:focus-visible {
-  outline: 2px solid var(--dx-stamp);
+.dx-tablist a:focus-visible {
+  outline: 2px solid var(--dx-desk-ink);
   outline-offset: 2px;
 }
 
@@ -119,13 +173,10 @@
   background: var(--dx-paper);
   position: relative;
   padding: 40px 48px 30px;
-  border: 1px solid var(--dx-rule);
-  scroll-margin-top: 64px;
-  /* grano de fotocopia: ruido SVG muy tenue, sin imágenes */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  box-shadow:
-    0 1px 0 var(--dx-rule),
-    0 12px 28px rgba(0, 0, 0, 0.07);
+  scroll-margin-top: var(--dx-bar);
+  /* grano de papel: ruido SVG muy tenue, sin imágenes */
+  background-image: var(--dx-grain);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
 }
 .dx-folio:first-of-type {
   border-top-left-radius: 0;
@@ -138,6 +189,10 @@
   border-bottom: 2px solid var(--dx-toner);
   padding-bottom: 8px;
   margin-bottom: 26px;
+}
+.dx-fh > :last-child,
+.dx-ff > :last-child {
+  margin-left: auto;
 }
 .dx-ff {
   display: flex;
@@ -171,11 +226,25 @@
   align-items: start;
 }
 .dx-photo {
+  position: relative;
   margin: 0;
   border: 1px solid var(--dx-toner);
   padding: 8px;
   background: var(--dx-paper);
   transform: rotate(-1.2deg);
+  box-shadow: 2px 3px 7px rgba(42, 35, 24, 0.28);
+}
+/* El único adorno físico: un clip que sujeta la foto al folio */
+.dx-photo::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 26px;
+  z-index: 1;
+  width: 18px;
+  height: 48px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 48' fill='none'%3E%3Cpath d='M5 15V36a4 4 0 0 0 8 0V9a5.5 5.5 0 0 0-11 0v29a7 7 0 0 0 14 0V14' stroke='%235f5848' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  pointer-events: none;
 }
 .dx-photo img {
   display: block;
@@ -183,7 +252,7 @@
   aspect-ratio: 4 / 5;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  background: #8a8a86;
+  background: #8a7f6a;
 }
 .dx-photo figcaption {
   margin-top: 8px;
@@ -204,7 +273,7 @@
 .dx-fields dt {
   padding-right: 18px;
   color: var(--dx-graph);
-  padding-top: 10px;
+  padding-top: 13px;
 }
 .dx-fields dd {
   font-size: 18px;
@@ -281,10 +350,12 @@
   background: var(--dx-toner);
   color: var(--dx-paper) !important;
 }
-.dx-btn:hover {
-  background: var(--dx-stamp);
-  border-color: var(--dx-stamp);
-  color: #fff !important;
+@media (hover: hover) {
+  .dx-btn:hover {
+    background: var(--dx-stamp);
+    border-color: var(--dx-stamp);
+    color: var(--dx-paper) !important;
+  }
 }
 .dx-btn:focus-visible,
 .dx-link:focus-visible {
@@ -305,7 +376,7 @@
   color: var(--dx-stamp);
   border: 3px double var(--dx-stamp);
   padding: 6px 12px 4px;
-  font: 700 22px/1 var(--dx-label);
+  font: 700 22px/1 var(--dx-stamp-font);
   text-transform: uppercase;
   opacity: 0.82;
   mix-blend-mode: multiply;
@@ -432,7 +503,13 @@ html.dx-stamping .dx-folio:first-of-type {
   padding: 6px 10px;
   font: 700 13px/1 var(--dx-label);
 }
-.dx-lv input:checked + span {
+@media (hover: hover) {
+  .dx-lv label:hover span {
+    background: var(--dx-tab-hi);
+  }
+}
+.dx-lv input:checked + span,
+.dx-lv label:hover input:checked + span {
   background: var(--dx-toner);
   color: var(--dx-paper);
 }
@@ -445,7 +522,7 @@ html.dx-stamping .dx-folio:first-of-type {
   grid-template-columns: minmax(0, 1fr) 250px;
   gap: 28px;
   border: 1px solid var(--dx-toner);
-  background: #f4f4f0;
+  background: var(--dx-paper-hi);
   padding: 20px 22px;
 }
 .dx-qa {
@@ -466,7 +543,7 @@ html.dx-stamping .dx-folio:first-of-type {
   min-width: 5.5em;
 }
 .dx-leak {
-  background: rgba(176, 20, 30, 0.1);
+  background: rgba(163, 32, 31, 0.1);
   box-shadow: inset 0 -2px 0 var(--dx-stamp);
 }
 .dx-leaknote {
@@ -493,7 +570,7 @@ html.dx-stamping .dx-folio:first-of-type {
   transition: opacity 0.2s;
 }
 .dx-frags li.is-out {
-  opacity: 0.38;
+  opacity: 0.6;
   text-decoration: line-through;
   text-decoration-color: var(--dx-graph);
 }
@@ -591,7 +668,7 @@ html.dx-stamping .dx-folio:first-of-type {
 }
 .dx-log li {
   display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-columns: 178px minmax(0, 1fr);
   gap: 16px;
   padding: 10px 0;
   border-bottom: 1px solid var(--dx-rule);
@@ -612,7 +689,7 @@ html.dx-stamping .dx-folio:first-of-type {
   border: 1.5px solid var(--dx-toner);
   padding: 20px 22px;
   margin-bottom: 22px;
-  background: #f4f4f0;
+  background: var(--dx-paper-hi);
 }
 .dx-open h3 {
   font: 700 26px/1.2 var(--dx-serif);
@@ -629,7 +706,7 @@ html.dx-stamping .dx-folio:first-of-type {
   color: var(--dx-blue);
   border: 2px solid var(--dx-blue);
   padding: 3px 8px;
-  font: 700 12px/1.1 var(--dx-label);
+  font: 700 12px/1.1 var(--dx-stamp-font);
   text-transform: uppercase;
   transform: rotate(-2deg);
   margin-left: 8px;
@@ -640,20 +717,71 @@ html.dx-stamping .dx-folio:first-of-type {
   word-break: break-word;
 }
 .dx-social {
+  max-width: none !important;
   display: flex;
   flex-wrap: wrap;
   gap: 6px 16px;
   color: var(--dx-graph);
 }
 
+@media (max-width: 830px) {
+  .dx-tools .dx-cls {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  /* No caben en una línea: sin esto, las pestañas se separan del folio */
+  .dx-tools {
+    order: -1;
+    width: 100%;
+    justify-content: flex-end;
+    padding-bottom: 8px;
+  }
+  :is(.dx, html[data-theme="dossier"] .doc-shell) {
+    --dx-bar: 96px;
+  }
+}
 @media (max-width: 820px) {
-  .dx-subject,
+  .dx-folio {
+    padding: 34px 32px 26px;
+  }
   .dx-cols,
   .dx-demo {
     grid-template-columns: 1fr;
   }
+  .dx-subject {
+    gap: 26px;
+  }
+  .dx-subject:has(.dx-lead) > div {
+    display: contents;
+  }
+  .dx-lead {
+    grid-column: 1 / -1;
+  }
+  .dx-subject .dx-fields {
+    grid-template-columns: 1fr;
+  }
+  .dx-subject .dx-fields dt {
+    border-bottom: 0;
+    padding: 8px 0 0;
+  }
+  .dx-subject .dx-fields dd {
+    padding-top: 2px;
+  }
   .dx-photo {
     max-width: 258px;
+  }
+  /* El aviso del tachón se abre a lo ancho del folio y no se sale de la pantalla */
+  .dx-red {
+    position: static;
+  }
+  .dx-red::after {
+    left: 14px;
+    right: 14px;
+    top: auto;
+    width: auto;
+    max-width: none;
+    margin-top: 1.8em;
   }
   .dx-annex li {
     grid-template-columns: 48px minmax(0, 1fr);
@@ -662,14 +790,7 @@ html.dx-stamping .dx-folio:first-of-type {
     grid-column: 2;
   }
 }
-@media (max-width: 600px) {
-  .dx {
-    padding: 0 8px 28px;
-    font-size: 17px;
-  }
-  .dx-folio {
-    padding: 26px 18px 20px;
-  }
+@media (max-width: 700px) {
   .dx-stamp {
     position: relative;
     right: auto;
@@ -686,31 +807,48 @@ html.dx-stamping .dx-folio:first-of-type {
   .dx-stamp.dx-stamp--recv {
     top: auto;
   }
-  /* Arriba idioma y modo; debajo todas las pestañas, deslizables si no caben */
-  .dx-tools {
-    order: -1;
-    width: 100%;
-    justify-content: flex-end;
-    padding-bottom: 8px;
+}
+@media (max-width: 600px) {
+  /* Mismo margen que los artículos (la regla base tiene más especificidad que .dx) */
+  html[data-theme="dossier"] .dx {
+    padding: 0 8px 28px;
+    font-size: 17px;
   }
+  .dx-folio {
+    padding: 26px 18px 20px;
+  }
+  .dx-tool {
+    padding: 8px 10px;
+  }
+  /* Debajo de idioma y modo, todas las pestañas, deslizables si no caben.
+     El relleno deja sitio a la sombra de la pestaña abierta, que el scroll recortaría. */
   .dx-tablist {
     width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
+    padding-top: 8px;
+    margin-top: -8px;
   }
   .dx-tablist::-webkit-scrollbar {
     display: none;
   }
   .dx-tablist {
+    --dx-tab-rest: 10px;
+    --dx-tab-hover: 12px;
+    --dx-tab-open: 13px;
+    --dx-tab-peak: 15px;
     gap: 2px;
+    min-height: 47px;
   }
-  /* Las cinco pestañas caben enteras en un móvil de 360 px */
-  .dx-tabs a {
-    padding: 8px clamp(4px, 1.3vw, 8px) 6px;
-    font-size: clamp(10.5px, 3.2vw, 13px);
+  /* Las cinco pestañas caben enteras en un móvil de 360 px, también a máquina */
+  .dx-tablist a {
+    padding: var(--dx-tab-rest) clamp(4px, 1.3vw, 8px) 7px;
+    font-size: clamp(10.5px, 3.1vw, 13px);
   }
-  .dx-tabs a[aria-current="page"] {
-    padding-top: 10px;
+  /* El pie y la cabecera del folio caben en una línea */
+  .dx-fh {
+    gap: 2px 10px;
+    font-size: clamp(10.5px, 3.05vw, 13px);
   }
   /* En el móvil, primero quién es y qué hace; la foto y la ficha después */
   .dx-subject {
@@ -728,8 +866,8 @@ html.dx-stamping .dx-folio:first-of-type {
     width: 258px;
     max-width: 100%;
   }
-  .dx-tools .dx-cls {
-    display: none;
+  .dx-demo {
+    padding: 14px 12px;
   }
   .dx-hist li,
   .dx-log li {
@@ -754,8 +892,12 @@ html.dx-stamping .dx-folio:first-of-type {
   .dx * {
     transition: none !important;
   }
+  html[data-theme="dossier"] .doc-shell * {
+    transition: none !important;
+  }
   html.dx-stamping .dx-stamp,
-  html.dx-stamping .dx-folio:first-of-type {
+  html.dx-stamping .dx-folio:first-of-type,
+  .dx-tablist a[aria-current="page"] {
     animation: none;
   }
 }
@@ -814,7 +956,7 @@ html.dx-stamping .dx-folio:first-of-type {
   font-size: 16px;
   line-height: 1.5;
   margin: 0;
-  color: #34342f;
+  color: var(--dx-toner-soft);
 }
 
 /* Sello azul de entrada: solo en noticias */
@@ -835,18 +977,15 @@ html[data-theme="dossier"] .doc {
   margin: 0 auto 18px;
   padding: 40px 48px 30px;
   background-color: var(--dx-paper);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  border: 1px solid var(--dx-rule);
-  box-shadow:
-    0 1px 0 var(--dx-rule),
-    0 12px 28px rgba(0, 0, 0, 0.07);
+  background-image: var(--dx-grain);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
   position: relative;
   counter-reset: dx-sec;
 }
-html[data-theme="dossier"] .doc .dx-fh a {
+html[data-theme="dossier"] .doc :is(.dx-fh, .dx-ff) a {
   text-decoration: none;
 }
-html[data-theme="dossier"] .doc .dx-fh a:hover {
+html[data-theme="dossier"] .doc :is(.dx-fh, .dx-ff) a:hover {
   text-decoration: underline;
 }
 .dx-doc-title {
@@ -857,6 +996,9 @@ html[data-theme="dossier"] .doc .dx-fh a:hover {
 }
 .dx-doc-fields {
   max-width: 640px;
+}
+.dx-f-short {
+  display: none;
 }
 
 /* Cuerpo Markdown en el expediente */
@@ -884,7 +1026,6 @@ html[data-theme="dossier"] .md .md-h2::before {
   counter-increment: dx-sec;
   content: counter(dx-sec) ". ";
   font: 700 15px/1 var(--dx-label);
-  font-variation-settings: "wdth" 80;
   color: var(--dx-graph);
   vertical-align: 3px;
   margin-right: 4px;
@@ -902,7 +1043,7 @@ html[data-theme="dossier"] .md .md-ul,
 html[data-theme="dossier"] .md .md-ol {
   color: var(--dx-toner);
   margin: 0 0 14px;
-  max-width: 64ch;
+  max-width: 58ch;
 }
 html[data-theme="dossier"] .md .md-ul,
 html[data-theme="dossier"] .md .md-ol {
@@ -952,21 +1093,24 @@ html[data-theme="dossier"] .md .md-quote {
   font-style: normal;
   color: var(--dx-toner);
   border-left: 3px solid var(--dx-toner);
-  background: #f4f4f0;
+  background: var(--dx-paper-hi);
   padding: 10px 16px;
-  max-width: 64ch;
+  max-width: 58ch;
 }
 html[data-theme="dossier"] .md .md-code {
-  background: #e2e2dc;
+  background: var(--dx-tab-hi);
   color: var(--dx-toner);
   border-radius: 0;
+  font-family: var(--dx-label);
 }
 html[data-theme="dossier"] .md .md-pre {
   clip-path: none;
-  background: #f4f4f0;
+  background: var(--dx-paper-hi);
   border: 1px solid var(--dx-toner);
   color: var(--dx-toner);
   box-shadow: none;
+  font-family: var(--dx-label);
+  margin-bottom: 20px;
 }
 html[data-theme="dossier"] .md .md-table th {
   color: var(--dx-graph);
@@ -984,8 +1128,8 @@ html[data-theme="dossier"] .md .md-hr {
 /* Fuentes al margen, en lápiz rojo */
 html[data-theme="dossier"] .md .md-block {
   display: grid;
-  grid-template-columns: minmax(0, 64ch) minmax(150px, 1fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 58ch) minmax(200px, 1fr);
+  gap: 24px;
   align-items: start;
 }
 html[data-theme="dossier"] .md .md-notes {
@@ -1002,31 +1146,37 @@ html[data-theme="dossier"] .md .md-notes {
 .md-notes li {
   display: flex;
   gap: 6px;
-  font: 600 13px/1.4 var(--dx-label);
-  font-variation-settings: "wdth" 80;
+  font: 700 12.5px/1.4 var(--dx-label);
   color: var(--dx-stamp);
-  margin-bottom: 4px;
-  word-break: break-word;
+  margin-bottom: 6px;
 }
 .md-notes a {
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--dx-stamp) !important;
   text-decoration: none;
 }
 .md-notes a:hover {
   text-decoration: underline;
 }
+.md-n {
+  flex: none;
+}
 .md-n::after {
   content: ".";
 }
 
-@media (max-width: 820px) {
+/* Notas al margen solo si caben junto al texto a su ancho completo */
+@media (max-width: 1024px) {
   html[data-theme="dossier"] .md .md-block {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 58ch);
     gap: 0;
   }
   html[data-theme="dossier"] .md .md-notes {
     margin: -4px 0 16px;
   }
+}
+@media (max-width: 820px) {
   .dx-ledger li {
     grid-template-columns: 1fr;
     gap: 4px;
@@ -1041,6 +1191,80 @@ html[data-theme="dossier"] .md .md-notes {
   }
   .dx-stamp--recv {
     transform: rotate(-3deg);
+  }
+  /* En el móvil la ficha ocupa cuatro líneas: lo que importa es el resumen.
+     Las etiquetas siguen ahí para los lectores de pantalla. */
+  .dx-doc-fields {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top-width: 1px;
+  }
+  /* Saltos de línea: tipo y autor / fechas y lectura / materias */
+  .dx-doc-fields::before,
+  .dx-doc-fields::after {
+    content: "";
+    flex-basis: 100%;
+    order: 1;
+  }
+  .dx-doc-fields::after {
+    order: 4;
+  }
+  .dx-doc-fields dt {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .dx-doc-fields dd {
+    border: 0;
+    padding: 0;
+    font: 400 13.5px/1.55 var(--dx-label);
+    color: var(--dx-graph);
+  }
+  .dx-doc-fields dd.dx-f-sep::after {
+    content: "·";
+    margin: 0 0.5em;
+  }
+  .dx-doc-fields .dx-f-date {
+    order: 2;
+  }
+  .dx-doc-fields .dx-f-read {
+    order: 3;
+  }
+  /* Con dos fechas no cabe todo en una línea: la lectura baja entera */
+  .dx-doc-fields:has(dd.dx-f-updated) .dx-f-read {
+    flex-basis: 100%;
+  }
+  .dx-f-long {
+    display: none;
+  }
+  .dx-f-short {
+    display: inline;
+  }
+  /* Sin etiqueta no se distinguiría de la fecha de publicación */
+  .dx-doc-fields dt.dx-f-updated {
+    position: static;
+    order: 2;
+    flex: none;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    font: 400 13.5px/1.55 var(--dx-label);
+    color: var(--dx-graph);
+    margin-right: 0.5em;
+  }
+  .dx-doc-fields dd.dx-f-updated {
+    order: 2;
+  }
+  .dx-doc-fields .dx-f-tags {
+    order: 5;
+    flex-basis: 100%;
   }
 }
 
@@ -1068,7 +1292,6 @@ html[data-theme="dossier"] .theme-dossier:has(> .dx-strip) {
 /* Tarifas orientativas: una tabla de formulario, el precio a la derecha */
 .dx-tariff {
   width: 100%;
-  max-width: 720px;
   border-collapse: collapse;
   border-top: 2px solid var(--dx-toner);
 }
@@ -1090,7 +1313,6 @@ html[data-theme="dossier"] .theme-dossier:has(> .dx-strip) {
   text-align: right;
   white-space: nowrap;
   font: 700 15px/1.3 var(--dx-label);
-  font-variation-settings: "wdth" 80;
   padding-left: 16px;
 }
 
@@ -1104,7 +1326,7 @@ html[data-theme="dossier"] .theme-dossier:has(> .dx-strip) {
 .dx-print {
   margin: 0;
   border: 1px solid var(--dx-toner);
-  background: #f7f7f3;
+  background: var(--dx-paper-hi);
   padding: 8px 8px 6px;
   transform: rotate(-1deg);
 }
@@ -1151,7 +1373,7 @@ html[data-theme="dossier"] .theme-dossier:has(> .dx-strip) {
   margin-top: 4px;
   font-size: 15.5px;
   line-height: 1.5;
-  color: #34342f;
+  color: var(--dx-toner-soft);
 }
 
 /* Cláusulas de la política editorial */
@@ -1201,6 +1423,9 @@ html:not([data-theme="dossier"]) .md-figure {
   --dx-serif: var(--font-geist-sans), system-ui, sans-serif;
   --dx-label: var(--font-geist-mono), ui-monospace, monospace;
   border-color: rgba(34, 211, 238, 0.35);
+}
+html:not([data-theme="dossier"]) .md-figure .dx-red::after {
+  color: var(--background);
 }
 html:not([data-theme="dossier"]) .md-figure .dx-demo {
   background: rgba(0, 0, 0, 0.25);

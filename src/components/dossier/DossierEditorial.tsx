@@ -11,7 +11,7 @@ export default function DossierEditorial({ locale, dict }: { locale: Locale; dic
 
   return (
     <div className="dx">
-      <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict)} localeHref={other.editorial.href} />
+      <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict, "home")} localeHref={other.editorial.href} />
       <DossierFolio
         head={`${d.file} · ${d.editorialPage.section}`}
         folio={`${t.sections.length} ${d.editorialPage.clause.toLowerCase()}s`}

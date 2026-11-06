@@ -246,7 +246,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
           </Link>
         </p>
 
-        <div id="dx-close" data-anchor="contact" style={{ marginTop: 34, scrollMarginTop: 64 }}>
+        <div id="dx-close" data-anchor="contact" style={{ marginTop: 34, scrollMarginTop: "calc(var(--dx-bar) + 16px)" }}>
           <h2>{t.close.title}</h2>
           <p>{t.close.text}</p>
           <p className="dx-mail">

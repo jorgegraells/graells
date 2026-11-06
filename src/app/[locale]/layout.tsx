@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Science_Gothic } from "next/font/google";
+import { Courier_Prime, Geist, Geist_Mono, Science_Gothic } from "next/font/google";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import {
@@ -50,6 +50,16 @@ const scienceGothic = Science_Gothic({
   axes: ["wdth"],
   preload: false,
   // next/font no tiene métricas de Science Gothic para generar el fallback
+  adjustFontFallback: false,
+});
+
+// Etiquetas del expediente, a máquina de escribir
+const courierPrime = Courier_Prime({
+  variable: "--font-typewriter",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  preload: false,
+  // next/font no tiene métricas de Courier Prime para generar el fallback
   adjustFontFallback: false,
 });
 
@@ -239,7 +249,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale satisfies Locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${redaction.variable} ${redaction35.variable} ${scienceGothic.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${redaction.variable} ${redaction35.variable} ${scienceGothic.variable} ${courierPrime.variable} h-full antialiased`}
       // THEME_SCRIPT fija data-theme antes de hidratar
       suppressHydrationWarning
     >

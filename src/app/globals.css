@@ -418,10 +418,11 @@ html:not([data-theme="dossier"]) .theme-dossier {
 }
 html[data-theme="dossier"]:has(.theme-dossier) {
   color-scheme: light;
+  scrollbar-color: #6a5d49 #2a2318;
 }
 html[data-theme="dossier"]:has(.theme-dossier) body {
-  background: #d6d6d0;
-  color: #1b1b19;
+  background: #3a3128;
+  color: #2a2318;
 }
 
 /* Cambio de modo (View Transitions).
