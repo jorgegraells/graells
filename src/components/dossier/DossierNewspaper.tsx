@@ -54,17 +54,15 @@ export default function DossierNewspaper({
         const lead = i === 0;
         return (
           <li key={a.slug} className={`dx-np${lead ? " dx-np--lead" : ""}`}>
-            <div className="dx-np-mast">
-              <span className="dx-np-ear dx-lab">
-                {t.issue} {articles.length - i}
-              </span>
-              <span className="dx-np-name" aria-hidden="true">
-                {t.name}
-              </span>
-              <span className="dx-np-ear dx-lab">{a.readingMinutes} min</span>
+            <div className="dx-np-name" aria-hidden="true">
+              {t.name}
             </div>
             <p className="dx-np-date dx-lab">
+              <span>
+                {t.issue} {articles.length - i}
+              </span>
               <time dateTime={a.published}>{fmt.format(new Date(a.published))}</time>
+              <span>{a.readingMinutes} min</span>
             </p>
             <h2 className="dx-np-head">
               <Link href={`/${locale}/blog/${a.slug}`}>{a.title}</Link>
