@@ -258,6 +258,23 @@ function StatusPanel({
 }
 
 /** Diálogo del aldeano: cuenta el proyecto línea a línea con efecto máquina de escribir. */
+
+/** Reparte un texto largo en páginas de diálogo, cortando siempre entre frases. */
+function dialogPages(text: string, max = 200): string[] {
+  const sentences = text.match(/.+?(?:[.!?]+(?:\s+|$)|$)/g) ?? [text];
+  const pages: string[] = [];
+  let page = "";
+  for (const sentence of sentences) {
+    if (page && page.length + sentence.length > max) {
+      pages.push(page.trim());
+      page = "";
+    }
+    page += sentence;
+  }
+  if (page.trim()) pages.push(page.trim());
+  return pages;
+}
+
 function Dialogue({
   project,
   color,
@@ -274,7 +291,7 @@ function Dialogue({
   const lines = useMemo(
     () => [
       dict.world.greet.replace("{name}", project.name),
-      project.description,
+      ...dialogPages(project.description),
       `${project.tech.join(" · ")} · ${project.role}`,
     ],
     [project, dict],

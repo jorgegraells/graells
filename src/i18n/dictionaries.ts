@@ -242,7 +242,7 @@ export type Dictionary = {
       };
       footer: string;
     };
-    annexes: { section: string; title: string; mediaLabel: string; note: string; footer: string };
+    annexes: { section: string; title: string; mediaLabel: string; readMore: string; note: string; footer: string };
     background: { section: string; title: string; margin: string; training: string; sessionLabel: string; trainingCta: string; footer: string };
     record: { section: string; title: string; received: string; news: string; guide: string; all: string };
     close: { title: string; text: string; social: string; footer: string };
@@ -556,7 +556,7 @@ const es: Dictionary = {
         name: "Flypet",
         tagline: "Esta mosca no tiene guion",
         description:
-          "App para Android con una mosca de la fruta de mascota. Qué hace en cada momento lo decide una simulación, en tu propio móvil, de las 165.122 neuronas del sistema nervioso de una mosca macho real.",
+          "App para Android con una mosca de la fruta de mascota. Qué hace en cada momento lo decide una simulación, en tu propio móvil, de las 165.122 neuronas del sistema nervioso de una mosca macho real. Anda, se acicala, come de la fruta que le pones y duerme de noche. Si le acercas el dedo y lo ve venir, huye. Un botón te enseña por qué ha hecho lo que ha hecho: qué notó y qué neuronas se activaron. Puedes ver su cerebro en directo, con cada neurona encendiéndose al disparar, y en el laboratorio apagar familias de neuronas y hacer experimentos guiados.",
         role: "Creador",
         highlight:
           "El cerebro de la mosca es el conectoma real MaleCNS v1.0 (Janelia Research Campus y colaboradores, CC BY 4.0). Janelia no participa en esta app ni la respalda.",
@@ -593,7 +593,7 @@ const es: Dictionary = {
         name: "Yaiwell",
         tagline: "Belleza, bienestar y deporte para reservar ya",
         description:
-          "Marketplace web para encontrar y reservar servicios de belleza, estética, bienestar y deporte cerca de ti, con disponibilidad para ahora o las próximas horas.",
+          "Marketplace web de belleza, estética, bienestar y deporte pensado para una pregunta concreta: ¿quién tiene un hueco hoy cerca de mí? Buscas en el mapa o en la lista, eliges profesional y reservas sin llamadas ni mensajes. Cada negocio pasa la revisión de una persona antes de publicarse, y solo puede valorar quien ha recibido el servicio. A los negocios les da un panel con calendario, equipo y horarios, y les deja volver a ofrecer con descuento una hora que se ha quedado libre. Aún no ha salido.",
         role: "Socio y desarrollador",
         highlight:
           "Buscador geográfico y de texto sobre la propia base de datos, sin APIs externas, y cinco idiomas pensados para el turismo europeo.",
@@ -789,6 +789,7 @@ const es: Dictionary = {
       section: "Anexos",
       title: "Anexos: proyectos",
       mediaLabel: "Estado y medios",
+      readMore: "Leer más",
       note: "Cada anexo es también una casa en el mundo virtual de Graells.",
       footer: "Anexos",
     },
@@ -1136,7 +1137,7 @@ const en: Dictionary = {
         name: "Flypet",
         tagline: "This fly has no script",
         description:
-          "Android app with a fruit fly as a pet. What it does at any moment is decided by a simulation, on your own phone, of the 165,122 neurons in the nervous system of a real male fly.",
+          "Android app with a fruit fly as a pet. What it does at any moment is decided by a simulation, on your own phone, of the 165,122 neurons in the nervous system of a real male fly. It walks, grooms, eats the fruit you give it and sleeps at night. Bring your finger close and, if it sees it coming, it flees. One button shows you why it did what it did: what it noticed and which neurons fired. You can watch its brain live, each neuron lighting up as it fires, and in the lab switch off families of neurons and run guided experiments.",
         role: "Creator",
         highlight:
           "The fly's brain is the real MaleCNS v1.0 connectome (Janelia Research Campus and collaborators, CC BY 4.0). Janelia isn't involved in this app and doesn't endorse it.",
@@ -1173,7 +1174,7 @@ const en: Dictionary = {
         name: "Yaiwell",
         tagline: "Beauty, wellness and sport to book right now",
         description:
-          "Web marketplace to find and book beauty, aesthetics, wellness and sport services near you, with availability for right now or the next few hours.",
+          "Web marketplace for beauty, aesthetics, wellness and sport, built around one question: who has a free slot near me today? You search on the map or in the list, pick a professional and book with no calls or messages. Every business is reviewed by a person before it goes live, and only people who received the service can leave a rating. Businesses get a dashboard with their calendar, team and hours, and can offer a slot that has opened up again at a discount. It hasn't launched yet.",
         role: "Partner and developer",
         highlight:
           "Geographic and text search on its own database, with no external APIs, and five languages designed for European tourism.",
@@ -1369,6 +1370,7 @@ const en: Dictionary = {
       section: "Annexes",
       title: "Annexes: projects",
       mediaLabel: "Status and stack",
+      readMore: "Read more",
       note: "Each annex is also a house in Graells' virtual world.",
       footer: "Annexes",
     },

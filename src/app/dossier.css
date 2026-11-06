@@ -617,6 +617,39 @@ html.dx-stamping .dx-folio:first-of-type {
   margin: 0;
   font-size: 16.5px;
 }
+.dx .dx-annex .dx-annex-tag {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.dx .dx-annex .dx-annex-desc {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--dx-toner-soft);
+}
+.dx-annex-more {
+  display: none;
+}
+.dx-annex-more summary {
+  cursor: pointer;
+  width: fit-content;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dx-annex-more summary:focus-visible {
+  outline: 2px solid var(--dx-stamp);
+  outline-offset: 2px;
+}
+.dx-annex-more[open] summary {
+  margin-bottom: 6px;
+}
+@media (max-width: 600px) {
+  .dx .dx-annex .dx-annex-wide {
+    display: none;
+  }
+  .dx-annex-more {
+    display: block;
+  }
+}
 .dx-annex .dx-lab {
   color: var(--dx-graph);
   display: block;

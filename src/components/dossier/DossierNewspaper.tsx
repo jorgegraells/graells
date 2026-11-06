@@ -17,7 +17,7 @@ function excerpt(body: string, words: number): string {
       .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
       .replace(/[*_`]/g, "")
       .replace(/\s+/g, " ");
-    sentences.push(...(plain.match(/[^.!?]+[.!?]+(?:\s|$)/g) ?? [plain]));
+    sentences.push(...(plain.match(/.+?(?:[.!?]+(?:\s+|$)|$)/g) ?? [plain]));
     if (sentences.join(" ").split(" ").length >= words) break;
   }
   let out = "";

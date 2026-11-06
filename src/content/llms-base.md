@@ -49,7 +49,9 @@ team size and format, agreed on a short call. Contact: dev.graells@gmail.com
   Supabase and Clerk. In pilot.
 - Flypet (https://jorgegraells.com/en/flypet): Android app with a fruit fly as
   a pet. What it does at any moment is decided by a simulation, on the phone
-  itself, of the 165,122 neurons in the nervous system of a real male fly. Uses
+  itself, of the 165,122 neurons in the nervous system of a real male fly. It
+  shows why the fly did what it did and which neurons fired, and has a lab to
+  switch off families of neurons and run guided experiments. Uses
   the MaleCNS v1.0 connectome (Janelia Research Campus and collaborators,
   CC BY 4.0); Janelia isn't involved in the app and doesn't endorse it. In
   closed testing.
@@ -61,8 +63,9 @@ team size and format, agreed on a short call. Contact: dev.graells@gmail.com
   Native + Expo, TypeScript and Kotlin. Radical privacy: zero telemetry. In
   development.
 - Yaiwell (https://www.yaiwell.app): web marketplace to find and book beauty,
-  wellness and sport services near you, with availability for right now or the
-  next few hours. Jorge is a partner and developer. Built with Next.js 16, Prisma,
+  wellness and sport services near you, built around who has a free slot today.
+  Every business is reviewed by a person before going live, and only people who
+  received the service can leave a rating. Jorge is a partner and developer. Built with Next.js 16, Prisma,
   Supabase + PostGIS, Clerk and Stripe Connect. Not launched yet.
 
 ## Expertise
