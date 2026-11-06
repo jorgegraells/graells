@@ -13,6 +13,10 @@
   --dx-paper-hi: #f7f0de; /* copias y recuadros sobre el folio */
   --dx-news: #efe6cf; /* papel de periódico */
   /* Arrugas: relieve de ruido con una luz rasante, multiplicado sobre el papel */
+  /* Bordes de papel arrugado: un perfil distinto para cada posición */
+  --dx-np-edge-a: polygon(1.2px 4.6px, 6.1% 1.3px, 13.5% 0.8px, 16.8% 0.0px, 29.5% 1.6px, 34.8% 1.4px, 42.6% 1.8px, 51.5% 2.8px, 57.3% 2.7px, 67.3% 2.2px, 73.0% 0.8px, 82.1% 1.9px, 87.7% 0.9px, 98.7% 0.0px, calc(100% - 2.3px) 2.3px, calc(100% - 1.7px) 3.3%, calc(100% - 0.3px) 24.2%, calc(100% - 1.8px) 36.8%, calc(100% - 2.1px) 47.7%, calc(100% - 1.4px) 62.8%, calc(100% - 2.2px) 78.7%, calc(100% - 1.0px) 91.0%, calc(100% - 4.4px) calc(100% - 3.1px), 93.5% calc(100% - 2.1px), 90.2% calc(100% - 1.2px), 78.5% calc(100% - 1.5px), 73.1% calc(100% - 0.4px), 65.7% calc(100% - 0.0px), 60.4% calc(100% - 0.7px), 48.6% calc(100% - 0.0px), 42.1% calc(100% - 0.8px), 32.6% calc(100% - 0.4px), 27.4% calc(100% - 0.9px), 17.5% calc(100% - 0.9px), 11.6% calc(100% - 1.8px), 1.4% calc(100% - 1.2px), 4.4px calc(100% - 1.0px), 2.6px 88.4%, 1.0px 81.5%, 2.1px 66.3%, 1.2px 47.4%, 2.0px 35.6%, 1.5px 22.3%, 0.5px 8.6%);
+  --dx-np-edge-b: polygon(1.2px 1.8px, 3.9% 3.4px, 13.3% 2.6px, 20.4% 1.6px, 29.1% 0.7px, 34.6% 0.0px, 43.8% 0.0px, 48.6% 0.0px, 58.6% 0.0px, 62.9% 0.0px, 73.0% 1.1px, 82.9% 1.8px, 88.1% 2.7px, 94.8% 1.3px, calc(100% - 1.7px) 4.3px, calc(100% - 2.2px) 7.4%, calc(100% - 3.4px) 17.7%, calc(100% - 1.9px) 33.8%, calc(100% - 3.4px) 51.4%, calc(100% - 3.6px) 60.0%, calc(100% - 4.0px) 78.2%, calc(100% - 2.7px) 97.6%, calc(100% - 1.1px) calc(100% - 2.5px), 95.3% calc(100% - 1.6px), 86.1% calc(100% - 0.2px), 81.2% calc(100% - 0.0px), 75.4% calc(100% - 0.4px), 65.6% calc(100% - 0.0px), 58.6% calc(100% - 0.0px), 48.9% calc(100% - 0.0px), 44.8% calc(100% - 1.5px), 35.1% calc(100% - 3.2px), 29.2% calc(100% - 1.5px), 18.9% calc(100% - 0.8px), 10.3% calc(100% - 0.6px), 3.3% calc(100% - 0.8px), 4.7px calc(100% - 3.3px), 5.5px 97.1%, 4.8px 79.5%, 6.0px 66.2%, 5.2px 45.0%, 5.4px 33.9%, 4.2px 25.2%, 5.6px 6.9%);
+  --dx-np-edge-c: polygon(1.3px 4.5px, 4.1% 2.8px, 12.9% 2.2px, 18.5% 2.0px, 27.0% 3.5px, 35.5% 3.3px, 41.9% 3.8px, 48.8% 3.9px, 55.5% 4.3px, 67.4% 5.2px, 71.7% 5.5px, 82.9% 6.0px, 90.1% 6.0px, 97.4% 6.0px, calc(100% - 3.1px) 1.6px, calc(100% - 3.1px) 7.1%, calc(100% - 3.8px) 19.0%, calc(100% - 2.4px) 33.7%, calc(100% - 0.8px) 53.0%, calc(100% - 0.7px) 65.1%, calc(100% - 0.0px) 74.9%, calc(100% - 0.0px) 96.7%, calc(100% - 1.7px) calc(100% - 1.4px), 95.7% calc(100% - 4.0px), 91.1% calc(100% - 3.9px), 81.8% calc(100% - 3.8px), 72.6% calc(100% - 4.3px), 66.6% calc(100% - 4.7px), 58.3% calc(100% - 3.5px), 50.8% calc(100% - 2.2px), 43.0% calc(100% - 0.6px), 32.8% calc(100% - 0.1px), 26.9% calc(100% - 0.7px), 20.1% calc(100% - 0.0px), 13.5% calc(100% - 0.0px), 5.3% calc(100% - 1.7px), 4.0px calc(100% - 3.4px), 2.5px 94.9%, 2.6px 76.2%, 2.6px 61.0%, 3.0px 45.9%, 1.9px 31.0%, 0.5px 25.3%, 0.0px 6.3%);
   --dx-crumple: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='.006 .009' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23fff' surfaceScale='3.2' diffuseConstant='1.05'%3E%3CfeDistantLight azimuth='50' elevation='62'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
   --dx-tab: #d9c9a3; /* pestañas de carpeta */
   --dx-tab-hi: #e6d9ba;
@@ -1482,21 +1486,34 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
 .dx-np {
   position: relative;
   padding: 16px 20px 18px;
-  background-color: var(--dx-news);
-  background-image: var(--dx-crumple), var(--dx-grain);
-  background-blend-mode: multiply, normal;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.38);
+  /* La sombra sigue el borde recortado: box-shadow dibujaría un rectángulo */
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.42));
   transform: rotate(0.45deg);
   transition:
     transform 0.2s,
-    box-shadow 0.2s;
+    filter 0.2s;
+}
+/* El papel va en una capa aparte para recortarlo sin cortar la sombra */
+.dx-np::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--dx-news);
+  background-image: var(--dx-crumple), var(--dx-grain);
+  background-blend-mode: multiply, normal;
+  clip-path: var(--dx-np-edge-a);
 }
 .dx-np:nth-child(even) {
   transform: rotate(-0.5deg);
-  background-position: 210px 90px, 0 0;
 }
-.dx-np:nth-child(3n) {
+.dx-np:nth-child(even)::before {
+  background-position: 210px 90px, 0 0;
+  clip-path: var(--dx-np-edge-b);
+}
+.dx-np:nth-child(3n)::before {
   background-position: -140px 300px, 0 0;
+  clip-path: var(--dx-np-edge-c);
 }
 .dx-np--lead {
   grid-column: 1 / -1;
@@ -1506,7 +1523,7 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
 @media (hover: hover) {
   .dx-np:hover {
     transform: translateY(-4px);
-    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.45);
+    filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.48));
   }
 }
 .dx-np-mast {
