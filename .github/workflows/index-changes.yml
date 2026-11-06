@@ -1,0 +1,23 @@
+# Cada push a main avisa a Bing de las páginas que han cambiado.
+# Si falla, o si un artículo publicado no pasa el validador, GitHub avisa por correo.
+name: Avisar a buscadores
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/index-changes.mjs "${{ github.event.before }}" "${{ github.sha }}"

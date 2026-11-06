@@ -6,8 +6,9 @@
   build, `seoDescription` corta para Google, hreflang ES↔EN, `dateModified`
   real, autor con `sameAs`, sitemap y `llms.txt` generados con los artículos
   publicados, aviso a Bing vía IndexNow al publicar desde el panel.
-- **Borrador diario** (rutina en la nube, 07:00 Madrid): escribe un artículo
-  con radar de tendencias. Ver `docs/ARTICULOS.md`.
+- **Redactor diario** (rutina en la nube, 07:00 Madrid): actualiza lo publicado
+  si hay novedades, escribe un artículo con radar de tendencias y lo publica si
+  pasa el filtro. Ver "Publicación automática" y `docs/ARTICULOS.md`.
 - **Auditoría semanal** (rutina en la nube, lunes 08:00 Madrid): revisa la web
   en producción, lee Search Console y deja el informe en
   `docs/SEO-INFORME.md`. Solo informa, no cambia nada.
@@ -57,18 +58,46 @@ cómo aparece.
   y `/en/news` (componente `src/components/blog/NewsIndex.tsx`). El blog
   muestra arriba las dos últimas noticias y debajo las guías; las tarjetas
   (`ArticleCard`) y el artículo llevan la etiqueta "Noticia".
-- `node scripts/news-radar.mjs --hours 3` lee feeds RSS de INCIBE, CISA,
-  BleepingComputer, The Hacker News, The Record, Krebs, las páginas de
-  estado de Claude y OpenAI, los blogs de OpenAI y Google IA y Hacker News, y
-  ordena lo de las últimas horas por relevancia.
+- `node scripts/news-radar.mjs --hours 6` lee feeds de INCIBE, el catálogo KEV
+  de CISA (por GitHub, porque cisa.gov da 403 desde la nube), prensa española
+  (Hispasec, MuySeguridad, Escudo Digital, Europa Press), BleepingComputer, The
+  Hacker News, The Record, Krebs, las páginas de estado de Claude y OpenAI, los
+  blogs de OpenAI y Google IA y Hacker News, y ordena lo reciente por relevancia.
 - La rutina "Radar de noticias" lo ejecuta cada 2 horas (8:00-22:00 Madrid).
-  Si algo merece noticia, escribe el artículo. **Solo lo publica sola si
-  cumple todas las condiciones** de su prompt (impacto alto, fuente oficial
-  leída entera más un medio fiable, cada dato con fuente, sin acusaciones sin
-  respaldo oficial, validador OK, revisión de editor escéptico, máximo una
-  automática al día). Si no, lo deja como borrador. Siempre avisa al móvil.
-- Para retirar una noticia publicada: panel → abrir el artículo →
-  **Despublicar** (vuelve a ser borrador).
+- Para retirar algo publicado: panel → abrir el artículo → **Despublicar**
+  (vuelve a ser borrador).
+
+## Publicación automática
+
+Decisión de Jorge (6 nov 2026): lo que merece la pena se sube solo, sin esperar
+a que lo revise. El borrador es la excepción.
+
+- **Radar**: publica noticias (hasta 3 al día) y actualiza las publicadas cuando
+  hay novedades verificadas.
+- **Redactor diario**: publica un artículo al día y revisa si ha quedado
+  desfasado algo publicado.
+- **Se queda en borrador** si no hay fuentes suficientes leídas enteras, si acusa
+  a alguien de algo que no dice una fuente oficial, si da consejo legal, médico o
+  de inversión, si habla de proyectos de Jorge, o si no pasa
+  `node scripts/check-article.mjs <archivo> --publish`. Los criterios completos
+  están en el prompt de cada rutina (claude.ai/code/routines).
+- Cada publicación o actualización avisa al móvil de Jorge.
+
+## Indexación en cada cambio
+
+Se dispara sola con cualquier push a `main`, venga de quien venga (Jorge, el
+panel o una rutina). Las rutinas no tienen que hacer nada.
+
+- **Bing, ChatGPT Search, Copilot** (`.github/workflows/index-changes.yml` →
+  `scripts/index-changes.mjs`): espera al despliegue y manda las URLs cambiadas a
+  IndexNow. También valida los artículos publicados que han cambiado. Si algo
+  falla, GitHub avisa a Jorge por correo.
+- **Google** (`scripts/index-bot.mjs`, en el PC de Jorge, cada hora): compara con
+  `origin/main` y pulsa "Solicitar indexación" en lo cambiado, aunque ya esté en
+  Google. Solo funciona con el PC encendido; lo pendiente se hace al encenderlo.
+- **Qué URLs**: `scripts/lib/changed-urls.mjs` traduce archivos a páginas. Los
+  borradores no cuentan. Si se añade una sección nueva con ruta distinta en cada
+  idioma, hay que añadirla ahí.
 
 ## Search Console (datos reales de Google)
 
@@ -124,11 +153,12 @@ node scripts/index-bot.mjs --dry-run   # solo mira, no pulsa
 node scripts/index-bot.mjs https://jorgegraells.com/es/blog/x   # solo esa URL
 ```
 
-- Corre cada día en el PC de Jorge con la tarea programada de Windows
-  "jorgegraells - indexacion" (09:00, o al encender si estaba apagado).
-- Máximo 10 solicitudes por pasada (Google da unas 10-12 al día). Recuerda lo
-  hecho en `state.json`: no vuelve a mirar una página indexada en 7 días ni a
-  pedir una ya solicitada en 3.
+- Corre cada hora en el PC de Jorge con la tarea programada de Windows
+  "jorgegraells - indexacion" (o al encender si estaba apagado). Si no hay
+  trabajo, sale sin abrir Chrome.
+- Máximo 10 solicitudes al día (Google da unas 10-12). Lo cambiado va primero.
+  Recuerda lo hecho en `state.json`: salvo que haya cambiado, no vuelve a mirar
+  una página indexada en 7 días ni a pedir una ya solicitada en 3.
 - Si sale un captcha o se agota la cuota, **para** (sale con código 2) y deja
   el resto para el día siguiente. No intenta saltarse el captcha.
 - Registro en `log.txt` y capturas de pantalla de cada fallo en esa carpeta.

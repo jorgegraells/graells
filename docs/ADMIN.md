@@ -24,9 +24,9 @@ y del robots.txt.
   oculto) y **Publicar** (quita `draft`, pone la fecha de hoy, despliega y
   avisa a Bing). Un artículo ya publicado solo tiene Publicar.
 - Un agente en la nube (rutina de Claude Code, ver claude.ai/code/routines)
-  escribe cada mañana un borrador nuevo siguiendo `docs/ARTICULOS.md`, lo
-  valida con `scripts/check-article.mjs` y lo sube a `main`. Jorge lo revisa
-  en el panel y decide si lo publica, lo edita o lo borra.
+  escribe cada mañana un artículo siguiendo `docs/ARTICULOS.md`, lo valida con
+  `scripts/check-article.mjs --publish` y lo publica en `main`. Si no pasa el
+  filtro lo deja como borrador en el panel. Lo publicado se retira con Despublicar.
 
 ## Fecha de edición e IndexNow
 

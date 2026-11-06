@@ -1,12 +1,15 @@
-// Valida un artículo antes de subirlo (lo usa el agente diario de borradores).
-// Uso: node scripts/check-article.mjs src/content/articles/<slug-es>.json
+// Valida un artículo antes de subirlo.
+// Uso: node scripts/check-article.mjs src/content/articles/<slug-es>.json [--publish]
 // Sale con código 1 si hay errores; los avisos no bloquean.
+// --publish es el filtro de lo que se publica sin que lo revise Jorge: los avisos
+// pasan a ser errores y se exigen fuentes y fechas de publicación.
 import fs from "node:fs";
 import path from "node:path";
 
-const file = process.argv[2];
+const PUBLISH = process.argv.includes("--publish");
+const file = process.argv.slice(2).find((a) => !a.startsWith("--"));
 if (!file) {
-  console.error("Uso: node scripts/check-article.mjs <archivo.json>");
+  console.error("Uso: node scripts/check-article.mjs <archivo.json> [--publish]");
   process.exit(1);
 }
 
@@ -102,6 +105,28 @@ for (const f of fs.readdirSync(path.dirname(file))) {
   if (!f.endsWith(".json") || path.join(path.dirname(file), f) === path.normalize(file)) continue;
   const o = JSON.parse(fs.readFileSync(path.join(path.dirname(file), f), "utf8"));
   for (const l of ["es", "en"]) if (o[l]?.slug === a[l]?.slug) errors.push(`${l}: slug ya usado en ${f}`);
+}
+
+if (PUBLISH) {
+  if (a.draft) errors.push('sigue con "draft": quítalo antes de publicar');
+  const ISO = /^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/;
+  if (!ISO.test(a.updated ?? "")) errors.push("updated debe ser ISO UTC con hora");
+  // Los artículos antiguos no tienen hora de publicación ni tantas fuentes, y
+  // actualizarlos no debe obligar a rehacerlos
+  const isNew = Date.now() - Date.parse(a.date) < 3 * 86_400_000;
+  if (isNew && !ISO.test(a.published ?? "")) errors.push("published debe ser ISO UTC con hora");
+  for (const l of ["es", "en"]) {
+    const d = a[l];
+    if (!d) continue;
+    const text = `${d.title}\n${d.description}\n${d.body}`;
+    // Sus proyectos y lo personal los publica Jorge, nunca una rutina
+    if (/flypet|antidop|workleveling|hor[oó]scop|horoscope/i.test(text))
+      errors.push(`${l}: habla de un proyecto de Jorge: se queda en borrador`);
+    const links = new Set([...(d.body ?? "").matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)].map((m) => new URL(m[1]).hostname));
+    if (isNew && links.size < 2) errors.push(`${l}: necesita enlaces a al menos 2 fuentes externas distintas`);
+  }
+  errors.push(...warnings);
+  warnings.length = 0;
 }
 
 for (const w of warnings) console.log(`AVISO  ${w}`);

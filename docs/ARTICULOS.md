@@ -1,8 +1,9 @@
 # Guía editorial de artículos — jorgegraells.com
 
-Esta guía la sigue cualquiera que escriba un artículo para el blog, incluido el
-agente diario que deja borradores para que Jorge los revise. Las reglas de
-contenido de `AGENTS.md` mandan sobre todo lo que hay aquí.
+Esta guía la sigue cualquiera que escriba un artículo para el blog, incluidas
+las rutinas que publican sin que Jorge lo revise (ver "Publicación automática" en
+`docs/SEO.md`). Las reglas de contenido de `AGENTS.md` mandan sobre todo lo que
+hay aquí.
 
 ## Para qué sirve el blog
 
@@ -123,7 +124,8 @@ Noticias durante dos días.
   grupo o país si no lo ha hecho una fuente oficial.
 - Añadir lo que aporta Jorge: qué debe hacer el lector y qué aprender.
 - Avisar de que la noticia se actualizará y actualizarla cuando haya datos
-  nuevos (el panel renueva la fecha de modificación).
+  nuevos: se edita en los dos idiomas y se renueva `updated` (el panel lo hace
+  solo). Lo que ha quedado mal se corrige, no se deja al lado de lo nuevo.
 
 ## Formato del archivo
 
@@ -139,13 +141,15 @@ Noticias durante dos días.
 ```
 
 Los borradores (`"draft": true`) no salen en la web, ni en el sitemap, ni en
-los listados: solo en el panel `/admin`, donde Jorge los revisa, edita y pulsa
-Publicar (eso quita el `draft`, pone la fecha del día y avisa a Bing).
+los listados: solo en el panel `/admin`, donde se pueden editar y publicar.
 
-Antes de dar un borrador por bueno:
+Publicar a mano o por rutina es quitar `draft` y poner `published` y `updated`
+con la hora actual (ISO UTC). Antes de subir un artículo:
 
 ```bash
-node scripts/check-article.mjs src/content/articles/<slug-es>.json
+node scripts/check-article.mjs src/content/articles/<slug-es>.json            # borrador
+node scripts/check-article.mjs src/content/articles/<slug-es>.json --publish  # publicado
 ```
 
-Tiene que terminar sin errores.
+Tiene que terminar sin errores. Con `--publish` los avisos también bloquean. La
+indexación se lanza sola al subirlo.

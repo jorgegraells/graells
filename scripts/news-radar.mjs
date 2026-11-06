@@ -1,6 +1,6 @@
 // Radar de última hora: lee feeds RSS/Atom de fuentes fiables y lista lo
 // publicado en las últimas horas, ordenado por relevancia para el blog.
-// Uso: node scripts/news-radar.mjs [--hours 3]
+// Uso: node scripts/news-radar.mjs [--hours 6]
 // Sin dependencias. Lo ejecuta la rutina "radar de noticias" cada 2 horas.
 
 const FEEDS = [
@@ -8,9 +8,12 @@ const FEEDS = [
   ["INCIBE ciudadanía", "https://www.incibe.es/ciudadania/avisos/feed"],
   ["INCIBE empresas", "https://www.incibe.es/empresas/avisos/feed"],
   ["INCIBE-CERT alerta temprana", "https://www.incibe.es/incibe-cert/alerta-temprana/avisos/feed"],
-  // Ciberseguridad
-  ["CISA avisos", "https://www.cisa.gov/cybersecurity-advisories/all.xml"],
-  ["CISA noticias", "https://www.cisa.gov/news.xml"],
+  ["Hispasec una-al-día", "https://unaaldia.hispasec.com/feed"],
+  ["MuySeguridad", "https://www.muyseguridad.net/feed/"],
+  ["Escudo Digital", "https://www.escudodigital.com/rss"],
+  ["Europa Press PortalTIC", "https://www.europapress.es/rss/rss.aspx?ch=00564"],
+  // Ciberseguridad. El catálogo KEV de CISA va por GitHub porque cisa.gov da 403 desde la nube
+  ["CISA KEV (explotadas)", "https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json", "kev"],
   ["BleepingComputer", "https://www.bleepingcomputer.com/feed/"],
   ["The Hacker News", "https://feeds.feedburner.com/TheHackersNews"],
   ["The Record", "https://therecord.media/feed"],
@@ -35,10 +38,11 @@ const KEYWORDS = [
   [2, /binance|crypto|bitcoin|cripto/i],
   [2, /AI Act|NIS2|regulat|reglamento|ley |GDPR|RGPD|multa|fine/i],
   [2, /spain|españa|spanish|europ/i],
+  [4, /santander|bbva|caixabank|sabadell|telef[oó]nica|movistar|iberdrola|endesa|naturgy|repsol|mercadona|inditex|renfe|aena|iberia|vueling|ministerio|ayuntamiento|generalitat|junta de/i],
 ];
 
 const hoursArg = process.argv.indexOf("--hours");
-const HOURS = hoursArg > 0 ? Number(process.argv[hoursArg + 1]) || 3 : 3;
+const HOURS = hoursArg > 0 ? Number(process.argv[hoursArg + 1]) || 6 : 6;
 const since = Date.now() - HOURS * 3_600_000;
 
 const UA =
@@ -75,14 +79,25 @@ function parse(xml) {
   });
 }
 
-async function read([source, url]) {
+// El KEV es un JSON con solo la fecha del día en que entró cada fallo
+function parseKev(json) {
+  return JSON.parse(json).vulnerabilities.map((v) => ({
+    title: `${v.vendorProject} ${v.product}: ${v.vulnerabilityName} (${v.cveID})`,
+    link: `https://www.cve.org/CVERecord?id=${v.cveID}`,
+    time: Date.parse(v.dateAdded) + 86_400_000 - 1,
+    summary: v.shortDescription.slice(0, 220),
+  }));
+}
+
+async function read([source, url, kind]) {
   try {
     const res = await fetch(url, {
       headers: { "User-Agent": UA, Accept: "application/rss+xml,application/atom+xml,application/xml;q=0.9,*/*;q=0.8" },
       signal: AbortSignal.timeout(20_000),
     });
     if (!res.ok) return { source, error: `HTTP ${res.status}` };
-    return { source, items: parse(await res.text()) };
+    const text = await res.text();
+    return { source, items: kind === "kev" ? parseKev(text) : parse(text) };
   } catch (e) {
     return { source, error: e.name === "TimeoutError" ? "sin respuesta en 20 s" : e.message };
   }

@@ -1,11 +1,14 @@
 // Bot de indexación: abre Search Console en un Chrome propio (perfil aparte,
 // con la sesión de Google de Jorge) y pulsa "Solicitar indexación" en las
-// páginas que Google aún no tiene. Sin dependencias: habla con Chrome por CDP.
+// páginas que Google aún no tiene y en las que han cambiado desde la última vez.
+// Sin dependencias: habla con Chrome por CDP. Mira lo que hay en origin/main, no
+// la copia local, y si no hay trabajo ni abre Chrome: se puede lanzar cada hora.
 //
-//   node scripts/index-bot.mjs             → revisa y solicita (máx. 10 por pasada)
+//   node scripts/index-bot.mjs             → revisa y solicita (máx. 10 al día)
 //   node scripts/index-bot.mjs --dry-run   → solo revisa, no pulsa nada
 //   node scripts/index-bot.mjs --hidden    → sin ventana (lo usa la tarea programada)
 //   node scripts/index-bot.mjs <url> ...   → solo esas URLs
+//   node scripts/index-bot.mjs --force <url> → la solicita aunque ya esté en Google
 //
 // La primera vez abre la ventana para que Jorge inicie sesión en Google a mano.
 // Si sale un captcha o se acaba la cuota, para y lo dice: no intenta saltárselo.
@@ -15,6 +18,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { changedBetween, git, publishedArticleUrls } from "./lib/changed-urls.mjs";
 
 const ORIGIN = "https://jorgegraells.com";
 // El resumen de la propiedad: tiene arriba la caja "Inspecciona cualquier URL".
@@ -31,10 +35,13 @@ const MAX_REQUESTS = 10; // Google deja unas 10-12 solicitudes al día por propi
 const DAY = 86_400_000;
 const RECHECK_INDEXED = 7 * DAY;
 const RECHECK_REQUESTED = 3 * DAY;
+const RETRY_AFTER_ERROR = DAY / 4;
+const SETTLE = "5 minutes ago"; // lo que se acaba de subir aún se está desplegando
 
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry-run");
 const HIDDEN = args.includes("--hidden");
+const FORCE = args.includes("--force");
 const only = args.filter((a) => a.startsWith("http"));
 
 const CHROME_PATHS = [
@@ -86,15 +93,20 @@ function fail(msg, code = 1) {
 
 // ---- Qué URLs mirar: artículos (los más nuevos primero) y páginas fijas ----
 
-function candidateUrls() {
+const REPO = new URL("..", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1");
+
+/** El último commit de origin/main que ya debería estar desplegado. */
+function settledCommit() {
+  try {
+    git(["fetch", "--quiet", "origin", "main"], REPO);
+  } catch {
+    log("Aviso: no he podido traer origin/main; uso lo último que conozco.");
+  }
+  return git(["log", "origin/main", `--until=${SETTLE}`, "-1", "--format=%H"], REPO).trim();
+}
+
+function candidateUrls(ref) {
   if (only.length) return only;
-  const dir = new URL("../src/content/articles/", import.meta.url);
-  const articles = fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith(".json"))
-    .map((f) => JSON.parse(fs.readFileSync(new URL(f, dir), "utf8")))
-    .filter((a) => !a.draft)
-    .sort((a, b) => b.date.localeCompare(a.date));
   const pages = [
     ...["es", "en"].flatMap((l) => ["", "/training", "/blog", "/world"].map((p) => `/${l}${p}`)),
     "/es/sobre-mi",
@@ -103,11 +115,10 @@ function candidateUrls() {
     "/en/news",
     "/es/politica-editorial",
     "/en/editorial-policy",
+    "/es/flypet",
+    "/en/flypet",
   ];
-  return [
-    ...articles.flatMap((a) => ["es", "en"].map((l) => `${ORIGIN}/${l}/blog/${a[l].slug}`)),
-    ...pages.map((p) => ORIGIN + p),
-  ];
+  return [...publishedArticleUrls(ref, REPO), ...pages.map((p) => ORIGIN + p)];
 }
 
 const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : {};
@@ -117,9 +128,36 @@ function skipReason(url) {
   if (only.length) return null;
   const s = state[url] ?? {};
   const now = Date.now();
+  if (s.errorAt && now - Date.parse(s.errorAt) < RETRY_AFTER_ERROR) return "falló hace poco";
+  if (s.changedAt) return null;
   if (s.indexedAt && now - Date.parse(s.indexedAt) < RECHECK_INDEXED) return "indexada";
   if (s.requestedAt && now - Date.parse(s.requestedAt) < RECHECK_REQUESTED) return "ya solicitada";
   return null;
+}
+
+// Apunta como cambiadas las páginas tocadas desde la última pasada. La primera vez
+// solo guarda el punto de partida: lo anterior ya se pidió en su día.
+function markChanges(head) {
+  const last = state.__lastCommit;
+  state.__lastCommit = head;
+  if (!last || last === head) return;
+  let changes;
+  try {
+    changes = changedBetween(last, head, REPO);
+  } catch {
+    log(`Aviso: no puedo comparar ${last} con ${head}; sigo desde este commit.`);
+    return;
+  }
+  const at = new Date().toISOString();
+  for (const url of [...changes.articles.flatMap((a) => a.urls), ...changes.pages])
+    state[url] = { ...state[url], changedAt: at };
+}
+
+// El cupo de Google es por día, y ahora hay varias pasadas al día
+function requestsToday() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (state.__requests?.day !== today) state.__requests = { day: today, count: 0 };
+  return state.__requests;
 }
 
 // ---- Chrome por CDP ----
@@ -341,8 +379,8 @@ async function typeUrl(box, url) {
   return false;
 }
 
-/** Inspecciona una URL y, si Google no la tiene, solicita la indexación. */
-async function processUrl(url, canRequest) {
+/** Inspecciona una URL y solicita la indexación si Google no la tiene o si ha cambiado. */
+async function processUrl(url, canRequest, force) {
   const box = await loadInspector();
   if (!box || box === "login") return { status: "error", detail: "no carga la inspección" };
   if (!(await typeUrl(box, url))) {
@@ -362,8 +400,8 @@ async function processUrl(url, canRequest) {
     return { status: "error", detail: "Search Console no ha respondido" };
   }
   if (verdict === "captcha") await screenshot("captcha");
-  if (verdict !== "missing") return { status: verdict };
-  if (!canRequest) return { status: "missing" };
+  if (verdict === "captcha" || (verdict === "indexed" && !force)) return { status: verdict };
+  if (!canRequest) return { status: verdict };
 
   // Si el clic llega antes de que la app escuche, no pasa nada: se reintenta solo
   // cuando no ha aparecido ni la prueba en directo ni una respuesta (no duplica solicitudes)
@@ -401,6 +439,20 @@ async function processUrl(url, canRequest) {
 
 // ---- Pasada ----
 
+const head = only.length ? "" : settledCommit();
+if (head) markChanges(head);
+
+// Lo que ha cambiado va primero: es lo que Google tiene desactualizado
+const candidates = candidateUrls(head);
+const queue = candidates
+  .filter((url) => !skipReason(url))
+  .sort((a, b) => Number(Boolean(state[b]?.changedAt)) - Number(Boolean(state[a]?.changedAt)));
+const quotaLeft = () => DRY || only.length || requestsToday().count < MAX_REQUESTS;
+if (!queue.length || !quotaLeft()) {
+  saveState();
+  process.exit(0);
+}
+
 const startedChrome = await startChrome();
 page = await openPage();
 await page.send("Page.enable");
@@ -409,25 +461,28 @@ await page.send("Runtime.enable");
 let exitCode = 0;
 try {
   await ensureLoggedIn();
-  log(`Pasada ${DRY ? "de prueba (sin pulsar) " : ""}de ${candidateUrls().length} URLs`);
-  const summary = { requested: [], missing: [], indexed: 0, skipped: 0, errors: [] };
-  for (const url of candidateUrls()) {
-    const reason = skipReason(url);
-    if (reason) {
-      summary.skipped++;
-      continue;
+  log(`Pasada ${DRY ? "de prueba (sin pulsar) " : ""}de ${queue.length} URLs`);
+  const summary = { requested: [], missing: [], indexed: 0, skipped: candidates.length - queue.length, errors: [] };
+  for (const url of queue) {
+    if (!quotaLeft()) {
+      log("Cupo de solicitudes de hoy agotado: sigo mañana.");
+      break;
     }
-    const canRequest = !DRY && summary.requested.length < MAX_REQUESTS;
-    const r = await processUrl(url, canRequest);
+    const force = FORCE || Boolean(state[url]?.changedAt);
+    const r = await processUrl(url, !DRY, force);
     const now = new Date().toISOString();
     if (r.status === "indexed") {
       summary.indexed++;
       state[url] = { ...state[url], indexedAt: now };
+      delete state[url].errorAt;
       log(`  ✓ ${url} ya está en Google`);
     } else if (r.status === "requested") {
       summary.requested.push(url);
+      requestsToday().count++;
       state[url] = { ...state[url], requestedAt: now };
-      log(`  → ${url} indexación solicitada`);
+      delete state[url].changedAt;
+      delete state[url].errorAt;
+      log(`  → ${url} indexación solicitada${force ? " (ha cambiado)" : ""}`);
     } else if (r.status === "missing") {
       summary.missing.push(url);
       log(`  · ${url} no está en Google${DRY ? "" : " (cupo de hoy agotado)"}`);
@@ -441,6 +496,7 @@ try {
       break;
     } else {
       summary.errors.push(url);
+      state[url] = { ...state[url], errorAt: now };
       log(`  ✗ ${url}: ${r.detail}`);
     }
     saveState();
