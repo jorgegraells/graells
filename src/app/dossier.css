@@ -11,7 +11,9 @@
   --dx-desk-soft: #b8aa8c;
   --dx-paper: #f0e6cf;
   --dx-paper-hi: #f7f0de; /* copias y recuadros sobre el folio */
-  --dx-news: #e9dfc6; /* papel de periódico */
+  --dx-news: #efe6cf; /* papel de periódico */
+  /* Arrugas: relieve de ruido con una luz rasante, multiplicado sobre el papel */
+  --dx-crumple: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='.006 .009' numOctaves='4' seed='11' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23fff' surfaceScale='3.2' diffuseConstant='1.05'%3E%3CfeDistantLight azimuth='50' elevation='62'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
   --dx-tab: #d9c9a3; /* pestañas de carpeta */
   --dx-tab-hi: #e6d9ba;
   --dx-toner: #2a2318;
@@ -1480,7 +1482,9 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
 .dx-np {
   position: relative;
   padding: 16px 20px 18px;
-  background: var(--dx-news) var(--dx-grain);
+  background-color: var(--dx-news);
+  background-image: var(--dx-crumple), var(--dx-grain);
+  background-blend-mode: multiply, normal;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.38);
   transform: rotate(0.45deg);
   transition:
@@ -1489,6 +1493,10 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
 }
 .dx-np:nth-child(even) {
   transform: rotate(-0.5deg);
+  background-position: 210px 90px, 0 0;
+}
+.dx-np:nth-child(3n) {
+  background-position: -140px 300px, 0 0;
 }
 .dx-np--lead {
   grid-column: 1 / -1;
@@ -1619,11 +1627,17 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
     grid-template-columns: minmax(0, 1fr);
     gap: 18px;
   }
-  .dx .dx-np--lead .dx-np-text {
-    column-count: 1;
+  /* A una columna la lista se hacía muy larga: en pequeño, cabecera y titular */
+  .dx .dx-np .dx-np-deck,
+  .dx .dx-np .dx-np-text {
+    display: none;
   }
-  .dx .dx-np--lead .dx-np-text p {
-    text-align: left;
+  .dx .dx-np .dx-np-head,
+  .dx .dx-np--lead .dx-np-head {
+    margin-bottom: 4px;
+  }
+  .dx-folio:has(+ .dx-np-pile) .dx-ff {
+    display: none;
   }
 }
 @media (max-width: 600px) {
