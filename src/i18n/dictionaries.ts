@@ -593,8 +593,8 @@ const es: Dictionary = {
         name: "Yaiwell",
         tagline: "Belleza, bienestar y deporte para reservar ya",
         description:
-          "Marketplace web para encontrar y reservar servicios de belleza, estética, bienestar y deporte cerca de ti, con disponibilidad para ahora o las próximas horas. Desarrollado para una clienta.",
-        role: "Desarrollo del producto",
+          "Marketplace web para encontrar y reservar servicios de belleza, estética, bienestar y deporte cerca de ti, con disponibilidad para ahora o las próximas horas.",
+        role: "Socio y desarrollador",
         highlight:
           "Buscador geográfico y de texto sobre la propia base de datos, sin APIs externas, y cinco idiomas pensados para el turismo europeo.",
         tech: ["Next.js 16", "React 19", "Prisma", "Supabase + PostGIS", "Clerk", "Stripe Connect"],
@@ -1173,8 +1173,8 @@ const en: Dictionary = {
         name: "Yaiwell",
         tagline: "Beauty, wellness and sport to book right now",
         description:
-          "Web marketplace to find and book beauty, aesthetics, wellness and sport services near you, with availability for right now or the next few hours. Built for a client.",
-        role: "Product development",
+          "Web marketplace to find and book beauty, aesthetics, wellness and sport services near you, with availability for right now or the next few hours.",
+        role: "Partner and developer",
         highlight:
           "Geographic and text search on its own database, with no external APIs, and five languages designed for European tourism.",
         tech: ["Next.js 16", "React 19", "Prisma", "Supabase + PostGIS", "Clerk", "Stripe Connect"],

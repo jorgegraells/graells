@@ -62,8 +62,8 @@ team size and format, agreed on a short call. Contact: dev.graells@gmail.com
   development.
 - Yaiwell (https://www.yaiwell.app): web marketplace to find and book beauty,
   wellness and sport services near you, with availability for right now or the
-  next few hours. Built for a client with Next.js 16, Prisma, Supabase + PostGIS,
-  Clerk and Stripe Connect. Not launched yet.
+  next few hours. Jorge is a partner and developer. Built with Next.js 16, Prisma,
+  Supabase + PostGIS, Clerk and Stripe Connect. Not launched yet.
 
 ## Expertise
 
