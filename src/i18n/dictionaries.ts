@@ -820,7 +820,7 @@ const es: Dictionary = {
       entries: "entradas",
       footer: "Ordenado de más reciente a más antiguo",
     },
-    newspaper: { name: "El Sumario", issue: "N.º", more: "Sigue en la noticia completa" },
+    newspaper: { name: "El Diario", issue: "N.º", more: "Sigue en la noticia completa" },
     article: {
       section: "Documento",
       news: "News",
@@ -1398,7 +1398,7 @@ const en: Dictionary = {
       entries: "entries",
       footer: "Newest first",
     },
-    newspaper: { name: "The File", issue: "No.", more: "Continues in the full story" },
+    newspaper: { name: "The Daily", issue: "No.", more: "Continues in the full story" },
     article: {
       section: "Document",
       news: "News",
