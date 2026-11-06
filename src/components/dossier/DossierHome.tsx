@@ -169,10 +169,12 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
                 <h3>{p.name}</h3>
                 <p className="dx-annex-tag">{p.tagline}</p>
                 <p className="dx-annex-desc dx-annex-wide">{p.description}</p>
+                <p className="dx-annex-desc dx-annex-wide dx-annex-note">{p.highlight}</p>
                 {/* En el móvil, plegada: cinco descripciones enteras hacen la lista larguísima */}
                 <details className="dx-annex-more">
                   <summary className="dx-lab">{t.annexes.readMore}</summary>
                   <p className="dx-annex-desc">{p.description}</p>
+                  <p className="dx-annex-desc dx-annex-note">{p.highlight}</p>
                 </details>
               </div>
               <div>

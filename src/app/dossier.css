@@ -626,6 +626,9 @@ html.dx-stamping .dx-folio:first-of-type {
   line-height: 1.5;
   color: var(--dx-toner-soft);
 }
+.dx .dx-annex .dx-annex-note {
+  margin-top: 8px;
+}
 .dx-annex-more {
   display: none;
 }

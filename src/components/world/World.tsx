@@ -292,6 +292,8 @@ function Dialogue({
     () => [
       dict.world.greet.replace("{name}", project.name),
       ...dialogPages(project.description),
+      // Lo mejor de cada proyecto; en Flypet, además, el crédito a Janelia
+      ...dialogPages(project.highlight),
       `${project.tech.join(" · ")} · ${project.role}`,
     ],
     [project, dict],
