@@ -41,6 +41,7 @@ function pagesForFile(file) {
   const page = file.match(/^src\/app\/\[locale\]\/(.+)\/page\.tsx$/);
   if (page) return page[1].includes("[") ? [] : route(page[1]);
 
+  if (file === "src/components/blog/NewsIndex.tsx" || file === "src/components/dossier/DossierNewspaper.tsx") return route("news");
   if (file.startsWith("src/components/world/")) return route("world");
   if (/^src\/components\/[^/]+\.tsx$/.test(file)) return HOME;
   return [];

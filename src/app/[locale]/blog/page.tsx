@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
@@ -51,10 +50,8 @@ export default async function BlogIndex({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = getDictionary(locale);
-  const articles = getArticles(locale);
-  const news = articles.filter((a) => a.type === "news");
-  const guides = articles.filter((a) => a.type !== "news");
-  const newsHref = locale === "es" ? "/es/noticias" : "/en/news";
+  // Las noticias tienen su propia sección
+  const guides = getArticles(locale).filter((a) => a.type !== "news");
 
   return (
     <main className="flex-1">
@@ -71,53 +68,20 @@ export default async function BlogIndex({
             {dict.blog.subtitle}
           </p>
 
-          {articles.length === 0 ? (
+          {guides.length === 0 ? (
             <p className="mt-12 text-muted">{dict.blog.empty}</p>
           ) : (
-            <>
-              {news.length > 0 && (
-                <>
-                  <div className="mt-12 flex flex-wrap items-end justify-between gap-3">
-                    <h2 className="font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-pink">
-                      ● {dict.blog.latestNews}
-                    </h2>
-                    <Link
-                      href={newsHref}
-                      className="font-mono text-xs uppercase tracking-widest text-neon-cyan hover:underline"
-                    >
-                      {dict.blog.allNews} →
-                    </Link>
-                  </div>
-                  <div className="mt-5 grid gap-6 md:grid-cols-2">
-                    {news.slice(0, 2).map((a, i) => (
-                      <ArticleCard
-                        key={a.slug}
-                        article={a}
-                        locale={locale}
-                        dict={dict}
-                        color={NEON[(i + 2) % NEON.length]}
-                      />
-                    ))}
-                  </div>
-                  <h2 className="mt-14 font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">
-                    {dict.blog.guides}
-                  </h2>
-                </>
-              )}
-              <div
-                className={`grid gap-6 md:grid-cols-2 ${news.length > 0 ? "mt-5" : "mt-12"}`}
-              >
-                {guides.map((a, i) => (
-                  <ArticleCard
-                    key={a.slug}
-                    article={a}
-                    locale={locale}
-                    dict={dict}
-                    color={NEON[i % NEON.length]}
-                  />
-                ))}
-              </div>
-            </>
+            <div className="mt-12 grid gap-6 md:grid-cols-2">
+              {guides.map((a, i) => (
+                <ArticleCard
+                  key={a.slug}
+                  article={a}
+                  locale={locale}
+                  dict={dict}
+                  color={NEON[i % NEON.length]}
+                />
+              ))}
+            </div>
           )}
         </section>
         <Footer dict={dict} />
@@ -133,27 +97,11 @@ export default async function BlogIndex({
           />
           <DossierFolio
             head={`${dict.dossier.file} · ${dict.dossier.ledger.blogSection}`}
-            folio={`${articles.length} ${dict.dossier.ledger.entries}`}
+            folio={`${guides.length} ${dict.dossier.ledger.entries}`}
             foot={dict.dossier.ledger.footer}
           >
             <h1>{dict.dossier.ledger.blogSection}</h1>
             <p className="dx-resumen">{dict.blog.subtitle}</p>
-            {news.length > 0 && (
-              <>
-                <h2 className="dx-ledger-h">
-                  {dict.blog.latestNews}
-                  <Link className="dx-link dx-lab" href={newsHref}>
-                    {dict.blog.allNews}
-                  </Link>
-                </h2>
-                <DossierLedger
-                  articles={news.slice(0, 2)}
-                  locale={locale}
-                  dict={dict}
-                />
-              </>
-            )}
-            <h2 className="dx-ledger-h">{dict.blog.guides}</h2>
             <DossierLedger articles={guides} locale={locale} dict={dict} />
           </DossierFolio>
         </div>

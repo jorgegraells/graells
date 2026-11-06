@@ -89,6 +89,7 @@ export default async function ArticlePage({
     article.updated.length > 10 &&
     Date.parse(article.updated) - Date.parse(article.published) > 10 * 60_000;
   // Las noticias muestran la hora de publicación, como cualquier medio
+  const backHref = article.type !== "news" ? `/${locale}/blog` : locale === "es" ? "/es/noticias" : "/en/news";
   const shownDate =
     article.type === "news" && article.published.length > 10
       ? `${fmtUpdated.format(new Date(article.published))} UTC`
@@ -201,7 +202,7 @@ export default async function ArticlePage({
               <span>
                 {dict.dossier.file} · {d.section}
               </span>
-              <Link href={`/${locale}/blog`}>{d.back}</Link>
+              <Link href={backHref}>{article.type === "news" ? d.backNews : d.back}</Link>
             </div>
             {article.type === "news" && (
               <div className="dx-stamp dx-stamp--recv" aria-hidden="true">
@@ -295,7 +296,7 @@ export default async function ArticlePage({
             )}
             <div className="dx-ff dx-lab">
               <span>{d.end}</span>
-              <Link href={`/${locale}/blog`}>{d.back}</Link>
+              <Link href={backHref}>{article.type === "news" ? d.backNews : d.back}</Link>
             </div>
           </div>
         </article>

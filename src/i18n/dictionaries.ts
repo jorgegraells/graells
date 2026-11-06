@@ -81,9 +81,6 @@ export type Dictionary = {
     updated: string;
     by: string;
     newsBadge: string;
-    latestNews: string;
-    allNews: string;
-    guides: string;
     empty: string;
   };
   aboutPage: {
@@ -252,6 +249,7 @@ export type Dictionary = {
     /** Pestañas en las páginas interiores */
     pages: { home: string; blog: string; news: string; training: string; contact: string };
     ledger: { blogSection: string; newsSection: string; entries: string; footer: string };
+    newspaper: { name: string; issue: string; more: string };
     article: {
       section: string;
       news: string;
@@ -262,6 +260,7 @@ export type Dictionary = {
       sources: string;
       related: string;
       back: string;
+      backNews: string;
       end: string;
     };
     trainingPage: {
@@ -383,9 +382,6 @@ const es: Dictionary = {
     updated: "Actualizado",
     by: "Por",
     newsBadge: "News",
-    latestNews: "Últimas news",
-    allNews: "Ver todas las news",
-    guides: "Artículos",
     empty: "Todavía no hay artículos publicados.",
   },
   aboutPage: {
@@ -824,6 +820,7 @@ const es: Dictionary = {
       entries: "entradas",
       footer: "Ordenado de más reciente a más antiguo",
     },
+    newspaper: { name: "El Sumario", issue: "N.º", more: "Sigue en la noticia completa" },
     article: {
       section: "Documento",
       news: "News",
@@ -841,6 +838,7 @@ const es: Dictionary = {
       sources: "Fuente",
       related: "Documentos relacionados",
       back: "Volver a artículos",
+      backNews: "Volver a news",
       end: "Fin del documento",
     },
     trainingPage: {
@@ -962,9 +960,6 @@ const en: Dictionary = {
     updated: "Updated",
     by: "By",
     newsBadge: "News",
-    latestNews: "Latest news",
-    allNews: "See all news",
-    guides: "Articles",
     empty: "No articles published yet.",
   },
   aboutPage: {
@@ -1403,6 +1398,7 @@ const en: Dictionary = {
       entries: "entries",
       footer: "Newest first",
     },
+    newspaper: { name: "The File", issue: "No.", more: "Continues in the full story" },
     article: {
       section: "Document",
       news: "News",
@@ -1420,6 +1416,7 @@ const en: Dictionary = {
       sources: "Source",
       related: "Related documents",
       back: "Back to articles",
+      backNews: "Back to news",
       end: "End of document",
     },
     trainingPage: {

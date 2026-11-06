@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import ArticleCard from "@/components/blog/ArticleCard";
 import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierFolio from "@/components/dossier/DossierFolio";
-import DossierLedger from "@/components/dossier/DossierLedger";
+import DossierNewspaper from "@/components/dossier/DossierNewspaper";
 
 /** Página "Noticias": solo los artículos marcados como noticia, del más
  *  reciente al más antiguo. Vive en /es/noticias y /en/news (la URL de cada
@@ -83,8 +83,9 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
           >
             <h1>{dict.news.title}</h1>
             <p className="dx-resumen">{dict.news.subtitle}</p>
-            {news.length === 0 ? <p>{dict.news.empty}</p> : <DossierLedger articles={news} locale={locale} dict={dict} />}
+            {news.length === 0 && <p>{dict.news.empty}</p>}
           </DossierFolio>
+          {news.length > 0 && <DossierNewspaper articles={news} locale={locale} dict={dict} />}
         </div>
       </div>
     </main>

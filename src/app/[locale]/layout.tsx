@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Courier_Prime, Geist, Geist_Mono, Science_Gothic } from "next/font/google";
+import { Courier_Prime, Geist, Geist_Mono, Science_Gothic, UnifrakturMaguntia } from "next/font/google";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import {
@@ -11,6 +11,7 @@ import {
   type Locale,
 } from "@/i18n/dictionaries";
 import { THEME_SCRIPT } from "@/components/theme/theme";
+import ThemeKeeper from "@/components/theme/ThemeKeeper";
 import SiteAnalytics from "@/components/SiteAnalytics";
 import "../globals.css";
 import "../dossier.css";
@@ -60,6 +61,15 @@ const courierPrime = Courier_Prime({
   weight: ["400", "700"],
   preload: false,
   // next/font no tiene métricas de Courier Prime para generar el fallback
+  adjustFontFallback: false,
+});
+
+// Cabecera de las portadas de noticias, en gótica de periódico
+const masthead = UnifrakturMaguntia({
+  variable: "--font-masthead",
+  subsets: ["latin"],
+  weight: "400",
+  preload: false,
   adjustFontFallback: false,
 });
 
@@ -249,7 +259,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale satisfies Locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${redaction.variable} ${redaction35.variable} ${scienceGothic.variable} ${courierPrime.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${redaction.variable} ${redaction35.variable} ${scienceGothic.variable} ${courierPrime.variable} ${masthead.variable} h-full antialiased`}
       // THEME_SCRIPT fija data-theme antes de hidratar
       suppressHydrationWarning
     >
@@ -264,6 +274,7 @@ export default async function LocaleLayout({
           }}
         />
         {children}
+        <ThemeKeeper key={locale} />
         <SiteAnalytics />
       </body>
     </html>

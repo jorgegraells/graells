@@ -11,6 +11,7 @@
   --dx-desk-soft: #b8aa8c;
   --dx-paper: #f0e6cf;
   --dx-paper-hi: #f7f0de; /* copias y recuadros sobre el folio */
+  --dx-news: #e9dfc6; /* papel de periódico */
   --dx-tab: #d9c9a3; /* pestañas de carpeta */
   --dx-tab-hi: #e6d9ba;
   --dx-toner: #2a2318;
@@ -1460,5 +1461,195 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
   .md-figure-head {
     flex-direction: column;
     gap: 2px;
+  }
+}
+
+/* ===========================================================================
+   Noticias: cada una es una portada de periódico suelta sobre la mesa
+   =========================================================================== */
+.dx-np-pile {
+  list-style: none;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+.dx-np {
+  position: relative;
+  padding: 16px 20px 18px;
+  background: var(--dx-news) var(--dx-grain);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.38);
+  transform: rotate(0.45deg);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+.dx-np:nth-child(even) {
+  transform: rotate(-0.5deg);
+}
+.dx-np--lead {
+  grid-column: 1 / -1;
+  padding: 22px 32px 26px;
+  transform: rotate(-0.2deg);
+}
+@media (hover: hover) {
+  .dx-np:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.45);
+  }
+}
+.dx-np-mast {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 64px;
+  align-items: center;
+  gap: 8px;
+}
+.dx-np-ear {
+  border: 1px solid var(--dx-toner);
+  padding: 4px 2px;
+  text-align: center;
+  font-size: 11px;
+}
+.dx-np-name {
+  font: 400 clamp(30px, 4.4vw, 40px)/1 var(--font-masthead), var(--dx-serif);
+  text-align: center;
+  white-space: nowrap;
+}
+.dx-np--lead .dx-np-name {
+  font-size: clamp(42px, 9vw, 86px);
+}
+.dx-np--lead .dx-np-mast {
+  grid-template-columns: 84px minmax(0, 1fr) 84px;
+}
+.dx-np--lead .dx-np-ear {
+  font-size: 13px;
+  padding: 8px 4px;
+}
+/* Fecha entre filetes, con el doble filete de las portadas */
+.dx .dx-np .dx-np-date {
+  max-width: none;
+  margin: 10px 0 14px;
+  padding: 5px 0 4px;
+  border-top: 3px double var(--dx-toner);
+  border-bottom: 1px solid var(--dx-toner);
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 11.5px;
+}
+.dx .dx-np .dx-np-head {
+  font: 700 25px/1.12 var(--dx-serif);
+  margin: 0 0 10px;
+  text-align: center;
+  letter-spacing: -0.005em;
+}
+.dx .dx-np--lead .dx-np-head {
+  font-size: clamp(32px, 5.4vw, 58px);
+  line-height: 1.04;
+  margin-bottom: 14px;
+}
+.dx .dx-np .dx-np-head a {
+  text-decoration: none;
+}
+/* Toda la portada lleva a la noticia */
+.dx-np-head a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.dx-np-head a:focus-visible {
+  outline: none;
+}
+.dx-np-head a:focus-visible::after {
+  outline: 2px solid var(--dx-desk-ink);
+  outline-offset: 3px;
+}
+.dx .dx-np .dx-np-deck {
+  max-width: none;
+  margin: 0 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--dx-rule);
+  font-size: 15.5px;
+  line-height: 1.42;
+  font-style: normal;
+  text-align: center;
+  color: var(--dx-toner-soft);
+}
+.dx .dx-np--lead .dx-np-deck {
+  max-width: 62ch;
+  margin-inline: auto;
+  font-size: clamp(17px, 2vw, 21px);
+}
+.dx .dx-np-text p {
+  max-width: none;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  hyphens: auto;
+}
+.dx .dx-np--lead .dx-np-text {
+  column-count: 2;
+  column-gap: 30px;
+  column-rule: 1px solid var(--dx-rule);
+}
+.dx .dx-np--lead .dx-np-text p {
+  font-size: 16.5px;
+  line-height: 1.5;
+  text-align: justify;
+}
+/* Capitular de la portada grande */
+.dx .dx-np--lead .dx-np-text p:first-child::first-letter {
+  float: left;
+  font: 700 3.3em/0.82 var(--dx-serif);
+  padding: 4px 8px 0 0;
+}
+.dx .dx-np-text .dx-np-more {
+  margin-top: 10px;
+  font-size: 12px;
+  text-align: right !important;
+  hyphens: none;
+}
+.dx-np:hover .dx-np-more {
+  text-decoration: underline;
+}
+@media (max-width: 760px) {
+  .dx-np-pile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+  .dx .dx-np--lead .dx-np-text {
+    column-count: 1;
+  }
+  .dx .dx-np--lead .dx-np-text p {
+    text-align: left;
+  }
+}
+@media (max-width: 600px) {
+  .dx-np,
+  .dx-np--lead {
+    padding: 14px 16px 16px;
+  }
+  .dx-np-mast,
+  .dx-np--lead .dx-np-mast {
+    grid-template-columns: 46px minmax(0, 1fr) 46px;
+    gap: 4px;
+  }
+  .dx-np-ear,
+  .dx-np--lead .dx-np-ear {
+    font-size: 10.5px;
+    padding: 4px 1px;
+  }
+  .dx-np-name,
+  .dx-np--lead .dx-np-name {
+    font-size: clamp(30px, 10vw, 40px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dx-np,
+  .dx-np:nth-child(even),
+  .dx-np--lead {
+    transition: none;
   }
 }
