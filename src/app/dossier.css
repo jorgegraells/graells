@@ -682,6 +682,10 @@ html.dx-stamping .dx-folio:first-of-type {
   html.dx-stamping .dx-stamp {
     animation: none;
   }
+  /* Sin esto, el top de .dx-stamp--recv lo baja encima del título */
+  .dx-stamp.dx-stamp--recv {
+    top: auto;
+  }
   /* Arriba idioma y modo; debajo todas las pestañas, deslizables si no caben */
   .dx-tools {
     order: -1;
