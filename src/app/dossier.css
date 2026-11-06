@@ -1526,11 +1526,15 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
     filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.48));
   }
 }
+/* El nombre es largo: los recuadros de número y lectura solo caben en la portada grande */
 .dx-np-mast {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) 64px;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: 8px;
+}
+.dx-np:not(.dx-np--lead) .dx-np-ear {
+  display: none;
 }
 .dx-np-ear {
   border: 1px solid var(--dx-toner);
@@ -1544,7 +1548,7 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
   white-space: nowrap;
 }
 .dx-np--lead .dx-np-name {
-  font-size: clamp(42px, 9vw, 86px);
+  font-size: clamp(40px, 7vw, 86px);
 }
 .dx-np--lead .dx-np-mast {
   grid-template-columns: 84px minmax(0, 1fr) 84px;
@@ -1662,15 +1666,11 @@ html:not([data-theme="dossier"]) .md-figure .dx-lv input:checked + span {
   .dx-np--lead {
     padding: 14px 16px 16px;
   }
-  .dx-np-mast,
   .dx-np--lead .dx-np-mast {
-    grid-template-columns: 46px minmax(0, 1fr) 46px;
-    gap: 4px;
+    grid-template-columns: minmax(0, 1fr);
   }
-  .dx-np-ear,
   .dx-np--lead .dx-np-ear {
-    font-size: 10.5px;
-    padding: 4px 1px;
+    display: none;
   }
   .dx-np-name,
   .dx-np--lead .dx-np-name {
