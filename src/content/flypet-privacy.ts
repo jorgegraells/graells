@@ -20,7 +20,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
     title: "Política de privacidad de Flypet",
     description:
       "Qué datos usa Flypet, la mosca virtual con el cerebro de una mosca real: no recoge ninguno tuyo.",
-    updated: "Última actualización: 5 de noviembre de 2026",
+    updated: "Última actualización: 7 de noviembre de 2026",
     intro:
       "Flypet es una app de Jorge Graells Garcia, desarrollador independiente con residencia en España. Esta página explica qué datos usa la app. En corto: Flypet no recoge datos tuyos. Lo que pasa en el juego se queda en tu móvil y en la copia de seguridad de Android de tu cuenta de Google, si la tienes activada. Solo sale de ahí lo que tú decidas compartir.",
     sections: [
@@ -37,7 +37,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
         paragraphs: [
           "La mosca, su sala, tus Flycoins y tus ajustes se guardan en el almacenamiento de la app, en tu móvil. Nosotros no los recibimos.",
           "Flypet usa la copia de seguridad automática de Android. Si la tienes activada, Android guarda la partida y los ajustes en tu cuenta de Google, para devolvértelos si instalas Flypet en otro móvil. Esa copia la guarda Google, no nosotros, con su cifrado y bajo su política de privacidad. Los datos del cerebro de la mosca no entran en ella. La puedes desactivar en los ajustes de Android.",
-          "Sin esa copia, si desinstalas la app o borras sus datos, la partida se borra y no la podemos recuperar. Lo que compras con dinero (PRO y el Pack fundador) sí lo puedes recuperar con «Restaurar compras», porque lo guarda Google Play.",
+          "Sin esa copia, si desinstalas la app o borras sus datos, la partida se borra y no la podemos recuperar. PRO y el Pack fundador sí los puedes recuperar con «Restaurar compras», porque lo guarda Google Play.",
         ],
       },
       {
@@ -110,7 +110,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
     title: "Flypet privacy policy",
     description:
       "What data Flypet, the virtual fly with a real fly's brain, uses: it doesn't collect any of yours.",
-    updated: "Last updated: 5 November 2026",
+    updated: "Last updated: 7 November 2026",
     intro:
       "Flypet is an app by Jorge Graells Garcia, an independent developer based in Spain. This page explains what data the app uses. Short version: Flypet doesn't collect any of your data. What happens in the game stays on your phone and in the Android backup in your Google account, if you have it turned on. Only what you choose to share goes anywhere else.",
     sections: [
@@ -127,7 +127,7 @@ export const flypetPrivacy: Record<Locale, PrivacyPolicy> = {
         paragraphs: [
           "The fly, its room, your Flycoins and your settings are saved in the app's storage on your phone. We never receive them.",
           "Flypet uses Android's automatic backup. If it's turned on, Android keeps your game and settings in your Google account so it can give them back if you install Flypet on another phone. Google keeps that copy, not us, encrypted and under its own privacy policy. The data for the fly's brain isn't included. You can turn it off in Android settings.",
-          "Without that copy, if you uninstall the app or clear its data, your game is gone and we can't get it back. What you buy with money (PRO and the Founder pack) you can get back with \"Restore purchases\", because Google Play keeps track of it.",
+          "Without that copy, if you uninstall the app or clear its data, your game is gone and we can't get it back. PRO and the Founder pack you can get back with \"Restore purchases\", because Google Play keeps track of it.",
         ],
       },
       {

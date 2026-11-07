@@ -25,7 +25,7 @@ export const flypetTerms: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Uso de la app",
         paragraphs: [
-          "Te damos permiso para usar Flypet en tus dispositivos para tu uso personal. No puedes revenderla, copiarla para distribuirla ni usarla para hacer trampas o dañar el servicio. Puedes compartir las fotos de tu mosca donde quieras.",
+          "Te damos permiso para usar Flypet en tus dispositivos para tu uso personal. No puedes revenderla, copiarla para distribuirla ni usarla para hacer trampas o dañar la app. Puedes compartir las fotos de tu mosca donde quieras.",
           "El código, el diseño, los textos y los gráficos de Flypet son de Jorge Graells Garcia, salvo los datos del conectoma, que son de Janelia con su licencia. Janelia no participa en la app ni la respalda.",
         ],
       },
@@ -33,8 +33,8 @@ export const flypetTerms: Record<Locale, PrivacyPolicy> = {
         heading: "Compras",
         paragraphs: [
           "Las compras con dinero se hacen y se cobran a través de Google Play, con sus condiciones y su política de reembolsos. El precio, con impuestos, es el que te muestra Google Play antes de pagar.",
-          "Flypet PRO y el Pack fundador se pagan una sola vez y no caducan: si cambias de móvil o reinstalas, las recuperas con «Restaurar compras» desde la misma cuenta de Google.",
-          "Los paquetes de Flycoins se gastan en el juego. Las Flycoins son una moneda del juego: no tienen valor en dinero, no se pueden cambiar por dinero ni pasar a otra persona, y no se recuperan con «Restaurar compras». Se guardan con tu partida: si borras la app o sus datos sin copia de seguridad de Android, se pierden con ella.",
+          "Flypet PRO y el Pack fundador se pagan una sola vez y no caducan: si cambias de móvil o reinstalas, los recuperas con «Restaurar compras» desde la misma cuenta de Google.",
+          "Las Flycoins de los paquetes se gastan en el juego. Son una moneda del juego: no tienen valor en dinero, no se pueden cambiar por dinero ni pasar a otra persona, y no se recuperan con «Restaurar compras». Se guardan con tu partida: si desinstalas la app sin copia de seguridad de Android, o borras sus datos, se pierden con ella. La copia la hace Android más o menos una vez al día, así que lo más reciente puede no estar en ella.",
           "Las Flycoins también se ganan jugando. Lo que consigas con ellas forma parte de tu partida.",
         ],
       },
@@ -48,7 +48,7 @@ export const flypetTerms: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Cambios en la app",
         paragraphs: [
-          "Flypet se actualiza: podemos añadir, cambiar o quitar funciones y contenido. Mientras mantengamos la app, no quitaremos de ella lo que hayas comprado con dinero. Si algún día dejamos de mantener la app, lo diremos con antelación en esta página y en la ficha de Google Play.",
+          "Flypet se actualiza: podemos añadir, cambiar o quitar funciones y contenido. Mientras mantengamos la app, no quitaremos de ella lo que hayas comprado con dinero: PRO, el Pack fundador y lo que hayas desbloqueado con Flycoins. Si algún día dejamos de mantener la app, lo diremos con antelación en esta página y en la ficha de Google Play.",
         ],
       },
       {
@@ -90,7 +90,7 @@ export const flypetTerms: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Using the app",
         paragraphs: [
-          "We give you permission to use Flypet on your devices for your personal use. You may not resell it, copy it to distribute it, or use it to cheat or harm the service. You're free to share photos of your fly wherever you like.",
+          "We give you permission to use Flypet on your devices for your personal use. You may not resell it, copy it to distribute it, or use it to cheat or harm the app. You're free to share photos of your fly wherever you like.",
           "Flypet's code, design, text and graphics belong to Jorge Graells Garcia, except the connectome data, which belongs to Janelia under its licence. Janelia isn't involved in the app and doesn't endorse it.",
         ],
       },
@@ -99,7 +99,7 @@ export const flypetTerms: Record<Locale, PrivacyPolicy> = {
         paragraphs: [
           "Purchases with money are made and charged through Google Play, under its terms and refund policy. The price, including taxes, is the one Google Play shows you before you pay.",
           "Flypet PRO and the Founder pack are paid for once and don't expire: if you change phones or reinstall, you get them back with \"Restore purchases\" from the same Google account.",
-          "Flycoin packs are spent in the game. Flycoins are an in-game currency: they have no cash value, can't be exchanged for money or transferred to anyone else, and aren't returned by \"Restore purchases\". They're saved with your game: if you delete the app or its data without an Android backup, they're lost with it.",
+          "The Flycoins in the packs are spent in the game. They're an in-game currency: they have no cash value, can't be exchanged for money or transferred to anyone else, and aren't returned by \"Restore purchases\". They're saved with your game: if you uninstall the app without an Android backup, or clear its data, they're lost with it. Android makes that backup roughly once a day, so the most recent changes may not be in it.",
           "You can also earn Flycoins by playing. What you get with them is part of your game.",
         ],
       },
@@ -113,7 +113,7 @@ export const flypetTerms: Record<Locale, PrivacyPolicy> = {
       {
         heading: "Changes to the app",
         paragraphs: [
-          "Flypet gets updated: we may add, change or remove features and content. While we maintain the app, we won't remove from it what you've bought with money. If we ever stop maintaining the app, we'll say so in advance on this page and on the Google Play listing.",
+          "Flypet gets updated: we may add, change or remove features and content. While we maintain the app, we won't remove from it what you've bought with money: PRO, the Founder pack and what you've unlocked with Flycoins. If we ever stop maintaining the app, we'll say so in advance on this page and on the Google Play listing.",
         ],
       },
       {
