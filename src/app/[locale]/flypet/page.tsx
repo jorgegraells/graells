@@ -383,6 +383,13 @@ export default async function FlypetPage({
               >
                 {p.privacyLink}
               </Link>
+              {" · "}
+              <Link
+                href={`/${locale}/flypet/condiciones`}
+                className="underline underline-offset-4 hover:text-neon-cyan"
+              >
+                {p.termsLink}
+              </Link>
             </p>
             <p className="mt-2 leading-relaxed text-foreground/80">
               {p.contactLabel}{" "}

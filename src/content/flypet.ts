@@ -78,6 +78,7 @@ export type FlypetPage = {
   credit: FlypetCredit;
   privacyHeading: string;
   privacyLink: string;
+  termsLink: string;
   contactLabel: string;
 };
 
@@ -244,6 +245,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     },
     privacyHeading: "Privacidad y contacto",
     privacyLink: "Política de privacidad de Flypet",
+    termsLink: "Condiciones de uso",
     contactLabel: "Contacto:",
   },
   en: {
@@ -408,6 +410,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     },
     privacyHeading: "Privacy and contact",
     privacyLink: "Flypet privacy policy",
+    termsLink: "Terms of use",
     contactLabel: "Contact:",
   },
 };
