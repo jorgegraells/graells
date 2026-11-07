@@ -492,6 +492,8 @@ try {
           ? "Google dice que se ha superado la cuota diaria: sigo mañana."
           : "Google ha sacado un captcha: paro aquí. Pulsa a mano los enlaces que queden o vuelve a probar mañana.",
       );
+      // Con la cuota agotada, las pasadas de cada hora no vuelven a abrir Chrome hasta mañana
+      if (r.status === "quota") requestsToday().count = MAX_REQUESTS;
       exitCode = 2;
       break;
     } else {
