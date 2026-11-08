@@ -53,7 +53,6 @@ export type FlypetPage = {
   hook: string;
   perks: string[];
   seeCta: string;
-  statusShort: string;
   brain: FlypetChapter;
   life: FlypetChapter;
   yours: FlypetChapter;
@@ -70,6 +69,7 @@ export type FlypetPage = {
   getTitle: string;
   availabilityHeading: string;
   testing: string;
+  testersCta: string;
   playCta: string;
   priceHeading: string;
   price: string;
@@ -96,7 +96,6 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     hook: "Así que, ¿qué hará ahora? Vas a tener que verlo.",
     perks: ["Gratis", "Sin anuncios", "Sin cuentas", "Sin conexión para jugar"],
     seeCta: "Mira lo que hace",
-    statusShort: "En prueba cerrada en Google Play",
     brain: {
       index: "01",
       tag: "SU CEREBRO",
@@ -228,7 +227,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     getTitle: "¿Qué hará ahora?",
     availabilityHeading: "Dónde conseguirla",
     testing:
-      "Ahora mismo está en prueba cerrada en Google Play. El enlace aparecerá aquí cuando salga.",
+      "Ahora mismo está en prueba cerrada en Google Play. Si tienes Android, puedes probarla ya y ayudarme a publicarla.",
+    testersCta: "Hazte probador",
     playCta: "Ver en Google Play",
     priceHeading: "Qué cuesta",
     price:
@@ -261,7 +261,6 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     hook: "So what will it do next? You'll have to see.",
     perks: ["Free", "No ads", "No accounts", "No connection needed to play"],
     seeCta: "See what it does",
-    statusShort: "In closed testing on Google Play",
     brain: {
       index: "01",
       tag: "ITS BRAIN",
@@ -393,7 +392,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     getTitle: "What will it do next?",
     availabilityHeading: "Where to get it",
     testing:
-      "It's currently in closed testing on Google Play. The link will appear here when it comes out.",
+      "It's currently in closed testing on Google Play. If you have Android, you can try it now and help me publish it.",
+    testersCta: "Become a tester",
     playCta: "View on Google Play",
     priceHeading: "What it costs",
     price:

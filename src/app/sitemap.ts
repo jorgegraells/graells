@@ -119,6 +119,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${SITE}/es/flypet`, en: `${SITE}/en/flypet` } },
     },
     {
+      url: `${SITE}/es/flypet/probar`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: { languages: { es: `${SITE}/es/flypet/probar`, en: `${SITE}/en/flypet/probar` } },
+    },
+    {
+      url: `${SITE}/en/flypet/probar`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: { languages: { es: `${SITE}/es/flypet/probar`, en: `${SITE}/en/flypet/probar` } },
+    },
+    {
       url: `${SITE}/es/blog`,
       lastModified: now,
       changeFrequency: "weekly",

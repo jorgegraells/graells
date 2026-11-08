@@ -286,12 +286,12 @@ export default async function FlypetPage({
                     {p.seeCta}
                     <span>↓</span>
                   </a>
-                  <a
-                    href="#conseguirla"
+                  <Link
+                    href={`/${locale}/flypet/probar`}
                     className="font-mono text-xs font-semibold uppercase tracking-wider text-muted underline underline-offset-4 transition-colors hover:text-neon-cyan"
                   >
-                    {p.statusShort}
-                  </a>
+                    {p.testersCta} <span aria-hidden="true">→</span>
+                  </Link>
                 </>
               )}
             </div>
@@ -371,7 +371,13 @@ export default async function FlypetPage({
                 {p.playCta}
               </a>
             ) : (
-              <p className="mt-3 leading-relaxed text-foreground/80">{p.testing}</p>
+              <>
+                <p className="mt-3 leading-relaxed text-foreground/80">{p.testing}</p>
+                <Link href={`/${locale}/flypet/probar`} className={`${BUTTON} mt-4`}>
+                  {p.testersCta}
+                  <span>→</span>
+                </Link>
+              </>
             )}
             <h3 className="mt-8 text-xl font-bold text-foreground">{p.makersHeading}</h3>
             <p className="mt-3 leading-relaxed text-foreground/80">{p.makers}</p>
