@@ -105,8 +105,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "01_como_funciona",
           label: "Cómo funciona",
           title: "El cableado es real. Y ella decide.",
-          text: "Sale del microscopio electrónico. Tu móvil lo pone en marcha, con un modelo sencillo para cada neurona. Y según cuáles disparen, ella huye, come, se limpia o echa a andar. Lo que no sale de ahí lo ponemos nosotros, y aquí lo ves separado.",
-          alt: "Esquema en tres pasos: un cableado de verdad, con 165.122 neuronas de una mosca macho; tu móvil lo pone en marcha, con un modelo sencillo de cada neurona; y ella decide. Debajo, dos listas. Lo decide su cerebro: huir, sacar la trompa y comer, limpiarse y andar, si manda su cerebro. Lo ponemos nosotros: sentidos, cuerpo y marcha; hambre, sueño y digestión; buscar comida por el olor; echar a andar sin motivo.",
+          text: "Sale del microscopio electrónico. Tu móvil lo pone en marcha, con un modelo sencillo para cada neurona. Y según cuáles disparen, ella huye, come, se limpia o echa a andar. Lo que hoy no se puede leer de un conectoma, como el cuerpo o las hormonas del hambre y del sueño, lo simulamos aparte con los estudios publicados hasta 2026, lo más fiel que hemos sabido. En el esquema lo ves.",
+          alt: "Esquema en tres pasos: un cableado de verdad, con 165.122 neuronas de una mosca macho; tu móvil lo pone en marcha, con un modelo sencillo de cada neurona; y ella decide. Debajo, dos listas. Lo decide su cerebro: huir, sacar la trompa y comer, limpiarse y andar, si manda su cerebro. Lo simulamos aparte: sentidos, cuerpo y marcha; hambre, sueño y digestión; buscar comida por el olor; echar a andar sin motivo. Debajo, por qué: Un conectoma recoge las conexiones entre neuronas, pero no el cuerpo ni las hormonas del hambre y del sueño. Eso hoy no se puede leer de él, así que lo simulamos con los estudios publicados hasta 2026, lo más fiel que hemos sabido. El olfato sigue un algoritmo publicado, y echar a andar sin motivo es un empujón de la app.",
           credit: true,
         },
         {
@@ -217,7 +217,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     truthTag: "SIN TRUCOS",
     truthTitle: "Lo que es y lo que no",
     truth: [
-      "El cableado es real. El modelo de cada neurona es una simplificación (integración y disparo), del tipo que se usa en investigación. Sus sentidos, su cuerpo, el hambre y el sueño los hemos modelado a partir de estudios publicados.",
+      "El cableado es real. El modelo de cada neurona es una simplificación (integración y disparo), del tipo que se usa en investigación. Sus sentidos, su cuerpo, el hambre y el sueño los simulamos aparte, a partir de estudios publicados, porque hoy no se pueden leer de un conectoma.",
       "La búsqueda de comida por el olor es un algoritmo publicado, no sale del conectoma, y cuando echa a andar sin motivo es porque la app le da un empujón: sin él se quedaría quieta.",
       "No es una mosca de verdad: es lo más parecido que hemos sabido hacer.",
     ],
@@ -270,8 +270,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "01_como_funciona",
           label: "How it works",
           title: "The wiring is real. Then it decides.",
-          text: "It was mapped with an electron microscope. Your phone switches it on, with a simple model for each neuron. And depending on which ones fire, it flees, eats, grooms or sets off walking. Whatever doesn't come from there, we built, and you can see the split right here.",
-          alt: "Diagram in three steps: real wiring, with 165,122 neurons from a male fly; your phone switches it on, with a simple model of each neuron; then it decides. Below, two lists. Its brain decides: fleeing, extending its proboscis, grooming, and walking if its brain says so. We built these: senses, body and gait; hunger, sleep and digestion; finding food by smell; setting off for no reason.",
+          text: "It was mapped with an electron microscope. Your phone switches it on, with a simple model for each neuron. And depending on which ones fire, it flees, eats, grooms or sets off walking. What can't be read from a connectome yet, like the body or the hormones behind hunger and sleep, we simulate separately using studies published up to 2026, as faithfully as we know how. The diagram shows the split.",
+          alt: "Diagram in three steps: real wiring, with 165,122 neurons from a male fly; your phone switches it on, with a simple model of each neuron; then it decides. Below, two lists. Its brain decides: fleeing, extending its proboscis, grooming, and walking if its brain says so. Simulated separately: senses, body and gait; hunger, sleep and digestion; finding food by smell; setting off for no reason. Below, why: A connectome maps the connections between neurons, but not the body or the hormones behind hunger and sleep. Those can't be read from it yet, so we simulate them using studies published up to 2026, as faithfully as we know how. Smell-tracking is a published algorithm, and setting off for no reason is a nudge from the app.",
           credit: true,
         },
         {
@@ -382,7 +382,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     truthTag: "NO TRICKS",
     truthTitle: "What this is and isn't",
     truth: [
-      "The wiring is real. The model of each neuron is a simplification (integrate-and-fire), the kind used in research. Its senses, body, hunger and sleep are modeled from published studies.",
+      "The wiring is real. The model of each neuron is a simplification (integrate-and-fire), the kind used in research. Its senses, body, hunger and sleep are simulated separately from published studies, because they can't be read from a connectome yet.",
       "Finding food by smell is a published algorithm and doesn't come from the connectome, and when it sets off for no reason, the app gave it a nudge: without one it would just stand there.",
       "It isn't a real fly. It's the closest we've managed.",
     ],
