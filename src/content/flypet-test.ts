@@ -61,7 +61,7 @@ export const flypetTest: Record<Locale, FlypetTestPage> = {
     reward: {
       tag: "SOLO PARA PROBADORES",
       heading: "Llévate algo que nadie más tendrá",
-      text: "Abre Flypet 7 días seguidos antes de que salga para todos y te llevas la Prototipo, una mosca dibujada como un plano azul, y su placa grabada «Probó Flypet antes que nadie» para colgarla en tu sala. Cuando la app salga, ya no se podrá conseguir.",
+      text: "Abre Flypet 7 días seguidos antes de que salga para todos y te llevas la Prototipo, una mosca dibujada como un plano azul, y su placa grabada «Probó Flypet antes que nadie» para colgarla en tu sala. Cuando la app salga, ya no se podrá conseguir. Ser de los primeros tiene premio.",
       note: "Basta con abrirla una vez al día. Si te saltas uno, la cuenta vuelve a empezar.",
       flyAlt: "La mosca Prototipo, azul con líneas blancas de plano, ojos blancos y patas azules finas, de tres cuartos en el suelo de la sala.",
       plaqueAlt: "Placa de madera con una chapa azul, una estrella dorada y el texto «Probó Flypet antes que nadie · 2026».",
@@ -131,7 +131,7 @@ export const flypetTest: Record<Locale, FlypetTestPage> = {
     reward: {
       tag: "TESTERS ONLY",
       heading: "Get something no one else will have",
-      text: "Open Flypet 7 days in a row before it's out for everyone and you'll get the Prototype, a fly drawn like a blue blueprint, plus its engraved plaque, \"Tested Flypet before anyone else\", to hang in your room. Once the app launches, it can't be earned anymore.",
+      text: "Open Flypet 7 days in a row before it's out for everyone and you'll get the Prototype, a fly drawn like a blue blueprint, plus its engraved plaque, \"Tested Flypet before anyone else\", to hang in your room. Once the app launches, it can't be earned anymore. Being one of the first pays off.",
       note: "Opening it once a day is enough. Miss a day and the count starts over.",
       flyAlt: "The Prototype fly, blue with white blueprint lines, white eyes and thin blue legs, in three-quarter view on the floor of the room.",
       plaqueAlt: "Wooden plaque with a blue plate, a gold star and the text \"Tested Flypet before anyone else · 2026\".",
