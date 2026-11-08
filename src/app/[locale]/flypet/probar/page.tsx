@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
-import { FLYPET_EMAIL, flypetPage } from "@/content/flypet";
+import { FLYPET_EMAIL, FLYPET_PLAY_URL, flypetPage } from "@/content/flypet";
 import { flypetTest } from "@/content/flypet-test";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -80,13 +80,15 @@ export default async function FlypetTestPage({
               className="h-11 w-11 rounded-xl"
             />
             <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
-              ◢ {p.tag}
+              <span aria-hidden="true">◢</span> {p.tag}
             </span>
           </div>
           <h1 className="text-gradient neon-text mt-4 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
             {p.title}
           </h1>
-          <p className="mt-6 text-lg leading-relaxed text-foreground/90">{p.lead}</p>
+          <p className="mt-6 text-lg leading-relaxed text-foreground/90">
+            {p.lead}
+          </p>
           <p className="mt-4 text-xl font-bold text-neon-cyan">{p.why}</p>
           <a href="#pasos" className={`${BUTTON} mt-6`}>
             {p.startCta}
@@ -96,12 +98,57 @@ export default async function FlypetTestPage({
       </section>
 
       <section className="mx-auto w-full max-w-3xl px-5 pb-24 sm:px-6">
+        {/* El premio de los probadores solo se gana antes de la salida: con la app ya publicada, fuera. */}
+        {!FLYPET_PLAY_URL && (
+          <div className="hud-panel clip-corner mb-8 p-6 sm:p-7">
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
+              <span aria-hidden="true">★</span> {p.reward.tag}
+            </p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground">
+              {p.reward.heading}
+            </h2>
+            <p className="mt-3 text-lg leading-relaxed text-foreground/90">
+              {p.reward.text}
+            </p>
+            <p className="mt-2 font-bold text-neon-cyan">{p.reward.note}</p>
+            <div className="mt-6 grid gap-4 sm:grid-cols-[2fr_3fr] sm:items-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/flypet/probar/prototipo-1080.webp"
+                srcSet="/flypet/probar/prototipo-540.webp 540w, /flypet/probar/prototipo-1080.webp 1080w"
+                sizes="(min-width: 640px) 290px, 100vw"
+                width={1080}
+                height={1080}
+                loading="lazy"
+                alt={p.reward.flyAlt}
+                className="w-full rounded-lg"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/flypet/probar/placa-${locale}-1080.webp`}
+                srcSet={`/flypet/probar/placa-${locale}-540.webp 540w, /flypet/probar/placa-${locale}-1080.webp 1080w`}
+                sizes="(min-width: 640px) 440px, 100vw"
+                width={1080}
+                height={720}
+                loading="lazy"
+                alt={p.reward.plaqueAlt}
+                className="w-full rounded-lg"
+              />
+            </div>
+          </div>
+        )}
+
         <div className="hud-panel clip-corner p-6 sm:p-7">
-          <h2 className="text-xl font-bold text-foreground">{p.needsHeading}</h2>
+          <h2 className="text-xl font-bold text-foreground">
+            {p.needsHeading}
+          </h2>
           <ul className="mt-3 space-y-2">
             {p.needs.map((need) => (
               <li key={need} className="leading-relaxed text-foreground/85">
-                <span aria-hidden="true" className="text-neon-cyan">▸</span> {need}
+                <span aria-hidden="true" className="text-neon-cyan">
+                  ▸
+                </span>{" "}
+                {need}
               </li>
             ))}
           </ul>
@@ -119,8 +166,12 @@ export default async function FlypetTestPage({
               <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
                 {String(i + 1).padStart(2, "0")}
               </p>
-              <h3 className="mt-2 text-xl font-bold text-foreground">{step.title}</h3>
-              <p className="mt-2 leading-relaxed text-foreground/80">{step.text}</p>
+              <h3 className="mt-2 text-xl font-bold text-foreground">
+                {step.title}
+              </h3>
+              <p className="mt-2 leading-relaxed text-foreground/80">
+                {step.text}
+              </p>
               <a
                 href={step.url}
                 target="_blank"
@@ -140,8 +191,14 @@ export default async function FlypetTestPage({
         </h2>
         <ul className="mt-4 space-y-3">
           {p.ask.map((item) => (
-            <li key={item} className="text-lg leading-relaxed text-foreground/90">
-              <span aria-hidden="true" className="text-neon-cyan">▸</span> {item}
+            <li
+              key={item}
+              className="text-lg leading-relaxed text-foreground/90"
+            >
+              <span aria-hidden="true" className="text-neon-cyan">
+                ▸
+              </span>{" "}
+              {item}
             </li>
           ))}
         </ul>
@@ -153,7 +210,9 @@ export default async function FlypetTestPage({
           {p.faq.map((item) => (
             <div key={item.q}>
               <h3 className="font-bold text-foreground">{item.q}</h3>
-              <p className="mt-1 leading-relaxed text-foreground/80">{item.a}</p>
+              <p className="mt-1 leading-relaxed text-foreground/80">
+                {item.a}
+              </p>
             </div>
           ))}
         </div>

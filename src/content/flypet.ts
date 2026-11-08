@@ -227,7 +227,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     getTitle: "¿Qué hará ahora?",
     availabilityHeading: "Dónde conseguirla",
     testing:
-      "Ahora mismo está en prueba cerrada en Google Play. Si tienes Android, puedes probarla ya y ayudarme a publicarla.",
+      "Ahora mismo está en prueba cerrada en Google Play. Si tienes Android, puedes probarla ya y ayudarme a publicarla. Y si la abres 7 días seguidos antes de que salga, te llevas una mosca y una placa que nadie más podrá tener.",
     testersCta: "Hazte probador",
     playCta: "Ver en Google Play",
     priceHeading: "Qué cuesta",
@@ -392,7 +392,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     getTitle: "What will it do next?",
     availabilityHeading: "Where to get it",
     testing:
-      "It's currently in closed testing on Google Play. If you have Android, you can try it now and help me publish it.",
+      "It's currently in closed testing on Google Play. If you have Android, you can try it now and help me publish it. Open it 7 days in a row before launch and you'll get a fly and a plaque no one else will ever have.",
     testersCta: "Become a tester",
     playCta: "View on Google Play",
     priceHeading: "What it costs",
