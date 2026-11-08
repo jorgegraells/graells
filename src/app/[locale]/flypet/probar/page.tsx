@@ -108,7 +108,11 @@ export default async function FlypetTestPage({
               {p.reward.heading}
             </h2>
             <p className="mt-3 text-lg leading-relaxed text-foreground/90">
-              {p.reward.text}
+              {p.reward.text.split(p.reward.highlight)[0]}
+              <strong className="font-black text-neon-pink">
+                {p.reward.highlight}
+              </strong>
+              {p.reward.text.split(p.reward.highlight)[1]}
             </p>
             <p className="mt-2 font-bold text-neon-cyan">{p.reward.note}</p>
             <div className="mt-6 grid gap-4 sm:grid-cols-[2fr_3fr] sm:items-center">
