@@ -26,6 +26,8 @@ const ROUTES = {
   noticias: ["/es/noticias", "/en/news"],
   "editorial-policy": ["/es/politica-editorial", "/en/editorial-policy"],
   "politica-editorial": ["/es/politica-editorial", "/en/editorial-policy"],
+  privacidad: ["/es/privacidad", "/en/privacy"],
+  privacy: ["/es/privacidad", "/en/privacy"],
 };
 const route = (name) => ROUTES[name] ?? [`/es/${name}`, `/en/${name}`];
 const HOME = ["/es", "/en"];

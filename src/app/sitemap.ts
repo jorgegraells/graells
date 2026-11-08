@@ -91,6 +91,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${SITE}/es/politica-editorial`, en: `${SITE}/en/editorial-policy` } },
     },
     {
+      url: `${SITE}/es/privacidad`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+      alternates: { languages: { es: `${SITE}/es/privacidad`, en: `${SITE}/en/privacy` } },
+    },
+    {
+      url: `${SITE}/en/privacy`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+      alternates: { languages: { es: `${SITE}/es/privacidad`, en: `${SITE}/en/privacy` } },
+    },
+    {
       url: `${SITE}/es/noticias`,
       lastModified: now,
       changeFrequency: "daily",

@@ -268,6 +268,11 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
               </a>
             ))}
           </p>
+          <p className="dx-lab dx-social">
+            <Link href={dict.editorial.href}>{dict.editorial.title}</Link>
+            <Link href={dict.privacy.href}>{dict.privacy.title}</Link>
+            <a href={dict.feed.href}>{dict.footer.rss}</a>
+          </p>
         </div>
       </Folio>
     </div>

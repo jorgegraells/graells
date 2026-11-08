@@ -14,6 +14,12 @@ export default function Footer({ dict }: { dict: Dictionary }) {
         <a href={dict.editorial.href} className="transition-colors hover:text-neon-cyan">
           {dict.editorial.title}
         </a>
+        <a href={dict.privacy.href} className="transition-colors hover:text-neon-cyan">
+          {dict.privacy.title}
+        </a>
+        <a href={dict.feed.href} className="transition-colors hover:text-neon-cyan">
+          {dict.footer.rss}
+        </a>
         {socialProfiles.map((p) => (
           <a
             key={p.href}
