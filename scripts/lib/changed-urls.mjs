@@ -28,6 +28,9 @@ const ROUTES = {
   "politica-editorial": ["/es/politica-editorial", "/en/editorial-policy"],
   privacidad: ["/es/privacidad", "/en/privacy"],
   privacy: ["/es/privacidad", "/en/privacy"],
+  // Destino del correo de confirmación del boletín: noindex, no se pide indexar
+  "suscripcion-confirmada": [],
+  subscribed: [],
 };
 const route = (name) => ROUTES[name] ?? [`/es/${name}`, `/en/${name}`];
 const HOME = ["/es", "/en"];

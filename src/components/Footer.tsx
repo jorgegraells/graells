@@ -1,8 +1,13 @@
-import { socialProfiles, type Dictionary } from "@/i18n/dictionaries";
+import { socialProfiles, type Dictionary, type Locale } from "@/i18n/dictionaries";
+import SubscribeForm from "@/components/SubscribeForm";
+import { subscribeEnabled } from "@/lib/subscribe";
 
-export default function Footer({ dict }: { dict: Dictionary }) {
+/** `subscribe`: idioma del alta al boletín. Sin él no hay formulario (Flypet, y las
+ *  páginas que ya llevan el grande, como artículos y noticias). */
+export default function Footer({ dict, subscribe }: { dict: Dictionary; subscribe?: Locale }) {
   return (
     <footer className="border-t border-neon-violet/15 py-8 text-center font-mono text-xs text-muted">
+      {subscribe && subscribeEnabled && <SubscribeForm locale={subscribe} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="arcade" compact />}
       <p>
         <span className="text-neon-cyan">◆</span> © {new Date().getFullYear()}{" "}
         Jorge Graells · {dict.footer.rights}

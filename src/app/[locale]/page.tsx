@@ -35,7 +35,7 @@ export default async function Home({
         <TrainingTeaser locale={locale} dict={dict} />
         <BlogTeaser locale={locale} dict={dict} />
         <Contact dict={dict} />
-        <Footer dict={dict} />
+        <Footer dict={dict} subscribe={locale} />
       </div>
       <div className="theme-dossier">
         <DossierHome locale={locale} dict={dict} />

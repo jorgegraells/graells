@@ -112,6 +112,18 @@ export type Dictionary = {
   editorial: PolicyDoc;
   privacy: PolicyDoc & { updated: string };
   feed: { href: string; title: string; description: string };
+  subscribe: {
+    title: string;
+    text: string;
+    placeholder: string;
+    button: string;
+    sending: string;
+    ok: string;
+    invalid: string;
+    error: string;
+    note: string;
+    confirmed: { href: string; title: string; text: string; cta: string };
+  };
   news: {
     tag: string;
     title: string;
@@ -484,8 +496,12 @@ const es: Dictionary = {
         text: "Si me escribes por correo, uso tu dirección y lo que me cuentes solo para responderte y, si hablamos de una formación o un proyecto, para preparar la propuesta. No lo uso para enviarte publicidad ni lo comparto con nadie. Lo guardo mientras dure la conversación y, si llegamos a trabajar juntos, el tiempo que obligue la ley.",
       },
       {
+        title: "Boletín semanal",
+        text: "Si te suscribes, guardo tu correo y el idioma en el que te suscribiste para mandarte un resumen semanal de lo publicado. Los envíos los gestiona Brevo, una empresa con sede en Francia que actúa como encargado del tratamiento y guarda los datos en la Unión Europea. La suscripción tiene doble confirmación: no recibes nada hasta que pulsas el enlace del primer correo, y Brevo registra la fecha de esa confirmación. Brevo también anota de forma estándar si se abre el correo y qué enlaces se pulsan; solo lo miro en conjunto, para saber qué interesa. Puedes darte de baja cuando quieras con el enlace que va en cada correo, y entonces tus datos dejan de usarse para el boletín.",
+      },
+      {
         title: "Base legal",
-        text: "La medición anónima y los registros del servidor se basan en mi interés legítimo en que la web funcione, sea segura y en saber qué contenidos resultan útiles (artículo 6.1.f del RGPD). Responder a tu correo se basa en tu propia petición y, si llega el caso, en la preparación de un contrato (artículo 6.1.b).",
+        text: "La medición anónima y los registros del servidor se basan en mi interés legítimo en que la web funcione, sea segura y en saber qué contenidos resultan útiles (artículo 6.1.f del RGPD). Responder a tu correo se basa en tu propia petición y, si llega el caso, en la preparación de un contrato (artículo 6.1.b). El boletín se basa en tu consentimiento, que das al confirmar la suscripción y puedes retirar en cualquier momento (artículo 6.1.a).",
       },
       {
         title: "Tus derechos",
@@ -497,7 +513,7 @@ const es: Dictionary = {
       },
       {
         title: "Cambios",
-        text: "Si cambia lo que hace la web con los datos, por ejemplo si añado una suscripción por correo, actualizaré antes esta página y la fecha de arriba lo reflejará.",
+        text: "Si cambia lo que hace la web con los datos, actualizaré antes esta página y la fecha de arriba lo reflejará.",
       },
     ],
     contact: "Para cualquier duda sobre esta política, escríbeme a:",
@@ -506,6 +522,23 @@ const es: Dictionary = {
     href: "/es/feed.xml",
     title: "Jorge Graells | Ciberseguridad e IA",
     description: "Guías y noticias de ciberseguridad e inteligencia artificial, con sus fuentes.",
+  },
+  subscribe: {
+    title: "Lo de la semana, en tu correo",
+    text: "Un correo a la semana con las guías y noticias que he publicado. Si una semana no hay nada, no te escribo.",
+    placeholder: "tu@correo.com",
+    button: "Suscribirme",
+    sending: "Enviando...",
+    ok: "Casi está. Te he mandado un correo para que confirmes la suscripción.",
+    invalid: "Ese correo no parece válido.",
+    error: "No se ha podido completar. Prueba en un rato o escríbeme.",
+    note: "Te pediré confirmarlo y puedes darte de baja desde cualquier correo.",
+    confirmed: {
+      href: "/es/suscripcion-confirmada",
+      title: "Suscripción confirmada",
+      text: "Gracias. A partir de ahora te llegará un correo a la semana con lo que publique. Si algún día te sobra, en cada correo tienes el enlace para darte de baja.",
+      cta: "Ir a los artículos",
+    },
   },
   news: {
     tag: "ÚLTIMA HORA",
@@ -1162,8 +1195,12 @@ const en: Dictionary = {
         text: "If you email me, I use your address and whatever you tell me only to reply and, if we talk about training or a project, to prepare a proposal. I don't use it to send you marketing and I don't share it with anyone. I keep it while the conversation lasts and, if we end up working together, for as long as the law requires.",
       },
       {
+        title: "Weekly newsletter",
+        text: "If you subscribe, I keep your email address and the language you signed up in to send you a weekly roundup of what I've published. Sending is handled by Brevo, a company based in France that acts as a data processor and stores the data in the European Union. Subscribing takes a double confirmation: you get nothing until you click the link in the first email, and Brevo records when you confirmed. Brevo also records, as standard, whether an email is opened and which links are clicked; I only look at it in aggregate, to see what's of interest. You can unsubscribe whenever you like with the link in every email, and your data then stops being used for the newsletter.",
+      },
+      {
         title: "Legal basis",
-        text: "Anonymous measurement and server logs rely on my legitimate interest in keeping the website working and secure and in knowing which content is useful (Article 6(1)(f) GDPR). Replying to your email relies on your own request and, where it applies, on steps prior to a contract (Article 6(1)(b)).",
+        text: "Anonymous measurement and server logs rely on my legitimate interest in keeping the website working and secure and in knowing which content is useful (Article 6(1)(f) GDPR). Replying to your email relies on your own request and, where it applies, on steps prior to a contract (Article 6(1)(b)). The newsletter relies on your consent, given when you confirm the subscription and withdrawable at any time (Article 6(1)(a)).",
       },
       {
         title: "Your rights",
@@ -1175,7 +1212,7 @@ const en: Dictionary = {
       },
       {
         title: "Changes",
-        text: "If what this website does with data changes, for example if I add an email subscription, I'll update this page first and the date above will show it.",
+        text: "If what this website does with data changes, I'll update this page first and the date above will show it.",
       },
     ],
     contact: "For any question about this policy, write to me at:",
@@ -1184,6 +1221,23 @@ const en: Dictionary = {
     href: "/en/feed.xml",
     title: "Jorge Graells | Cybersecurity and AI",
     description: "Cybersecurity and artificial intelligence guides and news, with their sources.",
+  },
+  subscribe: {
+    title: "The week's posts, in your inbox",
+    text: "One email a week with the guides and news I've published. If there's nothing that week, I won't write.",
+    placeholder: "you@email.com",
+    button: "Subscribe",
+    sending: "Sending...",
+    ok: "Almost there. I've sent you an email to confirm your subscription.",
+    invalid: "That email doesn't look right.",
+    error: "That didn't work. Try again in a while or write to me.",
+    note: "You'll be asked to confirm, and you can unsubscribe from any email.",
+    confirmed: {
+      href: "/en/subscribed",
+      title: "Subscription confirmed",
+      text: "Thanks. From now on you'll get one email a week with what I publish. If you ever want out, every email has an unsubscribe link.",
+      cta: "Go to the articles",
+    },
   },
   news: {
     tag: "BREAKING",

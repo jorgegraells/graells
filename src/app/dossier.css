@@ -374,6 +374,52 @@
   text-decoration: underline;
 }
 
+/* Alta en el boletín: recuadro de copia sobre el folio */
+.dx-sub {
+  margin: 28px 0;
+  padding: 18px 20px;
+  background: var(--dx-paper-hi);
+  border: 1px dashed var(--dx-graph);
+}
+.dx-sub h2 {
+  margin-top: 0;
+}
+.dx-sub-row {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.dx-sub-row input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 9px 12px;
+  font-family: var(--dx-label);
+  font-size: 15px;
+  color: var(--dx-toner);
+  background: var(--dx-paper);
+  border: 2px solid var(--dx-toner);
+  border-radius: 0;
+}
+.dx-sub-row input:focus-visible {
+  outline: 2px solid var(--dx-stamp);
+  outline-offset: 2px;
+}
+.dx-sub-row .dx-btn {
+  cursor: pointer;
+}
+.dx-sub-row .dx-btn:disabled {
+  opacity: 0.6;
+}
+.dx-sub-msg {
+  margin-top: 10px;
+  color: var(--dx-stamp);
+}
+.dx-sub-note {
+  margin-top: 10px;
+}
+
 /* Sello: uno por página */
 .dx-stamp {
   position: absolute;

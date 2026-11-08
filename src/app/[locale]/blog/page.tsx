@@ -84,7 +84,7 @@ export default async function BlogIndex({
             </div>
           )}
         </section>
-        <Footer dict={dict} />
+        <Footer dict={dict} subscribe={locale as Locale} />
       </div>
 
       <div className="theme-dossier">

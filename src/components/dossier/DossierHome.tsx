@@ -3,6 +3,8 @@ import { siteLinks, socialProfiles, type Dictionary, type Locale } from "@/i18n/
 import { getArticles } from "@/content/articles";
 import DossierTabs, { innerTabs } from "./DossierTabs";
 import Withheld from "./Withheld";
+import SubscribeForm from "@/components/SubscribeForm";
+import { subscribeEnabled } from "@/lib/subscribe";
 
 const FOLIOS = 5;
 const LETTERS = "ABCDEFGHIJ";
@@ -268,6 +270,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
               </a>
             ))}
           </p>
+          {subscribeEnabled && <SubscribeForm locale={locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="dossier" compact />}
           <p className="dx-lab dx-social">
             <Link href={dict.editorial.href}>{dict.editorial.title}</Link>
             <Link href={dict.privacy.href}>{dict.privacy.title}</Link>

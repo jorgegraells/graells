@@ -25,6 +25,8 @@ Deploy: Vercel desde `main` en github.com/jorgegraells/graells.
   estructura SEO) y valídalo con `node scripts/check-article.mjs <archivo>`.
 - SEO/GEO automatizado (rutinas en la nube, Search Console, informe semanal):
   `docs/SEO.md`.
+- Boletín semanal por correo (Brevo, doble confirmación, envío los viernes que
+  Jorge revisa antes de mandar): `docs/BOLETIN.md`. Feed RSS en `/[locale]/feed.xml`.
 - Landing: `src/app/[locale]/page.tsx` + `src/components/*.tsx` (una sección por archivo).
 - Mundo 3D: `src/components/world/` (`WorldCanvas.tsx` escena, `World.tsx` HUD/diálogos).
   Arquitectura y trampas: `docs/MUNDO-3D.md`.
