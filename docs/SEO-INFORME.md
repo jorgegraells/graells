@@ -1,100 +1,109 @@
 # Informe SEO y GEO semanal
 
-Fecha: 2026-11-02
+Fecha: 2026-11-09
 
 ## Resumen
 
-- Search Console: 455 impresiones y 2 clics en 28 días (antes 116 y 4). Posición media 21,0 (antes 46,5). Las impresiones se cuadruplican, pero casi nada se pulsa (CTR 0,4 %).
-- Indexación: 40 de 44 páginas indexadas (antes 14 de 22). Quedan 3 artículos nuevos sin rastrear y `/es` como duplicada.
-- Técnica: 44 URLs del sitemap, todas con 200. Solo 3 avisos menores (2 títulos EN largos, 1 description larga). `llms.txt` lista los 15 artículos publicados. PageSpeed sigue sin medirse por cuota.
+- Search Console: 2.049 impresiones y 24 clics en 28 días (antes 106 y 4). Posición media 14,8 (antes 40,2). Crecimiento fuerte, pero el CTR es del 1,2 % y las páginas más vistas casi no se pulsan.
+- Indexación: 74 de 82 páginas indexadas. Quedan 7 URLs nuevas sin rastrear (Iberostar, Crédit Mutuel Arkéa, DMARC, SonicWall) y `/es` como duplicada.
+- Técnica: 88 URLs del sitemap, todas con 200, canonical y JSON-LD correctos. Hallazgo nuevo: las páginas de artículo tienen dos `<h1>`. PageSpeed sigue sin medirse por cuota.
 
 ## Top 3 acciones de esta semana
 
-1. Solicitar indexación de los 3 artículos nuevos que Google no conoce (enlaces abajo): fraude del CEO (EN), prompt injection indirecta (ES y EN). El de prompt injection indirecta ataca justo la consulta que más impresiones da.
-2. Mejorar el CTR del artículo de WhatsApp (108 impresiones, pos. 7,8, 0 clics) y del EN (37 impr., pos. 11,4): nuevo title y seoDescription con la consulta al principio y los pasos inmediatos (propuestas abajo).
-3. Subir el artículo de GEO (72 impresiones, pos. 59,8): añadir secciones "GEO vs SEO" y "cómo salir en ChatGPT" (si no existen ya) y enlazarlo desde la home y `/training`.
+1. Solicitar indexación de los 7 artículos nuevos que Google no conoce (enlaces abajo): Iberostar, Crédit Mutuel Arkéa (EN), DMARC/SPF/DKIM y SonicWall, en ES y EN.
+2. Subir el CTR de las páginas con más impresiones y 0 clics: fraude del CEO EN (220 impr., pos. 21,9), WhatsApp ES (201 impr., pos. 7,7) y neveras de supermercados EN (448 impr., 4 clics). Propuestas de title y seoDescription más abajo.
+3. Arreglar el doble `<h1>` de las páginas de artículo y la duplicada `/es` vs `/` (ver problemas técnicos).
 
 ## Indexación en Google
 
-40 de 44 indexadas. Sin indexar (abrir el enlace y pulsar "Solicitar indexación"):
+74 de 82 indexadas. Sin indexar (abrir el enlace y pulsar "Solicitar indexación"):
 
-- /es: Duplicada, Google prefiere `https://jorgegraells.com/`. Último rastreo 2026-10-30. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=dsikRlC6hKX_VQvMV9FyZA&utm_medium=link&utm_source=api)
-- /en/blog/ceo-fraud-how-to-spot-it: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=KOQUyw8D1Mh1LOrx5EkrMA&utm_medium=link&utm_source=api)
-- /es/blog/prompt-injection-indirecta-ejemplos-y-como-prevenirla: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=xbFU2vlHoM2zCK7za_PGCA&utm_medium=link&utm_source=api)
-- /en/blog/indirect-prompt-injection-examples-and-prevention: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=O4R39p8jPlq2MwTT8LX-_g&utm_medium=link&utm_source=api)
+- /es: Duplicada, Google prefiere `https://jorgegraells.com/`. Último rastreo 2026-11-07. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=Tit753qeCsREtDm_6t9ITg&utm_medium=link&utm_source=api)
+- /es/blog/brecha-iberostar-datos-reservas-correos-falsos: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=1U2gVlS5NhIz54ge5Ctq-Q&utm_medium=link&utm_source=api)
+- /en/blog/iberostar-data-breach-booking-details-fake-emails: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=qyyIDo2qeHo4Z9GVVmK4Wg&utm_medium=link&utm_source=api)
+- /en/blog/credit-mutuel-arkea-cyberattack-service-provider: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=0FTxFWl_giXZoyWFYi6pbA&utm_medium=link&utm_source=api)
+- /es/blog/dmarc-spf-dkim-que-son-como-configurarlos: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=bJtvVr98-xE0PI76iuP2tA&utm_medium=link&utm_source=api)
+- /en/blog/dmarc-spf-dkim-explained-how-to-set-up: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=y8AL88JPVlUHXaRq85lz7w&utm_medium=link&utm_source=api)
+- /es/blog/sonicwall-cve-2026-19868-vpn-saltar-mfa: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=tkKngxvpprXq3Ip2VeCTug&utm_medium=link&utm_source=api)
+- /en/blog/sonicwall-cve-2026-19868-vpn-mfa-bypass: no reconocida, nunca rastreada. [Abrir en Search Console](https://search.google.com/search-console/inspect?resource_id=https://jorgegraells.com/&id=0CxNy9bZbUQgEclEMx9eog&utm_medium=link&utm_source=api)
 
-## Search Console (2026-10-03 a 2026-10-30, frente a los 28 días anteriores)
+Los 3 artículos de la semana pasada (fraude del CEO EN, prompt injection indirecta ES y EN) ya están indexados y reciben impresiones.
+
+## Search Console (2026-10-10 a 2026-11-06, frente a los 28 días anteriores)
 
 | | Ahora | Antes |
 | --- | --- | --- |
-| Clics | 2 | 4 |
-| Impresiones | 455 | 116 |
-| CTR | 0,4 % | 3,4 % |
-| Posición media | 21,0 | 46,5 |
+| Clics | 24 | 4 |
+| Impresiones | 2.049 | 106 |
+| CTR | 1,2 % | 3,8 % |
+| Posición media | 14,8 | 40,2 |
 
-- Consultas: "prompt injection" 42 impr. (pos. 27,4); "geo chatgpt" 10 (pos. 89); "geo seo" 9 (pos. 33,9); "qué es geo" y variantes unas 18 (pos. 86-92); "geo" 7 (pos. 15); "what is prompt injection" 6 (pos. 61,7); "phishing steal pw" 4 (pos. 5); "prevenir inyección de prompts" 4 (pos. 48,8); "binance official statement $6.3 billion hack" 2 (pos. 5).
-- Páginas con más impresiones: WhatsApp ES 108 (pos. 7,8); GEO ES 72 (pos. 59,8); prompt injection EN 71 (pos. 26,9); Binance ES 48 (1 clic, pos. 8,2); WhatsApp EN 37 (pos. 11,4); Binance EN 31 (pos. 9,4); prompt injection ES 21 (pos. 30,5).
-- Evolución frente al informe anterior: WhatsApp pasa de no indexado a 108 impresiones en pos. 7,8; GEO ES sigue estancado (pos. 60-64); prompt injection EN no se mueve (pos. 25,7 a 26,9), señal de que la reescritura propuesta aún no se ha hecho.
-- Oportunidades 4-20 (la herramienta lista dos): GEO ES con la consulta "geo" (7 impr., pos. 15) y phishing EN con "phishing steal pw" (4 impr., pos. 5). Por página, también WhatsApp ES/EN, Binance ES/EN, claude-ha-caido (pos. 7), `/es/training` (pos. 3,4).
+- Consultas con más impresiones: "what is ceo fraud" 51 (pos. 16,3); "ceo fraud" 47 (30,6); "prompt injection" 47 (27,4); "fridge cyber attack" 26 (15,8); "ceo fraud phishing" 24 (17,3); "geo" 16 (16,6); "prevenir inyección de prompts" 12 (32,8); "indirect prompt injection" 11 (88); "cyber resilience act news" 10 (9,0); "llmjacking" 7 (7,7).
+- Páginas con más impresiones: neveras EN 448 (4 clics, pos. 9,6); fraude del CEO EN 220 (0 clics, pos. 21,9); neveras ES 218 (5 clics, pos. 8,9); WhatsApp ES 201 (0 clics, pos. 7,7); WhatsApp EN 82 (pos. 9,4); GEO ES 73 (pos. 54,2); prompt injection EN 71 (pos. 26,9); Binance ES 66 (2 clics).
+- Evolución frente al informe anterior: las noticias de última hora (neveras, Amadeus, Ivanti, CRA) entran rápido en pos. 6-10. WhatsApp ES pasa de 108 a 201 impresiones sin clics. GEO ES empeora de pos. 59,8 a 54,2 solo en parte (sigue lejos). Prompt injection EN no se mueve (26,9), la reescritura propuesta sigue sin hacerse. El artículo de fraude del CEO, nuevo, ya es la segunda página más vista.
+- Oportunidades 4-20: fraude del CEO EN ("what is ceo fraud", "ceo fraud phishing", "ceo phishing email", "ceo fraud examples"); neveras EN ("fridge cyber attack", "europe cyber attack fridge"); GEO ES ("geo", pos. 16,6); CRA EN ("cyber resilience act news", pos. 9); llmjacking ES/EN (pos. 5,3 y 11); Claude ha caído ("claude ha caido?", pos. 9,8); Amadeus EN ("amadeus data breach", pos. 15).
 - CTR bajo, propuestas (máx. 155 caracteres, consulta al principio):
-  - WhatsApp ES, title: "Me han hackeado el WhatsApp: qué hacer en 10 minutos". seoDescription: "Me han hackeado el WhatsApp: cierra dispositivos vinculados, recupera la cuenta por SMS, activa la verificación en dos pasos y avisa a tus contactos."
-  - WhatsApp EN, seoDescription: "WhatsApp hacked? Log out linked devices, re-register with your SMS code, turn on two-step verification and warn your contacts. Steps in 10 minutes."
-  - Binance ES/EN (48 y 31 impr., pos. 8-9): poner en el title la cifra y la fecha ("Hackeo a Binance: robo de 6.300 millones, qué se sabe") y citar la nota oficial de Binance en la primera línea, ya que la consulta "binance official statement" aparece.
+  - Fraude del CEO EN, title: "What is CEO fraud? How to spot it and stop it". seoDescription: "What is CEO fraud? A fake boss email or call that pushes an urgent payment. Learn the warning signs, real examples and how to prevent it."
+  - Fraude del CEO ES, title: "Fraude del CEO: cómo detectarlo y evitarlo en tu empresa". seoDescription: "Fraude del CEO: un falso directivo pide una transferencia urgente. Señales de alerta, ejemplos reales y cómo verificar antes de pagar."
+  - WhatsApp ES (201 impr., 0 clics, pos. 7,7), title: "Me han hackeado el WhatsApp: qué hacer en 10 minutos". seoDescription: "Me han hackeado el WhatsApp: cierra dispositivos vinculados, recupera la cuenta con tu código SMS, activa la verificación en dos pasos y avisa a tus contactos." (155 máx., recortar "tus contactos" si pasa).
+  - Neveras EN (448 impr., 0,9 %), seoDescription: "Fridge cyber attack in Europe: what happened to supermarket cold chains in 9+ countries, what is confirmed and what is still unknown. Updated."
   - GEO ES, seoDescription: "Qué es GEO (Generative Engine Optimization), en qué se diferencia del SEO y cómo conseguir que ChatGPT y Perplexity citen tu web."
   - Prompt injection EN, seoDescription: "Prompt injection: what it is, direct vs indirect attacks, real examples and how to defend your company's LLM apps."
-- Consultas sin artículo propio que las responda bien: "geogreeting" (5 impr., ruido, ignorar); "cómo proteger tu aplicación web del prompt injection" (2 impr., pos. 18, cubierta a medias por el nuevo artículo de prevención, comprobar que incluya aplicaciones web).
+  - Phishing EN: la consulta larga tipo test ("an email claims to be from a senior colleague...") sale en pos. 4,7-6,3 porque el artículo contiene un cuestionario. Hay que comprobar que la respuesta correcta se vea en el HTML, pero no es prioridad.
+- Consultas con impresiones sin artículo propio que las responda: "ceo phishing email" y "ceo fraud examples" (cubiertas a medias por el artículo de fraude del CEO, falta una sección de ejemplos reales); "europe cyber attack" (resto de países afectados en las neveras, se actualiza con la noticia). "indirect prompt injection" tiene pos. 88: el artículo existe pero no compite, ver propuestas.
 
 ## Problemas técnicos (por gravedad)
 
-1. **Media.** `/es` figura como duplicada: Google prefiere `/`. `/` redirige a `/es`; hacer que redirección, canonical y sitemap apunten a la misma URL (redirección permanente 308 y sitemap con la elegida), o que `/` sirva el español directamente.
-2. **Baja.** `/en/blog/openai-google-shared-robots-txt-ai-training-signal`: title de 67 caracteres (máx. 65). Acortar 2 o más.
-3. **Baja.** `/en/blog/safepay-ransomware-how-to-protect-your-company`: title de 66 caracteres. Acortar 1 o más.
-4. **Baja.** `/en/editorial-policy`: meta description de 166 caracteres (máx. 160). Y `/es/politica-editorial` y `/en/editorial-policy` no tienen og:image. Añadir la imagen social por defecto.
-5. **Baja.** El sitemap no incluye hreflang (sí está en el HTML). Opcional.
+1. **Media.** Todas las páginas de artículo tienen dos `<h1>` (ejemplo: `/es/blog/claude-ha-caido`: uno `text-gradient neon-text` y otro `dx-doc-title`, que viene de la variante "dossier" del tema renderizada a la vez). Antes figuraba uno solo. Servir solo un h1 por tema (renderizar condicionalmente o cambiar el segundo a `<p role="heading">`/`div`) para no confundir a Google y a los LLM.
+2. **Media.** `/es` figura como duplicada: Google prefiere `/`. Alinear redirección permanente, canonical y sitemap en la misma URL. Sigue sin resolverse desde hace una semana.
+3. **Baja.** Títulos largos (máx. 65): `/es/blog/asistente-ia-documentos-empresa-fuga-de-datos` (67), `/en/blog/credit-mutuel-arkea-cyberattack-service-provider` (67), `/en/blog/amadeus-data-breach-airlines-passengers` (68). Acortar 3 caracteres como mínimo.
+4. **Baja.** `/es/flypet/probar` y `/en/flypet/probar`: title de 29 caracteres (mín. 30). Añadir una palabra.
+5. **Baja.** El sitemap no incluye hreflang (sí está en el HTML como `hrefLang`). Opcional.
 
-Sin enlaces internos rotos (44 enlaces únicos revisados), JSON-LD válido y un solo h1 en las 44 URLs, canonical propio y hreflang es/en en todas, robots.txt y llms.txt responden 200. `llms.txt` contiene los 15 artículos publicados en ambos idiomas (el borrador `claves-api-ia-robadas-llmjacking` correctamente fuera).
+Sin errores en: HTTP 200 en las 88 URLs, canonical propio, hreflang es/en en el HTML, og:image con 200, JSON-LD parseable, meta descriptions dentro de 160, enlaces internos sin roturas, robots.txt y llms.txt con 200. `llms.txt` lista todos los artículos publicados del repo (34 archivos; el borrador no está). Las editorial policy que fallaban la semana pasada ya cumplen.
 
 ## Rendimiento
 
-No medido otra vez: la API de PageSpeed Insights devolvió "Quota exceeded" para /es, /es/training y el artículo más reciente. Hace falta una clave de API (`&key=`) en el entorno de la rutina; `www.googleapis.com` ya está permitido.
+No medido otra vez: la API de PageSpeed Insights devuelve 429 "Quota exceeded" (cuota diaria del proyecto compartido sin clave) para `/es` y `/es/training`. Hace falta una clave de API (`&key=`) en el entorno de la rutina; `www.googleapis.com` ya está permitido. Cuarta semana consecutiva sin dato.
 
 ## Propuestas por artículo
 
-- **Prompt injection (ES/EN):** reescribir la apertura (definición en 2 líneas), directa vs indirecta, ejemplos, defensas (mínimo privilegio, aprobación humana para acciones sensibles, marcar contenido no confiable, controlar acciones y no solo texto) y mención a OWASP LLM01. Enlazar al nuevo artículo de prompt injection indirecta y a "agentes con demasiados permisos". Comprobar antes qué secciones existen.
-- **Prompt injection indirecta (ES/EN, nuevo):** solo indexación. Enlazar desde el artículo base.
-- **GEO (ES/EN):** ver acción 3. Citar el estudio académico original (noviembre de 2023), robots.txt y GPTBot, indexación en Bing.
-- **WhatsApp (ES/EN):** ver CTR arriba. Los líderes (ESET, La Gaceta, Cronista) abren con los pasos y el tiempo; comprobar que el artículo empieza con una lista numerada y que cubre bloquear la SIM y denunciar.
-- **AI Act artículo 4 (ES/EN):** hay fuentes que dicen que desde el 27 de julio de 2026 el Digital Omnibus cambia la obligación de las empresas a medidas de fomento; otras lo niegan. No he podido verificar el texto oficial del DOUE en esta pasada. Revisar el artículo contra EUR-Lex y las preguntas y respuestas de la Comisión Europea, y actualizar `dateModified`.
-- **Claude ha caído / is down:** pos. 7 y 17. Mantener un bloque "Última comprobación" con fecha según la página de estado oficial.
-- **Phishing EN:** pos. 5 con "phishing steal pw"; sin acción salvo indexar contenido relacionado.
-- **Training:** pos. 3,4. Añadir pregunta frecuente de precio orientativo ("desde X €") y de bonificación FUNDAE (comprobar que no exista ya). Cautela: las cifras de crédito FUNDAE que circulan son de proveedores comerciales; citar solo FUNDAE.
+- **Fraude del CEO (ES/EN):** el más prometedor (EN pos. 16-22 en cuatro consultas). Añadir (comprobar antes si existen) una sección de ejemplos reales, la variante con deepfakes de voz y vídeo, la regla de "colgar y volver a llamar" y la guía de INCIBE para pymes como fuente. Enlazar a DMARC/SPF/DKIM (nuevo) y al artículo de phishing.
+- **Neveras de supermercados (ES/EN):** la búsqueda actual muestra que el ataque se amplió a más países (Alemania, Italia, Reino Unido, Rumanía) y las fuentes difieren en cifras (9 a 15 países). Comprobar el artículo contra Reuters y Euronews, y mantener una línea "Última actualización" con fecha. Aún no hay atribución oficial.
+- **Prompt injection (ES/EN):** reescribir la apertura con definición en 2 líneas, directa vs indirecta, defensas por capas (mínimo privilegio, delimitar contenido no fiable, confirmación humana en acciones sensibles) y mención a OWASP LLM01, que admite que no hay defensa infalible. Enlazar al artículo de inyección indirecta y al de OWASP LLM.
+- **Prompt injection indirecta (ES/EN):** "indirect prompt injection" en pos. 88. Enlazar desde el artículo base y desde OWASP; añadir un ejemplo con calendario/correo en el primer párrafo.
+- **GEO (ES/EN):** sigue en pos. 49-54. Añadir (si faltan) "GEO vs SEO", "cómo salir en ChatGPT" (Bing indexado, GPTBot en robots.txt) y "cómo medirlo", y enlazar desde la home y `/training`.
+- **WhatsApp (ES/EN):** ver CTR. Abrir con lista numerada de pasos y tiempo estimado.
+- **CRA (EN):** "cyber resilience act news" en pos. 9: añadir bloque de novedades con fecha.
+- **Claude ha caído / is down:** mantener "Última comprobación" con fecha según la página de estado oficial.
+- **AI Act artículo 4 (ES/EN):** pos. 34-78. Pendiente desde hace dos semanas verificar contra EUR-Lex y la Comisión el efecto del Digital Omnibus sobre la obligación (no he podido leer el texto oficial completo en esta pasada). No cambiar nada sin esa fuente.
+- **Training:** pos. 3,4 con pocas impresiones. Añadir pregunta frecuente de precio orientativo y de bonificación FUNDAE (comprobar que no exista). Las cifras de crédito que circulan (por ejemplo "mínimo 420 €") vienen de proveedores comerciales: citar solo FUNDAE.
 
 ## GEO
 
-Búsquedas de esta pasada (buscador general, no ChatGPT ni Perplexity): jorgegraells.com no aparece en las vistas.
+Búsquedas hechas en un buscador general, no en ChatGPT ni Perplexity; jorgegraells.com no aparece en las vistas devueltas en ninguna.
 
 | Consulta | Aparece | Dominan | Lo que tienen y Jorge no |
 | --- | --- | --- | --- |
-| me han hackeado el whatsapp qué hacer | No | ESET, La Gaceta, Cronista, que.es | Pasos numerados al inicio, "primeros 10 minutos", marca de autoridad |
-| qué es GEO posicionamiento en ChatGPT | No | blogs de agencias y herramientas (applabx, merchynt, promptwatch) | Definición breve, comparación con SEO, tácticas concretas; casi todo en inglés, hay hueco en español |
-| prompt injection indirecta ejemplos cómo prevenirla | No | mindgard, aurascape, promptfoo, arXiv (todos en inglés) | Ejemplos reales (calendarios, base de conocimiento, correos), defensa centrada en acciones; en español casi no hay competencia |
-| alfabetización en IA artículo 4 AI Act obligaciones empresas | No | El Independiente, LegalToday, Sage, Osborne Clarke, Ecija | Citas legales, fecha de aplicación, análisis del Digital Omnibus |
-| formación en IA para empresas bonificada FUNDAE | No | tecnociminnova, upliora, javadex, factorial | Calculadora de crédito, requisitos, catálogo, comparativas |
+| fraude del CEO cómo detectarlo empresas | No | INEAF, BBVA, McAfee, INCIBE, Santander | Marca institucional, guía de 10 pasos de INCIBE, ejemplo de pregunta de verificación |
+| qué es GEO posicionamiento en ChatGPT | No | blogs de agencias y herramientas (applabx, promptwatch, hashmeta) | Definición breve, comparación con SEO, métricas de menciones; casi todo en inglés |
+| formación ciberseguridad e IA para empresas bonificada | No | tecnociminnova, KPMG/Founderz, ISMS Forum, Grupo2000 | Páginas de crédito FUNDAE, programas con marca, catálogo |
+| inyección de prompts qué es y cómo prevenirla | No | SentinelOne, wwwhatsnew, IEB, cyberclick, openreplay | Definición directa/indirecta y lista de defensas; poca competencia técnica en español |
+| ciberataque neveras supermercados Europa | No | Euronews, Forbes, Vozpópuli, Excélsior, regionales | Cobertura de agencia y actualización continua; Jorge aporta ángulo para pymes |
 
-Mejor oportunidad: prompt injection en español, donde dominan fuentes inglesas.
+Mejor oportunidad: prompt injection en español y fraude del CEO en inglés (ya hay impresiones).
 
 ## Temas sugeridos para el redactor
 
-1. "Cómo proteger tu aplicación web del prompt injection" (consultas "cómo proteger tu aplicación web del prompt injection", "prevenir inyección de prompts").
-2. "GEO vs SEO: diferencias y qué hacer primero" (consultas "geo seo", 9 impr.; "posicionamiento geo").
-3. "Cómo salir en ChatGPT: guía práctica de GEO" (consulta "geo chatgpt", 10 impr.).
-4. "Qué es el OWASP LLM Top 10 explicado para empresas" (consulta "ataques prompt injection", ligada a OWASP LLM01).
-5. "Phishing que roba contraseñas: cómo reconocerlo" (consulta "phishing steal pw", pos. 5; versión en español).
+1. "Ejemplos reales de fraude del CEO y cómo se frenaron" (consultas "ceo fraud examples", "ceo phishing email", 7 y 4 impr.).
+2. "Deepfake de voz del jefe: cómo comprobar una llamada" (consulta "fraude del CEO deepfake", relacionada con "ceo fraud prevention", 12 impr.).
+3. "GEO vs SEO: diferencias y qué hacer primero" (consultas "geo seo" 8 impr., "qué es geo" 9 y "geo" 16).
+4. "Cómo salir en ChatGPT: guía práctica de GEO" (consulta "geo chatgpt", 7 impr.).
+5. "Cómo proteger tu aplicación web del prompt injection" (consultas "prevenir inyección de prompts" 12 y "inyección de prompts" 10).
 
 ## Qué se arregló desde el informe anterior
 
-- Indexación: de 14 a 40 de 44 páginas. WhatsApp, phishing, AI Act artículo 4 y GEO EN ya están indexados.
-- Los 8 artículos que había sin indexar quedan en 3 nuevos (publicados esta semana).
-- Títulos y descriptions: el resto del sitio está en rango; solo quedan los 3 avisos menores de arriba.
-- `llms.txt` pasa de 7 a 15 artículos, sincronizado.
-- Sigue pendiente: `/es` duplicada, medición de PageSpeed (cuota), reescrituras de prompt injection y GEO.
+- Indexación: de 40 de 44 a 74 de 82. Los 3 artículos señalados (fraude del CEO EN, prompt injection indirecta ES/EN) ya están indexados.
+- Títulos EN señalados (openai-google, safepay) y las meta/og:image de la política editorial ya están en rango. Aparecen 3 títulos largos nuevos.
+- `llms.txt` sincronizado con los 34 artículos publicados.
+- Sigue pendiente: `/es` duplicada, medición de PageSpeed (cuota), reescrituras de prompt injection y GEO, verificación del artículo 4 del AI Act. Nuevo: doble h1.
