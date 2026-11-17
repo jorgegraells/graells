@@ -40,6 +40,8 @@ function pagesForFile(file) {
   if (file === "src/i18n/dictionaries.ts") return [...HOME, ...route("training"), ...route("about")];
   if (file === "src/content/flypet.ts") return route("flypet");
   if (file === "src/content/flypet-privacy.ts") return route("flypet/privacidad");
+  if (file === "src/content/antidop.ts") return route("antidop");
+  if (file === "src/content/antidop-privacy.ts") return route("antidop/privacidad");
   if (file === "src/app/[locale]/page.tsx") return HOME;
 
   // La plantilla de los artículos no cambia el contenido de ninguno

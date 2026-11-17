@@ -117,6 +117,8 @@ function candidateUrls(ref) {
     "/en/editorial-policy",
     "/es/flypet",
     "/en/flypet",
+    "/es/antidop",
+    "/en/antidop",
   ];
   return [...publishedArticleUrls(ref, REPO), ...pages.map((p) => ORIGIN + p)];
 }

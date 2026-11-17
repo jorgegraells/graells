@@ -147,6 +147,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${SITE}/es/flypet/probar`, en: `${SITE}/en/flypet/probar` } },
     },
     {
+      url: `${SITE}/es/antidop`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: { languages: { es: `${SITE}/es/antidop`, en: `${SITE}/en/antidop` } },
+    },
+    {
+      url: `${SITE}/en/antidop`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: { languages: { es: `${SITE}/es/antidop`, en: `${SITE}/en/antidop` } },
+    },
+    {
       url: `${SITE}/es/blog`,
       lastModified: now,
       changeFrequency: "weekly",

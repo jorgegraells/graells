@@ -485,7 +485,7 @@ const es: Dictionary = {
       },
       {
         title: "Medición de visitas",
-        text: "Para saber qué páginas se leen uso Vercel Web Analytics. No usa cookies ni guarda tu dirección IP: cuenta las visitas con un identificador temporal que se calcula a partir de la petición y se descarta en el mismo día. Solo veo cifras agregadas (páginas vistas, país, tipo de dispositivo, navegador y web de procedencia), nunca quién eres. Las páginas de Flypet quedan fuera de esta medición.",
+        text: "Para saber qué páginas se leen uso Vercel Web Analytics. No usa cookies ni guarda tu dirección IP: cuenta las visitas con un identificador temporal que se calcula a partir de la petición y se descarta en el mismo día. Solo veo cifras agregadas (páginas vistas, país, tipo de dispositivo, navegador y web de procedencia), nunca quién eres. Las páginas de Flypet y de ANTIDOP quedan fuera de esta medición.",
       },
       {
         title: "Alojamiento",
@@ -508,8 +508,8 @@ const es: Dictionary = {
         text: "Puedes pedir acceso a tus datos, rectificarlos, suprimirlos, oponerte a su tratamiento, limitarlo o pedir su portabilidad escribiendo a dev.graells@gmail.com. Si crees que no he atendido bien tu petición, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).",
       },
       {
-        title: "Otras webs y la app Flypet",
-        text: "Los enlaces a redes sociales y a otras webs llevan a servicios con su propia política de privacidad. La app Flypet tiene la suya, en jorgegraells.com/es/flypet/privacidad.",
+        title: "Otras webs y las apps Flypet y ANTIDOP",
+        text: "Los enlaces a redes sociales y a otras webs llevan a servicios con su propia política de privacidad. Las apps Flypet y ANTIDOP tienen la suya, en jorgegraells.com/es/flypet/privacidad y jorgegraells.com/es/antidop/privacidad.",
       },
       {
         title: "Cambios",
@@ -735,12 +735,13 @@ const es: Dictionary = {
         name: "ANTIDOP",
         tagline: "Rompe el bucle de la dopamina",
         description:
-          "App Android que bloquea en tiempo real las apps y webs adictivas en el instante exacto en que intentas abrirlas: un aviso a pantalla completa te muestra un mensaje que tú mismo te escribiste y eliges resistir o rendirte. Con score de dopamina (0–100), rutina diaria y diario de progreso.",
+          "App Android que bloquea en tiempo real las apps y webs que te roban el tiempo, en el instante exacto en que intentas abrirlas: un aviso a pantalla completa te muestra tu personaje y un mensaje que tú mismo te escribiste, y eliges resistir o rendirte. Es también un juego de rol en píxeles en el que el personaje solo crece con lo que el móvil mide. Con reto diario, rutina opcional y diario de progreso.",
         role: "Fundador y desarrollador",
         highlight:
-          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical, cero telemetría y cero tracking, pensada para usarse lo mínimo posible: una app contra la adicción no debería crear la suya.",
+          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical, cero telemetría y cero tracking, pensada para usarse lo mínimo posible: una app para usar menos el móvil no debería engancharte ella.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
-        status: "En desarrollo",
+        status: "En pruebas",
+        links: [{ label: "Ver ANTIDOP", href: "/es/antidop" }],
       },
       {
         slug: "yaiwell",
@@ -1184,7 +1185,7 @@ const en: Dictionary = {
       },
       {
         title: "Visit measurement",
-        text: "To know which pages get read I use Vercel Web Analytics. It doesn't use cookies or store your IP address: it counts visits with a temporary identifier worked out from the request and discarded the same day. I only see aggregated figures (page views, country, device type, browser and referring site), never who you are. Flypet pages are left out of this measurement.",
+        text: "To know which pages get read I use Vercel Web Analytics. It doesn't use cookies or store your IP address: it counts visits with a temporary identifier worked out from the request and discarded the same day. I only see aggregated figures (page views, country, device type, browser and referring site), never who you are. The Flypet and ANTIDOP pages are left out of this measurement.",
       },
       {
         title: "Hosting",
@@ -1207,8 +1208,8 @@ const en: Dictionary = {
         text: "You can ask to access, correct or delete your data, object to or restrict its processing, or ask for portability by writing to dev.graells@gmail.com. If you think I haven't handled your request properly, you can complain to the Spanish Data Protection Agency (aepd.es).",
       },
       {
-        title: "Other websites and the Flypet app",
-        text: "Links to social networks and other websites lead to services with their own privacy policies. The Flypet app has its own, at jorgegraells.com/en/flypet/privacidad.",
+        title: "Other websites and the Flypet and ANTIDOP apps",
+        text: "Links to social networks and other websites lead to services with their own privacy policies. The Flypet and ANTIDOP apps each have their own, at jorgegraells.com/en/flypet/privacidad and jorgegraells.com/en/antidop/privacidad.",
       },
       {
         title: "Changes",
@@ -1434,12 +1435,13 @@ const en: Dictionary = {
         name: "ANTIDOP",
         tagline: "Break the dopamine loop",
         description:
-          "Android app that blocks addictive apps and websites in real time, at the exact instant you try to open them: a full-screen prompt shows a message you wrote to yourself, and you choose to resist or give in. With a dopamine score (0–100), daily routine and progress journal.",
+          "Android app that blocks, in real time, the apps and websites that steal your time, at the exact instant you try to open them: a full-screen prompt shows your character and a message you wrote to yourself, and you choose to resist or give in. It is also a pixel-art role-playing game where the character only grows with what the phone measures. With a daily challenge, an optional routine and a progress journal.",
         role: "Founder & developer",
         highlight:
-          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy, zero telemetry and zero tracking, built to be used as little as possible: an app against addiction shouldn't create its own.",
+          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy, zero telemetry and zero tracking, built to be used as little as possible: an app to help you use your phone less shouldn't hook you itself.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
-        status: "In development",
+        status: "In testing",
+        links: [{ label: "See ANTIDOP", href: "/en/antidop" }],
       },
       {
         slug: "yaiwell",

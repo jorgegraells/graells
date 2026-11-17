@@ -58,10 +58,13 @@ team size and format, agreed on a short call. Contact: dev.graells@gmail.com
 - EchoGEO: measures brand visibility inside AI answers (ChatGPT, Perplexity,
   Gemini) and returns a score with concrete actions to get cited. Proprietary
   deterministic scoring engine. In development.
-- ANTIDOP: Android app that blocks addictive apps and websites in real time
-  with a personal full-screen prompt, dopamine score and daily routine. React
-  Native + Expo, TypeScript and Kotlin. Radical privacy: zero telemetry. In
-  development.
+- ANTIDOP (https://jorgegraells.com/en/antidop): Android app that blocks, in real
+  time, the apps and websites that steal your time, with a full-screen prompt
+  showing your character and a message you wrote yourself. It is also a
+  pixel-art role-playing game where the character only grows with what the
+  phone measures. Free, no accounts, no ads, no tracking: everything stays on
+  the phone. React Native + Expo, TypeScript and Kotlin. In testing on Google
+  Play; coming soon.
 - Yaiwell (https://www.yaiwell.app): web marketplace to find and book beauty,
   wellness and sport services near you, built around who has a free slot today.
   Every business is reviewed by a person before going live, and only people who
