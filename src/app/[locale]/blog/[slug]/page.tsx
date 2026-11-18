@@ -18,6 +18,8 @@ import Markdown from "@/components/blog/Markdown";
 import { articleFigures } from "@/components/blog/figures";
 import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierLedger from "@/components/dossier/DossierLedger";
+import SubscribeForm from "@/components/SubscribeForm";
+import { subscribeEnabled } from "@/lib/subscribe";
 
 const SITE = "https://jorgegraells.com";
 
@@ -270,6 +272,8 @@ export default async function ArticlePage({
               ← {dict.blog.back}
             </Link>
 
+            {subscribeEnabled && <SubscribeForm locale={locale as Locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="arcade" />}
+
             {/* Otros artículos */}
             {others.length > 0 && (
               <div className="mt-14 grid gap-4 sm:grid-cols-2">
@@ -288,6 +292,7 @@ export default async function ArticlePage({
           </div>
 
           <div className="theme-dossier">
+            {subscribeEnabled && <SubscribeForm locale={locale as Locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="dossier" />}
             {others.length > 0 && (
               <>
                 <h2 className="dx-ledger-h">{d.related}</h2>

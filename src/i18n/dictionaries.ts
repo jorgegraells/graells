@@ -41,6 +41,18 @@ export type Project = {
   links?: { label: string; href: string }[];
 };
 
+/** Página de texto legal o de transparencia (política editorial, privacidad) */
+export type PolicyDoc = {
+  href: string;
+  tag: string;
+  title: string;
+  intro: string;
+  /** Meta description (≤ 155). Si falta, se usa `intro`. */
+  seoDescription?: string;
+  sections: { title: string; text: string }[];
+  contact: string;
+};
+
 export type Dictionary = {
   nav: {
     about: string;
@@ -97,13 +109,20 @@ export type Dictionary = {
     editorialLink: string;
     elsewhereTitle: string;
   };
-  editorial: {
-    href: string;
-    tag: string;
+  editorial: PolicyDoc;
+  privacy: PolicyDoc & { updated: string };
+  feed: { href: string; title: string; description: string };
+  subscribe: {
     title: string;
-    intro: string;
-    sections: { title: string; text: string }[];
-    contact: string;
+    text: string;
+    placeholder: string;
+    button: string;
+    sending: string;
+    ok: string;
+    invalid: string;
+    error: string;
+    note: string;
+    confirmed: { href: string; title: string; text: string; cta: string };
   };
   news: {
     tag: string;
@@ -196,7 +215,7 @@ export type Dictionary = {
     items: { period: string; title: string; description: string }[];
   };
   contact: { title: string; text: string; cta: string };
-  footer: { rights: string };
+  footer: { rights: string; rss: string };
   /** Botón de cambio de modo: oscuro (arcade) y claro (expediente) */
   theme: { toLight: string; toDark: string; toLightLabel: string; toDarkLabel: string };
   /** Textos del modo claro "Expediente" */
@@ -291,6 +310,7 @@ export type Dictionary = {
     };
     aboutPage: { section: string; report: string; channels: string };
     editorialPage: { section: string; clause: string; footer: string };
+    privacyPage: { section: string; clause: string; footer: string };
   };
 };
 
@@ -446,6 +466,79 @@ const es: Dictionary = {
       },
     ],
     contact: "Si encuentras un error o una información que haya cambiado, escríbeme. Lo reviso y, si procede, lo corrijo cuanto antes y queda reflejada la fecha de actualización:",
+  },
+  privacy: {
+    href: "/es/privacidad",
+    tag: "PRIVACIDAD",
+    title: "Política de privacidad",
+    updated: "Última actualización: 8 de noviembre de 2026",
+    intro: "Esta web es de Jorge Graells. Aquí explico qué datos se tratan cuando la visitas, para qué y qué puedes hacer con ellos. En corto: no hay cookies, no hay registro y la medición de visitas es anónima.",
+    seoDescription: "Qué datos trata jorgegraells.com y para qué: sin cookies, sin registro y con medición de visitas anónima. Tus derechos y cómo ejercerlos.",
+    sections: [
+      {
+        title: "Quién es el responsable",
+        text: "El responsable del tratamiento soy yo, Jorge Graells. Para cualquier cuestión sobre tus datos puedes escribirme a dev.graells@gmail.com.",
+      },
+      {
+        title: "Cookies",
+        text: "Esta web no usa cookies de seguimiento ni de publicidad, y por eso no verás ningún aviso de cookies. Solo guarda en tu navegador dos preferencias que nunca salen de él: el modo claro u oscuro y, si juegas en el mundo 3D, cómo vas con la misión de los vecinos. Puedes borrarlas desde los ajustes del navegador.",
+      },
+      {
+        title: "Medición de visitas",
+        text: "Para saber qué páginas se leen uso Vercel Web Analytics. No usa cookies ni guarda tu dirección IP: cuenta las visitas con un identificador temporal que se calcula a partir de la petición y se descarta en el mismo día. Solo veo cifras agregadas (páginas vistas, país, tipo de dispositivo, navegador y web de procedencia), nunca quién eres. Las páginas de Flypet y de ANTIDOP quedan fuera de esta medición.",
+      },
+      {
+        title: "Alojamiento",
+        text: "La web está alojada en Vercel Inc., con sede en Estados Unidos. Como cualquier servidor, registra datos técnicos de cada petición, como la dirección IP y el navegador, para servir la página y protegerla de abusos. Vercel actúa como encargado del tratamiento, y la transferencia a Estados Unidos se ampara en las garantías que exige el RGPD (el Marco de Privacidad de Datos UE-EE. UU. y las cláusulas contractuales tipo).",
+      },
+      {
+        title: "Si me escribes",
+        text: "Si me escribes por correo, uso tu dirección y lo que me cuentes solo para responderte y, si hablamos de una formación o un proyecto, para preparar la propuesta. No lo uso para enviarte publicidad ni lo comparto con nadie. Lo guardo mientras dure la conversación y, si llegamos a trabajar juntos, el tiempo que obligue la ley.",
+      },
+      {
+        title: "Boletín semanal",
+        text: "Si te suscribes, guardo tu correo y el idioma en el que te suscribiste para mandarte un resumen semanal de lo publicado. Los envíos los gestiona Brevo, una empresa con sede en Francia que actúa como encargado del tratamiento y guarda los datos en la Unión Europea. La suscripción tiene doble confirmación: no recibes nada hasta que pulsas el enlace del primer correo, y Brevo registra la fecha de esa confirmación. Brevo también anota de forma estándar si se abre el correo y qué enlaces se pulsan; solo lo miro en conjunto, para saber qué interesa. Puedes darte de baja cuando quieras con el enlace que va en cada correo, y entonces tus datos dejan de usarse para el boletín.",
+      },
+      {
+        title: "Base legal",
+        text: "La medición anónima y los registros del servidor se basan en mi interés legítimo en que la web funcione, sea segura y en saber qué contenidos resultan útiles (artículo 6.1.f del RGPD). Responder a tu correo se basa en tu propia petición y, si llega el caso, en la preparación de un contrato (artículo 6.1.b). El boletín se basa en tu consentimiento, que das al confirmar la suscripción y puedes retirar en cualquier momento (artículo 6.1.a).",
+      },
+      {
+        title: "Tus derechos",
+        text: "Puedes pedir acceso a tus datos, rectificarlos, suprimirlos, oponerte a su tratamiento, limitarlo o pedir su portabilidad escribiendo a dev.graells@gmail.com. Si crees que no he atendido bien tu petición, puedes reclamar ante la Agencia Española de Protección de Datos (aepd.es).",
+      },
+      {
+        title: "Otras webs y las apps Flypet y ANTIDOP",
+        text: "Los enlaces a redes sociales y a otras webs llevan a servicios con su propia política de privacidad. Las apps Flypet y ANTIDOP tienen la suya, en jorgegraells.com/es/flypet/privacidad y jorgegraells.com/es/antidop/privacidad.",
+      },
+      {
+        title: "Cambios",
+        text: "Si cambia lo que hace la web con los datos, actualizaré antes esta página y la fecha de arriba lo reflejará.",
+      },
+    ],
+    contact: "Para cualquier duda sobre esta política, escríbeme a:",
+  },
+  feed: {
+    href: "/es/feed.xml",
+    title: "Jorge Graells | Ciberseguridad e IA",
+    description: "Guías y noticias de ciberseguridad e inteligencia artificial, con sus fuentes.",
+  },
+  subscribe: {
+    title: "Lo de la semana, en tu correo",
+    text: "Un correo a la semana con las guías y noticias que he publicado. Si una semana no hay nada, no te escribo.",
+    placeholder: "tu@correo.com",
+    button: "Suscribirme",
+    sending: "Enviando...",
+    ok: "Casi está. Te he mandado un correo para que confirmes la suscripción.",
+    invalid: "Ese correo no parece válido.",
+    error: "No se ha podido completar. Prueba en un rato o escríbeme.",
+    note: "Te pediré confirmarlo y puedes darte de baja desde cualquier correo.",
+    confirmed: {
+      href: "/es/suscripcion-confirmada",
+      title: "Suscripción confirmada",
+      text: "Gracias. A partir de ahora te llegará un correo a la semana con lo que publique. Si algún día te sobra, en cada correo tienes el enlace para darte de baja.",
+      cta: "Ir a los artículos",
+    },
   },
   news: {
     tag: "ÚLTIMA HORA",
@@ -642,12 +735,13 @@ const es: Dictionary = {
         name: "ANTIDOP",
         tagline: "Rompe el bucle de la dopamina",
         description:
-          "App Android que bloquea en tiempo real las apps y webs adictivas en el instante exacto en que intentas abrirlas: un aviso a pantalla completa te muestra un mensaje que tú mismo te escribiste y eliges resistir o rendirte. Con score de dopamina (0–100), rutina diaria y diario de progreso.",
+          "App Android que bloquea en tiempo real las apps y webs que te roban el tiempo, en el instante exacto en que intentas abrirlas: un aviso a pantalla completa te muestra tu personaje y un mensaje que tú mismo te escribiste, y eliges resistir o rendirte. Es también un juego de rol en píxeles en el que el personaje solo crece con lo que el móvil mide. Con reto diario, rutina opcional y diario de progreso.",
         role: "Fundador y desarrollador",
         highlight:
-          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical, cero telemetría y cero tracking, pensada para usarse lo mínimo posible: una app contra la adicción no debería crear la suya.",
+          "Bloqueo nativo en dos capas con servicios propios en Kotlin (apps y navegador). Privacidad radical, cero telemetría y cero tracking, pensada para usarse lo mínimo posible: una app para usar menos el móvil no debería engancharte ella.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
-        status: "En desarrollo",
+        status: "En pruebas",
+        links: [{ label: "Ver ANTIDOP", href: "/es/antidop" }],
       },
       {
         slug: "yaiwell",
@@ -747,7 +841,7 @@ const es: Dictionary = {
     text: "Si tienes un proyecto en mente, quieres colaborar o solo te apetece hablar de IA, escríbeme.",
     cta: "Escríbeme",
   },
-  footer: { rights: "Hecho con Next.js y Three.js" },
+  footer: { rights: "Hecho con Next.js y Three.js", rss: "RSS" },
   theme: {
     toLight: "Claro",
     toDark: "Oscuro",
@@ -916,6 +1010,7 @@ const es: Dictionary = {
     },
     aboutPage: { section: "Ficha completa del sujeto", report: "Informe", channels: "Canales autorizados" },
     editorialPage: { section: "Normas de publicación", clause: "Cláusula", footer: "Fin de las normas" },
+    privacyPage: { section: "Tratamiento de datos", clause: "Apartado", footer: "Fin de la política" },
   },
 };
 
@@ -1071,6 +1166,79 @@ const en: Dictionary = {
       },
     ],
     contact: "If you find a mistake or something that has changed, write to me. I'll review it and, where appropriate, correct it as soon as possible, and the update date will reflect it:",
+  },
+  privacy: {
+    href: "/en/privacy",
+    tag: "PRIVACY",
+    title: "Privacy policy",
+    updated: "Last updated: 8 November 2026",
+    intro: "This website belongs to Jorge Graells. This page explains what data is processed when you visit, what for, and what you can do about it. In short: no cookies, no sign-up, and visits are measured anonymously.",
+    seoDescription: "What data jorgegraells.com processes and why: no cookies, no sign-up and anonymous visit counts. Your rights and how to use them.",
+    sections: [
+      {
+        title: "Who is responsible",
+        text: "I'm the data controller, Jorge Graells. For anything about your data you can write to me at dev.graells@gmail.com.",
+      },
+      {
+        title: "Cookies",
+        text: "This website doesn't use tracking or advertising cookies, which is why you won't see a cookie banner. It only keeps two preferences in your browser, and they never leave it: light or dark mode and, if you play the 3D world, your progress on the neighbours quest. You can clear them from your browser settings.",
+      },
+      {
+        title: "Visit measurement",
+        text: "To know which pages get read I use Vercel Web Analytics. It doesn't use cookies or store your IP address: it counts visits with a temporary identifier worked out from the request and discarded the same day. I only see aggregated figures (page views, country, device type, browser and referring site), never who you are. The Flypet and ANTIDOP pages are left out of this measurement.",
+      },
+      {
+        title: "Hosting",
+        text: "The website is hosted by Vercel Inc., based in the United States. Like any server, it logs technical data for each request, such as the IP address and browser, to serve the page and protect it from abuse. Vercel acts as a data processor, and the transfer to the United States relies on the safeguards required by the GDPR (the EU-US Data Privacy Framework and standard contractual clauses).",
+      },
+      {
+        title: "If you write to me",
+        text: "If you email me, I use your address and whatever you tell me only to reply and, if we talk about training or a project, to prepare a proposal. I don't use it to send you marketing and I don't share it with anyone. I keep it while the conversation lasts and, if we end up working together, for as long as the law requires.",
+      },
+      {
+        title: "Weekly newsletter",
+        text: "If you subscribe, I keep your email address and the language you signed up in to send you a weekly roundup of what I've published. Sending is handled by Brevo, a company based in France that acts as a data processor and stores the data in the European Union. Subscribing takes a double confirmation: you get nothing until you click the link in the first email, and Brevo records when you confirmed. Brevo also records, as standard, whether an email is opened and which links are clicked; I only look at it in aggregate, to see what's of interest. You can unsubscribe whenever you like with the link in every email, and your data then stops being used for the newsletter.",
+      },
+      {
+        title: "Legal basis",
+        text: "Anonymous measurement and server logs rely on my legitimate interest in keeping the website working and secure and in knowing which content is useful (Article 6(1)(f) GDPR). Replying to your email relies on your own request and, where it applies, on steps prior to a contract (Article 6(1)(b)). The newsletter relies on your consent, given when you confirm the subscription and withdrawable at any time (Article 6(1)(a)).",
+      },
+      {
+        title: "Your rights",
+        text: "You can ask to access, correct or delete your data, object to or restrict its processing, or ask for portability by writing to dev.graells@gmail.com. If you think I haven't handled your request properly, you can complain to the Spanish Data Protection Agency (aepd.es).",
+      },
+      {
+        title: "Other websites and the Flypet and ANTIDOP apps",
+        text: "Links to social networks and other websites lead to services with their own privacy policies. The Flypet and ANTIDOP apps each have their own, at jorgegraells.com/en/flypet/privacidad and jorgegraells.com/en/antidop/privacidad.",
+      },
+      {
+        title: "Changes",
+        text: "If what this website does with data changes, I'll update this page first and the date above will show it.",
+      },
+    ],
+    contact: "For any question about this policy, write to me at:",
+  },
+  feed: {
+    href: "/en/feed.xml",
+    title: "Jorge Graells | Cybersecurity and AI",
+    description: "Cybersecurity and artificial intelligence guides and news, with their sources.",
+  },
+  subscribe: {
+    title: "The week's posts, in your inbox",
+    text: "One email a week with the guides and news I've published. If there's nothing that week, I won't write.",
+    placeholder: "you@email.com",
+    button: "Subscribe",
+    sending: "Sending...",
+    ok: "Almost there. I've sent you an email to confirm your subscription.",
+    invalid: "That email doesn't look right.",
+    error: "That didn't work. Try again in a while or write to me.",
+    note: "You'll be asked to confirm, and you can unsubscribe from any email.",
+    confirmed: {
+      href: "/en/subscribed",
+      title: "Subscription confirmed",
+      text: "Thanks. From now on you'll get one email a week with what I publish. If you ever want out, every email has an unsubscribe link.",
+      cta: "Go to the articles",
+    },
   },
   news: {
     tag: "BREAKING",
@@ -1267,12 +1435,13 @@ const en: Dictionary = {
         name: "ANTIDOP",
         tagline: "Break the dopamine loop",
         description:
-          "Android app that blocks addictive apps and websites in real time, at the exact instant you try to open them: a full-screen prompt shows a message you wrote to yourself, and you choose to resist or give in. With a dopamine score (0–100), daily routine and progress journal.",
+          "Android app that blocks, in real time, the apps and websites that steal your time, at the exact instant you try to open them: a full-screen prompt shows your character and a message you wrote to yourself, and you choose to resist or give in. It is also a pixel-art role-playing game where the character only grows with what the phone measures. With a daily challenge, an optional routine and a progress journal.",
         role: "Founder & developer",
         highlight:
-          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy, zero telemetry and zero tracking, built to be used as little as possible: an app against addiction shouldn't create its own.",
+          "Two-layer native blocking with custom Kotlin services (apps and browser). Radical privacy, zero telemetry and zero tracking, built to be used as little as possible: an app to help you use your phone less shouldn't hook you itself.",
         tech: ["React Native + Expo", "TypeScript", "Kotlin", "Android"],
-        status: "In development",
+        status: "In testing",
+        links: [{ label: "See ANTIDOP", href: "/en/antidop" }],
       },
       {
         slug: "yaiwell",
@@ -1372,7 +1541,7 @@ const en: Dictionary = {
     text: "If you've got a project in mind, want to collaborate, or just feel like talking about AI, get in touch.",
     cta: "Get in touch",
   },
-  footer: { rights: "Built with Next.js and Three.js" },
+  footer: { rights: "Built with Next.js and Three.js", rss: "RSS" },
   theme: {
     toLight: "Light",
     toDark: "Dark",
@@ -1541,6 +1710,7 @@ const en: Dictionary = {
     },
     aboutPage: { section: "Full subject sheet", report: "Report", channels: "Authorized channels" },
     editorialPage: { section: "House rules", clause: "Clause", footer: "End of rules" },
+    privacyPage: { section: "Data handling", clause: "Section", footer: "End of policy" },
   },
 };
 

@@ -26,6 +26,11 @@ const ROUTES = {
   noticias: ["/es/noticias", "/en/news"],
   "editorial-policy": ["/es/politica-editorial", "/en/editorial-policy"],
   "politica-editorial": ["/es/politica-editorial", "/en/editorial-policy"],
+  privacidad: ["/es/privacidad", "/en/privacy"],
+  privacy: ["/es/privacidad", "/en/privacy"],
+  // Destino del correo de confirmación del boletín: noindex, no se pide indexar
+  "suscripcion-confirmada": [],
+  subscribed: [],
 };
 const route = (name) => ROUTES[name] ?? [`/es/${name}`, `/en/${name}`];
 const HOME = ["/es", "/en"];
@@ -35,6 +40,8 @@ function pagesForFile(file) {
   if (file === "src/i18n/dictionaries.ts") return [...HOME, ...route("training"), ...route("about")];
   if (file === "src/content/flypet.ts") return route("flypet");
   if (file === "src/content/flypet-privacy.ts") return route("flypet/privacidad");
+  if (file === "src/content/antidop.ts") return route("antidop");
+  if (file === "src/content/antidop-privacy.ts") return route("antidop/privacidad");
   if (file === "src/app/[locale]/page.tsx") return HOME;
 
   // La plantilla de los artículos no cambia el contenido de ninguno

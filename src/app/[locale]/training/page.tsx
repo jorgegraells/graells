@@ -256,7 +256,7 @@ export default async function TrainingPage({
           </a>
         </div>
       </section>
-      <Footer dict={dict} />
+      <Footer dict={dict} subscribe={locale as Locale} />
       </div>
       <div className="theme-dossier">
         <DossierTraining locale={locale as Locale} dict={dict} />

@@ -7,6 +7,8 @@ import ArticleCard from "@/components/blog/ArticleCard";
 import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierFolio from "@/components/dossier/DossierFolio";
 import DossierNewspaper from "@/components/dossier/DossierNewspaper";
+import SubscribeForm from "@/components/SubscribeForm";
+import { subscribeEnabled } from "@/lib/subscribe";
 
 /** Página "Noticias": solo los artículos marcados como noticia, del más
  *  reciente al más antiguo. Vive en /es/noticias y /en/news (la URL de cada
@@ -64,6 +66,11 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
             ))}
           </div>
         )}
+        {subscribeEnabled && (
+          <div className="mx-auto max-w-3xl">
+            <SubscribeForm locale={locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="arcade" />
+          </div>
+        )}
       </section>
         <Footer dict={dict} />
       </div>
@@ -84,6 +91,7 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
             <h1>{dict.news.title}</h1>
             <p className="dx-resumen">{dict.news.subtitle}</p>
             {news.length === 0 && <p>{dict.news.empty}</p>}
+            {subscribeEnabled && <SubscribeForm locale={locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="dossier" />}
           </DossierFolio>
           {news.length > 0 && <DossierNewspaper articles={news} locale={locale} dict={dict} />}
         </div>

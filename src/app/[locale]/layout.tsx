@@ -255,6 +255,7 @@ export default async function LocaleLayout({
 }>) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
+  const dict = getDictionary(locale);
 
   return (
     <html
@@ -265,6 +266,8 @@ export default async function LocaleLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        {/* Aquí y no en metadata.alternates: cada página define los suyos y lo pisaría */}
+        <link rel="alternate" type="application/rss+xml" title={dict.feed.title} href={dict.feed.href} />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <script

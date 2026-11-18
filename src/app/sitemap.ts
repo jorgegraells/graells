@@ -91,6 +91,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${SITE}/es/politica-editorial`, en: `${SITE}/en/editorial-policy` } },
     },
     {
+      url: `${SITE}/es/privacidad`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+      alternates: { languages: { es: `${SITE}/es/privacidad`, en: `${SITE}/en/privacy` } },
+    },
+    {
+      url: `${SITE}/en/privacy`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.2,
+      alternates: { languages: { es: `${SITE}/es/privacidad`, en: `${SITE}/en/privacy` } },
+    },
+    {
       url: `${SITE}/es/noticias`,
       lastModified: now,
       changeFrequency: "daily",
@@ -131,6 +145,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.5,
       alternates: { languages: { es: `${SITE}/es/flypet/probar`, en: `${SITE}/en/flypet/probar` } },
+    },
+    {
+      url: `${SITE}/es/antidop`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: { languages: { es: `${SITE}/es/antidop`, en: `${SITE}/en/antidop` } },
+    },
+    {
+      url: `${SITE}/en/antidop`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: { languages: { es: `${SITE}/es/antidop`, en: `${SITE}/en/antidop` } },
     },
     {
       url: `${SITE}/es/blog`,

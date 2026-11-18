@@ -164,7 +164,7 @@ export default function AboutPage({ locale }: { locale: Locale }) {
           ))}
         </ul>
       </article>
-      <Footer dict={dict} />
+      <Footer dict={dict} subscribe={locale} />
       </div>
       <div className="theme-dossier">
         <DossierAbout locale={locale} dict={dict} />

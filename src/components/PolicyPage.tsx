@@ -3,32 +3,38 @@ import type { Metadata } from "next";
 import { getDictionary, siteLinks, type Locale } from "@/i18n/dictionaries";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import DossierEditorial from "@/components/dossier/DossierEditorial";
+import DossierPolicy from "@/components/dossier/DossierPolicy";
 
-/** Política editorial (/es/politica-editorial, /en/editorial-policy):
- *  transparencia sobre fuentes, noticias y correcciones, que Google Noticias
- *  tiene en cuenta para decidir qué webs muestra. */
+/** Páginas de texto por apartados:
+ *  - Política editorial (/es/politica-editorial, /en/editorial-policy): fuentes, noticias
+ *    y correcciones, que Google Noticias tiene en cuenta para decidir qué webs muestra.
+ *  - Privacidad (/es/privacidad, /en/privacy): qué datos trata la web. Si cambia algo
+ *    (analítica, suscripción por correo...), se actualiza aquí antes de publicarlo. */
 
 const SITE = "https://jorgegraells.com";
 
-export function editorialMetadata(locale: Locale): Metadata {
-  const dict = getDictionary(locale);
-  const other = getDictionary(locale === "es" ? "en" : "es");
-  const title = `${dict.editorial.title} | Jorge Graells`;
+export type PolicyKind = "editorial" | "privacy";
+
+export function policyMetadata(locale: Locale, kind: PolicyKind): Metadata {
+  const doc = getDictionary(locale)[kind];
+  const other = getDictionary(locale === "es" ? "en" : "es")[kind];
+  const title = `${doc.title} | Jorge Graells`;
+  const description = doc.seoDescription ?? doc.intro;
   return {
     title,
-    description: dict.editorial.intro,
+    description,
     alternates: {
-      canonical: dict.editorial.href,
-      languages: { [locale]: dict.editorial.href, [locale === "es" ? "en" : "es"]: other.editorial.href },
+      canonical: doc.href,
+      languages: { [locale]: doc.href, [locale === "es" ? "en" : "es"]: other.href },
     },
-    openGraph: { title, description: dict.editorial.intro, url: `${SITE}${dict.editorial.href}`, type: "website", images: [`${SITE}/og.jpg`] },
+    openGraph: { title, description, url: `${SITE}${doc.href}`, type: "website", images: [`${SITE}/og.jpg`] },
   };
 }
 
-export default function EditorialPage({ locale }: { locale: Locale }) {
+export default function PolicyPage({ locale, kind }: { locale: Locale; kind: PolicyKind }) {
   const dict = getDictionary(locale);
-  const t = dict.editorial;
+  const t = dict[kind];
+  const updated = "updated" in t ? t.updated : undefined;
   return (
     <main className="flex-1">
       <div className="theme-arcade">
@@ -40,6 +46,9 @@ export default function EditorialPage({ locale }: { locale: Locale }) {
         <h1 className="text-gradient neon-text mt-3 text-4xl font-black uppercase tracking-tight sm:text-5xl">
           {t.title}
         </h1>
+        {updated && (
+          <p className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-muted">{updated}</p>
+        )}
         <p className="mt-6 text-lg leading-relaxed text-foreground/85">{t.intro}</p>
         {t.sections.map((s) => (
           <section key={s.title}>
@@ -65,7 +74,7 @@ export default function EditorialPage({ locale }: { locale: Locale }) {
       <Footer dict={dict} />
       </div>
       <div className="theme-dossier">
-        <DossierEditorial locale={locale} dict={dict} />
+        <DossierPolicy locale={locale} dict={dict} kind={kind} />
       </div>
     </main>
   );

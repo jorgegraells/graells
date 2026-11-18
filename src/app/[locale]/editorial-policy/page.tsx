@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
-import EditorialPage, { editorialMetadata } from "@/components/EditorialPage";
+import PolicyPage, { policyMetadata } from "@/components/PolicyPage";
 
 export function generateStaticParams() {
   return [{ locale: "en" }];
 }
 
 export function generateMetadata() {
-  return editorialMetadata("en");
+  return policyMetadata("en", "editorial");
 }
 
 export default async function EditorialPolicyRoute({
@@ -16,5 +16,5 @@ export default async function EditorialPolicyRoute({
 }) {
   const { locale } = await params;
   if (locale !== "en") notFound();
-  return <EditorialPage locale="en" />;
+  return <PolicyPage locale="en" kind="editorial" />;
 }

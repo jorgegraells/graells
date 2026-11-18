@@ -1,0 +1,38 @@
+# Boletín semanal: los viernes prepara en Brevo el resumen de lo publicado esa semana.
+# Mientras NEWSLETTER_MODE no sea "send", deja la campaña en borrador y manda una
+# prueba a Jorge para que la revise y la envíe él. Montaje: docs/BOLETIN.md.
+name: Boletín semanal
+
+on:
+  schedule:
+    # Viernes 07:00 UTC (08:00 en invierno, 09:00 en verano en España)
+    - cron: "0 7 * * 5"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "review (borrador + prueba), send (enviar ya) o dry (solo generar)"
+        default: review
+        type: choice
+        options: [review, send, dry]
+
+permissions:
+  contents: read
+
+jobs:
+  newsletter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/newsletter.mjs ${{ github.event.inputs.mode == 'dry' && '--dry' || '' }}
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ vars.BREVO_SENDER_EMAIL }}
+          BREVO_LIST_ES: ${{ vars.BREVO_LIST_ES }}
+          BREVO_LIST_EN: ${{ vars.BREVO_LIST_EN }}
+          NEWSLETTER_TEST_EMAIL: ${{ vars.NEWSLETTER_TEST_EMAIL }}
+          # En la ejecución del viernes manda esta variable; a mano, el modo elegido
+          NEWSLETTER_MODE: ${{ github.event.inputs.mode || vars.NEWSLETTER_MODE || 'review' }}
