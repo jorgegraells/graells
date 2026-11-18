@@ -407,7 +407,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "14_foto",
           label: "Photo",
           title: "Take its picture. The why comes with it.",
-          text: "The camera button saves the photo and writes underneath what the fly just did and which neuron drove it. This one says it extended its proboscis and started eating, with the MN9 neuron named. If it hasn't just done anything that can be explained, the photo comes out without a why. From there, share it with whoever you like.",
+          text: "The camera button saves the photo and writes underneath what the fly just did and which neuron drove it. This one says it stepped on something sweet, extended its proboscis and started eating, and that the neuron for that switched on. If it hasn't just done anything that can be explained, the photo comes out without a why. From there, share it with whoever you like.",
           alt: "A photo taken in the game, as it gets shared: the fly from behind, eating on top of a green grape, with its caption below: \"It extended its proboscis and started eating. It stepped on something sweet: it tasted it with its legs. The neuron that extends its proboscis switched on.\"",
           credit: true,
         },
