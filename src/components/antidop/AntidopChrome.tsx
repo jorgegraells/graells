@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/dictionaries";
 import { antidopChrome, ANTIDOP_EMAIL } from "@/content/antidop";
 
-// Cabecera y pie de las páginas de ANTIDOP. `path` es la ruta sin el idioma ("" o "/privacidad").
+// Cabecera y pie de las páginas de ANTIDOP. `path` es la ruta sin el idioma ("", "/privacidad" o "/probar").
 
 const LOCALES: Locale[] = ["es", "en"];
 

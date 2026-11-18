@@ -27,6 +27,8 @@ export type AntidopPage = {
   hook: string;
   perks: string[];
   seeCta: string;
+  /** Enlace a /antidop/probar mientras la app está en prueba cerrada. */
+  testersCta: string;
   /** Etiqueta accesible del vídeo y frase que lo acompaña. */
   videoLabel: string;
   videoCaption: string;
@@ -79,6 +81,7 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     hook: "Tu personaje crece si resistes.",
     perks: ["Gratis", "Sin anuncios", "Sin cuentas", "Sin seguimiento"],
     seeCta: "Mira cómo funciona",
+    testersCta: "Hazte probador",
     videoLabel: "Vídeo: ANTIDOP en 40 segundos",
     videoCaption: "ANTIDOP en 40 segundos. Con sonido.",
     howTag: "CÓMO FUNCIONA",
@@ -174,7 +177,7 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     getTag: "DÓNDE",
     getTitle: "Disponible pronto",
     availabilityHeading: "Dónde conseguirla",
-    availability: "En pruebas en Google Play; disponible pronto. Solo para Android.",
+    availability: "En prueba cerrada en Google Play: si tienes Android, puedes probarla ya. Disponible para todos pronto.",
     playCta: "Ver en Google Play",
     ageHeading: "Para quién",
     age: "Para mayores de 16 años.",
@@ -198,6 +201,7 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     hook: "Your character grows as you resist.",
     perks: ["Free", "No ads", "No accounts", "No tracking"],
     seeCta: "See how it works",
+    testersCta: "Become a tester",
     videoLabel: "Video: ANTIDOP in 40 seconds",
     videoCaption: "ANTIDOP in 40 seconds. With sound.",
     howTag: "HOW IT WORKS",
@@ -293,7 +297,7 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     getTag: "WHERE",
     getTitle: "Coming soon",
     availabilityHeading: "Where to get it",
-    availability: "In testing on Google Play; coming soon. Android only.",
+    availability: "In closed testing on Google Play: if you have Android, you can try it now. Available to everyone soon.",
     playCta: "See on Google Play",
     ageHeading: "Who it is for",
     age: "For ages 16 and up.",

@@ -135,10 +135,15 @@ export default async function AntidopPage({
                 {p.playCta}
               </a>
             ) : (
-              <a href="#como-funciona" className="dop-btn dop-pix">
-                {p.seeCta}
-                <span aria-hidden="true">↓</span>
-              </a>
+              <>
+                <Link href={`/${locale}/antidop/probar`} className="dop-btn dop-pix">
+                  {p.testersCta}
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <a href="#como-funciona" className="dop-link dop-pix ml-5 inline-block align-middle">
+                  {p.seeCta} <span aria-hidden="true">↓</span>
+                </a>
+              </>
             )}
           </div>
           {!ANTIDOP_PLAY_URL && (
@@ -255,7 +260,13 @@ export default async function AntidopPage({
                 {p.playCta}
               </a>
             ) : (
-              <p className="dop-muted mt-3 leading-relaxed">{p.availability}</p>
+              <>
+                <p className="dop-muted mt-3 leading-relaxed">{p.availability}</p>
+                <Link href={`/${locale}/antidop/probar`} className="dop-btn dop-pix mt-5">
+                  {p.testersCta}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              </>
             )}
             <h3 className="dop-pix mt-8 text-2xl">{p.makersHeading}</h3>
             <p className="dop-muted mt-3 leading-relaxed">{p.makers}</p>
