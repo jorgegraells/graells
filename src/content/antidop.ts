@@ -27,6 +27,9 @@ export type AntidopPage = {
   hook: string;
   perks: string[];
   seeCta: string;
+  /** Etiqueta accesible del vídeo y frase que lo acompaña. */
+  videoLabel: string;
+  videoCaption: string;
   howTag: string;
   howTitle: string;
   steps: AntidopStep[];
@@ -76,6 +79,8 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     hook: "Tu personaje crece si resistes.",
     perks: ["Gratis", "Sin anuncios", "Sin cuentas", "Sin seguimiento"],
     seeCta: "Mira cómo funciona",
+    videoLabel: "Vídeo: ANTIDOP en 40 segundos",
+    videoCaption: "ANTIDOP en 40 segundos. Con sonido.",
     howTag: "CÓMO FUNCIONA",
     howTitle: "Un aviso, una decisión",
     steps: [
@@ -193,6 +198,8 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     hook: "Your character grows as you resist.",
     perks: ["Free", "No ads", "No accounts", "No tracking"],
     seeCta: "See how it works",
+    videoLabel: "Video: ANTIDOP in 40 seconds",
+    videoCaption: "ANTIDOP in 40 seconds. With sound.",
     howTag: "HOW IT WORKS",
     howTitle: "One prompt, one decision",
     steps: [

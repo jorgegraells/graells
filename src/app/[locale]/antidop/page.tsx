@@ -189,6 +189,21 @@ export default async function AntidopPage({
         className="mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-14 sm:px-6 md:py-20"
       >
         <SectionHead index="01" tag={p.howTag} title={p.howTitle} />
+        <figure className="mx-auto mt-10 max-w-4xl">
+          <video
+            className="hud-panel aspect-video w-full bg-black"
+            controls
+            playsInline
+            preload="none"
+            poster={`/antidop/${locale}/anuncio-poster.jpg`}
+            aria-label={p.videoLabel}
+          >
+            <source src={`/antidop/${locale}/anuncio.mp4`} type="video/mp4" />
+          </video>
+          <figcaption className="mt-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-foreground/60">
+            {p.videoCaption}
+          </figcaption>
+        </figure>
         <ol className="mt-10 grid gap-4 md:grid-cols-3">
           {p.steps.map((step, i) => (
             <li key={step.title} className="hud-panel clip-corner p-6">
