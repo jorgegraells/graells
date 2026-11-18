@@ -16,10 +16,12 @@ import {
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SectionHead from "@/components/SectionHead";
+import FlypetHeroVideo from "@/components/FlypetHeroVideo";
 
 // Página pública de la app Flypet: el gancho, qué hace (piezas de la serie explicativa),
 // aspectos, lo que es y lo que no, dónde conseguirla, qué cuesta, privacidad y contacto.
-// Sin animaciones de entrada ni JavaScript propio: es una página para leer, en el móvil.
+// Sin animaciones de entrada: es una página para leer, en el móvil. El único JavaScript propio es el
+// del vídeo de la portada (FlypetHeroVideo), que sin él se queda en su póster.
 // Imágenes con <img> y srcset ya optimizados: no pasan por el optimizador de Vercel.
 
 const SITE = "https://jorgegraells.com";
@@ -249,16 +251,11 @@ export default async function FlypetPage({
             </h1>
           </div>
 
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/flypet/fotos/mosca-1080.webp"
-            srcSet="/flypet/fotos/mosca-640.webp 640w, /flypet/fotos/mosca-1080.webp 1080w"
-            sizes="(min-width: 1152px) 540px, (min-width: 768px) 48vw, calc(100vw - 40px)"
-            width={1080}
-            height={1100}
+          {/* Vídeo vertical, como la pantalla del móvil: estrecho en el móvil para que el texto asome debajo */}
+          <FlypetHeroVideo
+            base={`/flypet/${locale}/hero`}
             alt={p.heroAlt}
-            fetchPriority="high"
-            className="glow-ring h-auto w-full rounded-2xl md:col-start-2 md:row-span-2 md:row-start-1"
+            className="mx-auto w-[66%] max-w-[280px] md:col-start-2 md:row-span-2 md:row-start-1 md:w-full md:max-w-[340px]"
           />
 
           <div className="md:self-start">
@@ -304,6 +301,7 @@ export default async function FlypetPage({
 
       <Chapter id="como-funciona" chapter={p.brain} locale={locale} credit={p.credit} />
       <Chapter chapter={p.life} locale={locale} credit={p.credit} firstColor={4} />
+      <Chapter chapter={p.rastro} locale={locale} credit={p.credit} firstColor={1} />
       <Chapter chapter={p.yours} locale={locale} credit={p.credit} firstColor={2} />
 
       {/* Fotos limpias: el momento vistoso, sin marco ni texto encima */}
@@ -343,7 +341,7 @@ export default async function FlypetPage({
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 md:py-20">
-        <SectionHead index="04" tag={p.truthTag} title={p.truthTitle} />
+        <SectionHead index="05" tag={p.truthTag} title={p.truthTitle} />
         <div className="hud-panel clip-corner mt-10 max-w-4xl space-y-4 p-6 sm:p-8">
           {p.truth.map((paragraph) => (
             <p key={paragraph} className="text-lg leading-relaxed text-foreground/90">
@@ -361,7 +359,7 @@ export default async function FlypetPage({
         id="conseguirla"
         className="mx-auto w-full max-w-6xl scroll-mt-24 px-5 pb-24 pt-14 sm:px-6 md:pt-20"
       >
-        <SectionHead index="05" tag={p.getTag} title={p.getTitle} />
+        <SectionHead index="06" tag={p.getTag} title={p.getTitle} />
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           <div className="hud-panel clip-corner p-6 sm:p-7">
             <h3 className="text-xl font-bold text-foreground">{p.availabilityHeading}</h3>
