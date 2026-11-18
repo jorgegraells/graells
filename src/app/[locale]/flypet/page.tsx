@@ -255,6 +255,8 @@ export default async function FlypetPage({
           <FlypetHeroVideo
             base={`/flypet/${locale}/hero`}
             alt={p.heroAlt}
+            pauseLabel={p.heroPause}
+            playLabel={p.heroPlay}
             className="mx-auto w-[66%] max-w-[280px] md:col-start-2 md:row-span-2 md:row-start-1 md:w-full md:max-w-[340px]"
           />
 

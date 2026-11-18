@@ -50,6 +50,8 @@ export type FlypetPage = {
   ogAlt: string;
   title: string;
   heroAlt: string;
+  heroPause: string;
+  heroPlay: string;
   lead: string;
   hook: string;
   perks: string[];
@@ -94,6 +96,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     title: "Esta mascota tiene cerebro. En serio.",
     heroAlt:
       "Vídeo sin sonido de Flypet. La mosca de cerca y, encima, sus neuronas encendiéndose: «¿Huirá? Lo decide su cerebro». Después huye de un toque, cuenta por qué, come, duerme, recorre un laberinto y enseña su Flydex.",
+    heroPause: "Parar el vídeo",
+    heroPlay: "Reproducir el vídeo",
     lead: "Lleva dentro el cableado de una mosca macho real: 165.122 neuronas con sus conexiones, simuladas en tu móvil mientras la miras. Cuando huye, come o se limpia, lo decide ese cerebro.",
     hook: "Así que, ¿qué hará ahora? Vas a tener que verlo.",
     perks: ["Gratis", "Sin anuncios", "Sin cuentas", "Sin conexión para jugar"],
@@ -130,7 +134,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           label: "Laboratorio",
           title: "Apágale una neurona. A ver qué hace.",
           text: "Enciendes y apagas neuronas, adivinas qué hará y lo comparas con lo publicado sobre moscas reales. Los experimentos que empiezan por un sentido (azúcar, algo que se le echa encima, polvo en las alas) son la prueba de fuego: si esta vez no hace lo mismo que las reales, te lo dice. Los que encienden la neurona que da la orden (andar, girar, marcha atrás) no prueban nada, y la app lo avisa: lee esa misma neurona. Sirven para ver qué hace cada orden.",
-          alt: "Dos pantallas del laboratorio: la lista de experimentos (marcha atrás, andar, girar, sabor dulce, sin la MN9 y más) y el resultado de «Sin la MN9»: ni las moscas reales ni la tuya sacan la trompa.",
+          alt: "Dos pantallas del experimento «Sin la MN9». La apuesta: «Ahora apagamos la MN9 y le damos azúcar otra vez. ¿Come?», con dos respuestas, «Sí, saca la trompa» y «No, no come». Y el resultado: «Hace lo mismo que las reales»; ni las moscas reales ni la tuya sacan la trompa, y se quedó quieta todo el rato.",
         },
         {
           file: "05_anatomia",
@@ -232,7 +236,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       {
         file: "coleccionista",
         caption: "La Coleccionista no se compra.",
-        alt: "La mosca Coleccionista, turquesa con ojos tornasolados de arcoíris y una banda con medallas, junto a una geoda de amatista.",
+        alt: "La mosca Coleccionista, holográfica y tallada en facetas de colores, como una carta brillante, en el borde de una geoda de amatista.",
       },
       {
         file: "porcelana",
@@ -250,7 +254,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       label: "Flydex",
       title: "Que no se te escape ni una.",
       text: "La Flydex tiene 12 moscas: Dorada, Neón, Robot, Anime... Unas se pagan con Flycoins y otras hay que sudarlas: la Leyenda pide todos los logros; la Científica, todo el laboratorio; la Perla, abrir Flypet 30 días seguidos, y la Espectro, tres moscas que lleguen a viejas contigo. Con las 12, te llevas la Coleccionista, un premio que no se compra.",
-      alt: "La Flydex del libro: 7 de 12 moscas. Arriba, la Clásica, la Dorada y la Neón; debajo, tres de premio en sombra con lo que piden (la Científica, el laboratorio; la Leyenda, los logros; la Perla, 30 días) y la Coleccionista, también en sombra, el premio por completarla. Al lado, la Coleccionista ya conseguida, tornasolada, junto a una geoda de amatista.",
+      alt: "La Flydex del libro: 7 de 12 moscas. Arriba, la Clásica, la Dorada y la Neón; debajo, tres de premio en sombra con lo que piden (la Científica, el laboratorio; la Leyenda, los logros; la Perla, 30 días) y la Coleccionista, también en sombra, el premio por completarla. Al lado, la Coleccionista ya conseguida, holográfica y tallada en facetas, junto a una geoda de amatista.",
     },
     truthTag: "SIN TRUCOS",
     truthTitle: "Lo que es y lo que no",
@@ -295,6 +299,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     title: "This pet actually has a brain.",
     heroAlt:
       'Silent video of Flypet. The fly up close and, above it, its neurons lighting up: "Will it bolt? Its brain decides." Then it bolts from a tap, eats, sleeps and stands in its room.',
+    heroPause: "Pause the video",
+    heroPlay: "Play the video",
     lead: "Inside is the wiring of a real male fly: 165,122 neurons and their connections, simulated on your phone while you watch. When it bolts, eats or grooms, that brain makes the call.",
     hook: "So what will it do next? You'll have to see.",
     perks: ["Free", "No ads", "No accounts", "No connection needed to play"],
@@ -331,7 +337,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           label: "The lab",
           title: "Switch off a neuron. See what happens.",
           text: "Turn neurons on and off, guess what it'll do, and compare with what's been published about real flies. Experiments that start from a sense (sugar, something looming, dust on its wings) are the real test: if it doesn't do what real flies do this time, it tells you. The ones that switch on the neuron giving the order (walk, turn, reverse) prove nothing, and the app says so: it reads that very neuron. They're there to show what each order does.",
-          alt: 'Two lab screens: the list of experiments (walking backwards, walking, turning, sweet taste, without MN9 and more) and the result of "Without MN9": neither real flies nor yours put out the proboscis.',
+          alt: 'Two screens of the "Without MN9" experiment. The guess: "Now we switch off MN9 and give it sugar again. Does it eat?", with two answers, "Yes, it puts out its proboscis" and "No, it doesn\'t eat". And the result: "It does the same as real flies"; neither real flies nor yours put out the proboscis, and it stayed still the whole time.',
         },
         {
           file: "05_anatomia",
@@ -407,8 +413,8 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "14_foto",
           label: "Photo",
           title: "Take its picture. The why comes with it.",
-          text: "The camera button saves the photo and writes underneath what the fly just did and which neuron drove it. This one says it stepped on something sweet, extended its proboscis and started eating, and that the neuron for that switched on. If it hasn't just done anything that can be explained, the photo comes out without a why. From there, share it with whoever you like.",
-          alt: "A photo taken in the game, as it gets shared: the fly from behind, eating on top of a green grape, with its caption below: \"It extended its proboscis and started eating. It stepped on something sweet: it tasted it with its legs. The neuron that extends its proboscis switched on.\"",
+          text: "The camera button saves the photo and writes underneath what the fly just did and which neuron drove it. This one says it extended its proboscis and started eating, because it stepped on something sweet. If it hasn't just done anything that can be explained, the photo comes out without a why. From there, share it with whoever you like.",
+          alt: "A photo taken in the game, as it gets shared: the fly from behind, eating on top of a green grape, with its caption below: \"It extended its proboscis and started eating. It stepped on something sweet: it tasted it with its legs.\"",
           credit: true,
         },
         {
@@ -433,7 +439,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       {
         file: "coleccionista",
         caption: "The Collector can't be bought.",
-        alt: "The Collector fly, turquoise with rainbow iridescent eyes and a sash of medals, by an amethyst geode.",
+        alt: "The Collector fly, holographic and cut into coloured facets like a shiny trading card, on the edge of an amethyst geode.",
       },
       {
         file: "porcelana",
@@ -451,7 +457,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       label: "Flydex",
       title: "Don't let a single fly get away.",
       text: "The Flydex has 12 flies: Golden, Neon, Robot, Anime and more. Some cost Flycoins and some you have to really earn: the Legend needs every achievement, the Scientist the whole lab, the Pearl opening Flypet 30 days in a row, and the Specter three flies that reach old age with you. Get all 12 and the Collector is yours, a reward you can't buy.",
-      alt: "The Flydex in the book: 7 of 12 flies. At the top, the Classic, the Golden and the Neon; below, three reward flies in shadow with what each takes (the Scientist, the lab; the Legend, achievements; the Pearl, 30 days) and the Collector, also in shadow, the reward for completing it. Next to it, the Collector once earned, iridescent, by an amethyst geode.",
+      alt: "The Flydex in the book: 7 of 12 flies. At the top, the Classic, the Golden and the Neon; below, three reward flies in shadow with what each takes (the Scientist, the lab; the Legend, achievements; the Pearl, 30 days) and the Collector, also in shadow, the reward for completing it. Next to it, the Collector once earned, holographic and cut into facets, by an amethyst geode.",
     },
     truthTag: "NO TRICKS",
     truthTitle: "What this is and isn't",
