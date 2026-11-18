@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
+import { isLocale } from "@/i18n/dictionaries";
 import { antidopPrivacy } from "@/content/antidop-privacy";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import { AntidopFooter, AntidopHeader } from "@/components/antidop/AntidopChrome";
 
 // Política de privacidad de la app ANTIDOP: el enlace que pide Google Play y la propia app.
 
@@ -40,27 +39,26 @@ export default async function AntidopPrivacyPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const dict = getDictionary(locale);
   const p = antidopPrivacy[locale];
 
   return (
-    <main className="flex-1">
-      <Nav locale={locale as Locale} dict={dict} />
-      <section className="mx-auto w-full max-w-3xl px-6 pb-24 pt-32">
-        <h1 className="text-gradient neon-text text-4xl font-black uppercase tracking-tight sm:text-5xl">
+    <main>
+      <AntidopHeader locale={locale} path="/privacidad" />
+      <section className="mx-auto w-full max-w-3xl px-6 pb-20 pt-14">
+        <h1 className="ad-pix text-4xl leading-tight sm:text-5xl">
           {p.title}
         </h1>
-        <p className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-muted">
+        <p className="ad-pix ad-muted mt-4 text-sm uppercase tracking-[0.12em]">
           {p.updated}
         </p>
-        <p className="mt-8 text-lg leading-relaxed text-foreground/90">{p.intro}</p>
+        <p className="mt-8 text-lg leading-relaxed">{p.intro}</p>
         {p.sections.map((s) => (
           <div key={s.heading} className="mt-10">
-            <h2 className="text-xl font-bold text-foreground">{s.heading}</h2>
+            <h2 className="ad-pix ad-cyan text-2xl">{s.heading}</h2>
             {s.blocks.map((block) => {
               if (block.type === "h3") {
                 return (
-                  <h3 key={block.text} className="mt-5 font-bold text-foreground">
+                  <h3 key={block.text} className="mt-5 font-bold">
                     {block.text}
                   </h3>
                 );
@@ -69,7 +67,7 @@ export default async function AntidopPrivacyPage({
                 return (
                   <ul
                     key={block.items[0]}
-                    className="mt-3 list-disc space-y-2 pl-5 leading-relaxed text-foreground/80 marker:text-neon-cyan"
+                    className="ad-muted mt-3 list-disc space-y-2 pl-5 leading-relaxed"
                   >
                     {block.items.map((item) => (
                       <li key={item}>{item}</li>
@@ -78,16 +76,16 @@ export default async function AntidopPrivacyPage({
                 );
               }
               return (
-                <p key={block.text} className="mt-3 leading-relaxed text-foreground/80">
+                <p key={block.text} className="ad-muted mt-3 leading-relaxed">
                   {block.text}
                 </p>
               );
             })}
           </div>
         ))}
-        <p className="mt-12 text-sm text-muted">{p.contact}</p>
+        <p className="ad-muted mt-12 text-sm">{p.contact}</p>
       </section>
-      <Footer dict={dict} />
+      <AntidopFooter locale={locale} path="/privacidad" />
     </main>
   );
 }

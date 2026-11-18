@@ -306,3 +306,35 @@ export const antidopPage: Record<Locale, AntidopPage> = {
     contactLabel: "Contact:",
   },
 };
+
+/** Cabecera y pie propios de las páginas de ANTIDOP (no llevan la navegación del portfolio). */
+export type AntidopChrome = {
+  home: string;
+  switchLabel: string;
+  madeBy: string;
+  siteLabel: string;
+  privacy: string;
+  contact: string;
+  backToApp: string;
+};
+
+export const antidopChrome: Record<Locale, AntidopChrome> = {
+  es: {
+    home: "ANTIDOP, inicio",
+    switchLabel: "Idioma",
+    madeBy: "Una app de Jorge Graells.",
+    siteLabel: "Ver su web",
+    privacy: "Política de privacidad",
+    contact: "Contacto",
+    backToApp: "Volver a ANTIDOP",
+  },
+  en: {
+    home: "ANTIDOP, home",
+    switchLabel: "Language",
+    madeBy: "An app by Jorge Graells.",
+    siteLabel: "Visit his site",
+    privacy: "Privacy policy",
+    contact: "Contact",
+    backToApp: "Back to ANTIDOP",
+  },
+};

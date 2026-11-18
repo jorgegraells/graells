@@ -1,0 +1,149 @@
+/* Piel de ANTIDOP: los colores, la letra de píxel y las tarjetas de la app.
+   Todo cuelga de .antidop para no tocar el resto del sitio ni depender de su tema. */
+
+.antidop {
+  --ad-bg: #17133a;
+  --ad-sunken: #0b0920;
+  --ad-surface: #241f5a;
+  --ad-ink: #f4f2ff;
+  --ad-muted: #b9b1e8;
+  --ad-cyan: #4de3f0;
+  --ad-cyan-dark: #1f8f9a;
+  --ad-gold: #f5c542;
+  --ad-line: #6f66c4;
+
+  flex: 1;
+  min-height: 100vh;
+  color: var(--ad-ink);
+  font-family: var(--font-ad-body), system-ui, sans-serif;
+  background-color: var(--ad-bg);
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(123, 92, 255, 0.28), transparent 38%),
+    radial-gradient(circle at 86% 30%, rgba(77, 227, 240, 0.14), transparent 34%),
+    radial-gradient(var(--ad-muted) 1px, transparent 1.6px),
+    radial-gradient(var(--ad-line) 1px, transparent 1.6px);
+  background-size:
+    100% 1400px,
+    100% 1400px,
+    220px 260px,
+    170px 190px;
+  background-position:
+    0 0,
+    0 0,
+    30px 40px,
+    110px 130px;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+}
+
+.antidop ::selection {
+  background: var(--ad-cyan);
+  color: var(--ad-sunken);
+}
+
+.antidop a:focus-visible,
+.antidop video:focus-visible {
+  outline: 3px solid var(--ad-cyan);
+  outline-offset: 3px;
+}
+
+.ad-pix {
+  font-family: var(--font-ad-pixel), ui-monospace, monospace;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.ad-wrap {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.ad-cyan {
+  color: var(--ad-cyan);
+}
+.ad-gold {
+  color: var(--ad-gold);
+}
+.ad-muted {
+  color: var(--ad-muted);
+}
+
+/* Tarjeta de la app: borde claro, sombra dura y, si lleva, rótulo en la esquina. */
+.ad-card {
+  position: relative;
+  border: 3px solid var(--ad-ink);
+  background: var(--ad-surface);
+  box-shadow: 8px 8px 0 var(--ad-sunken);
+  padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.ad-label {
+  position: absolute;
+  top: -0.95rem;
+  left: 1rem;
+  background: var(--ad-ink);
+  color: var(--ad-bg);
+  padding: 0.1rem 0.7rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.ad-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 3px solid var(--ad-ink);
+  background: var(--ad-cyan);
+  color: var(--ad-sunken);
+  padding: 0.8rem 1.6rem;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  box-shadow: 0 6px 0 var(--ad-cyan-dark);
+  transition:
+    transform 80ms steps(2),
+    box-shadow 80ms steps(2);
+}
+.ad-btn:hover {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 var(--ad-cyan-dark);
+}
+
+.ad-chip {
+  border: 3px solid var(--ad-line);
+  background: var(--ad-sunken);
+  padding: 0.15rem 0.7rem;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.ad-frame {
+  border: 3px solid var(--ad-ink);
+  background: var(--ad-sunken);
+  box-shadow: 8px 8px 0 var(--ad-sunken);
+}
+
+.ad-link {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--ad-line);
+}
+.ad-link:hover {
+  color: var(--ad-cyan);
+  text-decoration-color: var(--ad-cyan);
+}
+
+.ad-rule {
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--ad-line) 0 12px, transparent 12px 20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-btn {
+    transition: none;
+  }
+}
