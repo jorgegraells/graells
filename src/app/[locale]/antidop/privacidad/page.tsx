@@ -45,16 +45,16 @@ export default async function AntidopPrivacyPage({
     <main>
       <AntidopHeader locale={locale} path="/privacidad" />
       <section className="mx-auto w-full max-w-3xl px-6 pb-20 pt-14">
-        <h1 className="ad-pix text-4xl leading-tight sm:text-5xl">
+        <h1 className="dop-pix text-4xl leading-tight sm:text-5xl">
           {p.title}
         </h1>
-        <p className="ad-pix ad-muted mt-4 text-sm uppercase tracking-[0.12em]">
+        <p className="dop-pix dop-muted mt-4 text-sm uppercase tracking-[0.12em]">
           {p.updated}
         </p>
         <p className="mt-8 text-lg leading-relaxed">{p.intro}</p>
         {p.sections.map((s) => (
           <div key={s.heading} className="mt-10">
-            <h2 className="ad-pix ad-cyan text-2xl">{s.heading}</h2>
+            <h2 className="dop-pix dop-cyan text-2xl">{s.heading}</h2>
             {s.blocks.map((block) => {
               if (block.type === "h3") {
                 return (
@@ -67,7 +67,7 @@ export default async function AntidopPrivacyPage({
                 return (
                   <ul
                     key={block.items[0]}
-                    className="ad-muted mt-3 list-disc space-y-2 pl-5 leading-relaxed"
+                    className="dop-muted mt-3 list-disc space-y-2 pl-5 leading-relaxed"
                   >
                     {block.items.map((item) => (
                       <li key={item}>{item}</li>
@@ -76,14 +76,14 @@ export default async function AntidopPrivacyPage({
                 );
               }
               return (
-                <p key={block.text} className="ad-muted mt-3 leading-relaxed">
+                <p key={block.text} className="dop-muted mt-3 leading-relaxed">
                   {block.text}
                 </p>
               );
             })}
           </div>
         ))}
-        <p className="ad-muted mt-12 text-sm">{p.contact}</p>
+        <p className="dop-muted mt-12 text-sm">{p.contact}</p>
       </section>
       <AntidopFooter locale={locale} path="/privacidad" />
     </main>

@@ -1,4 +1,6 @@
-/* Piel de ANTIDOP: los colores, la letra de píxel y las tarjetas de la app.
+/* Piel de ANTIDOP. Las clases van con el prefijo dop-: con ad- los bloqueadores de anuncios
+   las ocultaban (pasó en el Chrome de Jorge el 2026-11-18).
+   Piel de ANTIDOP: los colores, la letra de píxel y las tarjetas de la app.
    Todo cuelga de .antidop para no tocar el resto del sitio ni depender de su tema. */
 
 .antidop {
@@ -46,31 +48,31 @@
   outline-offset: 3px;
 }
 
-.ad-pix {
+.dop-pix {
   font-family: var(--font-ad-pixel), ui-monospace, monospace;
   font-weight: 400;
   letter-spacing: 0.02em;
 }
 
-.ad-wrap {
+.dop-wrap {
   width: 100%;
   max-width: 72rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
 }
 
-.ad-cyan {
+.dop-cyan {
   color: var(--ad-cyan);
 }
-.ad-gold {
+.dop-gold {
   color: var(--ad-gold);
 }
-.ad-muted {
+.dop-muted {
   color: var(--ad-muted);
 }
 
 /* Tarjeta de la app: borde claro, sombra dura y, si lleva, rótulo en la esquina. */
-.ad-card {
+.dop-card {
   position: relative;
   border: 3px solid var(--ad-ink);
   background: var(--ad-surface);
@@ -78,7 +80,7 @@
   padding: 1.75rem 1.5rem 1.5rem;
 }
 
-.ad-label {
+.dop-label {
   position: absolute;
   top: -0.95rem;
   left: 1rem;
@@ -91,7 +93,7 @@
   white-space: nowrap;
 }
 
-.ad-btn {
+.dop-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -107,12 +109,12 @@
     transform 80ms steps(2),
     box-shadow 80ms steps(2);
 }
-.ad-btn:hover {
+.dop-btn:hover {
   transform: translateY(3px);
   box-shadow: 0 3px 0 var(--ad-cyan-dark);
 }
 
-.ad-chip {
+.dop-chip {
   border: 3px solid var(--ad-line);
   background: var(--ad-sunken);
   padding: 0.15rem 0.7rem;
@@ -121,29 +123,29 @@
   letter-spacing: 0.1em;
 }
 
-.ad-frame {
+.dop-frame {
   border: 3px solid var(--ad-ink);
   background: var(--ad-sunken);
   box-shadow: 8px 8px 0 var(--ad-sunken);
 }
 
-.ad-link {
+.dop-link {
   text-decoration: underline;
   text-underline-offset: 4px;
   text-decoration-color: var(--ad-line);
 }
-.ad-link:hover {
+.dop-link:hover {
   color: var(--ad-cyan);
   text-decoration-color: var(--ad-cyan);
 }
 
-.ad-rule {
+.dop-rule {
   height: 3px;
   background: repeating-linear-gradient(90deg, var(--ad-line) 0 12px, transparent 12px 20px);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ad-btn {
+  .dop-btn {
     transition: none;
   }
 }

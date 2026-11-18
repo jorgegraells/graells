@@ -9,7 +9,7 @@ const LOCALES: Locale[] = ["es", "en"];
 export function AntidopHeader({ locale, path = "" }: { locale: Locale; path?: string }) {
   const c = antidopChrome[locale];
   return (
-    <header className="ad-wrap flex items-center justify-between gap-4 pt-6">
+    <header className="dop-wrap flex items-center justify-between gap-4 pt-6">
       <Link href={`/${locale}/antidop`} aria-label={c.home} className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -20,16 +20,16 @@ export function AntidopHeader({ locale, path = "" }: { locale: Locale; path?: st
           className="h-10 w-10"
           style={{ imageRendering: "pixelated" }}
         />
-        <span className="ad-pix text-2xl tracking-[0.12em]">ANTIDOP</span>
+        <span className="dop-pix text-2xl tracking-[0.12em]">ANTIDOP</span>
       </Link>
-      <nav aria-label={c.switchLabel} className="ad-pix flex items-center gap-2 text-base">
+      <nav aria-label={c.switchLabel} className="dop-pix flex items-center gap-2 text-base">
         {LOCALES.map((l) => (
           <Link
             key={l}
             href={`/${l}/antidop${path}`}
             hrefLang={l}
             aria-current={l === locale ? "true" : undefined}
-            className={l === locale ? "ad-chip ad-cyan" : "ad-chip ad-muted"}
+            className={l === locale ? "dop-chip dop-cyan" : "dop-chip dop-muted"}
           >
             {l.toUpperCase()}
           </Link>
@@ -42,32 +42,32 @@ export function AntidopHeader({ locale, path = "" }: { locale: Locale; path?: st
 export function AntidopFooter({ locale, path = "" }: { locale: Locale; path?: string }) {
   const c = antidopChrome[locale];
   return (
-    <footer className="ad-wrap pb-12 pt-4">
-      <div className="ad-rule" aria-hidden="true" />
+    <footer className="dop-wrap pb-12 pt-4">
+      <div className="dop-rule" aria-hidden="true" />
       <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="ad-muted leading-relaxed">
+        <p className="dop-muted leading-relaxed">
           {c.madeBy}{" "}
-          <Link href={`/${locale}`} className="ad-link">
+          <Link href={`/${locale}`} className="dop-link">
             {c.siteLabel}
           </Link>
         </p>
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
           {path !== "" && (
             <li>
-              <Link href={`/${locale}/antidop`} className="ad-link">
+              <Link href={`/${locale}/antidop`} className="dop-link">
                 {c.backToApp}
               </Link>
             </li>
           )}
           {path !== "/privacidad" && (
             <li>
-              <Link href={`/${locale}/antidop/privacidad`} className="ad-link">
+              <Link href={`/${locale}/antidop/privacidad`} className="dop-link">
                 {c.privacy}
               </Link>
             </li>
           )}
           <li>
-            <a href={`mailto:${ANTIDOP_EMAIL}`} className="ad-link">
+            <a href={`mailto:${ANTIDOP_EMAIL}`} className="dop-link">
               {c.contact}
             </a>
           </li>
