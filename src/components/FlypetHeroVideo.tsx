@@ -8,18 +8,29 @@ import { useEffect, useRef, useState } from "react";
 // hasta que este efecto lo pone en marcha, y no lo hace si la persona ha pedido menos movimiento o ahorro
 // de datos: entonces se queda el póster, con el botón para verlo si quiere. Fuera de la pantalla, se para.
 // El botón de pausa (WCAG 2.2.2: lo que se mueve solo más de 5 s se tiene que poder parar) va encima,
-// en una esquina: no mueve nada del diseño.
+// en una esquina: no mueve nada del diseño. Marco y botón llevan la piel de Flypet (flypet.css).
 
 type Props = {
-  /** Ruta sin extensión: <base>.mp4 y <base>-poster.webp (540x960) */
+  /** Ruta sin extensión: <base>.mp4 y <base>-poster.webp, los dos de width x height */
   base: string;
+  /** Medidas del vídeo y su póster (por defecto 540x960, vertical); dan la proporción del marco */
+  width?: number;
+  height?: number;
   alt: string;
   pauseLabel: string;
   playLabel: string;
   className?: string;
 };
 
-export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, className = "" }: Props) {
+export default function FlypetHeroVideo({
+  base,
+  alt,
+  pauseLabel,
+  playLabel,
+  width = 540,
+  height = 960,
+  className = "",
+}: Props) {
   const ref = useRef<HTMLVideoElement>(null);
   const stopped = useRef(false); // lo ha parado la persona (o no debe arrancar solo): el observador no lo reanuda
   const [playing, setPlaying] = useState(false);
@@ -67,13 +78,14 @@ export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, clas
 
   return (
     <div
-      className={`glow-ring relative aspect-[9/16] overflow-hidden rounded-2xl bg-[#0e1018] ${className}`}
+      className={`fp-screen relative overflow-hidden ${className}`}
+      style={{ aspectRatio: `${width} / ${height}` }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`${base}-poster.webp`}
-        width={540}
-        height={960}
+        width={width}
+        height={height}
         alt={alt}
         fetchPriority="high"
         decoding="async"
@@ -83,8 +95,8 @@ export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, clas
         ref={ref}
         src={`${base}.mp4`}
         poster={`${base}-poster.webp`}
-        width={540}
-        height={960}
+        width={width}
+        height={height}
         muted
         loop
         playsInline
@@ -100,7 +112,7 @@ export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, clas
         onClick={toggle}
         aria-label={playing ? pauseLabel : playLabel}
         title={playing ? pauseLabel : playLabel}
-        className="absolute bottom-2.5 right-2.5 flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neon-cyan"
+        className="fp-pause absolute bottom-3 right-3 flex h-11 w-11 items-center justify-center"
       >
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
           {playing ? <path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" /> : <path d="M8 5.2v13.6L19 12z" />}
