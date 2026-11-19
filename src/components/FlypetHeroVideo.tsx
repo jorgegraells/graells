@@ -11,15 +11,26 @@ import { useEffect, useRef, useState } from "react";
 // en una esquina: no mueve nada del diseño. Marco y botón llevan la piel de Flypet (flypet.css).
 
 type Props = {
-  /** Ruta sin extensión: <base>.mp4 y <base>-poster.webp (540x960) */
+  /** Ruta sin extensión: <base>.mp4 y <base>-poster.webp, los dos de width x height */
   base: string;
+  /** Medidas del vídeo y su póster (por defecto 540x960, vertical); dan la proporción del marco */
+  width?: number;
+  height?: number;
   alt: string;
   pauseLabel: string;
   playLabel: string;
   className?: string;
 };
 
-export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, className = "" }: Props) {
+export default function FlypetHeroVideo({
+  base,
+  alt,
+  pauseLabel,
+  playLabel,
+  width = 540,
+  height = 960,
+  className = "",
+}: Props) {
   const ref = useRef<HTMLVideoElement>(null);
   const stopped = useRef(false); // lo ha parado la persona (o no debe arrancar solo): el observador no lo reanuda
   const [playing, setPlaying] = useState(false);
@@ -67,13 +78,14 @@ export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, clas
 
   return (
     <div
-      className={`fp-screen relative aspect-[9/16] overflow-hidden ${className}`}
+      className={`fp-screen relative overflow-hidden ${className}`}
+      style={{ aspectRatio: `${width} / ${height}` }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`${base}-poster.webp`}
-        width={540}
-        height={960}
+        width={width}
+        height={height}
         alt={alt}
         fetchPriority="high"
         decoding="async"
@@ -83,8 +95,8 @@ export default function FlypetHeroVideo({ base, alt, pauseLabel, playLabel, clas
         ref={ref}
         src={`${base}.mp4`}
         poster={`${base}-poster.webp`}
-        width={540}
-        height={960}
+        width={width}
+        height={height}
         muted
         loop
         playsInline

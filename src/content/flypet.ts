@@ -4,6 +4,8 @@
 // arriba y abajo de la página. Hasta entonces no se promete descarga pública.
 // Tono y hechos: los de la ficha de Play (marketing/2026-11-06-ficha-play en el repo de la app).
 // Piezas, vídeo de cabecera y cifras, al día con la v0.18 (marketing/2026-11-18-web, 2026-11-18).
+// Vídeo de cabecera ES: el de presentación v5 (2026-11-19), cortado antes del cierre «Ya disponible en
+// Google Play» (hoy está en prueba cerrada). EN: el Reel anterior, con póster sin la franja del cerebro.
 
 import type { Locale } from "@/i18n/dictionaries";
 
@@ -46,6 +48,7 @@ export type FlypetChrome = {
   privacy: string;
   terms: string;
   contact: string;
+  backToApp: string;
 };
 
 export const flypetChrome: Record<Locale, FlypetChrome> = {
@@ -57,6 +60,7 @@ export const flypetChrome: Record<Locale, FlypetChrome> = {
     privacy: "Privacidad",
     terms: "Condiciones de uso",
     contact: "Contacto",
+    backToApp: "Volver a Flypet",
   },
   en: {
     home: "Flypet, home",
@@ -66,6 +70,7 @@ export const flypetChrome: Record<Locale, FlypetChrome> = {
     privacy: "Privacy",
     terms: "Terms of use",
     contact: "Contact",
+    backToApp: "Back to Flypet",
   },
 };
 
@@ -104,6 +109,7 @@ export type FlypetPage = {
   collection: FlypetFeature;
   truthTag: string;
   truthTitle: string;
+  truthKey: string;
   truth: string[];
   sampleNote: string;
   getTag: string;
@@ -134,7 +140,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     title: "Esta mascota tiene cerebro. En serio.",
     titleKey: "cerebro",
     heroAlt:
-      "Vídeo sin sonido de Flypet. La mosca de cerca y, encima, sus neuronas encendiéndose: «¿Huirá? Lo decide su cerebro». Después huye de un toque, cuenta por qué, come, duerme, recorre un laberinto y enseña su Flydex.",
+      "Vídeo sin sonido de Flypet. «¡Flypet! La primera mascota virtual con cerebro real a la que puedes cuidar», con la mosca en la pantalla de un móvil. Después, su sistema nervioso: «Tiene el cerebro de una mosca real», 165.122 neuronas y 25.563.096 conexiones. La tocan y su cerebro decide huir (vio: LC4 y LPLC2; fibra gigante: DNp01). Luego come encima de una fresa, hace experimentos, sale de un laberinto con gotas, luces y sustos, enseña su colección de moscas y anda por su sala decorada.",
     heroPause: "Parar el vídeo",
     heroPlay: "Reproducir el vídeo",
     lead: "Lleva dentro el cableado de una mosca macho real: 165.122 neuronas con sus conexiones, simuladas en tu móvil mientras la miras. Cuando huye, come o se limpia, lo decide ese cerebro.",
@@ -302,6 +308,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     },
     truthTag: "SIN TRUCOS",
     truthTitle: "Lo que es y lo que no",
+    truthKey: "lo que no",
     truth: [
       "El cableado es real. El modelo de cada neurona es una simplificación (integración y disparo), del tipo que se usa en investigación. Sus sentidos, su cuerpo, el hambre y el sueño los simulamos aparte, a partir de estudios publicados, porque hoy no se pueden leer de un conectoma.",
       "La búsqueda de comida por el olor es un algoritmo publicado, no sale del conectoma, y cuando echa a andar sin motivo es porque la app le da un empujón: sin él se quedaría quieta.",
@@ -463,7 +470,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
           file: "14_foto",
           label: "Photo",
           title: "Take its picture. The why comes with it.",
-          text: "The camera button saves the photo and writes underneath what the fly just did and which neuron drove it. This one says it extended its proboscis and started eating, because it stepped on something sweet. If it hasn't just done anything that can be explained, the photo comes out without a why. From there, share it with whoever you like.",
+          text: "The camera button saves the photo and writes underneath what the fly just did and which neuron drove it. This one says it extended its proboscis and started eating, with its MN9 at 100 impulses per second in the model. If it hasn't just done anything that can be explained, the photo comes out without a why. And from there, you can share it with whoever you like.",
           alt: "A photo taken in the game, as it gets shared: the fly from behind, eating on top of a green grape, with its caption below: \"It extended its proboscis and started eating. It stepped on something sweet: it tasted it with its legs.\"",
           credit: true,
         },
@@ -512,6 +519,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     },
     truthTag: "NO TRICKS",
     truthTitle: "What this is and isn't",
+    truthKey: "isn't",
     truth: [
       "The wiring is real. The model of each neuron is a simplification (integrate-and-fire), the kind used in research. Its senses, body, hunger and sleep are simulated separately from published studies, because they can't be read from a connectome yet.",
       "Finding food by smell is a published algorithm and doesn't come from the connectome, and when it sets off for no reason, the app gave it a nudge: without one it would just stand there.",

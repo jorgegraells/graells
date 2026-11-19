@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/dictionaries";
 import { flypetChrome, FLYPET_EMAIL } from "@/content/flypet";
 
-// Cabecera y pie de la página de Flypet (piel de flypet.css). `path` es la ruta sin el idioma.
+// Cabecera y pie de las páginas de Flypet (piel de flypet.css). `path` es la ruta sin el idioma
+// ("", "/probar", "/privacidad" o "/condiciones").
 
 const LOCALES: Locale[] = ["es", "en"];
 
@@ -57,7 +58,7 @@ export function FlypetHeader({
   );
 }
 
-export function FlypetFooter({ locale }: { locale: Locale }) {
+export function FlypetFooter({ locale, path = "" }: { locale: Locale; path?: string }) {
   const c = flypetChrome[locale];
   return (
     <footer className="fp-foot">
@@ -73,6 +74,13 @@ export function FlypetFooter({ locale }: { locale: Locale }) {
           </p>
         </div>
         <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          {path !== "" && (
+            <li>
+              <Link href={`/${locale}/flypet`} className="fp-link">
+                {c.backToApp}
+              </Link>
+            </li>
+          )}
           <li>
             <Link href={`/${locale}/flypet/privacidad`} className="fp-link">
               {c.privacy}

@@ -38,8 +38,8 @@ export async function generateMetadata({
   const p = flypetPage[locale];
   const image = {
     url: `${SITE}/flypet/${locale}/og.jpg`,
-    width: 1024,
-    height: 500,
+    width: 1200,
+    height: 630,
     alt: p.ogAlt,
   };
   return {
@@ -67,8 +67,18 @@ export async function generateMetadata({
 
 type Tone = "crema" | "cerebro" | "coral" | "verde" | "oro" | "cian" | "naranja" | "cierre";
 
-/** Pegatinas recortadas de las tomas del anuncio (public/flypet/pegatinas/<nombre>.webp, 192x192) */
-type PegName = "comida" | "gota" | "luz" | "susto" | "estrella" | "dorada" | "neon" | "perla";
+/** Pegatinas (public/flypet/pegatinas/<nombre>.webp, 192x192): comida, gota, luz, susto y estrella,
+ *  recortadas de las tomas del anuncio v4; las moscas, de las fotos de sus aspectos. */
+type PegName =
+  "comida" | "gota" | "luz" | "susto" | "estrella" | "dorada" | "coleccionista" | "porcelana" | "anime";
+
+/** Vídeo de la portada: public/flypet/<idioma>/hero.mp4 y hero-poster.webp. Para cambiarlo basta con
+ *  sustituir esos dos ficheros; si el nuevo no es de 540x960, pon aquí sus medidas (dan la proporción). */
+const HERO_VIDEO = { file: "hero", width: 540, height: 960 };
+
+/** El vídeo de presentación (ES, v5) ya lleva sus pegatinas alrededor del móvil: entonces la página no
+ *  pone las suyas, que saldrían repetidas. El Reel inglés no las lleva. */
+const HERO_STICKERS_IN_VIDEO: Record<Locale, boolean> = { es: true, en: false };
 
 /** El texto con su trozo clave en color y con contorno de tinta. Si la clave no está, va tal cual. */
 function Keyed({ text, k }: { text: string; k?: string }) {
@@ -131,15 +141,19 @@ function Head({
         <p className="fp-chip fp-chip--tag">
           {index} · {tag}
         </p>
-        {pegs.map((name, i) => (
-          <Peg
-            key={`${name}-${i}`}
-            name={name}
-            rot={i % 2 ? 7 : -7}
-            delay={-i * 1.3}
-            className="h-11 w-11 sm:h-14 sm:w-14"
-          />
-        ))}
+        {pegs.length > 0 && (
+          <div className="flex gap-2.5">
+            {pegs.map((name, i) => (
+              <Peg
+                key={`${name}-${i}`}
+                name={name}
+                rot={i % 2 ? 7 : -7}
+                delay={-i * 1.3}
+                className="h-12 w-12 sm:h-14 sm:w-14"
+              />
+            ))}
+          </div>
+        )}
       </div>
       <h2 className="fp-display mt-5 text-[2.6rem] sm:text-6xl lg:text-7xl">
         <Keyed text={title} k={k} />
@@ -177,8 +191,8 @@ function Feature({
 }) {
   const base = `/flypet/${locale}/${feature.file}`;
   return (
-    <article className="grid items-center gap-8 md:grid-cols-12 md:gap-10">
-      <div className={`fp-card md:col-span-5 ${flip ? "md:order-2" : ""}`}>
+    <article className="grid items-center gap-8 md:grid-cols-12 md:gap-8 lg:gap-10">
+      <div className={`fp-card md:col-span-6 lg:col-span-5 ${flip ? "md:order-2" : ""}`}>
         <p className="fp-label">{feature.label}</p>
         <h3 className="fp-display mt-4 text-[1.75rem] sm:text-4xl">{feature.title}</h3>
         <p className="fp-body mt-4">{feature.text}</p>
@@ -193,13 +207,13 @@ function Feature({
       <img
         src={`${base}-1200.webp`}
         srcSet={`${base}-720.webp 720w, ${base}-1200.webp 1200w`}
-        sizes="(min-width: 1152px) 640px, (min-width: 768px) 56vw, calc(100vw - 40px)"
+        sizes="(min-width: 1152px) 640px, (min-width: 1024px) 56vw, (min-width: 768px) 46vw, calc(100vw - 40px)"
         width={1200}
         height={1500}
         alt={feature.alt}
         loading="lazy"
         decoding="async"
-        className={`fp-shot h-auto w-full md:col-span-7 ${flip ? "md:order-1" : ""}`}
+        className={`fp-shot h-auto w-full md:col-span-6 lg:col-span-7 ${flip ? "md:order-1" : ""}`}
       />
     </article>
   );
@@ -271,11 +285,7 @@ function Photo({
   );
 }
 
-export default async function FlypetPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default async function FlypetPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const p = flypetPage[locale];
@@ -289,52 +299,54 @@ export default async function FlypetPage({
   return (
     <main className="flypet">
       {/* Portada: la mosca y el gancho, ya en la primera pantalla del móvil */}
-      <section className="fp-sec fp-sec--crema">
+      <section className="fp-sec fp-sec--crema fp-sec--limpia">
         <FlypetHeader locale={locale} cta={cta} />
         <div className="fp-wrap grid gap-x-12 gap-y-8 pb-16 pt-8 md:grid-cols-2 md:items-center md:pb-24 md:pt-14">
           <div className="md:self-end">
-            <h1 className="fp-display text-[2.7rem] sm:text-6xl lg:text-7xl">
+            <h1 className="fp-display text-[2.7rem] sm:text-6xl md:text-[3.25rem] lg:text-7xl">
               <Keyed text={p.title} k={p.titleKey} />
             </h1>
           </div>
 
           {/* Vídeo vertical, como la pantalla del móvil, con pegatinas del juego flotando a los lados.
               Estrecho en el móvil para que el texto asome debajo. */}
-          <div className="relative mx-auto w-[64%] max-w-[280px] md:col-start-2 md:row-span-2 md:row-start-1 md:w-full md:max-w-[340px]">
+          <div className="relative mx-auto w-[64%] max-w-[280px] md:col-start-2 md:row-span-2 md:row-start-1 md:w-full md:max-w-[280px] lg:max-w-[340px]">
             <FlypetHeroVideo
-              base={`/flypet/${locale}/hero`}
+              base={`/flypet/${locale}/${HERO_VIDEO.file}`}
+              width={HERO_VIDEO.width}
+              height={HERO_VIDEO.height}
               alt={p.heroAlt}
               pauseLabel={p.heroPause}
               playLabel={p.heroPlay}
               className="w-full"
             />
-            <Peg
-              name="comida"
-              rot={-10}
-              className="fp-peg--abs h-14 w-14 md:h-20 md:w-20"
-              style={{ left: "-24%", top: "7%" }}
-            />
-            <Peg
-              name="gota"
-              rot={8}
-              delay={-1.6}
-              className="fp-peg--abs h-14 w-14 md:h-[72px] md:w-[72px]"
-              style={{ right: "-23%", top: "26%" }}
-            />
-            <Peg
-              name="luz"
-              rot={-5}
-              delay={-3.1}
-              className="fp-peg--abs h-12 w-12 md:h-[68px] md:w-[68px]"
-              style={{ left: "-21%", top: "58%" }}
-            />
-            <Peg
-              name="estrella"
-              rot={9}
-              delay={-4.4}
-              className="fp-peg--abs h-14 w-14 md:h-[76px] md:w-[76px]"
-              style={{ right: "-20%", top: "74%" }}
-            />
+            {!HERO_STICKERS_IN_VIDEO[locale] && (
+              <>
+                <Peg
+                  name="comida"
+                  rot={-10}
+                  className="fp-peg--abs fp-hero-peg--1 h-14 w-14 md:h-[72px] md:w-[72px] lg:h-20 lg:w-20"
+                />
+                <Peg
+                  name="gota"
+                  rot={8}
+                  delay={-1.6}
+                  className="fp-peg--abs fp-hero-peg--2 h-14 w-14 md:h-16 md:w-16 lg:h-[72px] lg:w-[72px]"
+                />
+                <Peg
+                  name="luz"
+                  rot={-5}
+                  delay={-3.1}
+                  className="fp-peg--abs fp-hero-peg--3 h-12 w-12 md:h-14 md:w-14 lg:h-[68px] lg:w-[68px]"
+                />
+                <Peg
+                  name="estrella"
+                  rot={9}
+                  delay={-4.4}
+                  className="fp-peg--abs fp-hero-peg--4 h-14 w-14 md:h-16 md:w-16 lg:h-[76px] lg:w-[76px]"
+                />
+              </>
+            )}
           </div>
 
           <div className="md:self-start">
@@ -389,9 +401,13 @@ export default async function FlypetPage({
         <div className="fp-wrap py-16 md:py-24">
           <div className="flex flex-wrap items-center gap-3">
             <p className="fp-chip fp-chip--tag">{p.photosLabel}</p>
-            <Peg name="dorada" rot={-7} className="h-11 w-11 sm:h-14 sm:w-14" />
-            <Peg name="perla" rot={7} delay={-1.3} className="h-11 w-11 sm:h-14 sm:w-14" />
-            <Peg name="neon" rot={-7} delay={-2.6} className="h-11 w-11 sm:h-14 sm:w-14" />
+            {/* (en un grupo: si no caben junto a la ficha, bajan juntas a su fila) */}
+            <div className="flex gap-2.5">
+              <Peg name="dorada" rot={-7} className="h-14 w-14 sm:h-16 sm:w-16" />
+              <Peg name="coleccionista" rot={7} delay={-1.3} className="h-14 w-14 sm:h-16 sm:w-16" />
+              <Peg name="porcelana" rot={-7} delay={-2.6} className="h-14 w-14 sm:h-16 sm:w-16" />
+              <Peg name="anime" rot={7} delay={-3.9} className="h-14 w-14 sm:h-16 sm:w-16" />
+            </div>
           </div>
           <h3 className="fp-display mt-5 text-[2.6rem] sm:text-6xl">
             <Keyed text={p.photosTitle} k={p.photosKey} />
@@ -421,7 +437,7 @@ export default async function FlypetPage({
 
       <section className="fp-sec fp-sec--crema">
         <div className="fp-wrap py-16 md:py-24">
-          <Head index="05" tag={p.truthTag} title={p.truthTitle} />
+          <Head index="05" tag={p.truthTag} title={p.truthTitle} k={p.truthKey} />
           <div className="fp-card mt-10 max-w-4xl space-y-4">
             {p.truth.map((paragraph) => (
               <p key={paragraph} className="fp-body">
@@ -439,13 +455,7 @@ export default async function FlypetPage({
 
       <section id="conseguirla" className="fp-sec fp-sec--cierre scroll-mt-6">
         <div className="fp-wrap pb-24 pt-16 md:pt-24">
-          <Head
-            index="06"
-            tag={p.getTag}
-            title={p.getTitle}
-            k={p.getKey}
-            pegs={["comida", "estrella"]}
-          />
+          <Head index="06" tag={p.getTag} title={p.getTitle} k={p.getKey} pegs={["comida", "estrella"]} />
           <div className="mt-10 grid gap-8 md:grid-cols-2">
             <div className="fp-card">
               <h3 className="text-2xl font-black">{p.availabilityHeading}</h3>

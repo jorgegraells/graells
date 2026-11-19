@@ -3,7 +3,8 @@
    naranja), tarjetas redondeadas con borde de tinta y botones que se hunden. El mundo del cerebro va
    oscuro (#0D0F14) con el azul de rayos X.
    Clases con el prefijo fp- (nunca ad-: los bloqueadores de anuncios las ocultan). Todo cuelga de
-   .flypet (la página) para no tocar el resto del sitio ni depender de su tema claro u oscuro.
+   .flypet (el <main> de cada página de Flypet) para no tocar el resto del sitio ni depender de su
+   tema claro u oscuro.
    Contraste (WCAG AA) comprobado a mano para cada pareja de colores de texto (ver los comentarios). */
 
 /* El envoltorio del layout no pinta nada: solo carga la letra para estas rutas. */
@@ -32,6 +33,8 @@
   --fp-key: var(--fp-amber);
 
   flex: 1;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   overflow-x: clip;
   color: var(--fp-ink);
@@ -41,16 +44,32 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* El fondo de la página (y del rebote del scroll en iOS) en crema, solo donde está la piel */
+html:has(.flypet),
+html:has(.flypet) body {
+  background: #fff7ea;
+  color-scheme: light;
+}
+
+/* En una página corta, la última sección crece para que el pie quede abajo */
+.fp-grow {
+  flex: 1;
+}
+
 .flypet ::selection {
   background: var(--fp-amber);
   color: var(--fp-ink);
 }
 
+/* El foco sigue la forma de cada cosa (pastilla, marca, enlace): no se fuerza ningún radio */
 .flypet a:focus-visible,
 .flypet button:focus-visible {
   outline: 3px solid var(--fp-ink);
   outline-offset: 3px;
-  border-radius: 999px;
+}
+.fp-sec--cerebro a:focus-visible,
+.fp-sec--cerebro button:focus-visible {
+  outline-color: var(--fp-amber);
 }
 
 .fp-wrap {
@@ -58,6 +77,9 @@
   max-width: 72rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
+}
+.fp-wrap--narrow {
+  max-width: 48rem;
 }
 @media (min-width: 640px) {
   .fp-wrap {
@@ -70,23 +92,46 @@
 .fp-sec {
   position: relative;
   background-color: var(--fp-bg, var(--fp-cream));
+  background-image: var(--fp-grad, linear-gradient(transparent, transparent));
+}
+
+/* Confeti solo en los márgenes, fuera de la columna del contenido: nunca queda sobre un texto.
+   En el móvil, la columna ocupa casi todo el ancho y el confeti se queda en los bordes. */
+.fp-sec::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   background-image:
     radial-gradient(circle, var(--fp-c1, rgba(242, 158, 46, 0.55)) 0 3px, transparent 3.5px),
     radial-gradient(circle, var(--fp-c2, rgba(70, 200, 232, 0.45)) 0 2.5px, transparent 3px),
-    radial-gradient(circle, var(--fp-c3, rgba(224, 57, 59, 0.35)) 0 2px, transparent 2.5px),
-    var(--fp-grad, linear-gradient(transparent, transparent));
+    radial-gradient(circle, var(--fp-c3, rgba(224, 57, 59, 0.35)) 0 2px, transparent 2.5px);
   background-size:
     233px 197px,
     171px 251px,
-    293px 223px,
-    100% 100%,
-    100% 100%; /* (la quinta, para los fondos de dos degradados: si no, heredaría el mosaico del confeti) */
+    293px 223px;
   background-position:
-    37px 21px,
+    7px 21px,
     113px 97px,
-    11px 149px,
-    0 0,
-    0 0;
+    11px 149px;
+  --fp-margin: max(14px, calc(50% - 36rem - 4px));
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 var(--fp-margin),
+    transparent var(--fp-margin),
+    transparent calc(100% - var(--fp-margin)),
+    #000 calc(100% - var(--fp-margin))
+  );
+  mask-image: linear-gradient(
+    90deg,
+    #000 var(--fp-margin),
+    transparent var(--fp-margin),
+    transparent calc(100% - var(--fp-margin)),
+    #000 calc(100% - var(--fp-margin))
+  );
+}
+.fp-sec--limpia::after {
+  display: none;
 }
 
 /* Crema: la apertura y «lo que es y lo que no» */
@@ -199,9 +244,9 @@
    El contorno de tinta es lo que la separa del fondo (tinta sobre cualquier fondo claro > 6:1). */
 .fp-key {
   color: var(--fp-key);
-  -webkit-text-stroke: 0.14em var(--fp-ink);
+  -webkit-text-stroke: 0.1em var(--fp-ink);
   paint-order: stroke fill;
-  text-shadow: 0 0.07em 0 var(--fp-ink);
+  text-shadow: 0 0.05em 0 var(--fp-ink);
 }
 .fp-sec--cerebro .fp-key {
   /* sobre la noche: ámbar sobre #0D0F14, 7,6:1 */
@@ -465,6 +510,14 @@
     transform 90ms ease-out,
     box-shadow 90ms ease-out;
 }
+.fp-pause:focus-visible {
+  /* anillo doble (blanco y tinta): se ve sobre el vídeo oscuro y sobre el fondo claro */
+  outline: 3px solid var(--fp-ink);
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 3px #fff,
+    0 3px 0 3px #fff;
+}
 .fp-pause:hover {
   transform: translateY(2px);
   box-shadow: 0 1px 0 var(--fp-ink);
@@ -509,6 +562,70 @@
 .fp-peg--abs {
   position: absolute;
   z-index: 2;
+}
+
+/* Pegatinas alrededor del vídeo de la portada. En el móvil, a los lados del vídeo (hay sitio);
+   en la tableta (768-1023), metidas hacia dentro para no salirse de su columna ni pisar el texto. */
+.fp-hero-peg--1 {
+  left: -24%;
+  top: 7%;
+}
+.fp-hero-peg--2 {
+  right: -23%;
+  top: 26%;
+}
+.fp-hero-peg--3 {
+  left: -21%;
+  top: 58%;
+}
+.fp-hero-peg--4 {
+  right: -20%;
+  top: 74%;
+}
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .fp-hero-peg--1 {
+    left: -9%;
+  }
+  .fp-hero-peg--2 {
+    right: -9%;
+  }
+  .fp-hero-peg--3 {
+    left: -8%;
+  }
+  .fp-hero-peg--4 {
+    right: -8%;
+  }
+}
+@media (min-width: 1024px) {
+  .fp-hero-peg--1 {
+    left: -19%;
+  }
+  .fp-hero-peg--2 {
+    right: -18%;
+  }
+  .fp-hero-peg--3 {
+    left: -17%;
+  }
+  .fp-hero-peg--4 {
+    right: -16%;
+  }
+}
+
+/* Viñeta de las listas: un punto ámbar con borde de tinta */
+.fp-dot {
+  flex-shrink: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-top: 0.55em;
+  border-radius: 999px;
+  background: var(--fp-amber);
+  border: 2px solid var(--fp-ink);
+}
+
+/* Lo resaltado dentro de un párrafo (p. ej. el premio de los probadores): ámbar oscuro, 6,8:1 */
+.fp-strong {
+  color: var(--fp-amber-d);
+  font-weight: 900;
 }
 
 @keyframes fp-float {

@@ -1,20 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
+import { isLocale } from "@/i18n/dictionaries";
 import { FLYPET_EMAIL, FLYPET_PLAY_URL, flypetPage } from "@/content/flypet";
 import { flypetTest } from "@/content/flypet-test";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
+import { FlypetFooter, FlypetHeader } from "@/components/flypet/FlypetChrome";
 
 // Apuntarse a la prueba cerrada de Flypet: el enlace que se comparte para conseguir probadores.
 // Pensada para leerse en el móvil desde WhatsApp: el gancho, qué hace falta y los tres pasos con su
-// botón, en ese orden y sin nada que distraiga entre medias.
+// botón, en ese orden y sin nada que distraiga entre medias. Con la piel de Flypet (flypet.css):
+// crema para el gancho, oro para el premio y lo que hace falta, cian para los pasos y crema al final.
 
 const SITE = "https://jorgegraells.com";
-
-const BUTTON =
-  "btn-neon clip-corner inline-flex items-center gap-3 px-6 py-3 text-sm font-black uppercase tracking-wide transition-transform hover:scale-[1.04]";
 
 export async function generateMetadata({
   params,
@@ -26,8 +23,8 @@ export async function generateMetadata({
   const p = flypetTest[locale];
   const image = {
     url: `${SITE}/flypet/${locale}/og.jpg`,
-    width: 1024,
-    height: 500,
+    width: 1200,
+    height: 630,
     alt: flypetPage[locale].ogAlt,
   };
   return {
@@ -55,6 +52,19 @@ export async function generateMetadata({
   };
 }
 
+function Dots({ items, className = "" }: { items: string[]; className?: string }) {
+  return (
+    <ul className={`space-y-3 ${className}`}>
+      {items.map((item) => (
+        <li key={item} className="fp-body flex gap-3">
+          <span aria-hidden="true" className="fp-dot" />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default async function FlypetTestPage({
   params,
 }: {
@@ -62,185 +72,125 @@ export default async function FlypetTestPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const dict = getDictionary(locale);
   const p = flypetTest[locale];
+  const [rewardBefore, rewardAfter] = p.reward.text.split(p.reward.highlight);
 
   return (
-    <main className="flex-1 overflow-x-clip">
-      <Nav locale={locale as Locale} dict={dict} />
-      <section className="bg-grid">
-        <div className="mx-auto w-full max-w-3xl px-5 pb-10 pt-28 sm:px-6 md:pt-36">
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/flypet/icon.webp"
-              width={64}
-              height={64}
-              alt=""
-              className="h-11 w-11 rounded-xl"
-            />
-            <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
-              <span aria-hidden="true">◢</span> {p.tag}
-            </span>
-          </div>
-          <h1 className="text-gradient neon-text mt-4 text-4xl font-black leading-[1.05] tracking-tight sm:text-5xl">
-            {p.title}
-          </h1>
-          <p className="mt-6 text-lg leading-relaxed text-foreground/90">
-            {p.lead}
-          </p>
-          <p className="mt-4 text-xl font-bold text-neon-cyan">{p.why}</p>
-          <a href="#pasos" className={`${BUTTON} mt-6`}>
+    <main className="flypet">
+      <section className="fp-sec fp-sec--crema fp-sec--limpia">
+        <FlypetHeader locale={locale} path="/probar" />
+        <div className="fp-wrap fp-wrap--narrow pb-16 pt-10 md:pt-14">
+          <p className="fp-chip fp-chip--tag">{p.tag}</p>
+          <h1 className="fp-display mt-5 text-[2.5rem] sm:text-6xl">{p.title}</h1>
+          <p className="fp-lead mt-6">{p.lead}</p>
+          <p className="mt-5 text-xl font-black leading-snug sm:text-2xl">{p.why}</p>
+          <a href="#pasos" className="fp-btn mt-8">
             {p.startCta}
             <span aria-hidden="true">↓</span>
           </a>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-3xl px-5 pb-24 sm:px-6">
-        {/* El premio de los probadores solo se gana antes de la salida: con la app ya publicada, fuera. */}
-        {!FLYPET_PLAY_URL && (
-          <div className="hud-panel clip-corner mb-8 p-6 sm:p-7">
-            <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
-              <span aria-hidden="true">★</span> {p.reward.tag}
-            </p>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground">
-              {p.reward.heading}
-            </h2>
-            <p className="mt-3 text-lg leading-relaxed text-foreground/90">
-              {p.reward.text.split(p.reward.highlight)[0]}
-              <strong className="font-black text-neon-pink">
-                {p.reward.highlight}
-              </strong>
-              {p.reward.text.split(p.reward.highlight)[1]}
-            </p>
-            <p className="mt-2 font-bold text-neon-cyan">{p.reward.note}</p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-[2fr_3fr] sm:items-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/flypet/probar/prototipo-1080.webp"
-                srcSet="/flypet/probar/prototipo-540.webp 540w, /flypet/probar/prototipo-1080.webp 1080w"
-                sizes="(min-width: 640px) 290px, 100vw"
-                width={1080}
-                height={1080}
-                loading="lazy"
-                alt={p.reward.flyAlt}
-                className="w-full rounded-lg"
-              />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/flypet/probar/placa-${locale}-1080.webp`}
-                srcSet={`/flypet/probar/placa-${locale}-540.webp 540w, /flypet/probar/placa-${locale}-1080.webp 1080w`}
-                sizes="(min-width: 640px) 440px, 100vw"
-                width={1080}
-                height={720}
-                loading="lazy"
-                alt={p.reward.plaqueAlt}
-                className="w-full rounded-lg"
-              />
+      <section className="fp-sec fp-sec--oro">
+        <div className="fp-wrap fp-wrap--narrow space-y-10 py-16">
+          {/* El premio de los probadores solo se gana antes de la salida: con la app ya publicada, fuera. */}
+          {!FLYPET_PLAY_URL && (
+            <div className="fp-card">
+              <p className="fp-label">
+                <span aria-hidden="true">★ </span>
+                {p.reward.tag}
+              </p>
+              <h2 className="fp-display mt-4 text-[1.75rem] sm:text-4xl">{p.reward.heading}</h2>
+              <p className="fp-body mt-4">
+                {rewardBefore}
+                <strong className="fp-strong">{p.reward.highlight}</strong>
+                {rewardAfter}
+              </p>
+              <p className="mt-3 font-black">{p.reward.note}</p>
+              <div className="mt-6 grid gap-5 sm:grid-cols-[2fr_3fr] sm:items-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/flypet/probar/prototipo-1080.webp"
+                  srcSet="/flypet/probar/prototipo-540.webp 540w, /flypet/probar/prototipo-1080.webp 1080w"
+                  sizes="(min-width: 640px) 270px, calc(100vw - 100px)"
+                  width={1080}
+                  height={1080}
+                  loading="lazy"
+                  alt={p.reward.flyAlt}
+                  className="fp-photo h-auto w-full"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/flypet/probar/placa-${locale}-1080.webp`}
+                  srcSet={`/flypet/probar/placa-${locale}-540.webp 540w, /flypet/probar/placa-${locale}-1080.webp 1080w`}
+                  sizes="(min-width: 640px) 410px, calc(100vw - 100px)"
+                  width={1080}
+                  height={720}
+                  loading="lazy"
+                  alt={p.reward.plaqueAlt}
+                  className="fp-photo h-auto w-full"
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <div className="hud-panel clip-corner p-6 sm:p-7">
-          <h2 className="text-xl font-bold text-foreground">
-            {p.needsHeading}
-          </h2>
-          <ul className="mt-3 space-y-2">
-            {p.needs.map((need) => (
-              <li key={need} className="leading-relaxed text-foreground/85">
-                <span aria-hidden="true" className="text-neon-cyan">
-                  ▸
-                </span>{" "}
-                {need}
+          <div className="fp-card">
+            <h2 className="text-2xl font-black">{p.needsHeading}</h2>
+            <Dots items={p.needs} className="mt-4" />
+          </div>
+        </div>
+      </section>
+
+      <section id="pasos" className="fp-sec fp-sec--cian scroll-mt-6">
+        <div className="fp-wrap fp-wrap--narrow py-16">
+          <h2 className="fp-display text-[2.2rem] sm:text-5xl">{p.stepsHeading}</h2>
+          <ol className="mt-8 space-y-6">
+            {p.steps.map((step, i) => (
+              <li key={step.url} className="fp-card">
+                <p className="fp-label">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="mt-3 text-2xl font-black">{step.title}</h3>
+                <p className="fp-body mt-2">{step.text}</p>
+                <a href={step.url} target="_blank" rel="noopener noreferrer" className="fp-btn mt-5">
+                  {step.cta}
+                  <span aria-hidden="true">↗</span>
+                  <span className="sr-only">{p.newTab}</span>
+                </a>
               </li>
             ))}
-          </ul>
+          </ol>
         </div>
-
-        <h2
-          id="pasos"
-          className="mt-12 scroll-mt-24 text-2xl font-black uppercase tracking-tight text-foreground"
-        >
-          {p.stepsHeading}
-        </h2>
-        <ol className="mt-6 space-y-5">
-          {p.steps.map((step, i) => (
-            <li key={step.url} className="hud-panel clip-corner p-6 sm:p-7">
-              <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <h3 className="mt-2 text-xl font-bold text-foreground">
-                {step.title}
-              </h3>
-              <p className="mt-2 leading-relaxed text-foreground/80">
-                {step.text}
-              </p>
-              <a
-                href={step.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${BUTTON} mt-5`}
-              >
-                {step.cta}
-                <span aria-hidden="true">↗</span>
-                <span className="sr-only">{p.newTab}</span>
-              </a>
-            </li>
-          ))}
-        </ol>
-
-        <h2 className="mt-12 text-2xl font-black uppercase tracking-tight text-foreground">
-          {p.askHeading}
-        </h2>
-        <ul className="mt-4 space-y-3">
-          {p.ask.map((item) => (
-            <li
-              key={item}
-              className="text-lg leading-relaxed text-foreground/90"
-            >
-              <span aria-hidden="true" className="text-neon-cyan">
-                ▸
-              </span>{" "}
-              {item}
-            </li>
-          ))}
-        </ul>
-
-        <h2 className="mt-12 text-2xl font-black uppercase tracking-tight text-foreground">
-          {p.faqHeading}
-        </h2>
-        <div className="mt-4 space-y-5">
-          {p.faq.map((item) => (
-            <div key={item.q}>
-              <h3 className="font-bold text-foreground">{item.q}</h3>
-              <p className="mt-1 leading-relaxed text-foreground/80">
-                {item.a}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <p className="mt-12 text-xl font-bold text-neon-cyan">{p.thanks}</p>
-        <p className="mt-3 leading-relaxed text-foreground/80">
-          {p.contactLabel}{" "}
-          <a
-            href={`mailto:${FLYPET_EMAIL}`}
-            className="underline underline-offset-4 hover:text-neon-cyan"
-          >
-            {FLYPET_EMAIL}
-          </a>
-        </p>
-        <p className="mt-6">
-          <Link
-            href={`/${locale}/flypet`}
-            className="font-mono text-xs font-semibold uppercase tracking-wider text-muted underline underline-offset-4 transition-colors hover:text-neon-cyan"
-          >
-            <span aria-hidden="true">←</span> {p.backLink}
-          </Link>
-        </p>
       </section>
-      <Footer dict={dict} />
+
+      <section className="fp-sec fp-sec--crema fp-grow">
+        <div className="fp-wrap fp-wrap--narrow pb-20 pt-16">
+          <h2 className="fp-display text-[2.2rem] sm:text-5xl">{p.askHeading}</h2>
+          <Dots items={p.ask} className="mt-6" />
+
+          <h2 className="fp-display mt-14 text-[2.2rem] sm:text-5xl">{p.faqHeading}</h2>
+          <div className="fp-card mt-6 space-y-6">
+            {p.faq.map((item) => (
+              <div key={item.q}>
+                <h3 className="text-lg font-black sm:text-xl">{item.q}</h3>
+                <p className="fp-body mt-1">{item.a}</p>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-12 text-2xl font-black leading-snug">{p.thanks}</p>
+          <p className="fp-body mt-3">
+            {p.contactLabel}{" "}
+            <a href={`mailto:${FLYPET_EMAIL}`} className="fp-link break-all">
+              {FLYPET_EMAIL}
+            </a>
+          </p>
+          <p className="mt-8">
+            <Link href={`/${locale}/flypet`} className="fp-link">
+              <span aria-hidden="true">←</span> {p.backLink}
+            </Link>
+          </p>
+        </div>
+      </section>
+      <FlypetFooter locale={locale} path="/probar" />
     </main>
   );
 }
