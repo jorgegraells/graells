@@ -1,0 +1,539 @@
+/* Piel de Flypet: la del juego (game/scripts/ui_style.gd) y su anuncio de presentación (v4).
+   Tinta #21242B, crema cálido, ámbar #F29E2E, colores de Rastro (crema, oro, coral, cian, verde,
+   naranja), tarjetas redondeadas con borde de tinta y botones que se hunden. El mundo del cerebro va
+   oscuro (#0D0F14) con el azul de rayos X.
+   Clases con el prefijo fp- (nunca ad-: los bloqueadores de anuncios las ocultan). Todo cuelga de
+   .flypet (la página) para no tocar el resto del sitio ni depender de su tema claro u oscuro.
+   Contraste (WCAG AA) comprobado a mano para cada pareja de colores de texto (ver los comentarios). */
+
+/* El envoltorio del layout no pinta nada: solo carga la letra para estas rutas. */
+.fp-layout {
+  display: contents;
+}
+
+.flypet {
+  --fp-ink: #21242b;
+  --fp-white: #fffcf6;
+  --fp-cream: #fff7ea;
+  --fp-amber: #f29e2e;
+  --fp-amber-l: #ffd9a6;
+  --fp-amber-d: #8a4b00; /* SELECTED_INK del juego */
+  --fp-cyan: #46c8e8;
+  --fp-cyan-l: #d3f2fb;
+  --fp-gold: #ffc531;
+  --fp-gold-l: #ffe680;
+  --fp-red: #e0393b;
+  --fp-coral: #ee816b; /* rojo del juego aclarado con su naranja claro, como en el anuncio */
+  --fp-green: #9dbf6a;
+  --fp-green-l: #d7e4b5;
+  --fp-night: #0d0f14;
+  --fp-xray: #bfe6ff;
+  --fp-muted: #575c69; /* sobre blanco y crema: 6,4:1 */
+  --fp-key: var(--fp-amber);
+
+  flex: 1;
+  min-height: 100vh;
+  overflow-x: clip;
+  color: var(--fp-ink);
+  background: var(--fp-cream);
+  font-family: var(--font-fp), "Nunito", system-ui, sans-serif;
+  font-weight: 600;
+  -webkit-font-smoothing: antialiased;
+}
+
+.flypet ::selection {
+  background: var(--fp-amber);
+  color: var(--fp-ink);
+}
+
+.flypet a:focus-visible,
+.flypet button:focus-visible {
+  outline: 3px solid var(--fp-ink);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+.fp-wrap {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 640px) {
+  .fp-wrap {
+    padding-inline: 1.5rem;
+  }
+}
+
+/* ---------- Secciones: un color de fondo cada una, con el confeti del anuncio ---------- */
+
+.fp-sec {
+  position: relative;
+  background-color: var(--fp-bg, var(--fp-cream));
+  background-image:
+    radial-gradient(circle, var(--fp-c1, rgba(242, 158, 46, 0.55)) 0 3px, transparent 3.5px),
+    radial-gradient(circle, var(--fp-c2, rgba(70, 200, 232, 0.45)) 0 2.5px, transparent 3px),
+    radial-gradient(circle, var(--fp-c3, rgba(224, 57, 59, 0.35)) 0 2px, transparent 2.5px),
+    var(--fp-grad, linear-gradient(transparent, transparent));
+  background-size:
+    233px 197px,
+    171px 251px,
+    293px 223px,
+    100% 100%,
+    100% 100%; /* (la quinta, para los fondos de dos degradados: si no, heredaría el mosaico del confeti) */
+  background-position:
+    37px 21px,
+    113px 97px,
+    11px 149px,
+    0 0,
+    0 0;
+}
+
+/* Crema: la apertura y «lo que es y lo que no» */
+.fp-sec--crema {
+  --fp-top: var(--fp-cream);
+  --fp-bg: var(--fp-cream);
+  --fp-grad: radial-gradient(ellipse at 80% 0%, rgba(255, 217, 166, 0.7), transparent 60%);
+}
+/* El cerebro: noche del laboratorio, con el azul de rayos X */
+.fp-sec--cerebro {
+  --fp-top: var(--fp-night);
+  --fp-bg: var(--fp-night);
+  --fp-key: var(--fp-amber);
+  --fp-c1: rgba(191, 230, 255, 0.22);
+  --fp-c2: rgba(242, 158, 46, 0.28);
+  --fp-c3: rgba(191, 230, 255, 0.12);
+  --fp-grad:
+    radial-gradient(ellipse at 15% 8%, rgba(191, 230, 255, 0.13), transparent 45%),
+    radial-gradient(ellipse at 90% 60%, rgba(70, 200, 232, 0.08), transparent 50%);
+  color: var(--fp-cream);
+}
+/* Su vida (comer): coral. Tinta sobre coral: 6,0:1 */
+.fp-sec--coral {
+  --fp-top: #ffb48f;
+  --fp-bg: var(--fp-coral);
+  --fp-key: var(--fp-gold-l);
+  --fp-c1: rgba(255, 230, 128, 0.7);
+  --fp-c2: rgba(255, 252, 246, 0.55);
+  --fp-c3: rgba(224, 57, 59, 0.4);
+  --fp-grad: linear-gradient(180deg, #ffb48f, transparent 70%);
+}
+/* Rastro: el verde del Jardín. Tinta sobre #9DBF6A: 7,5:1 */
+.fp-sec--verde {
+  --fp-top: var(--fp-green-l);
+  --fp-bg: var(--fp-green);
+  --fp-key: var(--fp-amber);
+  --fp-c1: rgba(255, 197, 49, 0.75);
+  --fp-c2: rgba(255, 252, 246, 0.55);
+  --fp-c3: rgba(224, 57, 59, 0.4);
+  --fp-grad: linear-gradient(180deg, var(--fp-green-l), transparent 75%);
+}
+/* Tu parte (decorar, foto, Flycoins): oro. Tinta sobre oro: 11:1 */
+.fp-sec--oro {
+  --fp-top: var(--fp-gold-l);
+  --fp-bg: var(--fp-gold);
+  --fp-key: var(--fp-red);
+  --fp-c1: rgba(242, 158, 46, 0.8);
+  --fp-c2: rgba(255, 252, 246, 0.7);
+  --fp-c3: rgba(70, 200, 232, 0.55);
+  --fp-grad: linear-gradient(180deg, var(--fp-gold-l), transparent 70%);
+}
+/* Aspectos: cian. Tinta sobre cian: 8,6:1 */
+.fp-sec--cian {
+  --fp-top: var(--fp-cyan-l);
+  --fp-bg: var(--fp-cyan);
+  --fp-key: var(--fp-gold);
+  --fp-c1: rgba(255, 197, 49, 0.8);
+  --fp-c2: rgba(255, 252, 246, 0.7);
+  --fp-c3: rgba(242, 158, 46, 0.6);
+  --fp-grad: linear-gradient(180deg, var(--fp-cyan-l), transparent 75%);
+}
+/* Flydex: naranja. Tinta sobre ámbar: 7,2:1 */
+.fp-sec--naranja {
+  --fp-top: var(--fp-amber-l);
+  --fp-bg: var(--fp-amber);
+  --fp-key: var(--fp-cyan-l);
+  --fp-c1: rgba(255, 230, 128, 0.85);
+  --fp-c2: rgba(255, 252, 246, 0.6);
+  --fp-c3: rgba(224, 57, 59, 0.45);
+  --fp-grad: linear-gradient(180deg, var(--fp-amber-l), transparent 70%);
+}
+/* Cierre: de oro a naranja */
+.fp-sec--cierre {
+  --fp-top: var(--fp-gold-l);
+  --fp-bg: var(--fp-amber);
+  --fp-key: var(--fp-red);
+  --fp-c1: rgba(255, 252, 246, 0.7);
+  --fp-c2: rgba(224, 57, 59, 0.45);
+  --fp-c3: rgba(70, 200, 232, 0.55);
+  --fp-grad: linear-gradient(180deg, var(--fp-gold-l), var(--fp-gold) 45%, var(--fp-amber));
+}
+
+/* Borde ondulado arriba de cada sección: el color nuevo «entra» sobre el anterior con una onda suave */
+.fp-sec + .fp-sec::before,
+.fp-sec + .fp-foot::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -13px;
+  height: 14px;
+  background: var(--fp-top, var(--fp-bg));
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 14' preserveAspectRatio='none'%3E%3Cpath d='M0 14V7C12 7 12 1 24 1S36 7 48 7s12-6 24-6 12 6 24 6v7z'/%3E%3C/svg%3E")
+    0 0 / 96px 14px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 14' preserveAspectRatio='none'%3E%3Cpath d='M0 14V7C12 7 12 1 24 1S36 7 48 7s12-6 24-6 12 6 24 6v7z'/%3E%3C/svg%3E")
+    0 0 / 96px 14px repeat-x;
+  pointer-events: none;
+}
+
+/* ---------- Letra ---------- */
+
+.fp-display {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+
+/* La palabra clave: en color y con contorno de tinta, como las pegatinas del juego.
+   El contorno de tinta es lo que la separa del fondo (tinta sobre cualquier fondo claro > 6:1). */
+.fp-key {
+  color: var(--fp-key);
+  -webkit-text-stroke: 0.14em var(--fp-ink);
+  paint-order: stroke fill;
+  text-shadow: 0 0.07em 0 var(--fp-ink);
+}
+.fp-sec--cerebro .fp-key {
+  /* sobre la noche: ámbar sobre #0D0F14, 7,6:1 */
+  -webkit-text-stroke: 0;
+  text-shadow: 0 0 0.5em rgba(242, 158, 46, 0.45);
+}
+
+.fp-body {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+@media (min-width: 640px) {
+  .fp-body {
+    font-size: 1.125rem;
+  }
+}
+
+.fp-lead {
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+@media (min-width: 640px) {
+  .fp-lead {
+    font-size: 1.3rem;
+  }
+}
+
+.fp-muted {
+  color: var(--fp-muted);
+}
+
+/* ---------- Cabecera y pie ---------- */
+
+.fp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-radius: 14px;
+}
+.fp-brand-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 12px;
+  border: 3px solid var(--fp-ink);
+  box-shadow: 0 3px 0 var(--fp-ink);
+  flex-shrink: 0;
+}
+.fp-brand-name {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.fp-lang {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding-inline: 0.6rem;
+  border: 3px solid var(--fp-ink);
+  border-radius: 999px;
+  background: var(--fp-white);
+  font-weight: 900;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  box-shadow: 0 3px 0 var(--fp-ink);
+  transition:
+    transform 90ms ease-out,
+    box-shadow 90ms ease-out;
+}
+.fp-lang:hover {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--fp-ink);
+}
+.fp-lang--on {
+  background: var(--fp-amber);
+}
+
+.fp-foot {
+  position: relative;
+  --fp-top: var(--fp-ink);
+  background: var(--fp-ink);
+  color: var(--fp-cream); /* 14:1 */
+}
+.fp-foot .fp-brand-icon {
+  border-color: var(--fp-cream);
+  box-shadow: none;
+}
+.fp-foot .fp-link {
+  text-decoration-color: var(--fp-amber);
+}
+.fp-foot .fp-link:hover {
+  color: var(--fp-amber); /* ámbar sobre tinta: 7,2:1 */
+}
+.fp-foot a:focus-visible {
+  outline-color: var(--fp-amber);
+}
+
+/* ---------- Botones que se hunden ---------- */
+
+.fp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.25rem;
+  padding: 0.7rem 1.6rem;
+  border: 3px solid var(--fp-ink);
+  border-radius: 999px;
+  background: var(--fp-amber); /* tinta sobre ámbar: 7,2:1 */
+  color: var(--fp-ink);
+  font-weight: 900;
+  font-size: 1.1rem;
+  line-height: 1.15;
+  text-align: center;
+  box-shadow: 0 6px 0 var(--fp-ink);
+  transition:
+    transform 90ms ease-out,
+    box-shadow 90ms ease-out,
+    background-color 120ms ease-out;
+}
+.fp-btn:hover {
+  transform: translateY(2px);
+  box-shadow: 0 4px 0 var(--fp-ink);
+  background: #f7ad48;
+}
+.fp-btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--fp-ink);
+}
+.fp-btn--white {
+  background: var(--fp-white);
+}
+.fp-btn--white:hover {
+  background: var(--fp-amber-l);
+}
+.fp-btn--small {
+  min-height: 2.75rem;
+  padding: 0.35rem 1.1rem;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 0 var(--fp-ink);
+}
+.fp-btn--small:hover {
+  box-shadow: 0 1px 0 var(--fp-ink);
+}
+
+/* ---------- Fichas, tarjetas y marcos ---------- */
+
+/* Ficha (como los chips del anuncio): blanca, borde de tinta y sombra dura */
+.fp-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.25rem;
+  padding: 0.2rem 0.9rem;
+  border: 3px solid var(--fp-ink);
+  border-radius: 999px;
+  background: var(--fp-white);
+  color: var(--fp-ink);
+  font-weight: 800;
+  font-size: 0.95rem;
+  box-shadow: 0 3px 0 var(--fp-ink);
+}
+.fp-chip--tag {
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.fp-sec--cerebro .fp-chip {
+  /* la ficha oscura del anuncio: fondo de noche y borde ámbar; texto crema, 16:1 */
+  background: #14171f;
+  border-color: var(--fp-amber);
+  color: var(--fp-cream);
+  box-shadow: 0 0 18px rgba(242, 158, 46, 0.3);
+}
+
+.fp-card {
+  position: relative;
+  border: 3px solid var(--fp-ink);
+  border-radius: 28px;
+  background: var(--fp-white);
+  color: var(--fp-ink);
+  box-shadow: 0 7px 0 var(--fp-ink);
+  padding: 1.5rem 1.35rem;
+}
+@media (min-width: 640px) {
+  .fp-card {
+    padding: 1.9rem 1.85rem;
+  }
+}
+.fp-sec--cerebro .fp-card {
+  background: #131722;
+  color: var(--fp-cream);
+  border-color: var(--fp-amber);
+  box-shadow:
+    0 0 0 4px rgba(242, 158, 46, 0.1),
+    0 0 26px rgba(242, 158, 46, 0.2);
+}
+.fp-sec--cerebro .fp-muted {
+  color: #b7c2d6; /* sobre #131722: 9,9:1 */
+}
+
+/* Rótulo de una pieza: pastilla ámbar (tinta sobre ámbar 7,2:1) */
+.fp-label {
+  display: inline-block;
+  padding: 0.2rem 0.75rem;
+  border: 2.5px solid var(--fp-ink);
+  border-radius: 999px;
+  background: var(--fp-amber);
+  color: var(--fp-ink);
+  font-weight: 900;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.fp-sec--cerebro .fp-label {
+  border-color: var(--fp-amber);
+  background: transparent;
+  color: var(--fp-amber); /* sobre #131722: 7,3:1 */
+}
+
+/* Marco de las pantallas del juego */
+.fp-shot {
+  border: 3px solid var(--fp-ink);
+  border-radius: 28px;
+  background: var(--fp-white);
+  box-shadow: 0 9px 0 var(--fp-ink);
+}
+.fp-sec--cerebro .fp-shot {
+  border-color: rgba(191, 230, 255, 0.55);
+  background: #0a0c11;
+  box-shadow:
+    0 0 0 4px rgba(191, 230, 255, 0.08),
+    0 0 26px rgba(191, 230, 255, 0.2);
+}
+
+.fp-photo {
+  border: 3px solid var(--fp-ink);
+  border-radius: 22px;
+  box-shadow: 0 6px 0 var(--fp-ink);
+  background: var(--fp-white);
+}
+
+/* La pantalla del vídeo de cabecera, como un móvil */
+.fp-screen {
+  border: 4px solid var(--fp-ink);
+  border-radius: 30px;
+  background: #0e1018;
+  box-shadow:
+    0 9px 0 var(--fp-ink),
+    0 30px 60px -25px rgba(138, 75, 0, 0.55);
+}
+.fp-pause {
+  border: 3px solid var(--fp-ink);
+  border-radius: 999px;
+  background: var(--fp-white);
+  color: var(--fp-ink);
+  box-shadow: 0 3px 0 var(--fp-ink);
+  transition:
+    transform 90ms ease-out,
+    box-shadow 90ms ease-out;
+}
+.fp-pause:hover {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--fp-ink);
+}
+
+.fp-link {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--fp-amber-d);
+  font-weight: 800;
+}
+.fp-link:hover {
+  text-decoration-color: var(--fp-ink);
+  text-decoration-thickness: 3px;
+}
+.fp-sec--cerebro .fp-link {
+  color: var(--fp-xray); /* sobre #131722: 13:1 */
+  text-decoration-color: var(--fp-xray);
+}
+
+.fp-bullet-sep {
+  border-top: 3px dashed currentColor;
+  opacity: 0.25;
+}
+
+/* ---------- Pegatinas del juego (recortes de las tomas del anuncio) ---------- */
+
+.fp-peg {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 4px solid #fff;
+  background: #fff;
+  box-shadow:
+    0 0 0 3px var(--fp-ink),
+    0 8px 14px -4px rgba(33, 36, 43, 0.45);
+  animation: fp-float 5.5s ease-in-out infinite alternate;
+  animation-delay: var(--fp-delay, 0s);
+  will-change: transform;
+}
+.fp-peg--abs {
+  position: absolute;
+  z-index: 2;
+}
+
+@keyframes fp-float {
+  from {
+    transform: translateY(0) rotate(var(--fp-rot, -6deg));
+  }
+  to {
+    transform: translateY(-9px) rotate(calc(var(--fp-rot, -6deg) * -1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fp-peg {
+    animation: none;
+    transform: rotate(var(--fp-rot, -6deg));
+  }
+  .fp-btn,
+  .fp-lang,
+  .fp-pause {
+    transition: none;
+  }
+  .fp-btn:hover,
+  .fp-btn:active,
+  .fp-lang:hover,
+  .fp-pause:hover {
+    transform: none;
+  }
+}

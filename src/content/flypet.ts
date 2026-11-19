@@ -32,7 +32,41 @@ export type FlypetChapter = {
   index: string;
   tag: string;
   title: string;
+  /** Trozo del título que va en ámbar (como en el anuncio); si no está en el título, no se resalta nada */
+  key?: string;
   features: FlypetFeature[];
+};
+
+/** Cabecera y pie propios de las páginas de Flypet (como ANTIDOP, sin la navegación del portfolio). */
+export type FlypetChrome = {
+  home: string;
+  switchLabel: string;
+  madeBy: string;
+  siteLabel: string;
+  privacy: string;
+  terms: string;
+  contact: string;
+};
+
+export const flypetChrome: Record<Locale, FlypetChrome> = {
+  es: {
+    home: "Flypet, inicio",
+    switchLabel: "Idioma",
+    madeBy: "Una app de Jorge Graells.",
+    siteLabel: "Ver su web",
+    privacy: "Privacidad",
+    terms: "Condiciones de uso",
+    contact: "Contacto",
+  },
+  en: {
+    home: "Flypet, home",
+    switchLabel: "Language",
+    madeBy: "An app by Jorge Graells.",
+    siteLabel: "Visit his site",
+    privacy: "Privacy",
+    terms: "Terms of use",
+    contact: "Contact",
+  },
 };
 
 /** El crédito, troceado para enlazar la fuente y la licencia sin cambiar la frase. */
@@ -49,6 +83,8 @@ export type FlypetPage = {
   metaDescription: string;
   ogAlt: string;
   title: string;
+  /** Trozo del titular que va en ámbar */
+  titleKey: string;
   heroAlt: string;
   heroPause: string;
   heroPlay: string;
@@ -62,6 +98,7 @@ export type FlypetPage = {
   yours: FlypetChapter;
   photosLabel: string;
   photosTitle: string;
+  photosKey: string;
   photosText: string;
   photos: FlypetPhoto[];
   collection: FlypetFeature;
@@ -71,6 +108,7 @@ export type FlypetPage = {
   sampleNote: string;
   getTag: string;
   getTitle: string;
+  getKey: string;
   availabilityHeading: string;
   testing: string;
   testersCta: string;
@@ -94,6 +132,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     ogAlt:
       "Flypet. ¿Qué hará ahora? Huir, comer, limpiarse: lo decide su cerebro. 165.122 neuronas de una mosca real, en tu móvil.",
     title: "Esta mascota tiene cerebro. En serio.",
+    titleKey: "cerebro",
     heroAlt:
       "Vídeo sin sonido de Flypet. La mosca de cerca y, encima, sus neuronas encendiéndose: «¿Huirá? Lo decide su cerebro». Después huye de un toque, cuenta por qué, come, duerme, recorre un laberinto y enseña su Flydex.",
     heroPause: "Parar el vídeo",
@@ -106,6 +145,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "01",
       tag: "SU CEREBRO",
       title: "Ábrele la cabeza",
+      key: "cabeza",
       features: [
         {
           file: "01_como_funciona",
@@ -149,6 +189,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "02",
       tag: "SU VIDA",
       title: "Solo tiene una",
+      key: "una",
       features: [
         {
           file: "06_dia",
@@ -177,6 +218,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "03",
       tag: "RASTRO",
       title: "No la mueves. La convences.",
+      key: "La convences",
       features: [
         {
           file: "11_rastro_nivel",
@@ -198,6 +240,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "04",
       tag: "TU PARTE",
       title: "Hazla tuya",
+      key: "tuya",
       features: [
         {
           file: "08_decorar",
@@ -225,6 +268,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     },
     photosLabel: "Aspectos",
     photosTitle: "Cámbiale la pinta.",
+    photosKey: "pinta",
     photosText:
       "Cambia su pinta y sigue siendo ella: el aspecto no toca nada de la simulación.",
     photos: [
@@ -267,6 +311,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       "Las pantallas son del juego. Los datos de partida que se ven en ellas (días, monedas, historial, colección) son de ejemplo.",
     getTag: "DÓNDE",
     getTitle: "¿Qué hará ahora?",
+    getKey: "ahora",
     availabilityHeading: "Dónde conseguirla",
     testing:
       "Ahora mismo está en prueba cerrada en Google Play. Si tienes Android, puedes probarla ya y ayudarme a publicarla. Y si la abres 7 días seguidos antes de que salga, te llevas una mosca y una placa que nadie más podrá tener.",
@@ -297,6 +342,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     ogAlt:
       "Flypet. What will it do next? Fleeing, eating, grooming: its brain decides. 165,122 neurons from a real fly, on your phone.",
     title: "This pet actually has a brain.",
+    titleKey: "brain",
     heroAlt:
       'Silent video of Flypet. The fly up close and, above it, its neurons lighting up: "Will it bolt? Its brain decides." Then it bolts from a tap, eats, sleeps and stands in its room.',
     heroPause: "Pause the video",
@@ -309,6 +355,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "01",
       tag: "ITS BRAIN",
       title: "Crack open its head",
+      key: "head",
       features: [
         {
           file: "01_como_funciona",
@@ -352,6 +399,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "02",
       tag: "ITS LIFE",
       title: "It only gets one",
+      key: "one",
       features: [
         {
           file: "06_dia",
@@ -380,6 +428,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "03",
       tag: "TRAIL",
       title: "You can't move it. Persuade it.",
+      key: "Persuade it",
       features: [
         {
           file: "11_rastro_nivel",
@@ -401,6 +450,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       index: "04",
       tag: "YOUR MOVE",
       title: "Make it yours",
+      key: "yours",
       features: [
         {
           file: "08_decorar",
@@ -428,6 +478,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     },
     photosLabel: "Looks",
     photosTitle: "Change its look.",
+    photosKey: "look",
     photosText:
       "Change how it looks and it's still the same fly: its looks don't touch the simulation.",
     photos: [
@@ -470,6 +521,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       "The screens are from the game. The save data you can see in them (days, coins, history, collection) is sample data.",
     getTag: "WHERE",
     getTitle: "What will it do next?",
+    getKey: "next",
     availabilityHeading: "Where to get it",
     testing:
       "It's currently in closed testing on Google Play. If you have Android, you can try it now and help me publish it. Open it 7 days in a row before launch and you'll get a fly and a plaque no one else will ever have.",

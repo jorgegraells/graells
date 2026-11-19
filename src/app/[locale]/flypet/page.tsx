@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getDictionary, isLocale, type Locale } from "@/i18n/dictionaries";
+import { isLocale, type Locale } from "@/i18n/dictionaries";
 import {
   flypetPage,
   FLYPET_CONNECTOME_URL,
@@ -13,21 +13,20 @@ import {
   type FlypetFeature,
   type FlypetPhoto,
 } from "@/content/flypet";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
-import SectionHead from "@/components/SectionHead";
+import { FlypetFooter, FlypetHeader } from "@/components/flypet/FlypetChrome";
 import FlypetHeroVideo from "@/components/FlypetHeroVideo";
 
 // Página pública de la app Flypet: el gancho, qué hace (piezas de la serie explicativa),
 // aspectos, lo que es y lo que no, dónde conseguirla, qué cuesta, privacidad y contacto.
-// Sin animaciones de entrada: es una página para leer, en el móvil. El único JavaScript propio es el
-// del vídeo de la portada (FlypetHeroVideo), que sin él se queda en su póster.
+// Lleva la piel del juego (flypet.css, cargada por su layout) y su propia cabecera y pie: es una
+// web dentro de la web, sin la navegación del portfolio, como ANTIDOP. Cada sección tiene el color
+// de su escena en el anuncio (crema, noche del cerebro, coral, verde, oro, cian, naranja).
+// Sin animaciones de entrada: es una página para leer, en el móvil. Solo flotan las pegatinas (CSS,
+// y quietas si se pide menos movimiento). El único JavaScript propio es el del vídeo de la portada
+// (FlypetHeroVideo), que sin él se queda en su póster.
 // Imágenes con <img> y srcset ya optimizados: no pasan por el optimizador de Vercel.
 
 const SITE = "https://jorgegraells.com";
-
-// Colores neón de cada pieza, como en las tarjetas de proyectos
-const NEON = ["#22d3ee", "#ff3d9a", "#c6ff2e", "#a855f7", "#38bdf8", "#fb7185"];
 
 export async function generateMetadata({
   params,
@@ -66,25 +65,98 @@ export async function generateMetadata({
   };
 }
 
+type Tone = "crema" | "cerebro" | "coral" | "verde" | "oro" | "cian" | "naranja" | "cierre";
+
+/** Pegatinas recortadas de las tomas del anuncio (public/flypet/pegatinas/<nombre>.webp, 192x192) */
+type PegName = "comida" | "gota" | "luz" | "susto" | "estrella" | "dorada" | "neon" | "perla";
+
+/** El texto con su trozo clave en color y con contorno de tinta. Si la clave no está, va tal cual. */
+function Keyed({ text, k }: { text: string; k?: string }) {
+  const i = k ? text.indexOf(k) : -1;
+  if (!k || i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <span className="fp-key">{k}</span>
+      {text.slice(i + k.length)}
+    </>
+  );
+}
+
+function Peg({
+  name,
+  className = "",
+  rot = -6,
+  delay = 0,
+  style,
+}: {
+  name: PegName;
+  className?: string;
+  rot?: number;
+  delay?: number;
+  style?: React.CSSProperties;
+}) {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`/flypet/pegatinas/${name}.webp`}
+      width={192}
+      height={192}
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+      className={`fp-peg ${className}`}
+      style={{ "--fp-rot": `${rot}deg`, "--fp-delay": `${delay}s`, ...style } as React.CSSProperties}
+    />
+  );
+}
+
+function Head({
+  index,
+  tag,
+  title,
+  k,
+  pegs = [],
+}: {
+  index: string;
+  tag: string;
+  title: string;
+  k?: string;
+  pegs?: PegName[];
+}) {
+  return (
+    <div>
+      <div className="flex flex-wrap items-center gap-3">
+        <p className="fp-chip fp-chip--tag">
+          {index} · {tag}
+        </p>
+        {pegs.map((name, i) => (
+          <Peg
+            key={`${name}-${i}`}
+            name={name}
+            rot={i % 2 ? 7 : -7}
+            delay={-i * 1.3}
+            className="h-11 w-11 sm:h-14 sm:w-14"
+          />
+        ))}
+      </div>
+      <h2 className="fp-display mt-5 text-[2.6rem] sm:text-6xl lg:text-7xl">
+        <Keyed text={title} k={k} />
+      </h2>
+    </div>
+  );
+}
+
 function Credit({ credit }: { credit: FlypetCredit }) {
   return (
-    <p className="text-xs leading-relaxed text-muted">
+    <p className="fp-muted text-sm leading-relaxed">
       {credit.before}
-      <a
-        href={FLYPET_CONNECTOME_URL}
-        target="_blank"
-        rel="noopener"
-        className="underline underline-offset-2 hover:text-neon-cyan"
-      >
+      <a href={FLYPET_CONNECTOME_URL} target="_blank" rel="noopener" className="fp-link">
         {credit.source}
       </a>
       {credit.middle}
-      <a
-        href={FLYPET_LICENSE_URL}
-        target="_blank"
-        rel="noopener license"
-        className="underline underline-offset-2 hover:text-neon-cyan"
-      >
+      <a href={FLYPET_LICENSE_URL} target="_blank" rel="noopener license" className="fp-link">
         {credit.license}
       </a>
       {credit.after}
@@ -92,38 +164,27 @@ function Credit({ credit }: { credit: FlypetCredit }) {
   );
 }
 
-const BUTTON =
-  "btn-neon clip-corner inline-flex items-center gap-3 px-7 py-3.5 text-sm font-black uppercase tracking-wide transition-transform hover:scale-[1.04]";
-
 function Feature({
   feature,
   locale,
   credit,
-  color,
   flip,
 }: {
   feature: FlypetFeature;
   locale: Locale;
   credit: FlypetCredit;
-  color: string;
   flip: boolean;
 }) {
   const base = `/flypet/${locale}/${feature.file}`;
   return (
-    <article className="grid items-center gap-6 md:grid-cols-12 md:gap-10">
-      <div className={`md:col-span-5 ${flip ? "md:order-2" : ""}`}>
-        <p
-          className="font-mono text-xs font-bold uppercase tracking-[0.25em]"
-          style={{ color }}
-        >
-          ◢ {feature.label}
-        </p>
-        <h3 className="mt-3 text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl">
-          {feature.title}
-        </h3>
-        <p className="mt-4 text-lg leading-relaxed text-foreground/85">{feature.text}</p>
+    <article className="grid items-center gap-8 md:grid-cols-12 md:gap-10">
+      <div className={`fp-card md:col-span-5 ${flip ? "md:order-2" : ""}`}>
+        <p className="fp-label">{feature.label}</p>
+        <h3 className="fp-display mt-4 text-[1.75rem] sm:text-4xl">{feature.title}</h3>
+        <p className="fp-body mt-4">{feature.text}</p>
         {feature.credit && (
           <div className="mt-5">
+            <div className="fp-bullet-sep mb-4" aria-hidden="true" />
             <Credit credit={credit} />
           </div>
         )}
@@ -138,10 +199,7 @@ function Feature({
         alt={feature.alt}
         loading="lazy"
         decoding="async"
-        className={`h-auto w-full rounded-2xl border border-white/10 md:col-span-7 ${
-          flip ? "md:order-1" : ""
-        }`}
-        style={{ boxShadow: `0 24px 70px -36px ${color}` }}
+        className={`fp-shot h-auto w-full md:col-span-7 ${flip ? "md:order-1" : ""}`}
       />
     </article>
   );
@@ -152,28 +210,31 @@ function Chapter({
   chapter,
   locale,
   credit,
-  firstColor = 0,
+  tone,
+  pegs,
 }: {
   id?: string;
   chapter: FlypetChapter;
   locale: Locale;
   credit: FlypetCredit;
-  firstColor?: number;
+  tone: Tone;
+  pegs?: PegName[];
 }) {
   return (
-    <section id={id} className="mx-auto w-full max-w-6xl scroll-mt-24 px-5 py-14 sm:px-6 md:py-20">
-      <SectionHead index={chapter.index} tag={chapter.tag} title={chapter.title} />
-      <div className="mt-10 space-y-16 md:mt-14 md:space-y-24">
-        {chapter.features.map((feature, i) => (
-          <Feature
-            key={feature.file}
-            feature={feature}
-            locale={locale}
-            credit={credit}
-            color={NEON[(firstColor + i) % NEON.length]}
-            flip={i % 2 === 1}
-          />
-        ))}
+    <section id={id} className={`fp-sec fp-sec--${tone} scroll-mt-6`}>
+      <div className="fp-wrap py-16 md:py-24">
+        <Head index={chapter.index} tag={chapter.tag} title={chapter.title} k={chapter.key} pegs={pegs} />
+        <div className="mt-10 space-y-14 md:mt-14 md:space-y-24">
+          {chapter.features.map((feature, i) => (
+            <Feature
+              key={feature.file}
+              feature={feature}
+              locale={locale}
+              credit={credit}
+              flip={i % 2 === 1}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -203,11 +264,9 @@ function Photo({
         alt={photo.alt}
         loading="lazy"
         decoding="async"
-        className="h-auto w-full rounded-2xl border border-white/10"
+        className="fp-photo h-auto w-full"
       />
-      <figcaption className="mt-2 font-mono text-xs uppercase tracking-wider text-muted">
-        {photo.caption}
-      </figcaption>
+      <figcaption className="mt-3 text-[0.95rem] font-extrabold leading-snug">{photo.caption}</figcaption>
     </figure>
   );
 }
@@ -219,103 +278,125 @@ export default async function FlypetPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  const dict = getDictionary(locale);
   const p = flypetPage[locale];
   const [dorada, coleccionista, porcelana, anime] = p.photos;
   const half = "(min-width: 640px) 33vw, calc(50vw - 28px)";
   const wide = "(min-width: 1152px) 740px, (min-width: 640px) 66vw, calc(100vw - 40px)";
+  const cta = FLYPET_PLAY_URL
+    ? { href: FLYPET_PLAY_URL, label: p.playCta, external: true }
+    : { href: `/${locale}/flypet/probar`, label: p.testersCta };
 
   return (
-    <main className="flex-1 overflow-x-clip">
-      <Nav locale={locale as Locale} dict={dict} />
-
+    <main className="flypet">
       {/* Portada: la mosca y el gancho, ya en la primera pantalla del móvil */}
-      <section className="bg-grid">
-        <div className="mx-auto grid w-full max-w-6xl gap-x-12 gap-y-6 px-5 pb-14 pt-28 sm:px-6 md:grid-cols-2 md:items-center md:pb-20 md:pt-36">
+      <section className="fp-sec fp-sec--crema">
+        <FlypetHeader locale={locale} cta={cta} />
+        <div className="fp-wrap grid gap-x-12 gap-y-8 pb-16 pt-8 md:grid-cols-2 md:items-center md:pb-24 md:pt-14">
           <div className="md:self-end">
-            <div className="flex items-center gap-3">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/flypet/icon.webp"
-                width={64}
-                height={64}
-                alt=""
-                className="h-11 w-11 rounded-xl"
-              />
-              <span className="text-gradient neon-text text-2xl font-black uppercase tracking-tight">
-                Flypet
-              </span>
-            </div>
-            <h1 className="mt-4 text-4xl font-black leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              {p.title}
+            <h1 className="fp-display text-[2.7rem] sm:text-6xl lg:text-7xl">
+              <Keyed text={p.title} k={p.titleKey} />
             </h1>
           </div>
 
-          {/* Vídeo vertical, como la pantalla del móvil: estrecho en el móvil para que el texto asome debajo */}
-          <FlypetHeroVideo
-            base={`/flypet/${locale}/hero`}
-            alt={p.heroAlt}
-            pauseLabel={p.heroPause}
-            playLabel={p.heroPlay}
-            className="mx-auto w-[66%] max-w-[280px] md:col-start-2 md:row-span-2 md:row-start-1 md:w-full md:max-w-[340px]"
-          />
+          {/* Vídeo vertical, como la pantalla del móvil, con pegatinas del juego flotando a los lados.
+              Estrecho en el móvil para que el texto asome debajo. */}
+          <div className="relative mx-auto w-[64%] max-w-[280px] md:col-start-2 md:row-span-2 md:row-start-1 md:w-full md:max-w-[340px]">
+            <FlypetHeroVideo
+              base={`/flypet/${locale}/hero`}
+              alt={p.heroAlt}
+              pauseLabel={p.heroPause}
+              playLabel={p.heroPlay}
+              className="w-full"
+            />
+            <Peg
+              name="comida"
+              rot={-10}
+              className="fp-peg--abs h-14 w-14 md:h-20 md:w-20"
+              style={{ left: "-24%", top: "7%" }}
+            />
+            <Peg
+              name="gota"
+              rot={8}
+              delay={-1.6}
+              className="fp-peg--abs h-14 w-14 md:h-[72px] md:w-[72px]"
+              style={{ right: "-23%", top: "26%" }}
+            />
+            <Peg
+              name="luz"
+              rot={-5}
+              delay={-3.1}
+              className="fp-peg--abs h-12 w-12 md:h-[68px] md:w-[68px]"
+              style={{ left: "-21%", top: "58%" }}
+            />
+            <Peg
+              name="estrella"
+              rot={9}
+              delay={-4.4}
+              className="fp-peg--abs h-14 w-14 md:h-[76px] md:w-[76px]"
+              style={{ right: "-20%", top: "74%" }}
+            />
+          </div>
 
           <div className="md:self-start">
-            <p className="text-lg leading-relaxed text-foreground/90 sm:text-xl">{p.lead}</p>
-            <p className="mt-4 text-xl font-bold text-neon-cyan sm:text-2xl">{p.hook}</p>
-            <ul className="mt-5 flex flex-wrap gap-2">
+            <p className="fp-lead">{p.lead}</p>
+            <p className="mt-5 text-xl font-black leading-snug sm:text-2xl">{p.hook}</p>
+            <ul className="mt-6 flex flex-wrap gap-2.5">
               {p.perks.map((perk) => (
-                <li
-                  key={perk}
-                  className="rounded-full border border-neon-violet/40 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground/85"
-                >
+                <li key={perk} className="fp-chip">
                   {perk}
                 </li>
               ))}
             </ul>
-            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-4">
+            <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-5">
               {FLYPET_PLAY_URL ? (
-                <a href={FLYPET_PLAY_URL} className={BUTTON}>
-                  <span>▶</span>
+                <a href={FLYPET_PLAY_URL} className="fp-btn">
+                  <span aria-hidden="true">▶</span>
                   {p.playCta}
                 </a>
               ) : (
                 <>
-                  <a href="#como-funciona" className={BUTTON}>
+                  <a href="#como-funciona" className="fp-btn">
                     {p.seeCta}
-                    <span>↓</span>
+                    <span aria-hidden="true">↓</span>
                   </a>
-                  <Link
-                    href={`/${locale}/flypet/probar`}
-                    className="font-mono text-xs font-semibold uppercase tracking-wider text-muted underline underline-offset-4 transition-colors hover:text-neon-cyan"
-                  >
-                    {p.testersCta} <span aria-hidden="true">→</span>
+                  <Link href={`/${locale}/flypet/probar`} className="fp-btn fp-btn--white">
+                    {p.testersCta}
+                    <span aria-hidden="true">→</span>
                   </Link>
                 </>
               )}
             </div>
-            <div className="mt-6">
+            <div className="mt-7">
               <Credit credit={p.credit} />
             </div>
           </div>
         </div>
       </section>
 
-      <Chapter id="como-funciona" chapter={p.brain} locale={locale} credit={p.credit} />
-      <Chapter chapter={p.life} locale={locale} credit={p.credit} firstColor={4} />
-      <Chapter chapter={p.rastro} locale={locale} credit={p.credit} firstColor={1} />
-      <Chapter chapter={p.yours} locale={locale} credit={p.credit} firstColor={2} />
+      <Chapter id="como-funciona" chapter={p.brain} locale={locale} credit={p.credit} tone="cerebro" />
+      <Chapter chapter={p.life} locale={locale} credit={p.credit} tone="coral" pegs={["comida"]} />
+      <Chapter
+        chapter={p.rastro}
+        locale={locale}
+        credit={p.credit}
+        tone="verde"
+        pegs={["gota", "luz", "susto"]}
+      />
+      <Chapter chapter={p.yours} locale={locale} credit={p.credit} tone="oro" pegs={["estrella"]} />
 
-      {/* Fotos limpias: el momento vistoso, sin marco ni texto encima */}
-      <section className="bg-grid">
-        <div className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 md:py-20">
-          <p className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-neon-pink">
-            ◢ {p.photosLabel}
-          </p>
-          <h3 className="text-gradient neon-text mt-3 text-3xl font-black leading-tight tracking-tight sm:text-5xl">
-            {p.photosTitle}
+      {/* Fotos limpias: el momento vistoso, sin marco de pieza ni texto encima */}
+      <section className="fp-sec fp-sec--cian">
+        <div className="fp-wrap py-16 md:py-24">
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="fp-chip fp-chip--tag">{p.photosLabel}</p>
+            <Peg name="dorada" rot={-7} className="h-11 w-11 sm:h-14 sm:w-14" />
+            <Peg name="perla" rot={7} delay={-1.3} className="h-11 w-11 sm:h-14 sm:w-14" />
+            <Peg name="neon" rot={-7} delay={-2.6} className="h-11 w-11 sm:h-14 sm:w-14" />
+          </div>
+          <h3 className="fp-display mt-5 text-[2.6rem] sm:text-6xl">
+            <Keyed text={p.photosTitle} k={p.photosKey} />
           </h3>
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5">
+          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6">
             <Photo photo={dorada} height={1320} sizes={half} />
             <Photo photo={coleccionista} height={1320} sizes={half} />
             <Photo
@@ -325,95 +406,91 @@ export default async function FlypetPage({
               className="col-span-2 sm:col-span-1"
             />
             <Photo photo={anime} height={768} sizes={wide} className="col-span-2" />
-            <div className="hud-panel clip-corner col-span-2 flex items-center p-6 sm:col-span-1">
-              <p className="text-xl font-bold leading-snug text-foreground">{p.photosText}</p>
+            <div className="fp-card col-span-2 flex items-center sm:col-span-1">
+              <p className="text-xl font-black leading-snug">{p.photosText}</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 md:py-20">
-        <Feature
-          feature={p.collection}
-          locale={locale}
-          credit={p.credit}
-          color="#c6ff2e"
-          flip={false}
-        />
+      <section className="fp-sec fp-sec--naranja">
+        <div className="fp-wrap py-16 md:py-24">
+          <Feature feature={p.collection} locale={locale} credit={p.credit} flip={false} />
+        </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 md:py-20">
-        <SectionHead index="05" tag={p.truthTag} title={p.truthTitle} />
-        <div className="hud-panel clip-corner mt-10 max-w-4xl space-y-4 p-6 sm:p-8">
-          {p.truth.map((paragraph) => (
-            <p key={paragraph} className="text-lg leading-relaxed text-foreground/90">
-              {paragraph}
-            </p>
-          ))}
-          <div className="border-t border-white/10 pt-4">
-            <Credit credit={p.credit} />
-            <p className="mt-2 text-xs leading-relaxed text-muted">{p.sampleNote}</p>
+      <section className="fp-sec fp-sec--crema">
+        <div className="fp-wrap py-16 md:py-24">
+          <Head index="05" tag={p.truthTag} title={p.truthTitle} />
+          <div className="fp-card mt-10 max-w-4xl space-y-4">
+            {p.truth.map((paragraph) => (
+              <p key={paragraph} className="fp-body">
+                {paragraph}
+              </p>
+            ))}
+            <div className="fp-bullet-sep" aria-hidden="true" />
+            <div className="pt-1">
+              <Credit credit={p.credit} />
+              <p className="fp-muted mt-2 text-sm leading-relaxed">{p.sampleNote}</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section
-        id="conseguirla"
-        className="mx-auto w-full max-w-6xl scroll-mt-24 px-5 pb-24 pt-14 sm:px-6 md:pt-20"
-      >
-        <SectionHead index="06" tag={p.getTag} title={p.getTitle} />
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <div className="hud-panel clip-corner p-6 sm:p-7">
-            <h3 className="text-xl font-bold text-foreground">{p.availabilityHeading}</h3>
-            {FLYPET_PLAY_URL ? (
-              <a href={FLYPET_PLAY_URL} className={`${BUTTON} mt-4`}>
-                <span>▶</span>
-                {p.playCta}
-              </a>
-            ) : (
-              <>
-                <p className="mt-3 leading-relaxed text-foreground/80">{p.testing}</p>
-                <Link href={`/${locale}/flypet/probar`} className={`${BUTTON} mt-4`}>
-                  {p.testersCta}
-                  <span>→</span>
+      <section id="conseguirla" className="fp-sec fp-sec--cierre scroll-mt-6">
+        <div className="fp-wrap pb-24 pt-16 md:pt-24">
+          <Head
+            index="06"
+            tag={p.getTag}
+            title={p.getTitle}
+            k={p.getKey}
+            pegs={["comida", "estrella"]}
+          />
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            <div className="fp-card">
+              <h3 className="text-2xl font-black">{p.availabilityHeading}</h3>
+              {FLYPET_PLAY_URL ? (
+                <a href={FLYPET_PLAY_URL} className="fp-btn mt-5">
+                  <span aria-hidden="true">▶</span>
+                  {p.playCta}
+                </a>
+              ) : (
+                <>
+                  <p className="fp-body mt-3">{p.testing}</p>
+                  <Link href={`/${locale}/flypet/probar`} className="fp-btn mt-5">
+                    {p.testersCta}
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </>
+              )}
+              <h3 className="mt-9 text-2xl font-black">{p.makersHeading}</h3>
+              <p className="fp-body mt-3">{p.makers}</p>
+              <h3 className="mt-9 text-2xl font-black">{p.privacyHeading}</h3>
+              <p className="fp-body mt-3">
+                <Link href={`/${locale}/flypet/privacidad`} className="fp-link">
+                  {p.privacyLink}
                 </Link>
-              </>
-            )}
-            <h3 className="mt-8 text-xl font-bold text-foreground">{p.makersHeading}</h3>
-            <p className="mt-3 leading-relaxed text-foreground/80">{p.makers}</p>
-            <h3 className="mt-8 text-xl font-bold text-foreground">{p.privacyHeading}</h3>
-            <p className="mt-3 leading-relaxed text-foreground/80">
-              <Link
-                href={`/${locale}/flypet/privacidad`}
-                className="underline underline-offset-4 hover:text-neon-cyan"
-              >
-                {p.privacyLink}
-              </Link>
-              {" · "}
-              <Link
-                href={`/${locale}/flypet/condiciones`}
-                className="underline underline-offset-4 hover:text-neon-cyan"
-              >
-                {p.termsLink}
-              </Link>
-            </p>
-            <p className="mt-2 leading-relaxed text-foreground/80">
-              {p.contactLabel}{" "}
-              <a
-                href={`mailto:${FLYPET_EMAIL}`}
-                className="underline underline-offset-4 hover:text-neon-cyan"
-              >
-                {FLYPET_EMAIL}
-              </a>
-            </p>
-          </div>
-          <div className="hud-panel clip-corner p-6 sm:p-7">
-            <h3 className="text-xl font-bold text-foreground">{p.priceHeading}</h3>
-            <p className="mt-3 leading-relaxed text-foreground/80">{p.price}</p>
+                {" · "}
+                <Link href={`/${locale}/flypet/condiciones`} className="fp-link">
+                  {p.termsLink}
+                </Link>
+              </p>
+              <p className="fp-body mt-2">
+                {p.contactLabel}{" "}
+                <a href={`mailto:${FLYPET_EMAIL}`} className="fp-link break-all">
+                  {FLYPET_EMAIL}
+                </a>
+              </p>
+            </div>
+            <div className="fp-card self-start">
+              <h3 className="text-2xl font-black">{p.priceHeading}</h3>
+              <p className="fp-body mt-3">{p.price}</p>
+            </div>
           </div>
         </div>
       </section>
-      <Footer dict={dict} />
+
+      <FlypetFooter locale={locale} />
     </main>
   );
 }
