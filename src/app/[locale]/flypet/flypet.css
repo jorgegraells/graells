@@ -484,6 +484,17 @@ html:has(.flypet) body {
     0 0 26px rgba(191, 230, 255, 0.2);
 }
 
+/* El gancho horizontal: 16:9 a todo el ancho de la columna, fondo negro mientras carga el póster */
+.fp-film {
+  background: #000;
+  border-radius: 18px;
+}
+@media (min-width: 768px) {
+  .fp-film {
+    border-radius: 26px;
+  }
+}
+
 .fp-photo {
   border: 3px solid var(--fp-ink);
   border-radius: 22px;

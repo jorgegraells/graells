@@ -12,6 +12,7 @@ import {
   type FlypetCredit,
   type FlypetFeature,
   type FlypetPhoto,
+  type FlypetTeaser,
 } from "@/content/flypet";
 import { FlypetFooter, FlypetHeader } from "@/components/flypet/FlypetChrome";
 import FlypetHeroVideo from "@/components/FlypetHeroVideo";
@@ -76,9 +77,9 @@ type PegName =
  *  sustituir esos dos ficheros; si el nuevo no es de 540x960, pon aquí sus medidas (dan la proporción). */
 const HERO_VIDEO = { file: "hero", width: 540, height: 960 };
 
-/** El vídeo de presentación (ES, v5) ya lleva sus pegatinas alrededor del móvil: entonces la página no
- *  pone las suyas, que saldrían repetidas. El Reel inglés no las lleva. */
-const HERO_STICKERS_IN_VIDEO: Record<Locale, boolean> = { es: true, en: false };
+/** El vídeo de presentación (v5, en los dos idiomas) ya lleva sus pegatinas alrededor del móvil: entonces la
+ *  página no pone las suyas, que saldrían repetidas. */
+const HERO_STICKERS_IN_VIDEO: Record<Locale, boolean> = { es: true, en: true };
 
 /** El texto con su trozo clave en color y con contorno de tinta. Si la clave no está, va tal cual. */
 function Keyed({ text, k }: { text: string; k?: string }) {
@@ -159,6 +160,44 @@ function Head({
         <Keyed text={title} k={k} />
       </h2>
     </div>
+  );
+}
+
+/** El gancho horizontal (public/flypet/<idioma>/gancho.mp4, 1280x720, con voz): lo arranca la persona, con
+ *  sonido y subtítulos. No descarga nada hasta que se pulsa (preload="none"). */
+function Teaser({ teaser, locale }: { teaser: FlypetTeaser; locale: Locale }) {
+  const base = `/flypet/${locale}/gancho`;
+  return (
+    <section className="fp-sec fp-sec--cerebro">
+      <div className="fp-wrap pb-6 pt-16 md:pt-24">
+        <p className="fp-chip fp-chip--tag">{teaser.tag}</p>
+        <h2 className="fp-display mt-5 text-[2.6rem] sm:text-6xl lg:text-7xl">
+          <Keyed text={teaser.title} k={teaser.titleKey} />
+        </h2>
+        <p className="fp-lead mt-5 max-w-3xl">{teaser.text}</p>
+        <figure className="mt-10">
+          <video
+            className="fp-shot fp-film block aspect-video h-auto w-full"
+            width={1280}
+            height={720}
+            controls
+            playsInline
+            preload="none"
+            poster={`${base}-poster.webp`}
+            aria-label={teaser.videoLabel}
+          >
+            <source src={`${base}.mp4`} type="video/mp4" />
+            <track kind="captions" src={`${base}.vtt`} srcLang={locale} label={teaser.captionsLabel} />
+          </video>
+          <figcaption className="fp-muted mt-5 max-w-3xl text-sm leading-relaxed">
+            {teaser.status}{" "}
+            <Link href={`/${locale}/flypet/probar`} className="fp-link">
+              {teaser.statusCta} <span aria-hidden="true">→</span>
+            </Link>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
   );
 }
 
@@ -384,6 +423,9 @@ export default async function FlypetPage({ params }: { params: Promise<{ locale:
           </div>
         </div>
       </section>
+
+      {/* El gancho horizontal solo existe en castellano */}
+      {p.teaser && <Teaser teaser={p.teaser} locale={locale} />}
 
       <Chapter id="como-funciona" chapter={p.brain} locale={locale} credit={p.credit} tone="cerebro" />
       <Chapter chapter={p.life} locale={locale} credit={p.credit} tone="coral" pegs={["comida"]} />
