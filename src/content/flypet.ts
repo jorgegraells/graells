@@ -6,7 +6,8 @@
 // Piezas, vídeo de cabecera y cifras, al día con la v0.18 (marketing/2026-11-18-web, 2026-11-18).
 // Vídeo de cabecera ES: el de presentación v5 (2026-11-19), cortado antes del cierre «Ya disponible en
 // Google Play» (hoy está en prueba cerrada). EN: la misma presentación v5 en inglés, cortada igual (2026-11-20).
-// Gancho horizontal (solo en castellano): marketing/2026-11-19-gancho, a 1280x720 con sus subtítulos.
+// Gancho (solo en castellano): marketing/2026-11-19-gancho; horizontal a 1280x720 en escritorio y vertical a
+// 720x1280 en el móvil, con los mismos subtítulos.
 
 import type { Locale } from "@/i18n/dictionaries";
 
@@ -84,7 +85,8 @@ export type FlypetCredit = {
   after: string;
 };
 
-/** Gancho en vídeo horizontal con voz (solo existe en castellano): public/flypet/<idioma>/gancho.* */
+/** Gancho en vídeo con voz (solo existe en castellano): public/flypet/<idioma>/gancho.* (horizontal) y
+ *  gancho-vertical.* (móvil) */
 export type FlypetTeaser = {
   tag: string;
   title: string;
@@ -157,7 +159,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     title: "Esta mascota tiene cerebro. En serio.",
     titleKey: "cerebro",
     heroAlt:
-      'Silent video of Flypet. "FLYPET! The first virtual pet with a real brain that you can look after", with the fly on a phone screen. Then its nervous system: "It has the brain of a real fly", 165,122 neurons and 25,563,096 connections. Someone touches it and its brain decides to flee (seen by: LC4 and LPLC2; giant fiber: DNp01). Then it eats on a strawberry, runs experiments, gets out of a maze with drops, lights and startles, shows its fly collection and walks around its decorated room.',
+      "Vídeo sin sonido de Flypet. «¡Flypet! La primera mascota virtual con cerebro real a la que puedes cuidar», con la mosca en la pantalla de un móvil. Después, su sistema nervioso: «Tiene el cerebro de una mosca real», 165.122 neuronas y 25.563.096 conexiones. La tocan y su cerebro decide huir (vio: LC4 y LPLC2; fibra gigante: DNp01). Luego come encima de una fresa, hace experimentos, sale de un laberinto con gotas, luces y sustos, enseña su colección de moscas y anda por su sala decorada.",
     heroPause: "Parar el vídeo",
     heroPlay: "Reproducir el vídeo",
     teaser: {
@@ -168,7 +170,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
       videoLabel: "Vídeo de Flypet con voz y música, 56 segundos: del escaneo del sistema nervioso de una mosca de la fruta a la mosca virtual de la app",
       captionsLabel: "Castellano",
       status:
-        "El vídeo acaba con «Ya disponible en Google Play»: hoy Flypet está allí en prueba cerrada. Si tienes Android, puedes probarla ya.",
+        "El vídeo acaba con «Ya disponible en Google Play»: hoy Flypet está allí en prueba cerrada. Si tienes Android, puedes apuntarte para probarla.",
       statusCta: "Hazte probador",
     },
     lead: "Lleva dentro el cableado de una mosca macho real: 165.122 neuronas con sus conexiones, simuladas en tu móvil mientras la miras. Cuando huye, come o se limpia, lo decide ese cerebro.",
@@ -379,7 +381,7 @@ export const flypetPage: Record<Locale, FlypetPage> = {
     title: "This pet actually has a brain.",
     titleKey: "brain",
     heroAlt:
-      'Silent video of Flypet. The fly up close and, above it, its neurons lighting up: "Will it bolt? Its brain decides." Then it bolts from a tap, eats, sleeps and stands in its room.',
+      'Silent video of Flypet. "FLYPET! The first virtual pet with a real brain that you can look after", with the fly on a phone screen. Then its nervous system: "It has the brain of a real fly", 165,122 neurons and 25,563,096 connections. Someone touches it and its brain decides to flee (seen by: LC4 and LPLC2; giant fiber: DNp01). Then it eats on a strawberry, runs experiments, gets out of a maze with drops, lights and startles, shows its fly collection and walks around its decorated room.',
     heroPause: "Pause the video",
     heroPlay: "Play the video",
     lead: "Inside is the wiring of a real male fly: 165,122 neurons and their connections, simulated on your phone while you watch. When it bolts, eats or grooms, that brain makes the call.",

@@ -153,6 +153,12 @@ html:has(.flypet) body {
     radial-gradient(ellipse at 90% 60%, rgba(70, 200, 232, 0.08), transparent 50%);
   color: var(--fp-cream);
 }
+/* Dos secciones oscuras seguidas (el gancho y «Su cerebro»): la segunda no vuelve a empezar el brillo de
+   arriba, que se veía como una franja más clara en la unión */
+.fp-sec--cerebro + .fp-sec--cerebro {
+  --fp-grad: radial-gradient(ellipse at 90% 60%, rgba(70, 200, 232, 0.08), transparent 50%);
+}
+
 /* Su vida (comer): coral. Tinta sobre coral: 6,0:1 */
 .fp-sec--coral {
   --fp-top: #ffb48f;
@@ -484,14 +490,34 @@ html:has(.flypet) body {
     0 0 26px rgba(191, 230, 255, 0.2);
 }
 
-/* El gancho horizontal: 16:9 a todo el ancho de la columna, fondo negro mientras carga el póster */
+/* El gancho: vertical en el móvil (cabe entero en la pantalla, centrado) y horizontal, 16:9 a todo el
+   ancho de la columna, desde 768 px. Fondo negro mientras carga el póster. */
 .fp-film {
   background: #000;
   border-radius: 18px;
 }
+.fp-film--v {
+  display: block;
+  width: min(100%, calc(80svh * 9 / 16));
+  height: auto;
+  aspect-ratio: 9 / 16;
+  margin-inline: auto;
+}
+.fp-film--h {
+  display: none;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
 @media (min-width: 768px) {
   .fp-film {
     border-radius: 26px;
+  }
+  .fp-film--v {
+    display: none;
+  }
+  .fp-film--h {
+    display: block;
   }
 }
 

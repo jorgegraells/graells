@@ -163,8 +163,10 @@ function Head({
   );
 }
 
-/** El gancho horizontal (public/flypet/<idioma>/gancho.mp4, 1280x720, con voz): lo arranca la persona, con
- *  sonido y subtítulos. No descarga nada hasta que se pulsa (preload="none"). */
+/** El gancho (con voz): lo arranca la persona, con sonido y subtítulos. Dos vídeos que se muestran u ocultan
+ *  por CSS en 768 px: el vertical (gancho-vertical.mp4, 720x1280) en el móvil, donde el horizontal se veía
+ *  diminuto, y el horizontal (gancho.mp4, 1280x720) en pantallas anchas. Los dos con preload="none": el que
+ *  está oculto no descarga nada. Los subtítulos (gancho.vtt) valen para los dos. */
 function Teaser({ teaser, locale }: { teaser: FlypetTeaser; locale: Locale }) {
   const base = `/flypet/${locale}/gancho`;
   return (
@@ -177,7 +179,20 @@ function Teaser({ teaser, locale }: { teaser: FlypetTeaser; locale: Locale }) {
         <p className="fp-lead mt-5 max-w-3xl">{teaser.text}</p>
         <figure className="mt-10">
           <video
-            className="fp-shot fp-film block aspect-video h-auto w-full"
+            className="fp-shot fp-film fp-film--v"
+            width={720}
+            height={1280}
+            controls
+            playsInline
+            preload="none"
+            poster={`${base}-vertical-poster.webp`}
+            aria-label={teaser.videoLabel}
+          >
+            <source src={`${base}-vertical.mp4`} type="video/mp4" />
+            <track kind="captions" src={`${base}.vtt`} srcLang={locale} label={teaser.captionsLabel} default />
+          </video>
+          <video
+            className="fp-shot fp-film fp-film--h"
             width={1280}
             height={720}
             controls
@@ -187,7 +202,7 @@ function Teaser({ teaser, locale }: { teaser: FlypetTeaser; locale: Locale }) {
             aria-label={teaser.videoLabel}
           >
             <source src={`${base}.mp4`} type="video/mp4" />
-            <track kind="captions" src={`${base}.vtt`} srcLang={locale} label={teaser.captionsLabel} />
+            <track kind="captions" src={`${base}.vtt`} srcLang={locale} label={teaser.captionsLabel} default />
           </video>
           <figcaption className="fp-muted mt-5 max-w-3xl text-sm leading-relaxed">
             {teaser.status}{" "}
