@@ -120,15 +120,15 @@ export default async function AntidopPage({
         <div>
           <h1 className="dop-pix text-4xl leading-[1.15] sm:text-5xl lg:text-6xl">{p.title}</h1>
           <p className="mt-6 text-lg leading-relaxed sm:text-xl">{p.lead}</p>
-          <p className="dop-pix dop-cyan mt-5 text-2xl sm:text-3xl">{p.hook}</p>
-          <ul className="dop-pix mt-6 flex flex-wrap gap-2">
+          <p className="dop-pix dop-cyan mt-8 text-2xl sm:text-3xl">{p.hook}</p>
+          <ul className="dop-pix mt-6 flex flex-wrap gap-3">
             {p.perks.map((perk) => (
               <li key={perk} className="dop-chip">
                 {perk}
               </li>
             ))}
           </ul>
-          <div className="mt-8">
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-6">
             {ANTIDOP_PLAY_URL ? (
               <a href={ANTIDOP_PLAY_URL} className="dop-btn dop-pix">
                 <span aria-hidden="true">▶</span>
@@ -140,18 +140,34 @@ export default async function AntidopPage({
                   {p.testersCta}
                   <span aria-hidden="true">→</span>
                 </Link>
-                <a href="#como-funciona" className="dop-link dop-pix ml-5 inline-block align-middle">
+                {/* En el móvil el vídeo va justo debajo: el enlace solo hace falta en pantallas grandes. */}
+                <a href="#como-funciona" className="dop-link dop-pix hidden md:inline-block">
                   {p.seeCta} <span aria-hidden="true">↓</span>
                 </a>
               </>
             )}
           </div>
           {!ANTIDOP_PLAY_URL && (
-            <p className="dop-pix dop-muted mt-5 text-sm uppercase tracking-[0.12em]">
-              {p.availability}
-            </p>
+            <p className="dop-muted mt-6 text-base leading-relaxed">{p.availability}</p>
           )}
         </div>
+
+        {/* En el móvil, el vídeo ocupa el sitio de la lámina: es lo primero que hay que ver. */}
+        <figure className="md:hidden">
+          <video
+            className="dop-frame aspect-video w-full"
+            controls
+            playsInline
+            preload="none"
+            poster={`/antidop/${locale}/demo-poster.jpg`}
+            aria-label={p.videoLabel}
+          >
+            <source src={`/antidop/${locale}/demo.mp4`} type="video/mp4" />
+          </video>
+          <figcaption className="dop-pix dop-muted mt-4 text-center text-sm uppercase tracking-[0.12em]">
+            {p.videoCaption}
+          </figcaption>
+        </figure>
 
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -162,13 +178,14 @@ export default async function AntidopPage({
           height={1920}
           alt={p.heroAlt}
           fetchPriority="high"
-          className="dop-frame mx-auto h-auto w-full max-w-[340px]"
+          className="dop-frame mx-auto hidden h-auto w-full max-w-[340px] md:block"
         />
       </section>
 
       <section id="como-funciona" className="dop-wrap scroll-mt-8 py-14 md:py-20">
         <Head index="01" tag={p.howTag} title={p.howTitle} />
-        <figure className="mx-auto mt-10 max-w-4xl">
+        {/* En el móvil el vídeo ya está en la portada. */}
+        <figure className="mx-auto mt-10 hidden max-w-4xl md:block">
           <video
             className="dop-frame aspect-video w-full"
             controls
