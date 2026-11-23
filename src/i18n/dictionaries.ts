@@ -69,6 +69,7 @@ export type Dictionary = {
     title: string;
     intro: string;
     authority: string;
+    citedBy: { label: string; note: string; sources: { name: string; url: string }[] };
     photosTitle: string;
     photosCaption: string;
     photoAlts: [string, string];
@@ -332,6 +333,14 @@ const es: Dictionary = {
       "Ciberseguridad e inteligencia artificial contadas para que las entienda toda la plantilla, no solo el equipo técnico. Hoy son conocimiento tan básico como saber usar el correo, y la mayoría de incidentes empiezan en una persona, no en un servidor.",
     authority:
       "Llevo más de 5 años como responsable de seguridad informática en una empresa industrial, deteniendo ataques reales, y construyo asistentes de IA que trabajan con el conocimiento completo de una empresa. Lo que cuento en estas sesiones es lo que aplico cada día, y ya he formado en IA y ciberseguridad a plantillas como la de Rodmu.",
+    citedBy: {
+      label: "Citado por",
+      note: "como fuente sobre seguridad industrial",
+      sources: [
+        { name: "Viakoo", url: "https://www.viakoo.com/blog/daily-ot-security-news-november-08-2026/" },
+        { name: "Security Boulevard", url: "https://securityboulevard.com/2026/11/daily-ot-security-news-november-08-2026/" },
+      ],
+    },
     articlesTitle: "Lo que cuento en el blog",
     photosTitle: "Así es una sesión",
     photosCaption:
@@ -1032,6 +1041,14 @@ const en: Dictionary = {
       "Cybersecurity and artificial intelligence explained so the whole team gets it, not just the technical staff. Today they're as essential as knowing how to use email, and most incidents start with a person, not a server.",
     authority:
       "I've spent over 5 years as the IT security lead of an industrial company, detecting and stopping real attacks, and I build AI assistants that work with a company's full knowledge. What I teach in these sessions is what I apply every day, and I have already trained teams like Rodmu's in AI and cybersecurity.",
+    citedBy: {
+      label: "Cited by",
+      note: "as a source on industrial security",
+      sources: [
+        { name: "Viakoo", url: "https://www.viakoo.com/blog/daily-ot-security-news-november-08-2026/" },
+        { name: "Security Boulevard", url: "https://securityboulevard.com/2026/11/daily-ot-security-news-november-08-2026/" },
+      ],
+    },
     articlesTitle: "From the blog",
     photosTitle: "What a session looks like",
     photosCaption:

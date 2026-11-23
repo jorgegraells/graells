@@ -107,6 +107,23 @@ export default async function TrainingPage({
             <span className="mr-2 text-neon-lime">★</span>
             {t.authority}
           </p>
+          <p className="mt-3 text-xs uppercase tracking-widest text-muted">
+            <span className="text-neon-lime">{t.citedBy.label}:</span>{" "}
+            {t.citedBy.sources.map((src, i) => (
+              <span key={src.url}>
+                {i > 0 && " · "}
+                <a
+                  href={src.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/85 underline decoration-neon-lime/40 underline-offset-4 hover:text-neon-lime"
+                >
+                  {src.name}
+                </a>
+              </span>
+            ))}{" "}
+            <span className="normal-case tracking-normal">({t.citedBy.note})</span>
+          </p>
         </div>
 
         {/* Las dos formaciones */}
