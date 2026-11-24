@@ -5,7 +5,7 @@
     "slug": "que-es-prompt-injection",
     "title": "Qué es la prompt injection y cómo proteger a tu empresa",
     "description": "La prompt injection es un ataque que esconde instrucciones dentro de un texto que va a leer una IA, como un correo, una web o un PDF, para que haga algo que tú no le has pedido. OWASP la sitúa como el riesgo número uno de las aplicaciones con IA, y afecta a cualquier empresa que use asistentes o agentes.",
-    "seoDescription": "Prompt injection (inyección de prompts): qué es, directa o indirecta, ejemplos reales y cómo defender las aplicaciones de IA de tu empresa.",
+    "seoDescription": "Prompt injection: qué es, diferencia entre directa e indirecta, ejemplos reales y defensas por capas para proteger las IA de tu empresa.",
     "tags": [
       "prompt injection",
       "ciberseguridad",
