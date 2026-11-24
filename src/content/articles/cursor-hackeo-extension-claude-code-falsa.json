@@ -3,7 +3,7 @@
   "type": "news",
   "es": {
     "slug": "cursor-hackeo-extension-claude-code-falsa",
-    "title": "Hackeo a Cursor: una clave filtrada en Fireworks coló una extensión falsa",
+    "title": "Hackeo a Cursor: una clave de Fireworks coló una extensión falsa",
     "description": "Cursor confirma que un atacante usó una clave expuesta en Fireworks AI para entrar en sus sistemas y colar versiones manipuladas de la extensión de Claude Code en su marketplace el 29 de octubre. Hasta 5.000 usuarios pudieron descargarlas. Qué se sabe y cómo comprobar tu equipo.",
     "seoDescription": "Hackeo a Cursor: extensión falsa de Claude Code con puerta trasera SSH por una clave filtrada en Fireworks AI. Qué pasó y cómo revisar tu equipo.",
     "tags": [
@@ -17,7 +17,7 @@
   },
   "en": {
     "slug": "cursor-breach-fake-claude-code-extension",
-    "title": "Cursor breach: a key leaked at Fireworks led to a fake Claude Code extension",
+    "title": "Cursor breach: a leaked key led to a fake Claude Code extension",
     "description": "Cursor confirms an attacker used a key exposed at Fireworks AI to get into its systems and slip tampered versions of the Claude Code extension into its marketplace on October 29. Up to 5,000 users may have downloaded them. What we know and how to check your machine.",
     "seoDescription": "Cursor breach: a fake Claude Code extension with an SSH backdoor, traced to a key leaked at Fireworks AI. What happened and how to check your machine.",
     "tags": [

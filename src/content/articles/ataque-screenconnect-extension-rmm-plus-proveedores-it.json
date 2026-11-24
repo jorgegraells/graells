@@ -19,7 +19,7 @@
   },
   "en": {
     "slug": "screenconnect-attack-rmm-plus-extension-it-providers",
-    "title": "ScreenConnect attack: nearly 50 organizations hit via an extension",
+    "title": "ScreenConnect attack: nearly 50 organizations hit via a plugin",
     "description": "ConnectWise has investigated intrusions at nearly 50 organizations through ScreenConnect, its remote support tool widely used by IT providers. It points to a third-party extension, RMM+, and urges an update to version 26.6.5. What we know, what we don't and what to ask your provider.",
     "seoDescription": "ScreenConnect attack: nearly 50 organizations hit through the RMM+ extension. What we know and what your company should ask its IT provider.",
     "tags": [

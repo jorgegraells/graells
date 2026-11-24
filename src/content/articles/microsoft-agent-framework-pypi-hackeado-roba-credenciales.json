@@ -17,7 +17,7 @@
   },
   "en": {
     "slug": "microsoft-agent-framework-pypi-compromised-credential-stealer",
-    "title": "Microsoft Agent Framework compromised on PyPI: it steals Azure keys",
+    "title": "Microsoft Agent Framework hijacked on PyPI to steal Azure keys",
     "description": "Two fake versions of Microsoft's official agent-framework package, 1.26.1 and 1.26.2, were published to PyPI on November 17 with malware that steals Azure, AWS, GitHub and OpenAI credentials. PyPI has pulled them. How to tell if you're affected and what to do.",
     "seoDescription": "Microsoft Agent Framework compromised on PyPI: versions 1.26.1 and 1.26.2 steal Azure, GitHub and AWS keys. How to tell if you're affected and what to do.",
     "tags": [

@@ -5,7 +5,7 @@
   "type": "news",
   "es": {
     "slug": "chatgpt-lockdown-mode-fallo-check-point",
-    "title": "ChatGPT Lockdown Mode: un fallo permitía robar chats sin hacer clic",
+    "title": "ChatGPT Lockdown Mode: un fallo dejaba robar chats sin un clic",
     "description": "Check Point logró saltarse el Lockdown Mode de ChatGPT y sacar todo el historial de chats, sin clics en la aplicación de escritorio. OpenAI lo corrigió el 18 de septiembre. Qué pasó, qué no se sabe y qué hacer si usas ChatGPT en el trabajo.",
     "seoDescription": "ChatGPT Lockdown Mode: Check Point lo saltó y sacó chats enteros sin clics. Ya está corregido. Qué pasó y qué hacer si usas ChatGPT en el trabajo.",
     "tags": [

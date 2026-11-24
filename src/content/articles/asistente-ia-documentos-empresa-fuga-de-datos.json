@@ -2,7 +2,7 @@
   "date": "2026-11-03",
   "es": {
     "slug": "asistente-ia-documentos-empresa-fuga-de-datos",
-    "title": "Asistente de IA con los documentos de tu empresa: cómo evitar fugas",
+    "title": "Asistente de IA con documentos de empresa: cómo evitar fugas",
     "description": "Un asistente de IA conectado a los documentos de la empresa (RAG) puede contar a cualquiera lo que lee. El permiso tiene que aplicarse en la búsqueda, antes de que el modelo vea el fragmento, no tachando la respuesta. Incluye una prueba interactiva.",
     "seoDescription": "Asistente de IA con documentos de empresa (RAG): por qué filtra datos y cómo evitarlo aplicando permisos en la búsqueda. Con prueba interactiva.",
     "tags": [

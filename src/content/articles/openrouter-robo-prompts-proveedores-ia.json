@@ -3,7 +3,7 @@
   "type": "news",
   "es": {
     "slug": "openrouter-robo-prompts-proveedores-ia",
-    "title": "OpenRouter retira tres proveedores de IA tras meses de robo de prompts",
+    "title": "OpenRouter echa a tres proveedores de IA por robo de prompts",
     "description": "Unos investigadores descubrieron que alguien llevaba meses copiando prompts desde dentro de tres proveedores de IA que usa OpenRouter, incluso los marcados para no guardarse. Qué se sabe y qué hacer si mandas datos sensibles a un modelo.",
     "seoDescription": "OpenRouter retira tres proveedores de IA tras meses de robo de prompts, incluso con Zero Data Retention. Qué se sabe y qué hacer con tus claves.",
     "tags": [
