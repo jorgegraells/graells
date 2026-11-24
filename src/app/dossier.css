@@ -211,10 +211,13 @@
   margin-top: 28px;
   color: var(--dx-graph);
 }
-:is(.dx, html[data-theme="dossier"] .doc-shell) h1 {
+/* .dx-h1: el título del tema expediente es un <p role="heading"> para que cada
+   página tenga un solo <h1> en el HTML (el del tema arcade). Se ve igual. */
+:is(.dx, html[data-theme="dossier"] .doc-shell) :is(h1, .dx-h1) {
   font: 700 clamp(40px, 6.2vw, 72px)/1 var(--dx-serif);
   margin: 0 0 18px;
   letter-spacing: -0.01em;
+  max-width: none;
 }
 :is(.dx, html[data-theme="dossier"] .doc-shell) h2 {
   font: 700 30px/1.15 var(--dx-serif);
@@ -1080,7 +1083,7 @@ html[data-theme="dossier"] .doc :is(.dx-fh, .dx-ff) a:hover {
 .dx-doc-title {
   font-size: clamp(30px, 4.6vw, 46px) !important;
   line-height: 1.08 !important;
-  max-width: 20ch;
+  max-width: 20ch !important;
   margin-bottom: 22px !important;
 }
 .dx-doc-fields {

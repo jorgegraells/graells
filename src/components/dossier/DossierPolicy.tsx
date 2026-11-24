@@ -20,7 +20,7 @@ export default function DossierPolicy({ locale, dict, kind }: { locale: Locale; 
         folio={`${t.sections.length} ${labels.clause.toLowerCase()}s`}
         foot={labels.footer}
       >
-        <h1 className="dx-doc-title">{t.title}</h1>
+        <p className="dx-doc-title dx-h1" role="heading" aria-level={1}>{t.title}</p>
         {updated && <p className="dx-lab">{updated}</p>}
         <p className="dx-resumen">{t.intro}</p>
         <ol className="dx-clauses">

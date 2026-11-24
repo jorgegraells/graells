@@ -18,7 +18,7 @@ export default function DossierAbout({ locale, dict }: { locale: Locale; dict: D
       <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict, "home")} localeHref={other.aboutPage.href} />
 
       <DossierFolio head={head} folio={`${d.folio} 1 ${d.of} 2`} foot={d.subject.footer}>
-        <h1>{dict.hero.name}</h1>
+        <p className="dx-h1" role="heading" aria-level={1}>{dict.hero.name}</p>
         <div className="dx-subject">
           <figure className="dx-photo">
             {/* eslint-disable-next-line @next/next/no-img-element -- PNG de 2 colores ya optimizado */}

@@ -212,7 +212,7 @@ export default async function ArticlePage({
                 <small>{fmtShort.format(new Date(article.published))}</small>
               </div>
             )}
-            <h1 className="dx-doc-title">{article.title}</h1>
+            <p className="dx-doc-title dx-h1" role="heading" aria-level={1}>{article.title}</p>
             <dl className="dx-fields dx-doc-fields">
               <dt className="dx-lab">{d.fields.type}</dt>
               <dd className="dx-f-sep">

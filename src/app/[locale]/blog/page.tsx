@@ -100,7 +100,7 @@ export default async function BlogIndex({
             folio={`${guides.length} ${dict.dossier.ledger.entries}`}
             foot={dict.dossier.ledger.footer}
           >
-            <h1>{dict.dossier.ledger.blogSection}</h1>
+            <p className="dx-h1" role="heading" aria-level={1}>{dict.dossier.ledger.blogSection}</p>
             <p className="dx-resumen">{dict.blog.subtitle}</p>
             <DossierLedger articles={guides} locale={locale} dict={dict} />
           </DossierFolio>

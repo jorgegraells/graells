@@ -88,7 +88,7 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
             folio={`${news.length} ${dict.dossier.ledger.entries}`}
             foot={dict.dossier.ledger.footer}
           >
-            <h1>{dict.news.title}</h1>
+            <p className="dx-h1" role="heading" aria-level={1}>{dict.news.title}</p>
             <p className="dx-resumen">{dict.news.subtitle}</p>
             {news.length === 0 && <p>{dict.news.empty}</p>}
             {subscribeEnabled && <SubscribeForm locale={locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="dossier" />}

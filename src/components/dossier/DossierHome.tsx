@@ -69,11 +69,11 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
           {t.subject.stamp}
           <small>{t.subject.stampSub}</small>
         </div>
-        <h1>
+        <p className="dx-h1" role="heading" aria-level={1}>
           {t.subject.greeting}
           <br />
           {dict.hero.name}
-        </h1>
+        </p>
         <div className="dx-subject">
           <figure className="dx-photo">
             {/* eslint-disable-next-line @next/next/no-img-element -- PNG de 2 colores ya optimizado (scripts/dither-photo.mjs) */}

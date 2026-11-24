@@ -18,7 +18,7 @@ export default function DossierTraining({ locale, dict }: { locale: Locale; dict
       <DossierTabs locale={locale} dict={dict} tabs={innerTabs(locale, dict, "training")} localeHref={`/${other}/training`} />
 
       <DossierFolio head={head} folio={`${dict.dossier.folio} 1 ${dict.dossier.of} 2`} foot={d.footer}>
-        <h1 className="dx-doc-title">{t.title}</h1>
+        <p className="dx-doc-title dx-h1" role="heading" aria-level={1}>{t.title}</p>
         <p className="dx-resumen">{t.intro}</p>
         <div className="dx-cols" style={{ marginTop: 18 }}>
           <div>
