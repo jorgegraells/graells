@@ -265,6 +265,15 @@ async function main() {
       continue;
     }
 
+    // Brevo no deja crear una campaña para una lista vacía (400 "no contacts"):
+    // si nadie se ha suscrito aún en este idioma, se salta sin tumbar el otro
+    const list = await brevo("GET", `/contacts/lists/${Number(LISTS[locale])}`).catch(() => null);
+    const subscribers = list?.uniqueSubscribers ?? list?.totalSubscribers;
+    if (subscribers === 0) {
+      console.log(`[${locale}] la lista ${LISTS[locale]} aún no tiene suscriptores: no hay boletín en este idioma`);
+      continue;
+    }
+
     const email = buildEmail(locale, items);
     console.log(`[${locale}] asunto: ${email.subject}`);
     const { id } = await brevo("POST", "/emailCampaigns", {
