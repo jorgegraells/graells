@@ -122,8 +122,6 @@ export type Dictionary = {
     button: string;
     sending: string;
     ok: string;
-    /** Ya estaba suscrito: se actualizan sus temas y correos sin confirmar otra vez */
-    updated: string;
     invalid: string;
     error: string;
     note: string;
@@ -584,7 +582,6 @@ const es: Dictionary = {
     button: "Suscribirme",
     sending: "Enviando...",
     ok: "Casi está. Te he mandado un correo para que confirmes la suscripción.",
-    updated: "Ya estabas suscrito, así que he actualizado tus temas y los correos que recibes. No hace falta confirmar nada.",
     invalid: "Ese correo no parece válido.",
     error: "No se ha podido completar. Prueba en un rato o escríbeme.",
     note: "Te pediré confirmarlo y puedes darte de baja desde cualquier correo.",
@@ -1337,7 +1334,6 @@ const en: Dictionary = {
     button: "Subscribe",
     sending: "Sending...",
     ok: "Almost there. I've sent you an email to confirm your subscription.",
-    updated: "You were already subscribed, so I've updated your topics and the emails you get. Nothing to confirm.",
     invalid: "That email doesn't look right.",
     error: "That didn't work. Try again in a while or write to me.",
     note: "You'll be asked to confirm, and you can unsubscribe from any email.",
