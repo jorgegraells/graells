@@ -3,14 +3,17 @@
 import { useState } from "react";
 import type { Dictionary, Locale } from "@/i18n/dictionaries";
 import { TOPIC_IDS, type TopicId } from "@/content/topics";
+import { subscribeOptions } from "@/lib/subscribe";
 
-type Status = "idle" | "sending" | "ok" | "invalid" | "noTopic" | "error";
+type Status = "idle" | "sending" | "ok" | "invalid" | "noTopic" | "noDelivery" | "error";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Alta en el boletín semanal (Brevo, doble confirmación vía /api/subscribe).
+/** Alta en el boletín (Brevo, doble confirmación vía /api/subscribe).
  *  La persona elige de qué temas quiere recibir; por defecto, todos, o solo
- *  `preselect` (p. ej. en la página de un tema). Solo se pinta si la web tiene
+ *  `preselect` (p. ej. en la página de un tema). Si está montada la lista de
+ *  avisos, elige también qué correos quiere: resumen semanal (marcado), avisos
+ *  urgentes (sin marcar) o los dos, al menos uno. Solo se pinta si la web tiene
  *  Brevo configurado: ver `subscribeEnabled`. */
 export default function SubscribeForm({
   locale,
@@ -31,7 +34,10 @@ export default function SubscribeForm({
   const [topics, setTopics] = useState<TopicId[]>(
     preselect && preselect.length > 0 ? preselect : [...TOPIC_IDS],
   );
+  const [weekly, setWeekly] = useState(true);
+  const [alerts, setAlerts] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  const hasChoice = subscribeOptions.alerts;
 
   function toggle(id: TopicId) {
     setTopics((current) =>
@@ -45,12 +51,20 @@ export default function SubscribeForm({
     const website = new FormData(e.currentTarget).get("website");
     if (!EMAIL_RE.test(email.trim())) return setStatus("invalid");
     if (topics.length === 0) return setStatus("noTopic");
+    if (hasChoice && !weekly && !alerts) return setStatus("noDelivery");
     setStatus("sending");
     try {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), locale, topics, website }),
+        body: JSON.stringify({
+          email: email.trim(),
+          locale,
+          topics,
+          // Solo si el formulario enseña la elección; si no, la API apunta al semanal
+          ...(hasChoice ? { weekly, alerts } : {}),
+          website,
+        }),
       });
       if (res.ok) return setStatus("ok");
       setStatus(res.status === 400 ? "invalid" : "error");
@@ -66,7 +80,9 @@ export default function SubscribeForm({
         ? t.invalid
         : status === "noTopic"
           ? t.noTopic
-          : status === "error"
+          : status === "noDelivery"
+            ? t.noDelivery
+            : status === "error"
             ? t.error
             : null;
 
@@ -102,16 +118,52 @@ export default function SubscribeForm({
     </fieldset>
   );
 
+  // Qué correos: resumen semanal y avisos urgentes (solo si existe la lista de avisos)
+  const deliveryBoxes = (className: string, labelClassName: string, legendClassName: string, hintClassName: string) =>
+    hasChoice ? (
+      <fieldset className={className}>
+        <legend className={legendClassName}>{t.deliveryLegend}</legend>
+        <label className={labelClassName}>
+          <input
+            type="checkbox"
+            name="weekly"
+            checked={weekly}
+            onChange={(e) => {
+              setWeekly(e.target.checked);
+              if (status === "noDelivery") setStatus("idle");
+            }}
+          />
+          {t.weekly}
+        </label>
+        <label className={labelClassName}>
+          <input
+            type="checkbox"
+            name="alerts"
+            checked={alerts}
+            onChange={(e) => {
+              setAlerts(e.target.checked);
+              if (status === "noDelivery") setStatus("idle");
+            }}
+          />
+          {t.alerts}
+          <span className={hintClassName}>{t.alertsHint}</span>
+        </label>
+      </fieldset>
+    ) : null;
+
+  const intro = hasChoice ? t.textChoice : t.text;
+
   if (variant === "dossier") {
     return (
       <form className="dx-sub" onSubmit={submit} noValidate>
         {!compact && <h2>{t.title}</h2>}
-        <p>{t.text}</p>
+        <p>{intro}</p>
         {status === "ok" ? (
           <p className="dx-sub-msg" role="status">{message}</p>
         ) : (
           <>
             {topicBoxes("dx-sub-topics", "dx-sub-topic", "dx-lab")}
+            {deliveryBoxes("dx-sub-topics", "dx-sub-topic", "dx-lab", "dx-sub-hint")}
             <div className="dx-sub-row">
               <input
                 type="email"
@@ -146,7 +198,7 @@ export default function SubscribeForm({
       {!compact && (
         <h2 className="font-mono text-sm font-bold uppercase tracking-[0.3em] text-neon-cyan">{t.title}</h2>
       )}
-      <p className={`${compact ? "" : "mt-2 "}font-sans text-sm leading-relaxed text-foreground/80`}>{t.text}</p>
+      <p className={`${compact ? "" : "mt-2 "}font-sans text-sm leading-relaxed text-foreground/80`}>{intro}</p>
       {status === "ok" ? (
         <p className="mt-4 font-sans text-sm text-neon-cyan" role="status">{message}</p>
       ) : (
@@ -155,6 +207,12 @@ export default function SubscribeForm({
             "mt-4 flex flex-wrap items-center gap-x-4 gap-y-2",
             "flex cursor-pointer items-center gap-2 font-mono text-xs uppercase tracking-wider text-foreground/85 [&>input]:accent-[#22d3ee]",
             "mb-1 w-full font-mono text-[11px] uppercase tracking-widest text-muted",
+          )}
+          {deliveryBoxes(
+            "mt-3 flex flex-wrap items-center gap-x-4 gap-y-2",
+            "flex cursor-pointer flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-wider text-foreground/85 [&>input]:accent-[#22d3ee]",
+            "mb-1 w-full font-mono text-[11px] uppercase tracking-widest text-muted",
+            "w-full basis-full pl-5 font-sans text-[11px] normal-case tracking-normal text-muted",
           )}
           <div className="relative mt-4 flex flex-col gap-2 sm:flex-row">
             <input

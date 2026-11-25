@@ -24,6 +24,8 @@ export type ArticleFile = {
   draft?: boolean;
   published?: string;
   type?: "news";
+  /** Aviso urgente (solo noticias): lo manda al momento .github/workflows/alerts.yml */
+  alert?: boolean;
   /** Temas: ids de src/content/topics.ts */
   topics?: string[];
   es: ArticleLocaleData;

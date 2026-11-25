@@ -1,8 +1,15 @@
-# Boletín semanal (Brevo)
+# Boletín (Brevo)
 
-Un correo a la semana con lo publicado en el blog (guías y noticias), en castellano
-y en inglés, con solo los temas que eligió cada suscriptor. Si una semana no hay
-nada, no se envía.
+Dos tipos de correo, en castellano y en inglés, siempre solo de los temas que eligió
+cada suscriptor. Cada persona puede pedir uno, el otro o los dos:
+
+- **Resumen semanal** (marcado por defecto): lo publicado en la semana, los viernes.
+  Si una semana no hay nada, no se envía.
+- **Avisos urgentes** (sin marcar por defecto): un correo por noticia marcada con
+  `"alert": true`, en cuanto se publica. Solo lo que no puede esperar (criterio en
+  docs/ARTICULOS.md).
+
+No hay correo diario (decisión de Jorge, 25 nov 2026).
 
 ## Cómo funciona
 
@@ -16,6 +23,13 @@ nada, no se envía.
   todas marcadas salvo en la página de un tema, donde sale marcado solo ese. La API
   valida los ids (`src/content/topics.ts`) y los manda a Brevo como tres atributos
   booleanos del contacto: `TEMA_CIBER`, `TEMA_IA`, `TEMA_IOT`.
+- **Qué correos**: si existe la lista de avisos, el formulario enseña dos casillas,
+  "Resumen semanal" (marcada) y "Avisos urgentes" (sin marcar, con una línea que
+  explica qué es); hay que dejar al menos una. La API mete al contacto en
+  `BREVO_LIST_ES/EN` (semanal), `BREVO_LIST_ES_ALERTS/EN_ALERTS` (avisos) o en las
+  dos. Sin lista de avisos, no hay casillas y todo el mundo va al semanal. El
+  interruptor sale de `next.config.ts` (`env.NEWSLETTER_ALERTS`), que lo calcula en el
+  build: tras crear la lista de avisos hay que **redesplegar** para que aparezca.
 - **Páginas de tema**: `/es/blog/tema/<ciberseguridad|ia|iot>` y
   `/en/blog/topic/<cybersecurity|ai|iot>`, cada una con su RSS (`.../feed.xml`) y el
   formulario con ese tema marcado. Es el enlace para pasar a alguien de un sector.
@@ -35,14 +49,38 @@ nada, no se envía.
     Brevo (Campañas > Borradores).
   - Modo **send**: la envía sola. Para activarlo, variable `NEWSLETTER_MODE=send` en
     GitHub. Solo cuando Jorge lo diga.
+- **Avisos urgentes**: `.github/workflows/alerts.yml` corre en cada push a `main` que
+  toque `src/content/articles/` (y a mano). Ejecuta `newsletter.mjs --kind=alerts`:
+  busca noticias publicadas con `"alert": true` de las últimas 48 horas y, por cada
+  una e idioma:
+  - Si ya hay una campaña enviada llamada `Aviso ES <slug castellano>`, se salta:
+    **un aviso no se manda dos veces**. Un borrador que se quedó a medias se borra y
+    se reintenta.
+  - Espera (hasta 6 minutos) a que la página responda 200, para no enlazar algo que
+    Vercel aún no ha desplegado. Si no responde, lo reintenta en el siguiente push.
+  - Elige a quién le toca: los contactos de la lista de avisos con algún tema de la
+    noticia (sin temas marcados, todos), sin los bloqueados ni dados de baja. Brevo no
+    sabe saltarse contactos dentro de una campaña, así que los mete en una lista
+    temporal `tmp-aviso-<idioma>-<fecha>` en la misma carpeta y manda la campaña a esa
+    lista. Las temporales de más de 2 días se borran al principio de la siguiente
+    ejecución (borrar una lista no borra los contactos).
+  - Se envía sola, sin revisión: la noticia ya pasó el filtro al publicarse.
+  - Asunto "Aviso: <título>" / "Alert: <title>".
+  - Si el aviso más lo ya enviado hoy pasa de 280 correos, lo avisa en el log (el plan
+    gratuito para en 300 al día).
+  - Sin `BREVO_LIST_ES_ALERTS` (o sin clave) no hace nada y termina bien.
+  - Para mandar a mano un artículo como aviso: Actions > Avisos urgentes > Run
+    workflow, con su slug castellano. Con "dry" solo genera la vista previa.
 - **Vista previa local**: `node scripts/newsletter.mjs --dry` (opcional `--days=30`)
   genera el HTML en la carpeta temporal y dice dónde, como lo vería alguien suscrito a
   todo. Con `--topics=iot` (o `--topics=ia,iot`), como lo vería quien eligió esos temas.
   Con `--template`, también el HTML con las condiciones tal cual va a Brevo.
+  Avisos: `node scripts/newsletter.mjs --kind=alerts --dry` (los marcados de las
+  últimas 48 horas) o `--kind=alerts --dry --slug=<slug-es>` (cualquier artículo).
 - **Prueba de Brevo**: la prueba que llega a `NEWSLETTER_TEST_EMAIL` se pinta con los
   atributos de ese contacto. Para verla completa, ese correo tiene que estar en Brevo
   como contacto con los tres temas a `true` (o sin ninguno, y entonces lo ve todo).
-- **Privacidad**: el apartado "Boletín semanal" de `/es/privacidad` describe todo esto.
+- **Privacidad**: el apartado "Boletín" de `/es/privacidad` describe todo esto.
   Si cambia algo (otro proveedor, otra frecuencia, datos nuevos), se cambia allí antes.
 
 ## Montaje (una vez, lo hace Jorge)
@@ -53,7 +91,9 @@ nada, no se envía.
    Brevo, DKIM y DMARC). Después, remitente `boletin@jorgegraells.com` (no hace falta
    que el buzón exista; las respuestas van a dev.graells@gmail.com). Con una dirección
    de Gmail como remitente los correos acaban en spam o rechazados.
-3. **Listas**: Contactos > Listas > "Boletín ES" y "Boletín EN". Apuntar el ID de cada una.
+3. **Listas**: Contactos > Listas > "Boletín ES" y "Boletín EN" (semanal). Las de
+   avisos, "Avisos ES" y "Avisos EN", las crea `scripts/brevo-setup.mjs` en la misma
+   carpeta (paso 6). Apuntar el ID de cada una.
 4. **Atributos de temas** (antes de poner la web en marcha: si no existen, Brevo
    puede rechazar las altas o no guardar los temas): Contactos > Ajustes > Atributos de contacto > Añadir atributo,
    tres veces, tipo **Booleano**, con estos nombres exactos: `TEMA_CIBER`, `TEMA_IA`,
@@ -74,16 +114,21 @@ nada, no se envía.
    - EN, asunto "Confirm your subscription": "Hi. You asked to get the weekly roundup
      from jorgegraells.com. Click the button to confirm. If it wasn't you, just ignore
      this email and you won't hear from me." Botón: "Confirm subscription".
-   Apuntar el ID de cada plantilla.
-7. **Clave de API**: Brevo > SMTP y API > Claves de API > generar.
+   Apuntar el ID de cada plantilla. Más fácil: `scripts/brevo-setup.mjs` crea las dos
+   plantillas y las listas de avisos y dice todos los ID (ver su cabecera).
+7. **Clave de API**: Brevo > SMTP y API > Claves de API > generar, restringida a
+   Emails transaccionales, Campañas de email y Contactos.
 8. **Vercel** (Settings > Environment Variables, Production) y redesplegar:
-   `BREVO_API_KEY`, `BREVO_LIST_ES`, `BREVO_LIST_EN`, `BREVO_DOI_TEMPLATE_ES`,
-   `BREVO_DOI_TEMPLATE_EN`.
+   `BREVO_API_KEY`, `BREVO_LIST_ES`, `BREVO_LIST_EN`, `BREVO_LIST_ES_ALERTS`,
+   `BREVO_LIST_EN_ALERTS`, `BREVO_DOI_TEMPLATE_ES`, `BREVO_DOI_TEMPLATE_EN`.
 9. **GitHub** (repo > Settings > Secrets and variables > Actions):
    - Secret: `BREVO_API_KEY`.
    - Variables: `BREVO_SENDER_EMAIL` (`boletin@jorgegraells.com`), `BREVO_LIST_ES`,
-     `BREVO_LIST_EN`, `NEWSLETTER_TEST_EMAIL` (dev.graells@gmail.com) y, si se
-     crearon en el paso 5, `BREVO_UPDATE_FORM_ES` y `BREVO_UPDATE_FORM_EN`.
+     `BREVO_LIST_EN`, `BREVO_LIST_ES_ALERTS`, `BREVO_LIST_EN_ALERTS`,
+     `NEWSLETTER_TEST_EMAIL` (dev.graells@gmail.com) y, si se crearon en el paso 5,
+     `BREVO_UPDATE_FORM_ES` y `BREVO_UPDATE_FORM_EN`. En esos formularios conviene
+     añadir también las listas (semanal y avisos) para que cada uno pueda cambiar qué
+     correos recibe.
 10. **Prueba**: suscribirse desde la web con un correo propio, confirmar, comprobar en
    Brevo que el contacto tiene los temas marcados y lanzar el flujo a mano (Actions >
    Boletín semanal > Run workflow, modo review).

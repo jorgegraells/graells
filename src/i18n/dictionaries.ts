@@ -132,6 +132,15 @@ export type Dictionary = {
     /** Nombre de cada tema en las casillas (el mismo que `topics.items[id].name`;
      *  va aquí para que el formulario, que es de cliente, no cargue todo `topics`) */
     topicNames: Record<TopicId, string>;
+    /** Entradilla cuando además se pueden pedir avisos urgentes (lista de avisos montada) */
+    textChoice: string;
+    /** Pregunta y casillas de qué correos recibir: resumen semanal y avisos urgentes */
+    deliveryLegend: string;
+    weekly: string;
+    alerts: string;
+    alertsHint: string;
+    /** Error si se desmarcan las dos */
+    noDelivery: string;
     confirmed: { href: string; title: string; text: string; cta: string };
   };
   news: {
@@ -539,8 +548,8 @@ const es: Dictionary = {
         text: "Si me escribes por correo, uso tu dirección y lo que me cuentes solo para responderte y, si hablamos de una formación o un proyecto, para preparar la propuesta. No lo uso para enviarte publicidad ni lo comparto con nadie. Lo guardo mientras dure la conversación y, si llegamos a trabajar juntos, el tiempo que obligue la ley.",
       },
       {
-        title: "Boletín semanal",
-        text: "Si te suscribes, guardo tu correo, el idioma en el que te suscribiste y los temas que eliges (ciberseguridad, IA, IoT e industria) para mandarte un resumen semanal de lo publicado con solo esos temas. Puedes cambiar los temas desde el enlace que va en cada correo. Los envíos los gestiona Brevo, una empresa con sede en Francia que actúa como encargado del tratamiento y guarda los datos en la Unión Europea. La suscripción tiene doble confirmación: no recibes nada hasta que pulsas el enlace del primer correo, y Brevo registra la fecha de esa confirmación. Brevo también anota de forma estándar si se abre el correo y qué enlaces se pulsan; solo lo miro en conjunto, para saber qué interesa. Puedes darte de baja cuando quieras con el enlace que va en cada correo, y entonces tus datos dejan de usarse para el boletín.",
+        title: "Boletín",
+        text: "Si te suscribes, guardo tu correo, el idioma en el que te suscribiste, los temas que eliges (ciberseguridad, IA, IoT e industria) y qué correos quieres: el resumen semanal, los avisos urgentes (un correo al momento cuando publico algo grave de tus temas) o los dos. Para mandar cada aviso solo a quien le interesa, el sistema prepara una lista temporal en Brevo con los suscriptores de esos temas y la borra a los pocos días. Puedes cambiar tus preferencias desde el enlace que va en cada correo. Los envíos los gestiona Brevo, una empresa con sede en Francia que actúa como encargado del tratamiento y guarda los datos en la Unión Europea. La suscripción tiene doble confirmación: no recibes nada hasta que pulsas el enlace del primer correo, y Brevo registra la fecha de esa confirmación. Brevo también anota de forma estándar si se abre el correo y qué enlaces se pulsan; solo lo miro en conjunto, para saber qué interesa. Puedes darte de baja cuando quieras con el enlace que va en cada correo, y entonces tus datos dejan de usarse para el boletín.",
       },
       {
         title: "Base legal",
@@ -579,10 +588,16 @@ const es: Dictionary = {
     topicsLegend: "¿De qué quieres recibir?",
     noTopic: "Elige al menos un tema.",
     topicNames: { ciber: "Ciberseguridad", ia: "IA", iot: "IoT e industria" },
+    textChoice: "Un resumen a la semana con lo que publico y, si quieres, un aviso al momento cuando pasa algo grave. Siempre solo de los temas que elijas.",
+    deliveryLegend: "¿Qué correos quieres?",
+    weekly: "Resumen semanal",
+    alerts: "Avisos urgentes",
+    alertsHint: "Solo lo que no puede esperar: un fallo que ya se está explotando o un ataque grave en el que hay que actuar ya. Un correo por noticia, en cuanto la publico.",
+    noDelivery: "Marca al menos una opción.",
     confirmed: {
       href: "/es/suscripcion-confirmada",
       title: "Suscripción confirmada",
-      text: "Gracias. A partir de ahora te llegará un correo a la semana con lo que publique. Si algún día te sobra, en cada correo tienes el enlace para darte de baja.",
+      text: "Gracias. A partir de ahora te llegará lo que marcaste, solo de los temas que elegiste. Si algún día te sobra, en cada correo tienes el enlace para cambiar tus preferencias o darte de baja.",
       cta: "Ir a los artículos",
     },
   },
@@ -1285,8 +1300,8 @@ const en: Dictionary = {
         text: "If you email me, I use your address and whatever you tell me only to reply and, if we talk about training or a project, to prepare a proposal. I don't use it to send you marketing and I don't share it with anyone. I keep it while the conversation lasts and, if we end up working together, for as long as the law requires.",
       },
       {
-        title: "Weekly newsletter",
-        text: "If you subscribe, I keep your email address, the language you signed up in and the topics you pick (cybersecurity, AI, IoT and industrial) to send you a weekly roundup of what I've published on just those topics. You can change your topics from the link in every email. Sending is handled by Brevo, a company based in France that acts as a data processor and stores the data in the European Union. Subscribing takes a double confirmation: you get nothing until you click the link in the first email, and Brevo records when you confirmed. Brevo also records, as standard, whether an email is opened and which links are clicked; I only look at it in aggregate, to see what's of interest. You can unsubscribe whenever you like with the link in every email, and your data then stops being used for the newsletter.",
+        title: "Newsletter",
+        text: "If you subscribe, I keep your email address, the language you signed up in, the topics you pick (cybersecurity, AI, IoT and industrial) and which emails you want: the weekly roundup, urgent alerts (one email straight away when I publish something serious on your topics) or both. To send each alert only to the people it's for, the system builds a temporary list in Brevo with the subscribers of those topics and deletes it a few days later. You can change your preferences from the link in every email. Sending is handled by Brevo, a company based in France that acts as a data processor and stores the data in the European Union. Subscribing takes a double confirmation: you get nothing until you click the link in the first email, and Brevo records when you confirmed. Brevo also records, as standard, whether an email is opened and which links are clicked; I only look at it in aggregate, to see what's of interest. You can unsubscribe whenever you like with the link in every email, and your data then stops being used for the newsletter.",
       },
       {
         title: "Legal basis",
@@ -1325,10 +1340,16 @@ const en: Dictionary = {
     topicsLegend: "What do you want to hear about?",
     noTopic: "Pick at least one topic.",
     topicNames: { ciber: "Cybersecurity", ia: "AI", iot: "IoT and industrial" },
+    textChoice: "A weekly roundup of what I publish and, if you want, an alert straight away when something serious happens. Always only on the topics you pick.",
+    deliveryLegend: "Which emails do you want?",
+    weekly: "Weekly roundup",
+    alerts: "Urgent alerts",
+    alertsHint: "Only what can't wait: a flaw that's already being exploited or a major attack where you need to act now. One email per story, as soon as I publish it.",
+    noDelivery: "Tick at least one option.",
     confirmed: {
       href: "/en/subscribed",
       title: "Subscription confirmed",
-      text: "Thanks. From now on you'll get one email a week with what I publish. If you ever want out, every email has an unsubscribe link.",
+      text: "Thanks. From now on you'll get what you ticked, only on the topics you picked. If you ever want out, every email has a link to change your preferences or unsubscribe.",
       cta: "Go to the articles",
     },
   },

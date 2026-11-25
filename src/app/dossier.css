@@ -448,6 +448,16 @@
   height: 16px;
   accent-color: var(--dx-toner);
 }
+/* Avisos urgentes: la explicación va debajo de la casilla */
+.dx-sub-topic:has(.dx-sub-hint) {
+  flex-wrap: wrap;
+}
+.dx-sub-hint {
+  flex-basis: 100%;
+  padding-left: 22px;
+  font-size: 13px;
+  opacity: 0.75;
+}
 
 /* Fila de temas: enlaces a las páginas de tema */
 .dx-topics {

@@ -27,7 +27,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/newsletter.mjs ${{ github.event.inputs.mode == 'dry' && '--dry' || '' }}
+      # Los avisos urgentes van aparte: .github/workflows/alerts.yml
+      - run: node scripts/newsletter.mjs --kind=weekly ${{ github.event.inputs.mode == 'dry' && '--dry' || '' }}
         env:
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           BREVO_SENDER_EMAIL: ${{ vars.BREVO_SENDER_EMAIL }}

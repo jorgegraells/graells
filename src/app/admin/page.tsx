@@ -22,6 +22,8 @@ type ArticleFile = {
   draft?: boolean;
   published?: string;
   type?: "news";
+  /** Aviso urgente (solo noticias): se manda al momento a quien pidió avisos urgentes. */
+  alert?: boolean;
   /** Temas (páginas de tema y boletín). Si falta, la web lo trata como ciberseguridad. */
   topics?: string[];
   es: LocaleData;
@@ -318,7 +320,12 @@ export default function AdminPage() {
                     p
                       ? {
                           ...p,
-                          data: { ...p.data, type: e.target.checked ? "news" : undefined },
+                          // Sin noticia no hay aviso urgente
+                          data: {
+                            ...p.data,
+                            type: e.target.checked ? "news" : undefined,
+                            ...(e.target.checked ? {} : { alert: undefined }),
+                          },
                         }
                       : p,
                   )
@@ -326,6 +333,25 @@ export default function AdminPage() {
               />
               Noticia
             </label>
+            {editing.data.type === "news" && (
+              <label
+                className="flex items-center gap-1.5 font-mono text-xs uppercase text-muted"
+                title="Aviso urgente: fallo explotado en algo muy usado con parche urgente, o ataque grave en el que el lector tiene que actuar ya. Se manda al momento a quien pidió avisos urgentes de sus temas."
+              >
+                <input
+                  type="checkbox"
+                  checked={editing.data.alert === true}
+                  onChange={(e) =>
+                    setEditing((p) =>
+                      p
+                        ? { ...p, data: { ...p.data, alert: e.target.checked ? true : undefined } }
+                        : p,
+                    )
+                  }
+                />
+                Aviso urgente
+              </label>
+            )}
             <span
               className="flex items-center gap-2 font-mono text-xs uppercase text-muted"
               title="Temas: deciden en qué página de tema sale y a qué suscriptores del boletín les llega"

@@ -37,6 +37,12 @@ if (a.topics === undefined) {
   errors.push('"topics" tiene temas repetidos');
 }
 
+// Aviso urgente: booleano y solo en noticias (lo manda .github/workflows/alerts.yml)
+if (a.alert !== undefined) {
+  if (typeof a.alert !== "boolean") errors.push('"alert" debe ser true o false');
+  else if (a.alert && a.type !== "news") errors.push('"alert": true solo vale en noticias ("type": "news")');
+}
+
 // Mismas reglas que valida la API del panel, más las editoriales
 const BANNED = [/VTEQ/i, /\bSofIA\b/, /Quizdly/i];
 const AI_TICS = [

@@ -1,0 +1,52 @@
+# Avisos urgentes: cuando se publica una noticia con "alert": true, manda un correo
+# solo a quien pidió avisos urgentes de alguno de sus temas. Se envía sola (no hay
+# revisión: la noticia ya pasó el filtro al publicarse). Montaje: docs/BOLETIN.md.
+#
+# No repite: la campaña se llama "Aviso ES <slug>" y, si ya se envió, se salta.
+# Espera a que la página responda antes de mandar, para no enlazar algo que Vercel
+# aún no ha desplegado.
+name: Avisos urgentes
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/content/articles/**"]
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Slug castellano de un artículo para mandarlo como aviso aunque no lleve alert (vacío: los marcados de las últimas 48 h)"
+        required: false
+        default: ""
+      dry:
+        description: "Solo generar la vista previa, sin llamar a Brevo"
+        type: boolean
+        default: false
+
+# Dos publicaciones seguidas no deben mandar el mismo aviso dos veces
+concurrency:
+  group: newsletter-alerts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  alerts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: >-
+          node scripts/newsletter.mjs --kind=alerts
+          ${{ github.event.inputs.dry == 'true' && '--dry' || '' }}
+          ${{ github.event.inputs.slug && format('--slug={0}', github.event.inputs.slug) || '' }}
+        env:
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ vars.BREVO_SENDER_EMAIL }}
+          BREVO_LIST_ES_ALERTS: ${{ vars.BREVO_LIST_ES_ALERTS }}
+          BREVO_LIST_EN_ALERTS: ${{ vars.BREVO_LIST_EN_ALERTS }}
+          BREVO_UPDATE_FORM_ES: ${{ vars.BREVO_UPDATE_FORM_ES }}
+          BREVO_UPDATE_FORM_EN: ${{ vars.BREVO_UPDATE_FORM_EN }}

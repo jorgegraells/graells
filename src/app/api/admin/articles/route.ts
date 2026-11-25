@@ -97,6 +97,8 @@ export async function POST(request: Request) {
         ? { published: data.published }
         : {}),
     ...(data.type === "news" ? { type: "news" as const } : {}),
+    // El aviso urgente solo tiene sentido en noticias
+    ...(data.type === "news" && data.alert === true ? { alert: true } : {}),
     topics,
     ...(publish ? {} : { draft: true }),
     es: data.es,

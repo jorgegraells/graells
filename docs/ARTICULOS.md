@@ -151,6 +151,26 @@ Noticias durante dos días.
   nuevos: se edita en los dos idiomas y se renueva `updated` (el panel lo hace
   solo). Lo que ha quedado mal se corrige, no se deja al lado de lo nuevo.
 
+### Aviso urgente (`"alert": true`)
+
+Una noticia puede llevar además `"alert": true` (casilla "Aviso urgente" del panel,
+que sale al marcar "Noticia"). Al publicarla, `.github/workflows/alerts.yml` manda
+al momento un correo con ella a quien pidió avisos urgentes de alguno de sus temas
+(docs/BOLETIN.md). Solo vale en noticias; el validador da error si no.
+
+Se marca **solo** si el lector tiene que hacer algo ya:
+
+- Un fallo que ya se está explotando en algo que usa mucha gente o muchas empresas
+  (Windows, iPhone, Android, Chrome, VPN y cortafuegos populares, Exchange, vCenter,
+  equipos industriales muy extendidos...) y hay parche o mitigación que aplicar.
+- Un ataque grave en el que el lector puede estar afectado y tiene que actuar
+  (cambiar contraseñas, revisar accesos, desconfiar de un correo concreto).
+
+No se marca: una caída que ya pasó, una brecha sin nada que hacer, normativa,
+lanzamientos, análisis ni guías. Ante la duda, no: un aviso de más quema la
+confianza de quien se apuntó. Cada aviso sale una sola vez: actualizar la noticia
+después no lo reenvía.
+
 ## Formato del archivo
 
 `src/content/articles/<slug-es>.json`:
@@ -164,6 +184,9 @@ Noticias durante dos días.
   "en": { "slug": "...", "title": "...", "description": "...", "seoDescription": "...", "tags": ["..."], "body": "..." }
 }
 ```
+
+Una noticia lleva además `"type": "news"` y, solo si es un aviso urgente,
+`"alert": true` (ver arriba).
 
 Los borradores (`"draft": true`) no salen en la web, ni en el sitemap, ni en
 los listados: solo en el panel `/admin`, donde se pueden editar y publicar.
