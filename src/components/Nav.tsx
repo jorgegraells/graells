@@ -34,7 +34,7 @@ export default function Nav({
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <nav className="glass hud-corners clip-corner mx-auto mt-4 flex max-w-5xl items-center gap-4 xl:max-w-6xl justify-between border-neon-cyan/30 px-6 py-3">
+      <nav className="glass hud-corners clip-corner mx-auto mt-4 flex max-w-5xl items-center gap-4 xl:max-w-7xl justify-between border-neon-cyan/30 px-6 py-3">
         <Link
           href={`/${locale}`}
           onClick={() => setOpen(false)}
@@ -45,7 +45,8 @@ export default function Nav({
           <span className="text-neon-pink">.exe</span>
         </Link>
 
-        {/* Enlaces en escritorio (con 9 secciones solo caben a partir de xl) */}
+        {/* Enlaces en escritorio (con 9 secciones solo caben a partir de xl; los números,
+            desde 2xl, para que no empujen fuera el botón de idioma) */}
         <div className="hidden items-center gap-3 font-mono text-xs uppercase tracking-wider text-muted xl:flex 2xl:gap-4">
           {links.map((link, i) => (
             <a
@@ -53,7 +54,7 @@ export default function Nav({
               href={link.href}
               className="whitespace-nowrap transition-colors hover:text-neon-cyan"
             >
-              <span className="text-neon-violet/70">
+              <span className="hidden text-neon-violet/70 2xl:inline">
                 {String(i + 1).padStart(2, "0")}
               </span>{" "}
               {link.label}
