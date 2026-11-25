@@ -3,6 +3,10 @@
   "updated": "2026-11-06T16:14:16.324Z",
   "published": "2026-11-06T16:14:16.324Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "chatgpt-lockdown-mode-fallo-check-point",
     "title": "ChatGPT Lockdown Mode: un fallo dejaba robar chats sin un clic",

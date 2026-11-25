@@ -3,6 +3,10 @@
   "updated": "2026-11-17T19:47:54.633Z",
   "published": "2026-11-17T19:47:54.633Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "gpt-6-2-astra-sol-novedades-openai",
     "title": "GPT-6.2 Astra y Sol: qué trae lo nuevo de OpenAI y cuánto cuesta",

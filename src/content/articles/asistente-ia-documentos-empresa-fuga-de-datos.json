@@ -1,5 +1,9 @@
 {
   "date": "2026-11-03",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "asistente-ia-documentos-empresa-fuga-de-datos",
     "title": "Asistente de IA con documentos de empresa: cómo evitar fugas",

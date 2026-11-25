@@ -3,6 +3,9 @@
   "updated": "2026-11-24T06:18:15.677Z",
   "published": "2026-11-18T07:40:43.316Z",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "caidas-estados-unidos-microsoft-apple-gmail-nsa-ciberataque",
     "title": "Caídas en cadena en EE. UU.: ¿hay un ciberataque detrás?",

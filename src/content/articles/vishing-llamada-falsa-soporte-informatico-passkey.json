@@ -1,5 +1,8 @@
 {
   "date": "2026-11-25",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "vishing-llamada-falsa-soporte-informatico-passkey",
     "title": "Vishing: la llamada falsa del soporte informático que roba accesos",

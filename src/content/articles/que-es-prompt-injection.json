@@ -1,6 +1,10 @@
 {
   "date": "2026-10-12",
   "updated": "2026-11-04T14:13:04.268Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "que-es-prompt-injection",
     "title": "Qué es la prompt injection y cómo proteger a tu empresa",

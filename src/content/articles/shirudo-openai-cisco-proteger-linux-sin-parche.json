@@ -3,6 +3,10 @@
   "updated": "2026-11-24T06:20:34.522Z",
   "published": "2026-11-24T06:20:34.522Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "shirudo-openai-cisco-proteger-linux-sin-parche",
     "title": "Shirudo: OpenAI y Cisco protegen Linux mientras llega el parche",

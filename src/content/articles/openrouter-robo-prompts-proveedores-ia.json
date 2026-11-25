@@ -1,6 +1,10 @@
 {
   "date": "2026-11-22",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "openrouter-robo-prompts-proveedores-ia",
     "title": "OpenRouter echa a tres proveedores de IA por robo de prompts",

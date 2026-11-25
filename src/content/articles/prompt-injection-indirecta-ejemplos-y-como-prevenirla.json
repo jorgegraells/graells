@@ -2,6 +2,10 @@
   "date": "2026-11-01",
   "updated": "2026-11-01T12:30:20.161Z",
   "published": "2026-11-01T12:30:20.161Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "prompt-injection-indirecta-ejemplos-y-como-prevenirla",
     "title": "Prompt injection indirecta: ejemplos reales y cómo prevenirla",

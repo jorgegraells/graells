@@ -2,6 +2,10 @@
   "date": "2026-11-22",
   "published": "2026-11-22T06:20:01.361Z",
   "updated": "2026-11-22T06:20:01.361Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "como-proteger-app-prompt-injection-patrones-de-diseno",
     "title": "Cómo proteger tu app de la prompt injection: 6 patrones de diseño",

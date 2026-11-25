@@ -3,6 +3,9 @@
   "updated": "2026-11-19T06:20:56.462Z",
   "published": "2026-11-13T08:10:05.250Z",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "caida-microsoft-365-outlook-teams-copilot",
     "title": "Caída de Microsoft 365: qué pasó con Outlook, Teams y Copilot",

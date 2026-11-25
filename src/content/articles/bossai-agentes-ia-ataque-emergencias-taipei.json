@@ -3,6 +3,10 @@
   "updated": "2026-11-09T14:55:03.300Z",
   "published": "2026-11-09T14:55:03.300Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "bossai-agentes-ia-ataque-emergencias-taipei",
     "title": "Una persona y 12 agentes de IA: el ataque a emergencias de Taipéi",

@@ -3,6 +3,10 @@
   "updated": "2026-11-17T09:04:09.322Z",
   "published": "2026-11-11T08:46:47.369Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "railway-fireworks-robo-claves-api-ia",
     "title": "Roban claves de IA en Railway y Fireworks: Uber y Notion, también",

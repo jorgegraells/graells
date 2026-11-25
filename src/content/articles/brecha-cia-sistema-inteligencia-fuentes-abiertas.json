@@ -3,6 +3,10 @@
   "published": "2026-11-25T06:44:16.194Z",
   "updated": "2026-11-25T07:19:03.709Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "brecha-cia-sistema-inteligencia-fuentes-abiertas",
     "title": "Hackean un sistema de la CIA: qué se sabe y el papel de ARTEX",

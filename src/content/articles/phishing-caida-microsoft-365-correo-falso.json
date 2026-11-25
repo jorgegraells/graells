@@ -2,6 +2,9 @@
   "date": "2026-11-19",
   "published": "2026-11-19T06:18:13.776Z",
   "updated": "2026-11-19T06:18:13.776Z",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "phishing-caida-microsoft-365-correo-falso",
     "title": "Phishing con la caída de Microsoft 365: cómo detectar el correo",

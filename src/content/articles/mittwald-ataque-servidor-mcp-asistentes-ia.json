@@ -3,6 +3,10 @@
   "updated": "2026-11-10T06:11:09.733Z",
   "published": "2026-11-10T06:11:09.733Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "mittwald-ataque-servidor-mcp-asistentes-ia",
     "title": "Atacan el hosting mittwald por su servidor MCP para la IA",

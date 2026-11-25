@@ -3,6 +3,10 @@
   "updated": "2026-11-21T06:19:01.849Z",
   "published": "2026-11-17T07:33:10.926Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "google-agentes-ia-explotan-fallos-sin-humanos",
     "title": "Google detecta agentes de IA que explotan fallos sin ayuda humana",

@@ -3,6 +3,9 @@
   "updated": "2026-11-01T12:30:20.161Z",
   "published": "2026-11-01T12:30:20.161Z",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "ivanti-connect-secure-fallos-explotados-parche",
     "title": "Ivanti Connect Secure: tres fallos explotados y cómo protegerte",

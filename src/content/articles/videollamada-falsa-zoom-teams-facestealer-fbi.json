@@ -3,6 +3,10 @@
   "published": "2026-11-14T06:22:17.354Z",
   "updated": "2026-11-14T06:22:17.354Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "videollamada-falsa-zoom-teams-facestealer-fbi",
     "title": "Videollamadas falsas de Zoom y Teams: el FBI avisa de FaceStealer",

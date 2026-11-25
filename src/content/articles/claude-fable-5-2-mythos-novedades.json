@@ -3,6 +3,10 @@
   "updated": "2026-11-16T06:20:04.962Z",
   "published": "2026-11-10T06:35:07.871Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "claude-fable-5-2-mythos-novedades",
     "title": "Claude Fable 5.2 y Mythos 5.2: qué trae lo nuevo de Anthropic",

@@ -3,6 +3,9 @@
   "updated": "2026-11-05T10:49:46.405Z",
   "published": "2026-11-05T10:49:46.405Z",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "brecha-amadeus-aerolineas-datos-pasajeros",
     "title": "Brecha de Amadeus: aerolíneas afectadas y qué hacer si has volado",

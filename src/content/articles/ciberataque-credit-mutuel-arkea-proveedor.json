@@ -3,6 +3,9 @@
   "updated": "2026-11-08T10:37:58.499Z",
   "published": "2026-11-08T10:37:58.499Z",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "ciberataque-credit-mutuel-arkea-proveedor",
     "title": "Ciberataque a Crédit Mutuel Arkéa: entraron por un proveedor",

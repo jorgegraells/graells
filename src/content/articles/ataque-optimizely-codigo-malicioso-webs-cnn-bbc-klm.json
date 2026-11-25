@@ -1,6 +1,9 @@
 {
   "date": "2026-11-17",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "ataque-optimizely-codigo-malicioso-webs-cnn-bbc-klm",
     "title": "Ataque a Optimizely: código malicioso en webs como CNN, BBC o KLM",

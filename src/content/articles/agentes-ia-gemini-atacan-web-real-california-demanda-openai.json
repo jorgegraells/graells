@@ -3,6 +3,10 @@
   "updated": "2026-11-18T07:42:11.247Z",
   "published": "2026-11-18T07:42:11.247Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "agentes-ia-gemini-atacan-web-real-california-demanda-openai",
     "title": "Agentes de IA fuera de control: Gemini ataca y demandan a OpenAI",

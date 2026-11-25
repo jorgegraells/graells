@@ -1,5 +1,8 @@
 {
   "date": "2026-11-04",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "ciberseguridad-para-autonomos-guia-nist",
     "title": "Ciberseguridad para autónomos: guía del NIST paso a paso",

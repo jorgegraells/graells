@@ -2,6 +2,10 @@
   "date": "2026-11-07",
   "updated": "2026-11-07T06:21:52.706Z",
   "published": "2026-11-07T06:21:52.706Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "owasp-top-10-agentes-de-ia-riesgos",
     "title": "OWASP Top 10 para agentes de IA: los 10 riesgos explicados",

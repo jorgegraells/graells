@@ -3,6 +3,9 @@
   "updated": "2026-11-10T06:23:32.094Z",
   "published": "2026-10-31T10:20:24.381Z",
   "type": "news",
+  "topics": [
+    "ia"
+  ],
   "es": {
     "slug": "openai-google-senal-robots-txt-entrenamiento-ia",
     "title": "OpenAI y Google: una sola regla para no entrenar IA con tu web",
