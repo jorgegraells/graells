@@ -37,6 +37,7 @@ export default function SubscribeForm({
   const [weekly, setWeekly] = useState(true);
   const [alerts, setAlerts] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
+  const [updated, setUpdated] = useState(false);
   const hasChoice = subscribeOptions.alerts;
 
   function toggle(id: TopicId) {
@@ -66,7 +67,11 @@ export default function SubscribeForm({
           website,
         }),
       });
-      if (res.ok) return setStatus("ok");
+      if (res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { updated?: boolean };
+        setUpdated(data.updated === true);
+        return setStatus("ok");
+      }
       setStatus(res.status === 400 ? "invalid" : "error");
     } catch {
       setStatus("error");
@@ -75,7 +80,9 @@ export default function SubscribeForm({
 
   const message =
     status === "ok"
-      ? t.ok
+      ? updated
+        ? t.updated
+        : t.ok
       : status === "invalid"
         ? t.invalid
         : status === "noTopic"

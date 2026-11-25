@@ -12,6 +12,7 @@ import { TOPIC_ATTRIBUTE, TOPIC_IDS, isTopic } from "@/content/topics";
 
 const SITE = "https://jorgegraells.com";
 const BREVO_DOI = "https://api.brevo.com/v3/contacts/doubleOptinConfirmation";
+const BREVO_CONTACTS = "https://api.brevo.com/v3/contacts";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function listId(locale: "es" | "en", suffix: "" | "_ALERTS"): number | null {
@@ -87,9 +88,34 @@ export async function POST(request: Request) {
     TOPIC_IDS.map((id) => [TOPIC_ATTRIBUTE[id], topics.includes(id)]),
   );
 
+  const headers = { "api-key": config.key, "Content-Type": "application/json", Accept: "application/json" };
+
+  // Brevo no manda el correo de doble confirmación a un contacto que ya existe:
+  // ignora la petición en silencio. Si ya está suscrito (confirmó antes y no se
+  // ha dado de baja), se actualizan sus temas y listas directamente.
+  const existing = await fetch(`${BREVO_CONTACTS}/${encodeURIComponent(email)}`, { headers });
+  if (existing.ok) {
+    const contact = (await existing.json().catch(() => ({}))) as { emailBlacklisted?: boolean };
+    if (!contact.emailBlacklisted) {
+      const allLists = [config.lists.weekly, config.lists.alerts].filter((id): id is number => id !== null);
+      const res = await fetch(`${BREVO_CONTACTS}/${encodeURIComponent(email)}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({
+          attributes,
+          listIds: includeListIds,
+          unlinkListIds: allLists.filter((id) => !includeListIds.includes(id)),
+        }),
+      });
+      if (res.ok) return NextResponse.json({ ok: true, updated: true });
+      console.error("Brevo update", res.status, await res.text().catch(() => ""));
+      return NextResponse.json({ error: "provider_error" }, { status: 502 });
+    }
+  }
+
   const res = await fetch(BREVO_DOI, {
     method: "POST",
-    headers: { "api-key": config.key, "Content-Type": "application/json", Accept: "application/json" },
+    headers,
     body: JSON.stringify({
       email,
       attributes,
