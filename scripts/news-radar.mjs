@@ -1,7 +1,7 @@
 // Radar de última hora: lee feeds RSS/Atom de fuentes fiables y lista lo
 // publicado en las últimas horas, ordenado por relevancia para el blog.
 // Uso: node scripts/news-radar.mjs [--hours 6]
-// SecurityWeek (ICS/OT e IoT) da 403 a fetch de Node; por eso no está.
+// Las secciones ICS/OT e IoT de SecurityWeek dan 403 a fetch de Node; su feed general sí va.
 // Sin dependencias. Lo ejecuta la rutina "radar de noticias" cada 2 horas.
 
 const FEEDS = [
@@ -13,12 +13,26 @@ const FEEDS = [
   ["MuySeguridad", "https://www.muyseguridad.net/feed/"],
   ["Escudo Digital", "https://www.escudodigital.com/rss"],
   ["Europa Press PortalTIC", "https://www.europapress.es/rss/rss.aspx?ch=00564"],
+  ["Xataka", "https://www.xataka.com/feedburner.xml"],
   // Ciberseguridad. El catálogo KEV de CISA va por GitHub porque cisa.gov da 403 desde la nube
   ["CISA KEV (explotadas)", "https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json", "kev"],
   ["BleepingComputer", "https://www.bleepingcomputer.com/feed/"],
   ["The Hacker News", "https://feeds.feedburner.com/TheHackersNews"],
   ["The Record", "https://therecord.media/feed"],
   ["Krebs on Security", "https://krebsonsecurity.com/feed/"],
+  ["SecurityWeek", "https://www.securityweek.com/feed/"],
+  ["Dark Reading", "https://www.darkreading.com/rss.xml"],
+  ["Cybersecurity Dive", "https://www.cybersecuritydive.com/feeds/news/"],
+  ["CyberScoop", "https://cyberscoop.com/feed/"],
+  ["Help Net Security", "https://www.helpnetsecurity.com/feed/"],
+  ["Ars Technica seguridad", "https://arstechnica.com/security/feed/"],
+  ["The Register seguridad", "https://www.theregister.com/security/headlines.atom"],
+  // Autoridades e investigadores (fuente primaria)
+  ["NCSC Reino Unido", "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml"],
+  ["SANS Internet Storm Center", "https://isc.sans.edu/rssfeed_full.xml"],
+  ["Microsoft Security Blog", "https://www.microsoft.com/en-us/security/blog/feed/"],
+  ["Cisco Talos", "https://blog.talosintelligence.com/rss/"],
+  ["Unit 42 (Palo Alto)", "https://unit42.paloaltonetworks.com/feed/"],
   // IoT e industria (OT/ICS): cámaras, routers, control industrial, energía
   ["CISA avisos ICS", "https://www.cisa.gov/cybersecurity-advisories/ics-advisories.xml"],
   ["Industrial Cyber", "https://industrialcyber.co/feed/"],
