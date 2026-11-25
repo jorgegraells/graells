@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Dictionary, Locale } from "@/i18n/dictionaries";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import LocaleSwitch from "@/components/LocaleSwitch";
 
 export type DossierTab = { href: string; label: string; current?: boolean };
 
@@ -36,9 +37,9 @@ export default function DossierTabs({
       </div>
       <div className="dx-tools">
         <span className="dx-cls">{t.classification}</span>
-        <Link href={localeHref ?? `/${otherLocale}`} className="dx-tool" aria-label={t.switchLocale}>
+        <LocaleSwitch to={otherLocale} fallback={localeHref ?? `/${otherLocale}`} className="dx-tool" ariaLabel={t.switchLocale}>
           {otherLocale}
-        </Link>
+        </LocaleSwitch>
         <ThemeToggle to="arcade" dict={dict} className="dx-tool" />
       </div>
     </nav>

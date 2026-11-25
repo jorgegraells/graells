@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Dictionary, Locale } from "@/i18n/dictionaries";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import LocaleSwitch from "@/components/LocaleSwitch";
 
 export default function Nav({
   locale,
@@ -67,15 +68,14 @@ export default function Nav({
               className="rounded-full border border-white/25 px-3 py-1 font-mono text-xs font-bold uppercase text-foreground/85 transition-colors hover:border-white/60 hover:text-white"
             />
           )}
-          <Link
-            href={`/${otherLocale}`}
+          <LocaleSwitch
+            to={otherLocale}
+            fallback={`/${otherLocale}`}
             className="rounded-full border border-neon-pink/40 px-3 py-1 font-mono text-xs font-bold uppercase text-neon-pink transition-colors hover:bg-neon-pink/15"
-            aria-label={
-              otherLocale === "es" ? "Cambiar a español" : "Switch to English"
-            }
+            ariaLabel={otherLocale === "es" ? "Cambiar a español" : "Switch to English"}
           >
             {otherLocale}
-          </Link>
+          </LocaleSwitch>
           {/* Botón menú (solo móvil) */}
           <button
             type="button"
