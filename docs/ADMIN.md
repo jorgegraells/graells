@@ -15,6 +15,14 @@ y del robots.txt.
   contenidos de GitHub, y Vercel despliega solo (~2 min). El commit sale con
   el mensaje "Publica artículo desde el panel: <título>".
 
+## Temas
+
+En la barra del editor, junto a "Noticia", están las casillas **Temas**
+(Ciberseguridad, IA, IoT). Hay que marcar al menos una: deciden en qué página
+de tema sale el artículo y a qué suscriptores del boletín les llega. Cómo
+elegirlos: `docs/ARTICULOS.md`, apartado "Temas del artículo". Un artículo
+antiguo sin temas se abre con Ciberseguridad marcada.
+
 ## Borradores y agente diario
 
 - Un artículo con `"draft": true` en su JSON es un borrador: no sale en la

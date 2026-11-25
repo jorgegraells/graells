@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Locale } from "@/i18n/dictionaries";
+import { isTopic, type TopicId } from "@/content/topics";
 
 export type Article = {
   slug: string;
@@ -16,6 +17,8 @@ export type Article = {
   published: string;
   /** "news": noticia de actualidad (NewsArticle, sitemap de Google Noticias). */
   type?: "news";
+  /** Temas (ciberseguridad, IA, IoT): páginas de tema, chips y boletín. */
+  topics: TopicId[];
   readingMinutes: number;
   tags: string[];
   body: string; // Markdown
@@ -32,6 +35,8 @@ type ArticleFile = {
   updated?: string;
   published?: string;
   type?: "news";
+  /** Temas del artículo. Si falta (archivos antiguos), se trata como ciberseguridad. */
+  topics?: string[];
   /** Borrador: solo visible en el panel, nunca en la web ni en el sitemap. */
   draft?: boolean;
   es: ArticleLocale;
@@ -40,7 +45,7 @@ type ArticleFile = {
 
 type ArticleLocale = Omit<
   Article,
-  "readingMinutes" | "date" | "updated" | "published" | "type" | "slugs"
+  "readingMinutes" | "date" | "updated" | "published" | "type" | "topics" | "slugs"
 >;
 
 const ARTICLES_DIR = path.join(process.cwd(), "src", "content", "articles");
@@ -61,6 +66,11 @@ function loadFiles(): ArticleFile[] {
     .filter((f) => !f.draft);
 }
 
+function fileTopics(file: ArticleFile): TopicId[] {
+  const topics = (file.topics ?? []).filter(isTopic);
+  return topics.length > 0 ? topics : ["ciber"];
+}
+
 function toArticle(file: ArticleFile, locale: Locale): Article {
   const data = file[locale];
   return {
@@ -69,6 +79,7 @@ function toArticle(file: ArticleFile, locale: Locale): Article {
     updated: file.updated ?? file.date,
     published: file.published ?? file.date,
     type: file.type,
+    topics: fileTopics(file),
     readingMinutes: readingMinutes(data.body),
     slugs: { es: file.es.slug, en: file.en.slug },
   };

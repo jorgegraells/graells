@@ -8,6 +8,7 @@ import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierFolio from "@/components/dossier/DossierFolio";
 import DossierLedger from "@/components/dossier/DossierLedger";
 import ArticleCard from "@/components/blog/ArticleCard";
+import TopicLinks from "@/components/blog/TopicLinks";
 
 const SITE = "https://jorgegraells.com";
 const NEON = ["#22d3ee", "#a855f7", "#ff3d9a", "#c6ff2e"];
@@ -67,6 +68,7 @@ export default async function BlogIndex({
           <p className="mt-3 font-mono text-sm uppercase tracking-widest text-muted">
             {dict.blog.subtitle}
           </p>
+          <TopicLinks locale={locale} dict={dict} variant="arcade" className="mt-4" />
 
           {guides.length === 0 ? (
             <p className="mt-12 text-muted">{dict.blog.empty}</p>
@@ -102,6 +104,7 @@ export default async function BlogIndex({
           >
             <p className="dx-h1" role="heading" aria-level={1}>{dict.dossier.ledger.blogSection}</p>
             <p className="dx-resumen">{dict.blog.subtitle}</p>
+            <TopicLinks locale={locale} dict={dict} variant="dossier" />
             <DossierLedger articles={guides} locale={locale} dict={dict} />
           </DossierFolio>
         </div>

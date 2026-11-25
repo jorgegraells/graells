@@ -33,6 +33,9 @@ jobs:
           BREVO_SENDER_EMAIL: ${{ vars.BREVO_SENDER_EMAIL }}
           BREVO_LIST_ES: ${{ vars.BREVO_LIST_ES }}
           BREVO_LIST_EN: ${{ vars.BREVO_LIST_EN }}
+          # Formularios de "Cambiar mis temas" (opcionales; sin ellos, el de Brevo por defecto)
+          BREVO_UPDATE_FORM_ES: ${{ vars.BREVO_UPDATE_FORM_ES }}
+          BREVO_UPDATE_FORM_EN: ${{ vars.BREVO_UPDATE_FORM_EN }}
           NEWSLETTER_TEST_EMAIL: ${{ vars.NEWSLETTER_TEST_EMAIL }}
           # En la ejecución del viernes manda esta variable; a mano, el modo elegido
           NEWSLETTER_MODE: ${{ github.event.inputs.mode || vars.NEWSLETTER_MODE || 'review' }}
