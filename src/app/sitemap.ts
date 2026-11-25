@@ -107,6 +107,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { es: `${SITE}/es/privacidad`, en: `${SITE}/en/privacy` } },
     },
     {
+      url: `${SITE}/es/boletin`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: { languages: { es: `${SITE}/es/boletin`, en: `${SITE}/en/newsletter` } },
+    },
+    {
+      url: `${SITE}/en/newsletter`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: { languages: { es: `${SITE}/es/boletin`, en: `${SITE}/en/newsletter` } },
+    },
+    {
       url: `${SITE}/es/noticias`,
       lastModified: now,
       changeFrequency: "daily",
