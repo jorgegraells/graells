@@ -2,6 +2,10 @@
   "date": "2026-11-11",
   "draft": true,
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "grok-apps-expuestas-datos-confidenciales",
     "title": "Apps creadas con Grok expuestas: más de 35.000 abiertas a cualquiera",

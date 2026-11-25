@@ -2,6 +2,10 @@
   "date": "2026-11-06",
   "updated": "2026-11-06T16:14:16.324Z",
   "published": "2026-11-06T16:14:16.324Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "owasp-top-10-llm-explicado-para-empresas",
     "title": "OWASP Top 10 para LLM: los 10 riesgos de la IA explicados",

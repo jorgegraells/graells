@@ -6,6 +6,7 @@ import {
   type ArticleFile,
   type ArticleLocaleData,
 } from "@/lib/article-store";
+import { TOPIC_IDS, isTopic } from "@/content/topics";
 
 /** API del panel: GET lista los artículos completos, POST guarda/publica uno. */
 
@@ -59,6 +60,13 @@ export async function POST(request: Request) {
   if (!data || !DATE_RE.test(data.date ?? "")) {
     return Response.json({ error: "Fecha inválida (AAAA-MM-DD)" }, { status: 400 });
   }
+  // Temas: al menos uno y solo ids conocidos (páginas de tema y boletín). Un archivo
+  // antiguo sin temas se guarda como ciberseguridad, que es lo que muestra el panel.
+  const sent = data.topics ?? ["ciber"];
+  if (!Array.isArray(sent) || sent.length === 0 || !sent.every(isTopic)) {
+    return Response.json({ error: "Elige al menos un tema" }, { status: 400 });
+  }
+  const topics = TOPIC_IDS.filter((t) => sent.includes(t));
   for (const locale of ["es", "en"] as const) {
     const problem = invalidLocale(data[locale]);
     if (problem) {
@@ -89,6 +97,7 @@ export async function POST(request: Request) {
         ? { published: data.published }
         : {}),
     ...(data.type === "news" ? { type: "news" as const } : {}),
+    topics,
     ...(publish ? {} : { draft: true }),
     es: data.es,
     en: data.en,

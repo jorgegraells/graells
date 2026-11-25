@@ -1,6 +1,9 @@
 {
   "date": "2026-11-24",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "servidores-gestion-check-point-hackeados-22-organizaciones",
     "title": "Hackean servidores de gestión Check Point en 22 organizaciones",

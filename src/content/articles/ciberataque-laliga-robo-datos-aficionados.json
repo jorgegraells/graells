@@ -1,6 +1,9 @@
 {
   "date": "2026-11-23",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "ciberataque-laliga-robo-datos-aficionados",
     "title": "Ciberataque a LaLiga: roban datos personales de aficionados",

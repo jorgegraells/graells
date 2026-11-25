@@ -1,6 +1,10 @@
 {
   "date": "2026-11-20",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "ciberataque-comision-europea-ia-artex",
     "title": "Ciberataque a la Comisión Europea con IA: qué se sabe",

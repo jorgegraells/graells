@@ -1,3 +1,5 @@
+import type { TopicId } from "@/content/topics";
+
 export const locales = ["es", "en"] as const;
 export type Locale = (typeof locales)[number];
 
@@ -123,6 +125,13 @@ export type Dictionary = {
     invalid: string;
     error: string;
     note: string;
+    /** Pregunta encima de las casillas de temas */
+    topicsLegend: string;
+    /** Error si se desmarcan todas */
+    noTopic: string;
+    /** Nombre de cada tema en las casillas (el mismo que `topics.items[id].name`;
+     *  va aquí para que el formulario, que es de cliente, no cargue todo `topics`) */
+    topicNames: Record<TopicId, string>;
     confirmed: { href: string; title: string; text: string; cta: string };
   };
   news: {
@@ -130,6 +139,31 @@ export type Dictionary = {
     title: string;
     subtitle: string;
     empty: string;
+  };
+  /** Temas del blog y del boletín. Ids y direcciones base: src/content/topics.ts */
+  topics: {
+    /** Etiqueta sobre el título de la página de tema */
+    tag: string;
+    /** Etiqueta de la fila de temas en artículos y portadas */
+    label: string;
+    otherTopics: string;
+    rss: string;
+    entries: string;
+    empty: string;
+    allArticles: string;
+    items: Record<
+      TopicId,
+      {
+        /** Nombre corto: chips y casillas del boletín */
+        name: string;
+        /** Último tramo de la dirección: /es/blog/tema/<slug> */
+        slug: string;
+        title: string;
+        intro: string;
+        seoTitle: string;
+        seoDescription: string;
+      }
+    >;
   };
   hero: {
     greeting: string;
@@ -480,7 +514,7 @@ const es: Dictionary = {
     href: "/es/privacidad",
     tag: "PRIVACIDAD",
     title: "Política de privacidad",
-    updated: "Última actualización: 8 de noviembre de 2026",
+    updated: "Última actualización: 25 de noviembre de 2026",
     intro: "Esta web es de Jorge Graells. Aquí explico qué datos se tratan cuando la visitas, para qué y qué puedes hacer con ellos. En corto: no hay cookies, no hay registro y la medición de visitas es anónima.",
     seoDescription: "Qué datos trata jorgegraells.com y para qué: sin cookies, sin registro y con medición de visitas anónima. Tus derechos y cómo ejercerlos.",
     sections: [
@@ -506,7 +540,7 @@ const es: Dictionary = {
       },
       {
         title: "Boletín semanal",
-        text: "Si te suscribes, guardo tu correo y el idioma en el que te suscribiste para mandarte un resumen semanal de lo publicado. Los envíos los gestiona Brevo, una empresa con sede en Francia que actúa como encargado del tratamiento y guarda los datos en la Unión Europea. La suscripción tiene doble confirmación: no recibes nada hasta que pulsas el enlace del primer correo, y Brevo registra la fecha de esa confirmación. Brevo también anota de forma estándar si se abre el correo y qué enlaces se pulsan; solo lo miro en conjunto, para saber qué interesa. Puedes darte de baja cuando quieras con el enlace que va en cada correo, y entonces tus datos dejan de usarse para el boletín.",
+        text: "Si te suscribes, guardo tu correo, el idioma en el que te suscribiste y los temas que eliges (ciberseguridad, IA, IoT e industria) para mandarte un resumen semanal de lo publicado con solo esos temas. Puedes cambiar los temas desde el enlace que va en cada correo. Los envíos los gestiona Brevo, una empresa con sede en Francia que actúa como encargado del tratamiento y guarda los datos en la Unión Europea. La suscripción tiene doble confirmación: no recibes nada hasta que pulsas el enlace del primer correo, y Brevo registra la fecha de esa confirmación. Brevo también anota de forma estándar si se abre el correo y qué enlaces se pulsan; solo lo miro en conjunto, para saber qué interesa. Puedes darte de baja cuando quieras con el enlace que va en cada correo, y entonces tus datos dejan de usarse para el boletín.",
       },
       {
         title: "Base legal",
@@ -534,7 +568,7 @@ const es: Dictionary = {
   },
   subscribe: {
     title: "Lo de la semana, en tu correo",
-    text: "Un correo a la semana con las guías y noticias que he publicado. Si una semana no hay nada, no te escribo.",
+    text: "Un correo a la semana con las guías y noticias que he publicado, solo de los temas que elijas. Si una semana no hay nada, no te escribo.",
     placeholder: "tu@correo.com",
     button: "Suscribirme",
     sending: "Enviando...",
@@ -542,6 +576,9 @@ const es: Dictionary = {
     invalid: "Ese correo no parece válido.",
     error: "No se ha podido completar. Prueba en un rato o escríbeme.",
     note: "Te pediré confirmarlo y puedes darte de baja desde cualquier correo.",
+    topicsLegend: "¿De qué quieres recibir?",
+    noTopic: "Elige al menos un tema.",
+    topicNames: { ciber: "Ciberseguridad", ia: "IA", iot: "IoT e industria" },
     confirmed: {
       href: "/es/suscripcion-confirmada",
       title: "Suscripción confirmada",
@@ -554,6 +591,41 @@ const es: Dictionary = {
     title: "News",
     subtitle: "Ciberseguridad e IA de actualidad: qué ha pasado, con fuentes, y qué hacer",
     empty: "Todavía no hay noticias publicadas.",
+  },
+  topics: {
+    tag: "TEMA",
+    label: "Temas",
+    otherTopics: "Otros temas",
+    rss: "RSS de este tema",
+    entries: "piezas",
+    empty: "Todavía no hay nada publicado de este tema.",
+    allArticles: "Ver todos los artículos",
+    items: {
+      ciber: {
+        name: "Ciberseguridad",
+        slug: "ciberseguridad",
+        title: "Ciberseguridad",
+        intro: "Ataques, fallos explotados y estafas que afectan a empresas y personas: qué ha pasado, con sus fuentes, y qué hacer. Y guías prácticas para que tu equipo no caiga en lo de siempre.",
+        seoTitle: "Noticias y guías de ciberseguridad | Jorge Graells",
+        seoDescription: "Noticias y guías de ciberseguridad con fuentes: ataques, fallos explotados, parches urgentes y qué hacer en tu empresa.",
+      },
+      ia: {
+        name: "IA",
+        slug: "ia",
+        title: "Inteligencia artificial",
+        intro: "La IA en el trabajo y su seguridad: agentes que atacan solos, prompt injection, fugas de datos con asistentes, el AI Act y lo nuevo de los modelos, contado para quien tiene que decidir qué hacer con ello.",
+        seoTitle: "IA y seguridad de la IA: noticias y guías | Jorge Graells",
+        seoDescription: "Noticias y guías de inteligencia artificial y su seguridad: agentes de IA, prompt injection, fugas de datos, AI Act y nuevos modelos.",
+      },
+      iot: {
+        name: "IoT e industria",
+        slug: "iot",
+        title: "IoT e industria",
+        intro: "Seguridad de dispositivos conectados y sistemas industriales (OT/ICS): fallos explotados en equipos y plataformas IoT, ataques a infraestructuras y normativa como el Reglamento de Ciberresiliencia. Qué ha pasado, con fuentes primarias como CISA y los fabricantes, y qué revisar en planta y en red.",
+        seoTitle: "Seguridad IoT y OT: noticias y guías | Jorge Graells",
+        seoDescription: "Noticias de seguridad IoT, OT e industrial con fuentes: fallos explotados en dispositivos y sistemas de control, ataques a infraestructuras y qué revisar.",
+      },
+    },
   },
   hero: {
     greeting: "Hola, soy",
@@ -1188,7 +1260,7 @@ const en: Dictionary = {
     href: "/en/privacy",
     tag: "PRIVACY",
     title: "Privacy policy",
-    updated: "Last updated: 8 November 2026",
+    updated: "Last updated: 25 November 2026",
     intro: "This website belongs to Jorge Graells. This page explains what data is processed when you visit, what for, and what you can do about it. In short: no cookies, no sign-up, and visits are measured anonymously.",
     seoDescription: "What data jorgegraells.com processes and why: no cookies, no sign-up and anonymous visit counts. Your rights and how to use them.",
     sections: [
@@ -1214,7 +1286,7 @@ const en: Dictionary = {
       },
       {
         title: "Weekly newsletter",
-        text: "If you subscribe, I keep your email address and the language you signed up in to send you a weekly roundup of what I've published. Sending is handled by Brevo, a company based in France that acts as a data processor and stores the data in the European Union. Subscribing takes a double confirmation: you get nothing until you click the link in the first email, and Brevo records when you confirmed. Brevo also records, as standard, whether an email is opened and which links are clicked; I only look at it in aggregate, to see what's of interest. You can unsubscribe whenever you like with the link in every email, and your data then stops being used for the newsletter.",
+        text: "If you subscribe, I keep your email address, the language you signed up in and the topics you pick (cybersecurity, AI, IoT and industrial) to send you a weekly roundup of what I've published on just those topics. You can change your topics from the link in every email. Sending is handled by Brevo, a company based in France that acts as a data processor and stores the data in the European Union. Subscribing takes a double confirmation: you get nothing until you click the link in the first email, and Brevo records when you confirmed. Brevo also records, as standard, whether an email is opened and which links are clicked; I only look at it in aggregate, to see what's of interest. You can unsubscribe whenever you like with the link in every email, and your data then stops being used for the newsletter.",
       },
       {
         title: "Legal basis",
@@ -1242,7 +1314,7 @@ const en: Dictionary = {
   },
   subscribe: {
     title: "The week's posts, in your inbox",
-    text: "One email a week with the guides and news I've published. If there's nothing that week, I won't write.",
+    text: "One email a week with the guides and news I've published, only on the topics you pick. If there's nothing that week, I won't write.",
     placeholder: "you@email.com",
     button: "Subscribe",
     sending: "Sending...",
@@ -1250,6 +1322,9 @@ const en: Dictionary = {
     invalid: "That email doesn't look right.",
     error: "That didn't work. Try again in a while or write to me.",
     note: "You'll be asked to confirm, and you can unsubscribe from any email.",
+    topicsLegend: "What do you want to hear about?",
+    noTopic: "Pick at least one topic.",
+    topicNames: { ciber: "Cybersecurity", ia: "AI", iot: "IoT and industrial" },
     confirmed: {
       href: "/en/subscribed",
       title: "Subscription confirmed",
@@ -1262,6 +1337,41 @@ const en: Dictionary = {
     title: "News",
     subtitle: "Cybersecurity and AI news: what happened, with sources, and what to do",
     empty: "No news published yet.",
+  },
+  topics: {
+    tag: "TOPIC",
+    label: "Topics",
+    otherTopics: "Other topics",
+    rss: "RSS for this topic",
+    entries: "posts",
+    empty: "Nothing published on this topic yet.",
+    allArticles: "See all articles",
+    items: {
+      ciber: {
+        name: "Cybersecurity",
+        slug: "cybersecurity",
+        title: "Cybersecurity",
+        intro: "Attacks, exploited flaws and scams hitting companies and people: what happened, with sources, and what to do. Plus practical guides so your team doesn't fall for the usual tricks.",
+        seoTitle: "Cybersecurity news and guides | Jorge Graells",
+        seoDescription: "Cybersecurity news and guides with sources: attacks, exploited flaws, urgent patches and what to do at your company.",
+      },
+      ia: {
+        name: "AI",
+        slug: "ai",
+        title: "Artificial intelligence",
+        intro: "AI at work and its security: agents that attack on their own, prompt injection, data leaks through assistants, the AI Act and what's new in the models, written for the people who have to decide what to do about it.",
+        seoTitle: "AI and AI security: news and guides | Jorge Graells",
+        seoDescription: "Artificial intelligence news and guides, and how to secure it: AI agents, prompt injection, data leaks, the AI Act and new models.",
+      },
+      iot: {
+        name: "IoT and industrial",
+        slug: "iot",
+        title: "IoT and industrial",
+        intro: "Security of connected devices and industrial systems (OT/ICS): exploited flaws in IoT devices and platforms, attacks on infrastructure and rules such as the EU Cyber Resilience Act. What happened, with primary sources like CISA and the vendors, and what to check on the plant floor and on the network.",
+        seoTitle: "IoT and OT security: news and guides | Jorge Graells",
+        seoDescription: "IoT, OT and industrial security news with sources: exploited flaws in devices and control systems, attacks on infrastructure and what to check.",
+      },
+    },
   },
   hero: {
     greeting: "Hi, I'm",

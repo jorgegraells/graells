@@ -24,6 +24,8 @@ export type ArticleFile = {
   draft?: boolean;
   published?: string;
   type?: "news";
+  /** Temas: ids de src/content/topics.ts */
+  topics?: string[];
   es: ArticleLocaleData;
   en: ArticleLocaleData;
 };

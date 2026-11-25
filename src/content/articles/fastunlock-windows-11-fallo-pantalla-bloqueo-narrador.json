@@ -1,6 +1,9 @@
 {
   "date": "2026-11-21",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "fastunlock-windows-11-fallo-pantalla-bloqueo-narrador",
     "title": "FastUnlock: fallo de Windows 11 sin parche que salta el bloqueo",

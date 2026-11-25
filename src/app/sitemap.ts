@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { locales } from "@/i18n/dictionaries";
 import { getArticles } from "@/content/articles";
+import { TOPIC_IDS } from "@/content/topics";
+import { topicPath } from "@/lib/topic-pages";
 
 const SITE = "https://jorgegraells.com";
 
@@ -205,5 +207,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
-  return [...base, ...articles];
+  // Páginas de tema (/es/blog/tema/iot, /en/blog/topic/iot)
+  const topics: MetadataRoute.Sitemap = locales.flatMap((locale) =>
+    TOPIC_IDS.map((id) => ({
+      url: `${SITE}${topicPath(locale, id)}`,
+      lastModified: now,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+      alternates: {
+        languages: { es: `${SITE}${topicPath("es", id)}`, en: `${SITE}${topicPath("en", id)}` },
+      },
+    })),
+  );
+
+  return [...base, ...topics, ...articles];
 }

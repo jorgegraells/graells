@@ -1,5 +1,8 @@
 {
   "date": "2026-07-08",
+  "topics": [
+    "ia"
+  ],
   "es": {
     "slug": "que-es-geo-posicionar-web-en-respuestas-de-ia",
     "title": "Qué es GEO y cómo salir en ChatGPT, Claude, Perplexity y Gemini",

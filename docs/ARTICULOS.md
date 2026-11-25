@@ -107,6 +107,30 @@ Escoge siempre dentro de estos pilares, con ángulo práctico para empresas:
 - **slug**: sin tildes, en minúsculas con guiones, distinto en cada idioma
   (`que-es-x` / `what-is-x`). El archivo se llama `<slug-es>.json`.
 - **tags**: 4-6, en minúsculas, por idioma.
+- **topics**: uno o varios temas, comunes a los dos idiomas (ver abajo).
+
+## Temas del artículo (`topics`)
+
+Cada artículo lleva `"topics"` con uno o varios de estos ids. Deciden en qué
+página de tema sale (`/es/blog/tema/<tema>`, `/en/blog/topic/<tema>`), su RSS
+y a qué suscriptores del boletín les llega (cada uno elige sus temas).
+
+- `ciber`: ciberseguridad en general. Ataques, fallos explotados, parches,
+  phishing, fraude, brechas de datos. Casi todo lleva este.
+- `ia`: inteligencia artificial. Seguridad de la IA (prompt injection, agentes,
+  fugas con asistentes, claves de API de IA), ataques hechos con IA (ARTEX),
+  modelos nuevos, AI Act, GEO. Un artículo de IA sin seguridad (formación,
+  AI Act, GEO) lleva solo `ia`.
+- `iot`: IoT e industria. Dispositivos conectados (cámaras, routers, NAS,
+  Android TV, equipos de supermercado), sistemas industriales OT/ICS/SCADA,
+  PLC, Node-RED, energía y otras infraestructuras con sistemas de control, y
+  normativa de productos conectados (CRA). Hay lectores del sector (OT/IoT)
+  suscritos solo a este tema: cuando una noticia encaja, márcala.
+
+Pon todos los que apliquen, sin forzar: un fallo de un cortafuegos o una VPN es
+`ciber`, no `iot`; un ataque con IA a una planta industrial es `ciber`, `ia` e
+`iot`. Orden: `ciber`, `ia`, `iot`. El validador da error si hay un id que no
+existe y, con `--publish`, también si falta. En el panel son las casillas "Temas" del editor.
 
 ## Noticias de actualidad (Google Noticias)
 
@@ -135,6 +159,7 @@ Noticias durante dos días.
 {
   "date": "AAAA-MM-DD",
   "draft": true,
+  "topics": ["ciber", "ia"],
   "es": { "slug": "...", "title": "...", "description": "...", "seoDescription": "...", "tags": ["..."], "body": "..." },
   "en": { "slug": "...", "title": "...", "description": "...", "seoDescription": "...", "tags": ["..."], "body": "..." }
 }

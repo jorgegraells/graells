@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDictionary, isLocale } from "@/i18n/dictionaries";
+import { TOPIC_ATTRIBUTE, TOPIC_IDS, isTopic } from "@/content/topics";
 
 /** Alta en el boletín con doble confirmación de Brevo: Brevo manda el correo de
  *  confirmación y el contacto solo entra en la lista al pulsar el enlace, que
@@ -19,7 +20,7 @@ function brevoConfig(locale: "es" | "en") {
 }
 
 export async function POST(request: Request) {
-  let body: { email?: unknown; locale?: unknown; website?: unknown };
+  let body: { email?: unknown; locale?: unknown; topics?: unknown; website?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -35,6 +36,19 @@ export async function POST(request: Request) {
   }
   const locale = typeof body.locale === "string" && isLocale(body.locale) ? body.locale : "es";
 
+  // Temas elegidos: solo ids conocidos y al menos uno. Si no llega el campo
+  // (un formulario antiguo en caché), se apunta a todos.
+  if (body.topics !== undefined && (!Array.isArray(body.topics) || !body.topics.every(isTopic))) {
+    return NextResponse.json({ error: "invalid_topics" }, { status: 400 });
+  }
+  const topics = body.topics === undefined ? [...TOPIC_IDS] : (body.topics as string[]);
+  if (topics.length === 0) return NextResponse.json({ error: "invalid_topics" }, { status: 400 });
+  // Un atributo booleano por tema en Brevo (TEMA_CIBER, TEMA_IA, TEMA_IOT): el boletín
+  // muestra a cada contacto solo los temas que tiene a true. Montaje: docs/BOLETIN.md.
+  const attributes = Object.fromEntries(
+    TOPIC_IDS.map((id) => [TOPIC_ATTRIBUTE[id], topics.includes(id)]),
+  );
+
   const config = brevoConfig(locale);
   if (!config) return NextResponse.json({ error: "not_configured" }, { status: 503 });
 
@@ -43,6 +57,7 @@ export async function POST(request: Request) {
     headers: { "api-key": config.key, "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({
       email,
+      attributes,
       includeListIds: [config.list],
       templateId: config.template,
       redirectionUrl: `${SITE}${getDictionary(locale).subscribe.confirmed.href}`,

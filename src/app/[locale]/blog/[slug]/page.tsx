@@ -16,6 +16,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Markdown from "@/components/blog/Markdown";
 import { articleFigures } from "@/components/blog/figures";
+import TopicLinks from "@/components/blog/TopicLinks";
+import { topicPath } from "@/lib/topic-pages";
 import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierLedger from "@/components/dossier/DossierLedger";
 import SubscribeForm from "@/components/SubscribeForm";
@@ -176,6 +178,7 @@ export default async function ArticlePage({
                 </span>
               ))}
             </div>
+            <TopicLinks locale={locale} dict={dict} ids={article.topics} variant="arcade" className="mt-3" />
 
             <h1 className="text-gradient neon-text mt-4 text-3xl font-black uppercase leading-tight tracking-tight sm:text-4xl">
               {article.title}
@@ -249,6 +252,15 @@ export default async function ArticlePage({
               <dt className="dx-lab">{d.fields.reading}</dt>
               <dd className="dx-f-read">
                 {article.readingMinutes} {dict.blog.minRead}
+              </dd>
+              <dt className="dx-lab">{dict.topics.label}</dt>
+              <dd className="dx-f-topics dx-topics">
+                {article.topics.map((id, i) => (
+                  <span key={id}>
+                    {i > 0 && ", "}
+                    <Link href={topicPath(locale, id)}>{dict.topics.items[id].name}</Link>
+                  </span>
+                ))}
               </dd>
               <dt className="dx-lab">{d.fields.subjects}</dt>
               <dd className="dx-f-tags">{article.tags.join(", ")}</dd>

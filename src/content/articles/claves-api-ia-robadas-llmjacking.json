@@ -2,6 +2,10 @@
   "date": "2026-11-02",
   "updated": "2026-11-03T17:27:19.544Z",
   "published": "2026-11-02T16:05:19.711Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "claves-api-ia-robadas-llmjacking",
     "title": "Claves de API de IA robadas: qué es el LLMjacking y cómo evitarlo",

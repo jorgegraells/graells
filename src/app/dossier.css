@@ -419,6 +419,52 @@
   margin-top: 10px;
   color: var(--dx-stamp);
 }
+/* Casillas de temas del boletín */
+.dx-sub-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.dx-sub-topics legend {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 4px;
+}
+.dx-sub-topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--dx-label);
+  font-size: 15px;
+  cursor: pointer;
+}
+.dx-sub-topic input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--dx-toner);
+}
+
+/* Fila de temas: enlaces a las páginas de tema */
+.dx-topics {
+  margin: 10px 0 0;
+}
+.dx-topics a {
+  color: var(--dx-blue);
+  text-decoration: underline;
+}
+.dx-fields .dx-topics {
+  margin: 0;
+}
+.dx-topics a[aria-current="page"] {
+  color: var(--dx-stamp);
+  text-decoration: none;
+  font-weight: 700;
+}
 .dx-sub-note {
   margin-top: 10px;
 }
@@ -1354,7 +1400,8 @@ html[data-theme="dossier"] .md .md-notes {
   .dx-doc-fields dd.dx-f-updated {
     order: 2;
   }
-  .dx-doc-fields .dx-f-tags {
+  .dx-doc-fields .dx-f-tags,
+  .dx-doc-fields .dx-f-topics {
     order: 5;
     flex-basis: 100%;
   }

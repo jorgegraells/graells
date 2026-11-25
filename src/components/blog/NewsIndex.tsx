@@ -4,6 +4,7 @@ import { getArticles } from "@/content/articles";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/blog/ArticleCard";
+import TopicLinks from "@/components/blog/TopicLinks";
 import DossierTabs, { innerTabs } from "@/components/dossier/DossierTabs";
 import DossierFolio from "@/components/dossier/DossierFolio";
 import DossierNewspaper from "@/components/dossier/DossierNewspaper";
@@ -57,6 +58,7 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
         <p className="mt-3 font-mono text-sm uppercase tracking-widest text-muted">
           {dict.news.subtitle}
         </p>
+        <TopicLinks locale={locale} dict={dict} variant="arcade" className="mt-4" />
         {news.length === 0 ? (
           <p className="mt-12 text-muted">{dict.news.empty}</p>
         ) : (
@@ -90,6 +92,7 @@ export default function NewsIndex({ locale }: { locale: Locale }) {
           >
             <p className="dx-h1" role="heading" aria-level={1}>{dict.news.title}</p>
             <p className="dx-resumen">{dict.news.subtitle}</p>
+            <TopicLinks locale={locale} dict={dict} variant="dossier" />
             {news.length === 0 && <p>{dict.news.empty}</p>}
             {subscribeEnabled && <SubscribeForm locale={locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="dossier" />}
           </DossierFolio>

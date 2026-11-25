@@ -1,6 +1,10 @@
 {
   "date": "2026-11-14",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "cursor-hackeo-extension-claude-code-falsa",
     "title": "Hackeo a Cursor: una clave de Fireworks coló una extensión falsa",

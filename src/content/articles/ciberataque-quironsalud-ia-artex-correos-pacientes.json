@@ -3,6 +3,10 @@
   "published": "2026-11-25T07:18:48.828Z",
   "updated": "2026-11-25T07:18:48.828Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "ciberataque-quironsalud-ia-artex-correos-pacientes",
     "title": "Ciberataque a Quirónsalud con IA: roban correos de pacientes",

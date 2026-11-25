@@ -2,6 +2,10 @@
   "date": "2026-11-12",
   "published": "2026-11-12T06:22:02.518Z",
   "updated": "2026-11-12T06:22:02.518Z",
+  "topics": [
+    "ciber",
+    "iot"
+  ],
   "es": {
     "slug": "proxy-residencial-apps-que-pagan-por-compartir-internet",
     "title": "Proxy residencial: el riesgo de las apps que pagan por tu wifi",

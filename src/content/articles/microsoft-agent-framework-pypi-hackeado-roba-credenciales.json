@@ -1,6 +1,10 @@
 {
   "date": "2026-11-18",
   "type": "news",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "microsoft-agent-framework-pypi-hackeado-roba-credenciales",
     "title": "Microsoft Agent Framework hackeado en PyPI: roba claves de Azure",

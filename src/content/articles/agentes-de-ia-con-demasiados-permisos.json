@@ -1,6 +1,10 @@
 {
   "date": "2026-10-29",
   "updated": "2026-10-29T12:31:30.750Z",
+  "topics": [
+    "ciber",
+    "ia"
+  ],
   "es": {
     "slug": "agentes-de-ia-con-demasiados-permisos",
     "title": "Agentes de IA con demasiados permisos: el riesgo que ignoran",

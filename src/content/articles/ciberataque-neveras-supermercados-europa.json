@@ -3,6 +3,10 @@
   "published": "2026-11-02T15:49:33.462Z",
   "updated": "2026-11-09T19:03:38.072Z",
   "type": "news",
+  "topics": [
+    "ciber",
+    "iot"
+  ],
   "es": {
     "slug": "ciberataque-neveras-supermercados-europa",
     "title": "Ciberataque a las neveras de supermercados en Europa: qué se sabe",

@@ -1,6 +1,9 @@
 {
   "date": "2026-11-10",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "barracuda-esg-fallos-explotados-acceso-root",
     "title": "Fallos de Barracuda ESG explotados: cómo proteger tu correo",

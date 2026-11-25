@@ -22,6 +22,8 @@ type ArticleFile = {
   draft?: boolean;
   published?: string;
   type?: "news";
+  /** Temas (páginas de tema y boletín). Si falta, la web lo trata como ciberseguridad. */
+  topics?: string[];
   es: LocaleData;
   en: LocaleData;
 };
@@ -34,6 +36,13 @@ const EMPTY_LOCALE: LocaleData = {
   tags: [],
   body: "",
 };
+
+// Temas de src/content/topics.ts, con su nombre en castellano (el panel solo es en castellano)
+const ADMIN_TOPICS: [string, string][] = [
+  ["ciber", "Ciberseguridad"],
+  ["ia", "IA"],
+  ["iot", "IoT"],
+];
 
 function slugify(text: string): string {
   return text
@@ -101,6 +110,7 @@ export default function AdminPage() {
       file: "",
       data: {
         date: new Date().toISOString().slice(0, 10),
+        topics: ["ciber"],
         es: { ...EMPTY_LOCALE },
         en: { ...EMPTY_LOCALE },
       },
@@ -316,6 +326,34 @@ export default function AdminPage() {
               />
               Noticia
             </label>
+            <span
+              className="flex items-center gap-2 font-mono text-xs uppercase text-muted"
+              title="Temas: deciden en qué página de tema sale y a qué suscriptores del boletín les llega"
+            >
+              Temas
+              {ADMIN_TOPICS.map(([id, name]) => {
+                const current = editing.data.topics ?? ["ciber"];
+                return (
+                  <label key={id} className="flex items-center gap-1">
+                    <input
+                      type="checkbox"
+                      checked={current.includes(id)}
+                      onChange={(e) =>
+                        setEditing((p) => {
+                          if (!p) return p;
+                          const was = p.data.topics ?? ["ciber"];
+                          const next = e.target.checked
+                            ? ADMIN_TOPICS.map(([t]) => t).filter((t) => t === id || was.includes(t))
+                            : was.filter((t) => t !== id);
+                          return { ...p, data: { ...p.data, topics: next } };
+                        })
+                      }
+                    />
+                    {name}
+                  </label>
+                );
+              })}
+            </span>
             {editing.file && editing.data.draft && (
               <button
                 type="button"

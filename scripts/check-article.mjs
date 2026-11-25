@@ -26,6 +26,17 @@ try {
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 if (!/^\d{4}-\d{2}-\d{2}$/.test(a.date ?? "")) errors.push("date debe ser AAAA-MM-DD");
 
+// Temas (páginas de tema y boletín): mismos ids que src/content/topics.ts.
+// Sin temas la web lo trata como ciberseguridad, pero para publicar hay que ponerlos.
+const TOPICS = ["ciber", "ia", "iot"];
+if (a.topics === undefined) {
+  warnings.push('falta "topics": uno o varios de ciber, ia, iot (ver docs/ARTICULOS.md)');
+} else if (!Array.isArray(a.topics) || a.topics.length === 0 || !a.topics.every((t) => TOPICS.includes(t))) {
+  errors.push('"topics" debe ser una lista con uno o varios de: ciber, ia, iot');
+} else if (new Set(a.topics).size !== a.topics.length) {
+  errors.push('"topics" tiene temas repetidos');
+}
+
 // Mismas reglas que valida la API del panel, más las editoriales
 const BANNED = [/VTEQ/i, /\bSofIA\b/, /Quizdly/i];
 const AI_TICS = [

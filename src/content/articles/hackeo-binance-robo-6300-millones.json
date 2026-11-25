@@ -3,6 +3,9 @@
   "updated": "2026-11-14T06:16:26.797Z",
   "published": "2026-10-30T07:31:50.639Z",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "hackeo-binance-robo-6300-millones",
     "title": "Hackeo a Binance: qué se sabe del robo de 6.300 millones",

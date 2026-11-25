@@ -1,6 +1,9 @@
 {
   "date": "2026-11-21",
   "type": "news",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "brecha-microsoft-entra-connect-health-datos-administradores",
     "title": "Brecha en Microsoft Entra Connect Health: qué datos se expusieron",

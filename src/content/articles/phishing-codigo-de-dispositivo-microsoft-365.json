@@ -2,6 +2,9 @@
   "date": "2026-11-08",
   "published": "2026-11-08T06:22:34.155Z",
   "updated": "2026-11-08T06:22:34.155Z",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "phishing-codigo-de-dispositivo-microsoft-365",
     "title": "Phishing con código de dispositivo: qué es y cómo evitarlo",

@@ -1,5 +1,8 @@
 {
   "date": "2026-09-17",
+  "topics": [
+    "ciber"
+  ],
   "es": {
     "slug": "los-ataques-no-entran-por-el-servidor",
     "title": "Los ataques no entran por el servidor: entran por un correo",
