@@ -28,12 +28,13 @@ export default function Nav({
     { href: `/${locale}/training`, label: dict.nav.training },
     { href: `/${locale}/blog`, label: dict.nav.blog },
     { href: locale === "es" ? "/es/noticias" : "/en/news", label: dict.nav.news },
+    { href: dict.newsletterPage.href, label: dict.nav.newsletter },
     { href: `/${locale}#contact`, label: dict.nav.contact },
   ];
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <nav className="glass hud-corners clip-corner mx-auto mt-4 flex max-w-5xl items-center xl:max-w-6xl justify-between border-neon-cyan/30 px-6 py-3">
+      <nav className="glass hud-corners clip-corner mx-auto mt-4 flex max-w-5xl items-center gap-4 xl:max-w-6xl justify-between border-neon-cyan/30 px-6 py-3">
         <Link
           href={`/${locale}`}
           onClick={() => setOpen(false)}
@@ -44,8 +45,8 @@ export default function Nav({
           <span className="text-neon-pink">.exe</span>
         </Link>
 
-        {/* Enlaces en escritorio (con 8 secciones solo caben a partir de xl) */}
-        <div className="hidden items-center gap-4 font-mono text-xs uppercase tracking-wider text-muted xl:flex">
+        {/* Enlaces en escritorio (con 9 secciones solo caben a partir de xl) */}
+        <div className="hidden items-center gap-3 font-mono text-xs uppercase tracking-wider text-muted xl:flex 2xl:gap-4">
           {links.map((link, i) => (
             <a
               key={link.href}

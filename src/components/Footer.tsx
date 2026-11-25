@@ -13,6 +13,9 @@ export default function Footer({ dict, subscribe }: { dict: Dictionary; subscrib
         Jorge Graells · {dict.footer.rights}
       </p>
       <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+        <a href={dict.newsletterPage.href} className="text-neon-cyan transition-colors hover:text-neon-lime">
+          {dict.nav.newsletter}
+        </a>
         <a href={dict.aboutPage.href} className="transition-colors hover:text-neon-cyan">
           {dict.aboutPage.title}
         </a>

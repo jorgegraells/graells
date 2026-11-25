@@ -64,6 +64,7 @@ export type Dictionary = {
     training: string;
     blog: string;
     news: string;
+    newsletter: string;
     contact: string;
   };
   training: {
@@ -115,6 +116,26 @@ export type Dictionary = {
   editorial: PolicyDoc;
   privacy: PolicyDoc & { updated: string };
   feed: { href: string; title: string; description: string };
+  /** Página del boletín (/es/boletin, /en/newsletter): qué llega, temas y alta */
+  newsletterPage: {
+    href: string;
+    tag: string;
+    title: string;
+    intro: string;
+    seoTitle: string;
+    seoDescription: string;
+    weeklyTitle: string;
+    weeklyText: string;
+    alertsTitle: string;
+    alertsText: string;
+    topicsTitle: string;
+    topicsText: string;
+    privacyText: string;
+    comingSoon: string;
+    /** Cabecera y pie del folio en modo expediente */
+    section: string;
+    footer: string;
+  };
   subscribe: {
     title: string;
     text: string;
@@ -327,7 +348,7 @@ export type Dictionary = {
     record: { section: string; title: string; received: string; news: string; guide: string; all: string };
     close: { title: string; text: string; social: string; footer: string };
     /** Pestañas en las páginas interiores */
-    pages: { home: string; blog: string; news: string; training: string; contact: string };
+    pages: { home: string; blog: string; news: string; training: string; newsletter: string; contact: string };
     ledger: { blogSection: string; newsSection: string; entries: string; footer: string };
     newspaper: { name: string; issue: string; more: string };
     article: {
@@ -367,6 +388,7 @@ const es: Dictionary = {
     training: "Formación",
     blog: "Artículos",
     news: "News",
+    newsletter: "Boletín",
     contact: "Contacto",
   },
   training: {
@@ -574,6 +596,24 @@ const es: Dictionary = {
     href: "/es/feed.xml",
     title: "Jorge Graells | Ciberseguridad e IA",
     description: "Guías y noticias de ciberseguridad e inteligencia artificial, con sus fuentes.",
+  },
+  newsletterPage: {
+    href: "/es/boletin",
+    tag: "BOLETÍN",
+    title: "Boletín",
+    intro: "Lo que publico sobre ciberseguridad, IA e IoT, en tu correo y solo de lo que te interesa. Sin publicidad y sin escribirte por escribir.",
+    seoTitle: "Boletín de ciberseguridad, IA e IoT | Jorge Graells",
+    seoDescription: "Suscríbete al boletín de Jorge Graells: un resumen semanal y avisos urgentes de ciberseguridad, IA e IoT, solo de los temas que elijas.",
+    weeklyTitle: "Resumen semanal",
+    weeklyText: "Los viernes, un correo con las noticias y guías que he publicado esa semana. Si una semana no hay nada, no te escribo.",
+    alertsTitle: "Avisos urgentes",
+    alertsText: "Opcional. Solo para lo que no puede esperar: un fallo que ya se está explotando o un ataque grave en el que hay que actuar ya. Un correo por noticia, en cuanto la publico.",
+    topicsTitle: "Tú eliges los temas",
+    topicsText: "Marca solo lo que te interesa y solo te llegará eso. Esto es lo que he publicado de cada uno:",
+    privacyText: "Te pediré que lo confirmes desde tu correo, y en cada envío tienes el enlace para cambiar tus temas o darte de baja. Tu correo y tus temas se guardan en Brevo, solo para mandarte esto. Los detalles están en la",
+    comingSoon: "El alta abre muy pronto. Mientras, puedes seguir lo que publico por RSS.",
+    section: "Boletín",
+    footer: "Alta con doble confirmación · Baja desde cualquier correo",
   },
   subscribe: {
     title: "Lo de la semana, en tu correo",
@@ -1067,7 +1107,7 @@ const es: Dictionary = {
       social: "En redes: @DevGraells",
       footer: "Fin del expediente",
     },
-    pages: { home: "Expediente", blog: "Artículos", news: "News", training: "Formación", contact: "Contacto" },
+    pages: { home: "Expediente", blog: "Artículos", news: "News", training: "Formación", newsletter: "Boletín", contact: "Contacto" },
     ledger: {
       blogSection: "Artículos",
       newsSection: "News",
@@ -1119,6 +1159,7 @@ const en: Dictionary = {
     training: "Training",
     blog: "Articles",
     news: "News",
+    newsletter: "Newsletter",
     contact: "Contact",
   },
   training: {
@@ -1326,6 +1367,24 @@ const en: Dictionary = {
     href: "/en/feed.xml",
     title: "Jorge Graells | Cybersecurity and AI",
     description: "Cybersecurity and artificial intelligence guides and news, with their sources.",
+  },
+  newsletterPage: {
+    href: "/en/newsletter",
+    tag: "NEWSLETTER",
+    title: "Newsletter",
+    intro: "What I publish on cybersecurity, AI and IoT, in your inbox and only on what you care about. No ads, and I won't write just for the sake of it.",
+    seoTitle: "Cybersecurity, AI and IoT newsletter | Jorge Graells",
+    seoDescription: "Subscribe to Jorge Graells' newsletter: a weekly summary and urgent alerts on cybersecurity, AI and IoT, only on the topics you pick.",
+    weeklyTitle: "Weekly summary",
+    weeklyText: "On Fridays, one email with the news and guides I published that week. If there's nothing in a week, I don't write.",
+    alertsTitle: "Urgent alerts",
+    alertsText: "Optional. Only for what can't wait: a flaw that's already being exploited or a serious attack where you need to act now. One email per story, as soon as I publish it.",
+    topicsTitle: "You pick the topics",
+    topicsText: "Tick only what you care about and that's all you'll get. Here's what I've published on each:",
+    privacyText: "I'll ask you to confirm from your inbox, and every email has a link to change your topics or unsubscribe. Your email and topics are stored at Brevo, only to send you this. The details are in the",
+    comingSoon: "Sign-up opens very soon. In the meantime, you can follow what I publish via RSS.",
+    section: "Newsletter",
+    footer: "Double opt-in · Unsubscribe from any email",
   },
   subscribe: {
     title: "The week's posts, in your inbox",
@@ -1819,7 +1878,7 @@ const en: Dictionary = {
       social: "On social: @DevGraells",
       footer: "End of file",
     },
-    pages: { home: "File", blog: "Articles", news: "News", training: "Training", contact: "Contact" },
+    pages: { home: "File", blog: "Articles", news: "News", training: "Training", newsletter: "Newsletter", contact: "Contact" },
     ledger: {
       blogSection: "Articles",
       newsSection: "News",

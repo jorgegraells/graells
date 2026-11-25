@@ -50,7 +50,7 @@ export default function DossierTabs({
 export function innerTabs(
   locale: Locale,
   dict: Dictionary,
-  current?: "home" | "blog" | "news" | "training",
+  current?: "home" | "blog" | "news" | "training" | "newsletter",
 ): DossierTab[] {
   const p = dict.dossier.pages;
   return [
@@ -58,6 +58,7 @@ export function innerTabs(
     { href: `/${locale}/blog`, label: p.blog, current: current === "blog" },
     { href: locale === "es" ? "/es/noticias" : "/en/news", label: p.news, current: current === "news" },
     { href: `/${locale}/training`, label: p.training, current: current === "training" },
+    { href: dict.newsletterPage.href, label: p.newsletter, current: current === "newsletter" },
     { href: `/${locale}#dx-close`, label: p.contact },
   ];
 }

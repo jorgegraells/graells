@@ -272,6 +272,7 @@ export default function DossierHome({ locale, dict }: { locale: Locale; dict: Di
           </p>
           {subscribeEnabled && <SubscribeForm locale={locale} dict={{ subscribe: dict.subscribe, privacy: dict.privacy }} variant="dossier" compact />}
           <p className="dx-lab dx-social">
+            <Link href={dict.newsletterPage.href}>{dict.nav.newsletter}</Link>
             <Link href={dict.editorial.href}>{dict.editorial.title}</Link>
             <Link href={dict.privacy.href}>{dict.privacy.title}</Link>
             <a href={dict.feed.href}>{dict.footer.rss}</a>
