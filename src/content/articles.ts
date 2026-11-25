@@ -17,6 +17,8 @@ export type Article = {
   published: string;
   /** "news": noticia de actualidad (NewsArticle, sitemap de Google Noticias). */
   type?: "news";
+  /** Aviso urgente (solo noticias): se manda al momento a quien pidió avisos. */
+  alert?: boolean;
   /** Temas (ciberseguridad, IA, IoT): páginas de tema, chips y boletín. */
   topics: TopicId[];
   readingMinutes: number;
@@ -35,6 +37,8 @@ type ArticleFile = {
   updated?: string;
   published?: string;
   type?: "news";
+  /** Aviso urgente (solo noticias). Lo manda .github/workflows/alerts.yml. */
+  alert?: boolean;
   /** Temas del artículo. Si falta (archivos antiguos), se trata como ciberseguridad. */
   topics?: string[];
   /** Borrador: solo visible en el panel, nunca en la web ni en el sitemap. */
@@ -45,7 +49,7 @@ type ArticleFile = {
 
 type ArticleLocale = Omit<
   Article,
-  "readingMinutes" | "date" | "updated" | "published" | "type" | "topics" | "slugs"
+  "readingMinutes" | "date" | "updated" | "published" | "type" | "alert" | "topics" | "slugs"
 >;
 
 const ARTICLES_DIR = path.join(process.cwd(), "src", "content", "articles");
@@ -79,6 +83,7 @@ function toArticle(file: ArticleFile, locale: Locale): Article {
     updated: file.updated ?? file.date,
     published: file.published ?? file.date,
     type: file.type,
+    ...(file.type === "news" && file.alert === true ? { alert: true } : {}),
     topics: fileTopics(file),
     readingMinutes: readingMinutes(data.body),
     slugs: { es: file.es.slug, en: file.en.slug },

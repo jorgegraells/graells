@@ -23,6 +23,13 @@ de tema sale el artículo y a qué suscriptores del boletín les llega. Cómo
 elegirlos: `docs/ARTICULOS.md`, apartado "Temas del artículo". Un artículo
 antiguo sin temas se abre con Ciberseguridad marcada.
 
+## Aviso urgente
+
+Al marcar "Noticia" aparece la casilla **Aviso urgente**. Si está marcada al
+publicar, se manda al momento un correo con la noticia a quien pidió avisos
+urgentes de alguno de sus temas, una sola vez. Solo para lo que no puede esperar:
+criterio en `docs/ARTICULOS.md`, apartado "Aviso urgente".
+
 ## Borradores y agente diario
 
 - Un artículo con `"draft": true` en su JSON es un borrador: no sale en la

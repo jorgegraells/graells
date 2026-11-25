@@ -1,6 +1,7 @@
 // Crea en Brevo las dos plantillas de doble confirmación (ES y EN) que usa
-// /api/subscribe y dice sus ID para ponerlos en Vercel. Se ejecuta una vez.
-// Si ya existen (mismo nombre), no las duplica: solo dice sus ID.
+// /api/subscribe y las listas de avisos urgentes ("Avisos ES" y "Avisos EN"), y
+// dice todos los ID para ponerlos en Vercel y GitHub. Se puede ejecutar más de una
+// vez: lo que ya existe (mismo nombre) no se duplica, solo se dice su ID.
 //
 // Uso (en PowerShell, la clave no se guarda en ningún archivo):
 //   $env:BREVO_API_KEY = "xkeysib-..."; node scripts/brevo-setup.mjs
@@ -97,8 +98,37 @@ for (const t of TEMPLATES) {
 const lists = (await api("/contacts/lists?limit=50")).lists ?? [];
 const listId = (name) => lists.find((l) => l.name === name)?.id ?? "(no encontrada)";
 
-console.log("\nPon estas variables en Vercel (Production) y redespliega:");
-console.log(`  BREVO_LIST_ES = ${listId("Boletín ES")}`);
-console.log(`  BREVO_LIST_EN = ${listId("Boletín EN")}`);
+// Listas de avisos urgentes, en la misma carpeta que "Boletín ES". Si ya existen, no
+// se duplican.
+const weeklyEs = lists.find((l) => l.name === "Boletín ES");
+for (const name of ["Avisos ES", "Avisos EN"]) {
+  if (lists.some((l) => l.name === name)) {
+    console.log(`Ya existía la lista "${name}" (ID ${listId(name)}).`);
+    continue;
+  }
+  if (!weeklyEs) {
+    console.log(`No encuentro la lista "Boletín ES": crea "${name}" a mano en su misma carpeta.`);
+    continue;
+  }
+  const created = await api("/contacts/lists", {
+    method: "POST",
+    body: JSON.stringify({ name, folderId: weeklyEs.folderId }),
+  });
+  lists.push({ id: created.id, name, folderId: weeklyEs.folderId });
+  console.log(`Creada la lista "${name}" (ID ${created.id}).`);
+}
+
+const vars = {
+  BREVO_LIST_ES: listId("Boletín ES"),
+  BREVO_LIST_EN: listId("Boletín EN"),
+  BREVO_LIST_ES_ALERTS: listId("Avisos ES"),
+  BREVO_LIST_EN_ALERTS: listId("Avisos EN"),
+};
+
+console.log("\nVercel (Settings > Environment Variables, Production) y redespliega:");
+for (const [k, v] of Object.entries(vars)) console.log(`  ${k} = ${v}`);
 for (const [k, v] of Object.entries(ids)) console.log(`  ${k} = ${v}`);
 console.log("  BREVO_API_KEY = (la clave que acabas de usar)");
+
+console.log("\nGitHub (repo > Settings > Secrets and variables > Actions > Variables):");
+for (const [k, v] of Object.entries(vars)) console.log(`  ${k} = ${v}`);

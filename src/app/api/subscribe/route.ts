@@ -3,24 +3,40 @@ import { getDictionary, isLocale } from "@/i18n/dictionaries";
 import { TOPIC_ATTRIBUTE, TOPIC_IDS, isTopic } from "@/content/topics";
 
 /** Alta en el boletín con doble confirmación de Brevo: Brevo manda el correo de
- *  confirmación y el contacto solo entra en la lista al pulsar el enlace, que
- *  luego lleva a la página de "suscripción confirmada". Montaje: docs/BOLETIN.md. */
+ *  confirmación y el contacto solo entra en sus listas al pulsar el enlace, que
+ *  luego lleva a la página de "suscripción confirmada". Montaje: docs/BOLETIN.md.
+ *
+ *  Dos listas por idioma: resumen semanal (BREVO_LIST_ES/EN) y avisos urgentes
+ *  (BREVO_LIST_ES_ALERTS/EN_ALERTS). Se puede estar en una o en las dos. Las
+ *  inglesas caen en las castellanas si faltan, como siempre. */
 
 const SITE = "https://jorgegraells.com";
 const BREVO_DOI = "https://api.brevo.com/v3/contacts/doubleOptinConfirmation";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Lista y plantilla de confirmación por idioma; la inglesa cae en la castellana si falta
+function listId(locale: "es" | "en", suffix: "" | "_ALERTS"): number | null {
+  const env = process.env;
+  const raw = locale === "en" ? env[`BREVO_LIST_EN${suffix}`] || env[`BREVO_LIST_ES${suffix}`] : env[`BREVO_LIST_ES${suffix}`];
+  return raw ? Number(raw) : null;
+}
+
 function brevoConfig(locale: "es" | "en") {
   const env = process.env;
-  const list = locale === "en" ? env.BREVO_LIST_EN || env.BREVO_LIST_ES : env.BREVO_LIST_ES;
   const template = locale === "en" ? env.BREVO_DOI_TEMPLATE_EN || env.BREVO_DOI_TEMPLATE_ES : env.BREVO_DOI_TEMPLATE_ES;
-  if (!env.BREVO_API_KEY || !list || !template) return null;
-  return { key: env.BREVO_API_KEY, list: Number(list), template: Number(template) };
+  const weekly = listId(locale, "");
+  if (!env.BREVO_API_KEY || !weekly || !template) return null;
+  return { key: env.BREVO_API_KEY, template: Number(template), lists: { weekly, alerts: listId(locale, "_ALERTS") } };
 }
 
 export async function POST(request: Request) {
-  let body: { email?: unknown; locale?: unknown; topics?: unknown; website?: unknown };
+  let body: {
+    email?: unknown;
+    locale?: unknown;
+    topics?: unknown;
+    weekly?: unknown;
+    alerts?: unknown;
+    website?: unknown;
+  };
   try {
     body = await request.json();
   } catch {
@@ -43,14 +59,33 @@ export async function POST(request: Request) {
   }
   const topics = body.topics === undefined ? [...TOPIC_IDS] : (body.topics as string[]);
   if (topics.length === 0) return NextResponse.json({ error: "invalid_topics" }, { status: 400 });
-  // Un atributo booleano por tema en Brevo (TEMA_CIBER, TEMA_IA, TEMA_IOT): el boletín
-  // muestra a cada contacto solo los temas que tiene a true. Montaje: docs/BOLETIN.md.
-  const attributes = Object.fromEntries(
-    TOPIC_IDS.map((id) => [TOPIC_ATTRIBUTE[id], topics.includes(id)]),
-  );
+
+  // Qué correos: resumen semanal (sí por defecto) y avisos urgentes (no por defecto).
+  // Al menos uno. Un formulario antiguo no manda nada: solo semanal, como antes.
+  if (
+    (body.weekly !== undefined && typeof body.weekly !== "boolean") ||
+    (body.alerts !== undefined && typeof body.alerts !== "boolean")
+  ) {
+    return NextResponse.json({ error: "invalid_delivery" }, { status: 400 });
+  }
+  const weekly = body.weekly !== false;
+  const alerts = body.alerts === true;
+  if (!weekly && !alerts) return NextResponse.json({ error: "invalid_delivery" }, { status: 400 });
 
   const config = brevoConfig(locale);
   if (!config) return NextResponse.json({ error: "not_configured" }, { status: 503 });
+  // Sin lista de avisos montada no se pueden pedir (el formulario ya no los enseña)
+  if (alerts && !config.lists.alerts) return NextResponse.json({ error: "invalid_delivery" }, { status: 400 });
+  const includeListIds = [
+    ...(weekly ? [config.lists.weekly] : []),
+    ...(alerts && config.lists.alerts ? [config.lists.alerts] : []),
+  ];
+
+  // Un atributo booleano por tema en Brevo (TEMA_CIBER, TEMA_IA, TEMA_IOT): cada
+  // correo enseña a cada contacto solo los temas que tiene a true.
+  const attributes = Object.fromEntries(
+    TOPIC_IDS.map((id) => [TOPIC_ATTRIBUTE[id], topics.includes(id)]),
+  );
 
   const res = await fetch(BREVO_DOI, {
     method: "POST",
@@ -58,7 +93,7 @@ export async function POST(request: Request) {
     body: JSON.stringify({
       email,
       attributes,
-      includeListIds: [config.list],
+      includeListIds,
       templateId: config.template,
       redirectionUrl: `${SITE}${getDictionary(locale).subscribe.confirmed.href}`,
     }),
