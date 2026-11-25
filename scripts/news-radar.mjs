@@ -1,6 +1,7 @@
 // Radar de última hora: lee feeds RSS/Atom de fuentes fiables y lista lo
 // publicado en las últimas horas, ordenado por relevancia para el blog.
 // Uso: node scripts/news-radar.mjs [--hours 6]
+// SecurityWeek (ICS/OT e IoT) da 403 a fetch de Node; por eso no está.
 // Sin dependencias. Lo ejecuta la rutina "radar de noticias" cada 2 horas.
 
 const FEEDS = [
@@ -18,6 +19,10 @@ const FEEDS = [
   ["The Hacker News", "https://feeds.feedburner.com/TheHackersNews"],
   ["The Record", "https://therecord.media/feed"],
   ["Krebs on Security", "https://krebsonsecurity.com/feed/"],
+  // IoT e industria (OT/ICS): cámaras, routers, control industrial, energía
+  ["CISA avisos ICS", "https://www.cisa.gov/cybersecurity-advisories/ics-advisories.xml"],
+  ["Industrial Cyber", "https://industrialcyber.co/feed/"],
+  ["Viakoo (OT/IoT diario)", "https://www.viakoo.com/feed/"],
   // IA: caídas y anuncios
   ["Estado de Claude", "https://status.claude.com/history.rss"],
   ["Estado de OpenAI", "https://status.openai.com/history.rss"],
@@ -35,6 +40,7 @@ const KEYWORDS = [
   [3, /zero-day|0-day|actively exploited|explotad|vulnerab|CVE-\d{4}/i],
   [3, /whatsapp|instagram|gmail|outlook|iphone|android|banco|bank|bizum|correos|dgt|hacienda|seguridad social/i],
   [3, /chatgpt|openai|claude|anthropic|gemini|copilot|\bAI\b|\bIA\b|inteligencia artificial|LLM|agent/i],
+  [3, /IoT|OT|ICS|SCADA|PLC|industrial|OT security|operational technology|camera|c[aá]mara|router|NAS|firmware|smart (home|device)|utility|utilities|energ[yí]a?|power grid|water (utility|plant)|planta|siemens|schneider|rockwell|hikvision|dahua/i],
   [2, /binance|crypto|bitcoin|cripto/i],
   [2, /AI Act|NIS2|regulat|reglamento|ley |GDPR|RGPD|multa|fine/i],
   [2, /spain|españa|spanish|europ/i],
